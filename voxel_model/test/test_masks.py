@@ -1,7 +1,7 @@
 from __future__ import division
 import numpy as np
 
-from voxel_model.masks import SourceMask, TargetMask, union_mask
+from voxel_model.masks import SourceMask, TargetMask
 
 def test_union_mask():
     pass

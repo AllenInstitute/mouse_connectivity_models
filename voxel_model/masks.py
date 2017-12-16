@@ -4,13 +4,6 @@ NOTE :: cythonize _BaseMask.map_to_ccf
 from __future__ import division
 import numpy as np
 
-def union_mask(self, structure_ids):
-    """Returns the union of a set of structure masks"""
-    masks = [ mcc.get_structure_mask(structure_id)[0]
-              for structure_id in structure_ids ]
-
-    return np.reduce.logical_or(masks)
-
 class _BaseMask(object):
     """Base Mask class
     """
@@ -19,6 +12,13 @@ class _BaseMask(object):
         self.mcc = mcc
         self.structure_ids = structure_ids
         self.hemishpere = hemisphere
+
+    @staticmethod
+    def union_mask(structure_ids):
+        """Returns the union of a set of structure masks"""
+        masks = [ mcc.get_structure_mask(structure_id)[0]
+                  for structure_id in structure_ids ]
+        return np.reduce.logical_or(masks)
 
     @property(self):
     def _get_mask(self):
