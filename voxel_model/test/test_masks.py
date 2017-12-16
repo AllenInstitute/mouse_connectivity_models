@@ -20,11 +20,3 @@ def test_key():
 
 def test_map_to_ccf():
     pass
-
-# if __name__ == "__main__":
-#     test_union_mask()
-#     test_get_mask()
-#     test_ccf_shape()
-#     test_coordinates()
-#     test_key()
-#     test_map_to_ccf()
