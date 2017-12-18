@@ -106,7 +106,7 @@ class VoxelModel(BaseEstimator):
         return self.weights_.dot(self.y_fit_)
 
 
-class RegionalizedVoxelModel(VoxelModel):
+class RegionalizedVoxelModel(object):
     """
     """
 
@@ -117,26 +117,27 @@ class RegionalizedVoxelModel(VoxelModel):
         "normalized_connection_density"
     ]
 
-    # @classmethod
-    # def from_voxel_model(cls, voxel_model, source_key, target_key):
-
-
     def __init__(self, source_voxels, source_key, target_key, 
-                 epsilon=0, kernel="linear", degree=3,
+                 voxel_model=None, epsilon=0, kernel="linear", degree=3,
                  coef0=1, gamma=None, kernel_params=None):
-        super(RegionalizedVoxelModel, self).__init__(source_voxels, 
-                                                     epsilon=epsilon,
-                                                     kernel=kernel,
-                                                     degree=degree,
-                                                     coef0=coef0, 
-                                                     gamma=gamma, 
-                                                     kernel_params=kernel_params)
+        """ FIND WAY TO USE CLSMETHOD """
+        if not voxel_model is None:
+            self.voxel_model = voxel_model
+        else:
+            self.voxel_model = (source_voxels, 
+                                epsilon=epsilon,
+                                kernel=kernel,
+                                degree=degree,
+                                coef0=coef0, 
+                                gamma=gamma, 
+                                kernel_params=kernel_params)
+
         self.source_key = source_key
         self.target_key = target_key
 
     def fit(self, X, y):
         """ """
-        super(RegionalizedVoxelModel, self).fit(X,y)
+        self.voxel_model.fit(X,y)
 
     def predict(self, X, normalize=False):
         """
@@ -146,7 +147,7 @@ class RegionalizedVoxelModel(VoxelModel):
             X = X.reshape(1, -1)
 
         # predict from grid level
-        voxel_prediction = super(RegionalizedVoxelModel, self).predict(X)
+        voxel_prediction = self.voxel_model.predict(X)
 
         # get target
         t_regions = np.unique(target_key)
