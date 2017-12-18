@@ -6,7 +6,7 @@ import numpy as np
 
 from voxel_model.interpolators import VoxelModel
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def voxel_model():
     pass
 
