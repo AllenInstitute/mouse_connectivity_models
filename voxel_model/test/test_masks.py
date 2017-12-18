@@ -5,14 +5,14 @@ import pytest
 import numpy as np
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
-from allensdk.test_utilities.temp_dir import fn_temp_dir
+from allensdk.test_utilities.temp_dir import md_temp_dir
 
 from voxel_model.masks import SourceMask, union_mask
 
 @pytest.fixture(scope="module")
-def mcc(fn_temp_dir):
+def mcc(md_temp_dir):
 
-    manifest_path = os.path.join(fn_temp_dir, "manifest.json")
+    manifest_path = os.path.join(md_temp_dir, "manifest.json")
     return MouseConnectivityCache(manifest_file=manifest_path,
                                   resolution=100,
                                   ccf_version="annotation/ccf_2017")
