@@ -4,6 +4,12 @@ NOTE :: cythonize _BaseMask.map_to_ccf
 from __future__ import division
 import numpy as np
 
+def union_mask(mcc, structure_ids):
+    """Returns the union of a set of structure masks"""
+    masks = [ mcc.get_structure_mask(structure_id)[0]
+              for structure_id in structure_ids ]
+    return np.logical_or.reduce(masks)
+
 class _BaseMask(object):
     """Base Mask class
     """
@@ -13,26 +19,19 @@ class _BaseMask(object):
         self.structure_ids = structure_ids
         self.hemishpere = hemisphere
 
-    @staticmethod
-    def union_mask(structure_ids):
-        """Returns the union of a set of structure masks"""
-        masks = [ mcc.get_structure_mask(structure_id)[0]
-                  for structure_id in structure_ids ]
-        return np.reduce.logical_or(masks)
-
-    @property(self):
     def _get_mask(self):
         """   """
-        _mask = union_mask(self.structure_ids)
+        _mask = union_mask(self.mcc, self.structure_ids)
+        midline = _mask.shape[2]//2
 
         if self.hemisphere == 1:
             # contra
-            self._mask[:,:,:self.ccf_shape[2]/2] = np.unint(0)
+            _mask[:,:,:midline] = False
         elif self.hemisphere == 2:
             # ipsi
-            self._mask[:,:,self.ccf_shape[2]/2:] = np.unint(0)
+            _mask[:,:,midline:] = False
 
-        return self._mask
+        return _mask
 
     @property
     def mask(self):
@@ -44,6 +43,7 @@ class _BaseMask(object):
 
     @property
     def ccf_shape(self):
+        print self.mask.shape
         return self.mask.shape
 
     @property
@@ -86,7 +86,7 @@ class SourceMask(_BaseMask):
     hemisphere = 2
 
     def __init__(self, mcc, structure_ids):
-        super(SourceMask, self).__init__(mcc, structure_ids)
+        super(SourceMask, self).__init__(mcc, structure_ids, self.hemisphere)
 
 class TargetMask(_BaseMask):
     """Mask for target

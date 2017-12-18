@@ -20,12 +20,15 @@ def prepend_find_packages(*roots):
 with open('requirements.txt', 'r') as f:
     required = f.read().splitlines()
 
+with open('test_requirements.txt', 'r') as f:
+    test_required = f.read().splitlines()
+
 setup(
     version=voxel_model.__version__,
     name='voxel_model',
     author='Joseph Knox',
     author_email='josephk@alleninstitute.org',
-    packages=perpend_find_packages('voxel_model'),
+    packages=prepend_find_packages('voxel_model'),
     package_data={'': ['*.cfg', '*.md', '*.txt', 'bps', 'Makefile', 'LICENSE'] },
     description = 'Core library for voxel scale mesoscale connectivity model.',
     install_requires=required,
