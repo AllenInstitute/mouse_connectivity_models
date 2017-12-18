@@ -43,7 +43,6 @@ class _BaseMask(object):
 
     @property
     def ccf_shape(self):
-        print self.mask.shape
         return self.mask.shape
 
     @property
@@ -69,13 +68,13 @@ class _BaseMask(object):
         if y.shape != self.key.shape:
             raise ValueError("Must be same shape as key")
 
-        y_ccf = np.zeros(np.multiply(*self.ccf_shape))
+        y_ccf = np.zeros(np.prod(self.ccf_shape))
 
         # SLOW!!! (cythonize???)
         for idx, val in zip(self.key, y):
             y_ccf[idx] = val
 
-        return y_ccf.reshape(y_ccf)
+        return y_ccf.reshape(self.ccf_shape)
 
 
 class SourceMask(_BaseMask):

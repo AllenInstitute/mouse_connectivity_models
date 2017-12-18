@@ -41,7 +41,6 @@ def test_get_mask(source_mask):
 
     left_hemi = mask[:,:,midline:]
 
-    print left_hemi.sum()
     assert( left_hemi.sum() == 0 )
 
 
@@ -61,4 +60,8 @@ def test_key(source_mask):
     assert( len(shape) == 1 )
 
 def test_map_to_ccf(source_mask):
-    pass
+    """NOT SUFFICIENT"""
+    y = np.ones_like(source_mask.key)
+    mask_ = source_mask.mask.astype(np.int)
+
+    assert( np.array_equal(source_mask.map_to_ccf(y), source_mask.mask) )
