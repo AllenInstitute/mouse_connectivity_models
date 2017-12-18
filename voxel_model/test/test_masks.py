@@ -1,32 +1,31 @@
 from __future__ import division
 import os
+import mock
 import pytest
 import numpy as np
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+from allensdk.test_utilities.temp_dir import fn_temp_dir
 
 from voxel_model.masks import SourceMask, union_mask
 
-TEST_MANIFEST_FILE = os.path.join(os.path.dirname(__file__),
-                                  "test_data/mouse_connectivity_manifest.json")
+@pytest.fixture(scope="module")
+def mcc(fn_temp_dir):
 
-@pytest.fixture
-def mcc():
-    return MouseConnectivityCache(
-        manifest_file=TEST_MANIFEST_FILE,
-        resolution=100,
-        ccf_version="annotation/ccf_2017"
-    )
+    manifest_path = os.path.join(fn_temp_dir, "manifest.json")
+    return MouseConnectivityCache(manifest_file=manifest_path,
+                                  resolution=100,
+                                  ccf_version="annotation/ccf_2017")
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def ccf_shape(mcc):
     return mcc.get_structure_mask(315)[0].shape
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def structure_ids(mcc):
     return [315, 313, 512]
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def source_mask(mcc, structure_ids):
     return SourceMask(mcc, structure_ids)
 
