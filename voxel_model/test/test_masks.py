@@ -13,7 +13,7 @@ TEST_MANIFEST_FILE = os.path.join(os.path.dirname(__file__),
 @pytest.fixture
 def mcc():
     return MouseConnectivityCache(
-        manifest_file="voxel_model/test/mouse_connectivity_manifest.json",
+        manifest_file=TEST_MANIFEST_FILE,
         resolution=100,
         ccf_version="annotation/ccf_2017"
     )
