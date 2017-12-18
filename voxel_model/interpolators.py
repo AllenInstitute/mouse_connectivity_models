@@ -14,13 +14,6 @@ class VoxelModel(BaseEstimator):
     """
     similar to sklearn.kernel_ridge.KernelRidge
     """
-    valid_regional_metrics = [
-        "connection_strength",
-        "connection_density",
-        "normalized_connection_strength",
-        "normalized_connection_density"
-    ]
-
     def __init__(self, source_voxels, epsilon=0, kernel="linear", degree=3,
                  coef0=1, gamma=None, kernel_params=None):
 
@@ -47,6 +40,7 @@ class VoxelModel(BaseEstimator):
 
         return pairwise_kernels(X, y, metric=self.kernel,
                              filter_params=True, **params)
+        """ """
 
     def _get_weights(self, centroids):
 
@@ -104,7 +98,7 @@ class VoxelModel(BaseEstimator):
 
         return X_predict_.dot(self.weights_).dot(self.y_fit_)
 
-    def voxel_matrix(self):
+    def get_voxel_matrix(self):
         """
         """
         check_is_fitted(self, ["weights_"])
@@ -112,11 +106,70 @@ class VoxelModel(BaseEstimator):
         return self.weights_.dot(self.y_fit_)
 
 
-    def region_matrix(self, source_key, target_key,
-                      metric="connection_strength"):
-        """
-        """
+class RegionalizedVoxelModel(VoxelModel):
+    """
+    """
 
+    valid_regional_metrics = [
+        "connection_strength",
+        "connection_density",
+        "normalized_connection_strength",
+        "normalized_connection_density"
+    ]
+
+    # @classmethod
+    # def from_voxel_model(cls, voxel_model, source_key, target_key):
+
+
+    def __init__(self, source_voxels, source_key, target_key, 
+                 epsilon=0, kernel="linear", degree=3,
+                 coef0=1, gamma=None, kernel_params=None):
+        super(RegionalizedVoxelModel, self).__init__(source_voxels, 
+                                                     epsilon=epsilon,
+                                                     kernel=kernel,
+                                                     degree=degree,
+                                                     coef0=coef0, 
+                                                     gamma=gamma, 
+                                                     kernel_params=kernel_params)
+        self.source_key = source_key
+        self.target_key = target_key
+
+    def fit(self, X, y):
+        """ """
+        super(RegionalizedVoxelModel, self).fit(X,y)
+
+    def predict(self, X, normalize=False):
+        """
+        """
+        # reshape 1xn
+        if len(X.shape) == 1:
+            X = X.reshape(1, -1)
+
+        # predict from grid level
+        voxel_prediction = super(RegionalizedVoxelModel, self).predict(X)
+
+        # get target
+        t_regions = np.unique(target_key)
+
+        # return array
+        n_pred = X.shape[0]
+        nt_regions = len(t_regions)
+        region_pred = np.empty((n_pred, nt_regions))
+
+        for ii, region in enumerate(t_regions):
+            cols = np.isin(target_key, region)
+            # note, if region were 1 voxel, would not work
+            region_pred[:,ii] = voxel_prediction[:,cols].sum(axis=1)
+
+        if normalize:
+            inj_vols = X[:,self.dimension:].sum(axis=1)
+            np.divide(region_pred, inj_vols[:,np.newaxis], region_pred)
+
+        return region_pred
+
+    def get_region_matrix(self, metric="connection_strength"):
+        """
+        """
         if metric not in self.valid_regional_metrics:
             raise ValueError(
                 "metric must be one of {self.valid_regional_metrics}"
@@ -150,19 +203,16 @@ class VoxelModel(BaseEstimator):
         if metric == "connection_strength":
             # w_ij |X||Y|
             return region_matrix
-
         elif metric == "connection_density":
             # w_ij |X|
             return np.divide(region_matrix,
                              t_counts[np.newaxis,:], 
                              region_matrix)
-
         elif metric == "normalized_connection_strength":
             # w_ij |Y|
             return np.divide(region_matrix,
                              s_counts[:,np.newaxis],
                              region_matrix)
-
         else:
             # normalized_connection_density
             # w_ij
@@ -170,35 +220,6 @@ class VoxelModel(BaseEstimator):
                              np.outer(s_counts, t_counts),
                              region_matrix)
  
-    def region_prediction(self, X, target_key, normalize=False):
-        """
-        """
-        # reshape 1xn
-        if len(X.shape) == 1:
-            X = X.reshape(1, -1)
-
-        # predict from grid level
-        voxel_prediction = self.predict(X)
-
-        # get target
-        t_regions = np.unique(target_key)
-
-        # return array
-        n_pred = X.shape[0]
-        nt_regions = len(t_regions)
-        region_pred = np.empty((n_pred, nt_regions))
-
-        for ii, region in enumerate(t_regions):
-            cols = np.isin(target_key, region)
-            # note, if region were 1 voxel, would not work
-            region_pred[:,ii] = voxel_prediction[:,cols].sum(axis=1)
-
-        if normalize:
-            inj_vols = X[:,self.dimension:].sum(axis=1)
-            np.divide(region_pred, inj_vols[:,np.newaxis], region_pred)
-
-        return region_pred
-
 # class NadarayaWatson(BaseEstimator):
 #     """
 #     95% from sklearn.kernel_ridge.KernelRidge
