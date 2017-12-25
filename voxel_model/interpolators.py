@@ -124,13 +124,13 @@ class RegionalizedVoxelModel(object):
         if not voxel_model is None:
             self.voxel_model = voxel_model
         else:
-            self.voxel_model = (source_voxels, 
-                                epsilon=epsilon,
-                                kernel=kernel,
-                                degree=degree,
-                                coef0=coef0, 
-                                gamma=gamma, 
-                                kernel_params=kernel_params)
+            self.voxel_model = VoxelModel(source_voxels,
+                                          epsilon=epsilon,
+                                          kernel=kernel,
+                                          degree=degree,
+                                          coef0=coef0, 
+                                          gamma=gamma, 
+                                          kernel_params=kernel_params)
 
         self.source_key = source_key
         self.target_key = target_key
