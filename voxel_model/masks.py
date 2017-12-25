@@ -51,6 +51,11 @@ class _BaseMask(object):
         return np.argwhere(self.mask)
 
     @property
+    def where(self):
+        """returns masked indices"""
+        return self.mask.nonzero()
+
+    @property
     def key(self):
         """Returns nonzero indices of mask"""
         return self.mask.flatten().nonzero()[0]
@@ -74,7 +79,7 @@ class _BaseMask(object):
         for idx, val in zip(self.key, y):
             y_ccf[idx] = val
 
-        return y_ccf.reshape(self.ccf_shape)
+        return y_ccf.reshape(self.ccf_shape)projections
 
 
 class SourceMask(_BaseMask):
