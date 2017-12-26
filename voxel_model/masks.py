@@ -79,7 +79,7 @@ class _BaseMask(object):
         for idx, val in zip(self.key, y):
             y_ccf[idx] = val
 
-        return y_ccf.reshape(self.ccf_shape)projections
+        return y_ccf.reshape(self.ccf_shape)
 
 
 class SourceMask(_BaseMask):
