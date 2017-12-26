@@ -7,8 +7,20 @@ class ImplicitModel(object):
     """Class for implicit construction of the voxel model from ...
     """
 
-    def __init__(self, dir_path=None, voxel_model=None):
-        if dir_path is not None:
+    def __init__(self, weights=None, nodes=None, 
+                 dir_path=None, voxel_model=None):
+        """Constructs class by passing either:
+           * weights & nodes
+           * dir_path :: path to directory containing weights and nodes
+           * voxel_model :: fitted VoxelModel instance
+        """
+        if weights is not None and nodes is not None:
+            if weights.shape[1] != nodes.shape[0]:
+                raise ValueError("weight and nodes must match in inner diameter")
+
+            self.weights = weights
+            self.nodes = nodes
+        elif dir_path is not None:
             try:
                 self.weights = os.path.join(dir_path, "weights.csv")
                 self.nodes = os.path.join(dir_path, "nodes.csv")
@@ -35,7 +47,7 @@ class ImplicitModel(object):
         """
         return self.weights[i].dot(self.nodes)
 
-    def get_col(self, j):
+    def get_column(self, j):
         """Returns a column of the full voxel connectivity matrix
 
         Parameters
@@ -64,7 +76,7 @@ class ImplicitModel(object):
         """
         return self.weights[row_indices].dot(self.nodes)
 
-    def get_cols(self, col_indices):
+    def get_columns(self, column_indices):
         """Returns columns of the full voxel connectivity matrix
         Good for chunked computations on columns
 
@@ -84,7 +96,7 @@ class ImplicitModel(object):
         for row in self.weights:
             yield row.dot(self.nodes)
 
-    def itercols(self):
+    def itercolumns(self):
         """Generator for yielding columns of the voxel matrix"""
         for column in self.nodes.T:
             yield self.weights.dot(column)
