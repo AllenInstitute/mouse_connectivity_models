@@ -22,8 +22,12 @@ class ImplicitModel(object):
             self.nodes = nodes
         elif dir_path is not None:
             try:
-                self.weights = os.path.join(dir_path, "weights.csv")
-                self.nodes = os.path.join(dir_path, "nodes.csv")
+                weights_path = os.path.join(dir_path, "weights.csv")
+                nodes_path = os.path.join(dir_path, "nodes.csv")
+                
+                self.weights = np.loadtxt(weights_path, delimeter=",")
+                self.nodes = np.loadtxt(nodes_path, delimeter=",")
+
             except IOError:
                 raise ValueError("dir_path does not exist")
         elif voxel_model is not None:
