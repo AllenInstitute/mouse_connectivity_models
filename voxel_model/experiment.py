@@ -1,7 +1,7 @@
 """
 
 """
-from __future__ import division, relative_import
+from __future__ import division, absolute_import
 import numpy as np
 
 from allensdk.api.queries.mouse_connectivity_api import MouseConnectivityApi
