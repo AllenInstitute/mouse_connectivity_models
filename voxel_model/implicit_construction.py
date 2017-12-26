@@ -25,8 +25,8 @@ class ImplicitModel(object):
                 weights_path = os.path.join(dir_path, "weights.csv")
                 nodes_path = os.path.join(dir_path, "nodes.csv")
                 
-                self.weights = np.loadtxt(weights_path, delimeter=",")
-                self.nodes = np.loadtxt(nodes_path, delimeter=",")
+                self.weights = np.loadtxt(weights_path, delimiter=",")
+                self.nodes = np.loadtxt(nodes_path, delimiter=",")
 
             except IOError:
                 raise ValueError("dir_path does not exist")
