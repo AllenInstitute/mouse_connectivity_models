@@ -1,6 +1,8 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License: 
 
+# NOTE : ModelData NOT complete!!
+
 from __future__ import division, absolute_import
 import numpy as np
 
@@ -94,7 +96,48 @@ class Experiment(object):
         return data
 
 class ModelData(object): 
+    # NOTE :: NOT COMPLETE
+
     """Container for data used in model
+
+    Class for constructing the input matrices for the voxel model. In addition,
+    the masks (see voxel_model.masks) for subsetting the experiment volumes
+    are kept track of for consistency and to be used in post-processing procedures.
+
+    Currently both experiment_ids and structure_ids must be provided
+
+
+    Parameters
+    ----------
+    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
+        This supplies the interface for pulling experimental data 
+        from the AllenSDK.
+    experiment_ids : int, optional, shape (n_experiment_ids,)
+        AllenSDK id assigned to experiments to be included in the model
+    structure_ids : array-like, optional, shape (n_structure_ids,)
+        AllenSDK CCF Annotation stucture ids to be included in the model
+    hemisphere : int or str, optional (default 3)
+        hemisphere id to be included in the projection in the model.
+            * 1, "contra" : left hemisphere - contralateral
+            * 2, "ipsi" : right hemisphere - ipsilateral
+            * 3, "both" : both hemispheres - full-brain projection
+        
+    Attributes
+    ----------
+    source_mask : voxel_model.masks.source_mask object
+        Defines the mask of the voxels included in the source in the model.
+    target_mask : voxel_model.masks.target_mask object
+        Defines the mask of the voxels included in the target in the model.
+
+    Examples
+    --------
+
+    >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+    >>> from voxel_model.experiment import ModelData
+    >>> mcc = MouseConnectivityCache(resolution=100)
+    >>> eids = [126862385]
+    >>> sids = [315]
+    >>>
     """
 
     normalized = True
@@ -109,7 +152,8 @@ class ModelData(object):
             self.experiment_ids = experiment_ids
             self.structure_ids = strucutre_ids
         else:
-            return ValueError("currently both exp_ids and str_ids must be provided")
+            return ValueError("currently both experiment_ids and "
+                              "structure_ids must be provided")
 
         # get source/target masks, ensure consistent
         self.source_mask = SourceMask(mcc, self.structure_ids)
