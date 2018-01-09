@@ -24,25 +24,31 @@ class Experiment(object):
     mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
         This supplies the interface for pulling experimental data 
         from the AllenSDK.
+
     experiment_id : int
         AllenSDK id assigned to given experiment
 
     Attributes
     ----------
-    data_mask : array-like, shape (x_ccf, y_ccf, z_ccf)
+    data_mask : array-like, shape=(x_ccf, y_ccf, z_ccf)
         Mask of invalid voxels. 
-    injection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+
+    injection_density : array-like, shape=(x_ccf, y_ccf, z_ccf)
         Volume in which values correspond to segmented viral injection density.
-    injection_fraction : array-like, shape (c_ccf, y_ccf, z_ccf)
+
+    injection_fraction : array-like, shape=(x_ccf, y_ccf, z_ccf)
         Volume in which values correspond to segmented viral injection fraction.
         In other words, the fraction of the voxel that lies within the annotation.
-    projection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+
+    projection_density : array-like, shape=(x_ccf, y_ccf, z_ccf)
         Volume in which values correspond to segmented viral projection density.
-    normalized_projection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+
+    normalized_projection_density : array-like, shape=(x_ccf, y_ccf, z_ccf)
         Volume in which values correspond to segmented viral projection density
         normalized by the total segmented injection volume 
         (sum of injection density).
-    centroid : array-like, shape (1, 3)
+
+    centroid : array-like, shape=(1, 3)
         Spatial location of the injection centroid.
 
     Examples
@@ -112,12 +118,15 @@ class ModelData(object):
     mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
         This supplies the interface for pulling experimental data 
         from the AllenSDK.
+
     experiment_ids : int, optional, shape (n_experiment_ids,)
         AllenSDK id assigned to experiments to be included in the model
+
     structure_ids : array-like, optional, shape (n_structure_ids,)
         AllenSDK CCF Annotation stucture ids to be included in the model
+
     hemisphere : int or str, optional (default 3)
-        hemisphere id to be included in the projection in the model.
+        Hemisphere id to be included in the projection in the model.
             * 1, "contra" : left hemisphere - contralateral
             * 2, "ipsi" : right hemisphere - ipsilateral
             * 3, "both" : both hemispheres - full-brain projection
@@ -126,6 +135,7 @@ class ModelData(object):
     ----------
     source_mask : voxel_model.masks.source_mask object
         Defines the mask of the voxels included in the source in the model.
+
     target_mask : voxel_model.masks.target_mask object
         Defines the mask of the voxels included in the target in the model.
 
