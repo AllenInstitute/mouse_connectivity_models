@@ -72,6 +72,7 @@ class ImplicitModel(object):
         ----------
         i :: int
             index of wanted row
+
         Returns
         -------
         array, shape=(,n_voxels)
@@ -86,6 +87,7 @@ class ImplicitModel(object):
         ----------
         j :: int
             index of wanted column
+
         Returns
         -------
         array, shape=(n_voxels,)
@@ -102,6 +104,7 @@ class ImplicitModel(object):
         ----------
         row_indices :: list of int
             indices of wanted rows
+
         Returns
         -------
         array, shape=(len(row_indices),n_voxels)
@@ -118,6 +121,7 @@ class ImplicitModel(object):
         ----------
         column_indices :: int
             index of wanted column
+
         Returns
         -------
         array, shape=(n_voxels,len(row_indices))
