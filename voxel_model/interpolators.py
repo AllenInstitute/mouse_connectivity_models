@@ -228,7 +228,52 @@ class VoxelModel(BaseEstimator):
 
 
 class RegionalizedVoxelModel(object):
-    """
+    """Regionalization/Parcelation of VoxelModel.
+
+    Regionalizes the connectivity model in VoxelModel given a brain parcelation.
+
+    Parameters
+    ----------
+    see VoxelModel for:
+        * source_voxels
+        * epsilon
+        * kernel
+        * degree
+        * coef0
+        * gamma
+        * kernel_params
+
+    voxel_model : VoxelModel object, optional (default=None)
+        A VoxelModel object. The default instatiates a VoxelModel estimator
+        using the default setttings.
+
+        See VoxelModel for more details.
+
+    source_key : array-like, shape=(n_source_voxels,)
+        Flattened key relating each source voxel to a given brain region.
+
+    target_key : array-like, shape=(n_target_voxels,)
+        Flattened key relating each target voxel to a given brain region.
+
+    Examples
+    --------
+    >>> from voxel_model.interpolators import RegionalizedVoxelModel
+    >>> import numpy as np
+    >>> n_exps = 20
+    >>> n_source_voxels, n_target_voxels = 125, 200
+    >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
+    >>> injections = np.random.randn(n_exps, n_source_voxels)
+    >>> centroids = source_voxels[ np.random.choice(n_source_voxels, 
+                                                    n_exps, 
+                                                    replacement=False) ]
+    >>> X = np.hstack((centroids, injections))
+    >>> y = np.random.randn(n_exps, n_target_voxels)
+    >>> source_key = np.random.randint(0,10, size=n_source_voxels)
+    >>> target_key = np.random.randint(0,10, size=n_target_voxels)
+    >>> reg = RegionalizedVoxelModel(source_voxels, source_key, target_key)
+    >>> reg.fit(X, y)
+    >>> reg.get_region_matrx().shape
+    (10,10)
     """
 
     valid_regional_metrics = [
@@ -257,11 +302,46 @@ class RegionalizedVoxelModel(object):
         self.target_key = target_key
 
     def fit(self, X, y):
-        """ """
+        """Fits the underlying VoxelModel estimator.
+        
+        NOTE : X is a concatenation (column wise) of the injection centroid
+            coordinates and the injection volumes. This choice was made to 
+            be consistent with the sklearn.core.BaseEstimator fit and predict
+            schema
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
+            Centroid coordinates concatenated with the injection density for 
+            each training experiment.
+
+        y : {array-like, sparse matrix}, shape=(n_exps, n_target_voxels)
+            Normalized projection density for each training experiment
+
+        Returns
+        -------
+        self : returns an instance of self.
+        """
         self.voxel_model.fit(X,y)
 
     def predict(self, X, normalize=False):
-        """
+        """Predict regionalized connectivity given injection volumes.
+
+        NOTE : X is a concatenation (column wise) of the injection centroid
+            coordinates and the injection volumes. This choice was made to 
+            be consistent with the sklearn.core.BaseEstimator fit and predict
+            schema
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
+            Centroid coordinates concatenated with the injection density for 
+            each test experiment.
+        
+        Returns
+        -------
+        C : array, shape=(n_source_regions, n_target_regions)
+            Predicted regionalized connectivity.
         """
         # reshape 1xn
         if len(X.shape) == 1:
@@ -290,7 +370,37 @@ class RegionalizedVoxelModel(object):
         return region_pred
 
     def get_region_matrix(self, metric="connection_strength"):
-        """
+        """Produces the full regionalized connectivity
+
+        Parameters
+        ----------
+        metric : string, optional (default="connection_strength")
+            Metric with which to represent the regionalized connectivity.
+            Valid choices are:
+                * "connection_strength" (default)
+                    W = w_ij |X||Y|
+                    The sum of the voxel-scale connectivity between each pair
+                    of source-target regions.
+
+                * "connection_density"
+                    W = w_ij |X|
+                    The average voxel-scale connectivity between each source
+                    voxel to each source region.
+
+                * "normalized_connection_strength"
+                    W = w_ij |Y|
+                    The average voxel-scale connectivity between each source
+                    region to each target voxel"
+
+                * "normalized_connection_density"
+                    W = w_ij
+                    The average voxel-scale connectivity between each pair of
+                    source-target regions
+                    
+        Returns
+        -------
+        C : array-like, shape=(n_source_regions, n_target_regions)
+            The regionalized voxel-scale connectivity.
         """
         if metric not in self.valid_regional_metrics:
             raise ValueError(
