@@ -1,6 +1,8 @@
-"""
-NOTE :: cythonize _BaseMask.map_to_ccf
-"""
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License: 
+
+# NOTE :: cythonize _BaseMask.map_to_ccf
+
 from __future__ import division
 import numpy as np
 

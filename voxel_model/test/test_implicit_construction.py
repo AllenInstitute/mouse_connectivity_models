@@ -29,32 +29,44 @@ def true_voxel_model(weights, nodes):
 def implicit_model(weights, nodes):
     return ImplicitModel(weights=weights, nodes=nodes)
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_row(implicit_model, true_voxel_model):
     n_rows = implicit_model.weights.shape[0]
     for i in range(n_rows):
         np.testing.assert_array_equal(implicit_model.get_row(i), 
                                       true_voxel_model[i])
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_column(implicit_model, true_voxel_model):
     n_cols = implicit_model.nodes.shape[1]
     for j in range(n_cols):
         np.testing.assert_array_equal(implicit_model.get_column(j),
                                       true_voxel_model[:,j])
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_rows(implicit_model, true_voxel_model):
     rows = [0, 2, 3]
     np.testing.assert_array_equal(implicit_model.get_rows(rows),
                                   true_voxel_model[rows])
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_columns(implicit_model, true_voxel_model):
     cols = [0, 2, 3, 6]
     np.testing.assert_array_equal(implicit_model.get_columns(cols),
                                   true_voxel_model[:, cols])
 
+# ----------------------------------------------------------------------------
+# test 
 def test_iterrows(implicit_model, true_voxel_model):
     for i, row in enumerate(implicit_model.iterrows()):
         np.testing.assert_array_equal(row, true_voxel_model[i])
 
+# ----------------------------------------------------------------------------
+# test 
 def test_itercols(implicit_model, true_voxel_model):
     for j, column in enumerate(implicit_model.itercolumns()):
         np.testing.assert_array_equal(column, true_voxel_model[:, j])

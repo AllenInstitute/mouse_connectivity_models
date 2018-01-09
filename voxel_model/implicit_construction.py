@@ -1,5 +1,6 @@
-"""
-"""
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License: 
+
 import os
 import numpy as np
 

@@ -1,6 +1,6 @@
-"""
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License: 
 
-"""
 from __future__ import division, absolute_import
 import numpy as np
 
@@ -9,7 +9,50 @@ from allensdk.api.queries.mouse_connectivity_api import MouseConnectivityApi
 from .masks import SourceMask, TargetMask
 
 class Experiment(object):
-    """Experiment class
+    """Class containing the data from an anterograde injection
+
+    Experiment conveniently compiles the relevant information from a given
+    anterograde viral tracing experiment pulled from the AllenSDK 
+    MouseConnectivityCache module.
+
+    See allensdk.core.mouse_connectivity_cache for more information.
+
+    Parameters
+    ----------
+    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
+        This supplies the interface for pulling experimental data 
+        from the AllenSDK.
+    experiment_id : int
+        AllenSDK id assigned to given experiment
+
+    Attributes
+    ----------
+    data_mask : array-like, shape (x_ccf, y_ccf, z_ccf)
+        Mask of invalid voxels. 
+    injection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+        Volume in which values correspond to segmented viral injection density.
+    injection_fraction : array-like, shape (c_ccf, y_ccf, z_ccf)
+        Volume in which values correspond to segmented viral injection fraction.
+        In other words, the fraction of the voxel that lies within the annotation.
+    projection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+        Volume in which values correspond to segmented viral projection density.
+    normalized_projection_density : array-like, shape (c_ccf, y_ccf, z_ccf)
+        Volume in which values correspond to segmented viral projection density
+        normalized by the total segmented injection volume 
+        (sum of injection density).
+    centroid : array-like, shape (1, 3)
+        Spatial location of the injection centroid.
+
+    Examples
+    --------
+
+    >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+    >>> from voxel_model.experiment import Experiment
+    >>> mcc = MouseConnectivityCache(resolution=100)
+    >>> eid = 126862385 
+    >>> exp = Experiment(mcc, eid)
+    >>> exp.injection_density.shape
+    (132,80,114)
     """
 
     def __init__(self, mcc, experiment_id):
@@ -19,11 +62,6 @@ class Experiment(object):
     @property
     def data_mask(self):
         return self.mcc.get_data_mask(self.experiment_id)[0]
-
-    def _mask_to_valid(self, data):
-        """Masks data to data mask"""
-        data[self.data_mask.nonzero()] = 0.0
-        return data
 
     @property
     def injection_density(self):
@@ -49,6 +87,11 @@ class Experiment(object):
         return MouseConnectivityApi().calculate_injection_centroid(
             self.injection_fraction, self.injection_density, resolution=1
         )
+
+    def _mask_to_valid(self, data):
+        """Masks data to data mask"""
+        data[self.data_mask.nonzero()] = 0.0
+        return data
 
 class ModelData(object): 
     """Container for data used in model

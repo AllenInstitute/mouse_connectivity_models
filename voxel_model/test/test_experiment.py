@@ -25,15 +25,23 @@ def experiment_id(mcc):
 def experiment(mcc, experiment_id):
     return Experiment(mcc, experiment_id)
 
+# ----------------------------------------------------------------------------
+# test 
 def test_mask_to_valid(experiment):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_injection_density(experiment):
     """Covers injection_fraction and projection_density"""
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_normalized_projection_density(experiment):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_centroid(experiment):
     pass

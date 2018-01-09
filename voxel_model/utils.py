@@ -1,6 +1,5 @@
-"""
-Utility functions
-"""
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License: 
 
 def get_id_acronym_map(mcc):
     """Returns dict id : acronym"""

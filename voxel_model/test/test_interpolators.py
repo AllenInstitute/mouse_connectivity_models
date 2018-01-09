@@ -14,27 +14,42 @@ def voxel_model():
 def regionalized_voxel_model():
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_kernel(voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_weights(voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_voxel_fit(voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_voxel_predict(voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_voxel_matrix(voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_region_fit(regionalized_voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_region_predict(regionalized_voxel_model):
     pass
 
+# ----------------------------------------------------------------------------
+# test 
 def test_get_region_matrix(regionalized_voxel_model):
     pass
-

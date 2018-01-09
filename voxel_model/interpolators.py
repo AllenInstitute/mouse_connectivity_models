@@ -1,6 +1,6 @@
-"""
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License: 
 
-"""
 from __future__ import division
 import numpy as np
 
