@@ -5,16 +5,43 @@ import os
 import numpy as np
 
 class ImplicitModel(object):
-    """Class for implicit construction of the voxel model from ...
+    """Class for implicit construction of the voxel model
+
+    Allows for implicit construction of the voxel model. Contains functions
+    percieved to be useful in this end. If additional functionality wanted, 
+    please contact author.
+
+    Can be intatiated from:
+        * weights & nodes matrices
+        * path to directory containing weights & nodes matrices
+        * fitted voxel_model.VoxelModel object
+
+    See voxel_model.VoxelModel for weights/nodes descriptions
+
+    Parameters
+    ----------
+    weights : array-like, optional (default None), shape (n_voxels, n_exps)
+        Weights matrix from fitted VoxelModel.
+    nodes : array-like, optional (default None), shape (n_exps, n_voxels)
+        Nodes matrix from fitted VoxelModel.
+    dir_path : string, optional (default None)
+        Path to directory containing weights & nodes matrices from previously
+        fitted VoxelModel.
+    voxel_model : voxel_model.VoxelModel object
+        Fitted VoxelModel object.
+        MUST BE FITTED!
+
+    Examples
+    --------
+
+    >>> from voxel_model.implicit_construction import ImplicitModel
+    >>> implicit_model = ImplicitModel(dir_path="./fitted_model_data/")
+    >>> implicit_model.get_row(0)
+    [0.0000141, 0.0000001, ..., 0.0000093]
     """
 
     def __init__(self, weights=None, nodes=None, 
                  dir_path=None, voxel_model=None):
-        """Constructs class by passing either:
-           * weights & nodes
-           * dir_path :: path to directory containing weights and nodes
-           * voxel_model :: fitted VoxelModel instance
-        """
         if weights is not None and nodes is not None:
             if weights.shape[1] != nodes.shape[0]:
                 raise ValueError("weight and nodes must match in inner diameter")
@@ -47,7 +74,7 @@ class ImplicitModel(object):
             index of wanted row
         Returns
         -------
-          :: np.array
+        array, shape=(,n_voxels)
             row of voxel x voxel connectivity matrix
         """
         return self.weights[i].dot(self.nodes)
@@ -61,13 +88,14 @@ class ImplicitModel(object):
             index of wanted column
         Returns
         -------
-          :: np.array
+        array, shape=(n_voxels,)
             column of voxel x voxel connectivity matrix
         """
         return self.weights.dot(self.nodes[:,j])
 
     def get_rows(self, row_indices):
         """Returns rows of the full voxel connectivity matrix
+
         Good for chunked computations on rows
 
         Parameters
@@ -76,13 +104,14 @@ class ImplicitModel(object):
             indices of wanted rows
         Returns
         -------
-          :: np.array
+        array, shape=(len(row_indices),n_voxels)
             rows of voxel x voxel connectivity matrix
         """
         return self.weights[row_indices].dot(self.nodes)
 
     def get_columns(self, column_indices):
         """Returns columns of the full voxel connectivity matrix
+
         Good for chunked computations on columns
 
         Parameters
@@ -91,7 +120,7 @@ class ImplicitModel(object):
             index of wanted column
         Returns
         -------
-          :: np.array
+        array, shape=(n_voxels,len(row_indices))
             columns of voxel x voxel connectivity matrix
         """
         return self.weights.dot(self.nodes[:,column_indices])
