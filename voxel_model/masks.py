@@ -7,13 +7,48 @@ from __future__ import division
 import numpy as np
 
 def union_mask(mcc, structure_ids):
-    """Returns the union of a set of structure masks"""
+    """Returns the union of a set of structure masks.
+    
+    Parameters
+    ----------
+    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
+        This supplies the interface for pulling experimental data 
+        from the AllenSDK.
+
+    structure_ids : array-like, optional, shape (n_structure_ids,)
+        AllenSDK CCF Annotation stucture ids to be included in the model
+
+    Returns
+    -------
+    C : array-like, shape=(x_ccf, y_ccf, z_ccf)
+        Union of structure_masks from each structure_id
+    """
     masks = [ mcc.get_structure_mask(structure_id)[0]
               for structure_id in structure_ids ]
     return np.logical_or.reduce(masks)
 
 class _BaseMask(object):
-    """Base Mask class
+    """Base Mask class for SourceMask and TargetMask.
+
+    ...
+
+    Parameters
+    ----------
+    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
+        This supplies the interface for pulling experimental data 
+        from the AllenSDK.
+
+    structure_ids : array-like, optional, shape (n_structure_ids,)
+        AllenSDK CCF Annotation stucture ids to be included in the model
+
+    Hemisphere : int or str, optional (default 3)
+        hemisphere id to be included in the projection in the model.
+            * 1, "contra" : left hemisphere - contralateral
+            * 2, "ipsi" : right hemisphere - ipsilateral
+            * 3, "both" : both hemispheres - full-brain projection
+
+    Attributes
+    ----------
     """
 
     def __init__(self, mcc, structure_ids, hemisphere):
