@@ -4,6 +4,7 @@ import mock
 import pytest
 import numpy as np
 
+from numpy.testing import assert_almost_equal
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 from allensdk.test_utilities.temp_dir import md_temp_dir
 
@@ -21,7 +22,15 @@ def mcc(md_temp_dir):
 
 @pytest.fixture(scope="module")
 def experiment_id():
-    return 158374671
+    return 100141273
+
+@pytest.fixture(scope="module")
+def experiment(mcc, experiment_id):
+    return Experiment(mcc, experiment_id)
+
+@pytest.fixture(scope="module")
+def normalized_experiment(mcc, experiment_id):
+    return Experiment(mcc, experiment_id, normalize_projection=True)
 
 @pytest.fixture(scope="module")
 def structure_ids():
@@ -31,14 +40,8 @@ def structure_ids():
 def hemisphere():
     return 3
 
-# ----------------------------------------------------------------------------
-# test
-def test_mask_to_valid():
-    pass
-
-# ----------------------------------------------------------------------------
-# test
-def test_get_model_data(mcc, structure_ids, hemisphere):
+@pytest.fixture(scope="module")
+def model_data(mcc, structure_ids, hemisphere):
     # get masks
     source_mask = SourceMask(mcc, structure_ids=structure_ids)
     target_mask = TargetMask(mcc, structure_ids=structure_ids,
@@ -47,12 +50,43 @@ def test_get_model_data(mcc, structure_ids, hemisphere):
     # get experiment ids
     experiment_ids = get_experiment_ids(mcc, structure_ids)
 
-    centroids, injections, projections = get_model_data(mcc,
-                                                        experiment_ids,
-                                                        source_mask,
-                                                        target_mask)
+    # return model_data
+    return get_model_data(mcc, experiment_ids, source_mask, target_mask)
+
+# ----------------------------------------------------------------------------
+# test
+def test_Experiment_projection_density(experiment, normalized_experiment):
+    # is it actually normalized
+    prd = experiment.projection_density
+    inj = experiment.injection_density
+    normalized_prd = normalized_experiment.projection_density
+
+    assert_almost_equal( prd, normalized_prd*inj.sum() )
+
+# ----------------------------------------------------------------------------
+# test
+def test_Experiment_centroid(experiment):
+    # test centroid inside volume
+    centroid = tuple(map(int, np.round(experiment.centroid)))
+    centroid_inf = experiment.injection_fraction[centroid]
+
+    # test centroid inside injection
+    assert( centroid_inf > 0 )
+
+# ============================================================================
+# ----------------------------------------------------------------------------
+# test
+def test_get_model_data_shapes(model_data):
+    # data
+    centroids, injections, projections = model_data
 
     # check shape
     assert( centroids.shape[0] == injections.shape[0] )
     assert( injections.shape[0] == projections.shape[0] )
     assert( projections.shape[0] == centroids.shape[0] )
+
+# ----------------------------------------------------------------------------
+# test
+def test_get_model_data_OTHER(model_data):
+    # NEED MORE TESTS
+    pass

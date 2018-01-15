@@ -57,19 +57,41 @@ class Experiment(object):
     >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
     >>> from voxel_model.experiment import Experiment
     >>> mcc = MouseConnectivityCache(resolution=100)
-    >>> eid = 126862385
+    >>> eid = 100141273
     >>> exp = Experiment(mcc, eid)
     >>> exp.injection_density.shape
     (132,80,114)
     """
 
-    def __init__(self, mcc, experiment_id):
+    def __init__(self, mcc, experiment_id, normalize_projection=False):
         self.mcc = mcc
         self.experiment_id = experiment_id
+        self.normalize_projection = normalize_projection
+
+    def _get_data_mask(self):
+        """Returns data_mask."""
+        return self.mcc.get_data_mask(self.experiment_id)[0]
 
     @property
     def data_mask(self):
-        return self.mcc.get_data_mask(self.experiment_id)[0]
+        try:
+            return self._data_mask
+        except AttributeError:
+            self._data_mask = self._get_data_mask()
+            return self._data_mask
+
+    def _mask_to_valid(self, data):
+        """Masks data to data mask
+
+        data_mask is not binary! It represents the fraction of the voxel
+        that is 'valid' data. We choose 0.5 as a threshold
+
+        Parameters
+        ----------
+        data : array-like, shape=
+        """
+        data[np.nonzero(self.data_mask < 0.5)] = 0.0
+        return data
 
     @property
     def injection_density(self):
@@ -82,26 +104,27 @@ class Experiment(object):
         return self._mask_to_valid(inf)
 
     @property
-    def projection_density(self):
+    def _projection_density(self):
         prd = self.mcc.get_projection_density(self.experiment_id)[0]
         return self._mask_to_valid(prd)
 
     @property
-    def normalized_projection_density(self):
-        return self.projection_density/self.injection_density.sum()
+    def projection_density(self):
+        if self.normalize_projection:
+            total_injection_volume = self.injection_density.sum()
+            return self._projection_density/total_injection_volume
+        else:
+            return self._projection_density
 
     @property
     def centroid(self):
         return MouseConnectivityApi().calculate_injection_centroid(
-            self.injection_fraction, self.injection_density, resolution=1
+            self.injection_density, self.injection_fraction, resolution=1
         )
 
-    def _mask_to_valid(self, data):
-        """Masks data to data mask"""
-        data[self.data_mask.nonzero()] = 0.0
-        return data
 
-def get_model_data(mcc, experiment_ids, source_mask, target_mask, normalized=True):
+def get_model_data(mcc, experiment_ids, source_mask, target_mask,
+                   normalize_projection=False):
     """Function for gettting data for model.
 
     Parameters
@@ -127,11 +150,11 @@ def get_model_data(mcc, experiment_ids, source_mask, target_mask, normalized=Tru
     projections = []
     for eid in experiment_ids:
         # get experiment data
-        experiment = Experiment(mcc, eid)
+        experiment = Experiment(mcc, eid, normalize_projection=normalize_projection)
 
         # mask injection/projection to source/target masks
         ind = experiment.injection_density[source_mask.where]
-        prd = experiment.normalized_projection_density[target_mask.where]
+        prd = experiment.projection_density[target_mask.where]
 
         # append relevant attrs
         centroids.append(experiment.centroid)
