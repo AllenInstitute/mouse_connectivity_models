@@ -2,10 +2,13 @@
 # License:
 
 def get_experiment_ids(mcc, structure_ids):
-    """Returns all experiment ids given some structure_ids"""
-    experiments = mcc.get_experiments(dataframe=True,
+    """Returns all experiment ids given some structure_ids
+    PRIMARY INJECTION STRUCTURES
+    """
+    # filters injections by structure id OR DECENDENT
+    experiments = mcc.get_experiments(dataframe=False,
                                       injection_structure_ids=structure_ids)
-    return experiments.injection_structure_ids
+    return [ experiment['id'] for experiment in experiments ]
 
 
 def get_id_acronym_map(mcc):
