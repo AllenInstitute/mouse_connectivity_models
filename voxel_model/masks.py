@@ -1,5 +1,5 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
-# License: 
+# License:
 
 # NOTE :: cythonize _BaseMask.map_to_ccf
 
@@ -8,11 +8,11 @@ import numpy as np
 
 def union_mask(mcc, structure_ids):
     """Returns the union of a set of structure masks.
-    
+
     Parameters
     ----------
     mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
-        This supplies the interface for pulling experimental data 
+        This supplies the interface for pulling experimental data
         from the AllenSDK.
 
     structure_ids : array-like, optional, shape (n_structure_ids,)
@@ -35,7 +35,7 @@ class _BaseMask(object):
     Parameters
     ----------
     mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
-        This supplies the interface for pulling experimental data 
+        This supplies the interface for pulling experimental data
         from the AllenSDK.
 
     structure_ids : array-like, optional, shape (n_structure_ids,)
