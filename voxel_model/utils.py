@@ -1,12 +1,12 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-def get_experiment_ids(mcc, structure_ids):
+def get_experiment_ids(mcc, structure_ids, cre=None):
     """Returns all experiment ids given some structure_ids
     PRIMARY INJECTION STRUCTURES
     """
     # filters injections by structure id OR DECENDENT
-    experiments = mcc.get_experiments(dataframe=False,
+    experiments = mcc.get_experiments(dataframe=False, cre=cre,
                                       injection_structure_ids=structure_ids)
     return [ experiment['id'] for experiment in experiments ]
 
