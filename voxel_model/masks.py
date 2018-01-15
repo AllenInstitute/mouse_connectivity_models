@@ -141,13 +141,13 @@ class TargetMask(_BaseMask):
 
     def __init__(self, mcc, structure_ids, hemisphere):
         try:
-            self.hemisphere = _hemi_map[hemisphere]
+            self.hemisphere = self._hemi_map[hemisphere]
         except KeyError:
-            if hemisphere in range(3):
+            if hemisphere in range(1,4):
                 self.hemisphere = hemisphere
             else:
                 raise ValueError("must pass {} or {} to hemisphere".format(
-                    _hemi_map.keys(), _hemi_map.values()
+                    self._hemi_map.keys(), self._hemi_map.values()
                 ))
 
         super(TargetMask, self).__init__(mcc, structure_ids, hemisphere)
