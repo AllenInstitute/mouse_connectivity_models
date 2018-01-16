@@ -27,6 +27,24 @@ def union_mask(mcc, structure_ids):
               for structure_id in structure_ids ]
     return np.logical_or.reduce(masks)
 
+def union_key(mcc, structure_ids):
+    # NOTE: TERRIBLE NAME
+    """Union of keys.
+    """
+
+    # TODO: could check that structures are not decendents of eachother
+
+    # fencepost
+    sid = structure_ids[0]
+    key = sid*mcc.get_structure_mask(sid)[0]
+
+    if len(structure_ids) > 1:
+        for sid in structure_ids:
+            # structures should be non overlapping!!!!
+            np.add(key, sid*mcc.get_structure_mask(sid)[0], key)
+
+    return key
+
 class _BaseMask(object):
     """Base Mask class for SourceMask and TargetMask.
 
@@ -58,17 +76,17 @@ class _BaseMask(object):
 
     def _get_mask(self):
         """   """
-        _mask = union_mask(self.mcc, self.structure_ids)
-        midline = _mask.shape[2]//2
+        mask = union_mask(self.mcc, self.structure_ids)
+        midline = mask.shape[2]//2
 
         if self.hemisphere == 1:
             # contra
-            _mask[:,:,:midline] = False
+            mask[:,:,:midline] = False
         elif self.hemisphere == 2:
             # ipsi
-            _mask[:,:,midline:] = False
+            mask[:,:,midline:] = False
 
-        return _mask
+        return mask
 
     @property
     def mask(self):
@@ -92,10 +110,37 @@ class _BaseMask(object):
         """returns masked indices"""
         return self.mask.nonzero()
 
+#     @property
+#     def key(self):
+#         """Returns nonzero indices of mask"""
+#         return self.mask.flatten().nonzero()[0]
+    def _get_key(self):
+        """   """
+        key = union_key(self.mcc, self.structure_ids)
+        midline = key.shape[2]//2
+
+        if self.hemisphere == 1:
+            # contra
+            key[:,:,:midline] = False
+        elif self.hemisphere == 2:
+            # ipsi
+            key[:,:,midline:] = False
+
+        return key.flatten().nonzero()[0]
+
     @property
     def key(self):
-        """Returns nonzero indices of mask"""
-        return self.mask.flatten().nonzero()[0]
+        try:
+            return self._key
+        except AttributeError:
+            self._key = self._get_key()
+            return self._key
+
+
+    @property
+    def key(self):
+        """Returns the key ... """
+
 
     def map_to_ccf(self, y):
         """Maps a masked vector y back to ccf
