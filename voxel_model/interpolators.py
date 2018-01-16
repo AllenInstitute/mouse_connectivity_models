@@ -1,5 +1,5 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
-# License: 
+# License:
 
 from __future__ import division
 import numpy as np
@@ -83,9 +83,9 @@ class VoxelModel(BaseEstimator):
     >>> n_source_voxels, n_target_voxels = 125, 200
     >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
     >>> injections = np.random.randn(n_exps, n_source_voxels)
-    >>> centroids = source_voxels[ np.random.choice(n_source_voxels, 
-                                                    n_exps, 
-                                                    replacement=False) ]
+    >>> centroids = source_voxels[ np.random.choice(n_source_voxels,
+    >>>                                             n_exps,
+    >>>                                             replacement=False) ]
     >>> X = np.hstack((centroids, injections))
     >>> y = np.random.randn(n_exps, n_target_voxels)
     >>> reg = VoxelModel(source_voxels, kernel="rbf", gamma=1.5)
@@ -118,7 +118,7 @@ class VoxelModel(BaseEstimator):
                       "coef0": self.coef0}
 
         return pairwise_kernels(X, y, metric=self.kernel,
-                             filter_params=True, **params)
+                                filter_params=True, **params)
 
     def _get_weights(self, centroids):
         K = self._get_kernel(self.source_voxels, centroids)
@@ -144,14 +144,14 @@ class VoxelModel(BaseEstimator):
         """Fit Voxel Model.
 
         NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to 
+            coordinates and the injection volumes. This choice was made to
             be consistent with the sklearn.core.BaseEstimator fit and predict
             schema
 
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for 
+            Centroid coordinates concatenated with the injection density for
             each training experiment.
 
         y : {array-like, sparse matrix}, shape=(n_exps, n_target_voxels)
@@ -186,16 +186,16 @@ class VoxelModel(BaseEstimator):
         """Predict projection volumes given injection volumes.
 
         NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to 
+            coordinates and the injection volumes. This choice was made to
             be consistent with the sklearn.core.BaseEstimator fit and predict
             schema
 
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for 
+            Centroid coordinates concatenated with the injection density for
             each test experiment.
-        
+
         Returns
         -------
         C : array, shape=(X.shape[0], y_fit_.shape[1])
@@ -263,9 +263,9 @@ class RegionalizedVoxelModel(object):
     >>> n_source_voxels, n_target_voxels = 125, 200
     >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
     >>> injections = np.random.randn(n_exps, n_source_voxels)
-    >>> centroids = source_voxels[ np.random.choice(n_source_voxels, 
-                                                    n_exps, 
-                                                    replacement=False) ]
+    >>> centroids = source_voxels[ np.random.choice(n_source_voxels,
+    >>>                                             n_exps,
+    >>>                                             replacement=False) ]
     >>> X = np.hstack((centroids, injections))
     >>> y = np.random.randn(n_exps, n_target_voxels)
     >>> source_key = np.random.randint(0,10, size=n_source_voxels)
@@ -283,7 +283,7 @@ class RegionalizedVoxelModel(object):
         "normalized_connection_density"
     ]
 
-    def __init__(self, source_voxels, source_key, target_key, 
+    def __init__(self, source_voxels, source_key, target_key,
                  voxel_model=None, epsilon=0, kernel="linear", degree=3,
                  coef0=1, gamma=None, kernel_params=None):
         """ FIND WAY TO USE CLSMETHOD """
@@ -294,8 +294,8 @@ class RegionalizedVoxelModel(object):
                                           epsilon=epsilon,
                                           kernel=kernel,
                                           degree=degree,
-                                          coef0=coef0, 
-                                          gamma=gamma, 
+                                          coef0=coef0,
+                                          gamma=gamma,
                                           kernel_params=kernel_params)
 
         self.source_key = source_key
@@ -303,16 +303,16 @@ class RegionalizedVoxelModel(object):
 
     def fit(self, X, y):
         """Fits the underlying VoxelModel estimator.
-        
+
         NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to 
+            coordinates and the injection volumes. This choice was made to
             be consistent with the sklearn.core.BaseEstimator fit and predict
             schema
 
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for 
+            Centroid coordinates concatenated with the injection density for
             each training experiment.
 
         y : {array-like, sparse matrix}, shape=(n_exps, n_target_voxels)
@@ -328,16 +328,16 @@ class RegionalizedVoxelModel(object):
         """Predict regionalized connectivity given injection volumes.
 
         NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to 
+            coordinates and the injection volumes. This choice was made to
             be consistent with the sklearn.core.BaseEstimator fit and predict
             schema
 
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for 
+            Centroid coordinates concatenated with the injection density for
             each test experiment.
-        
+
         Returns
         -------
         C : array, shape=(n_source_regions, n_target_regions)
@@ -396,7 +396,7 @@ class RegionalizedVoxelModel(object):
                     W = w_ij
                     The average voxel-scale connectivity between each pair of
                     source-target regions
-                    
+
         Returns
         -------
         C : array-like, shape=(n_source_regions, n_target_regions)
@@ -438,7 +438,7 @@ class RegionalizedVoxelModel(object):
         elif metric == "connection_density":
             # w_ij |X|
             return np.divide(region_matrix,
-                             t_counts[np.newaxis,:], 
+                             t_counts[np.newaxis,:],
                              region_matrix)
         elif metric == "normalized_connection_strength":
             # w_ij |Y|
@@ -448,10 +448,10 @@ class RegionalizedVoxelModel(object):
         else:
             # normalized_connection_density
             # w_ij
-            return np.divide(region_matrix, 
+            return np.divide(region_matrix,
                              np.outer(s_counts, t_counts),
                              region_matrix)
- 
+
 # class NadarayaWatson(BaseEstimator):
 #     """
 #     95% from sklearn.kernel_ridge.KernelRidge
