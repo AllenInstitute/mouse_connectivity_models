@@ -4,6 +4,7 @@
 
 # output
 .coverage
+*.egg-info
 
 # binaries
 *.pyc
