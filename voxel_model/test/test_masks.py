@@ -6,6 +6,7 @@ import numpy as np
 
 from itertools import cycle
 from numpy.testing import assert_array_equal
+
 from voxel_model.masks import SourceMask, TargetMask, union_mask
 
 @pytest.fixture(scope="module")
@@ -14,12 +15,17 @@ def structure_ids():
     return [101, 310]
 
 @pytest.fixture(scope="function")
-def mcc():
-    mask_r = ( np.array([[[1,1],[1,0]],[[1,0],[0,0]]]), )
-    mask_l = ( np.array([[[0,0],[0,1]],[[0,1],[1,1]]]), )
+def mcc(structure_ids):
+    def get_mask(sid):
+        if sid == structure_ids[0]:
+            return ( np.array([[[1,1],[1,0]],[[1,0],[0,0]]]), )
+        elif sid == structure_ids[1]:
+            return ( np.array([[[0,0],[0,1]],[[0,1],[1,1]]]), )
+        else:
+            raise ValueError("not valid sid")
 
     mcc = mock.Mock()
-    mcc.get_structure_mask.side_effect = cycle([mask_r, mask_l])
+    mcc.get_structure_mask.side_effect = get_mask
     return mcc
 
 @pytest.fixture(scope="function")
@@ -40,7 +46,7 @@ def test_union_mask(mcc):
     assert_array_equal( (mask > 0), (key > 0) )
 
     # keys should only be sids above
-    assert_array_equal( np.unique(keys), structure_ids )
+    assert_array_equal( np.unique(key), structure_ids )
 
 # _BaseMask, SourceMask
 # -----------------------------------------------------------------------------
