@@ -1,6 +1,14 @@
+# virtualenv
 .voxel_model
 .cache
+
+# output
+.coverage
+
+# binaries
 *.pyc
+
+# temp files
 *.swp
 *#*#
 *~
