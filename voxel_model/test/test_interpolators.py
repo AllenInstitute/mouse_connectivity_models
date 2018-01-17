@@ -7,11 +7,6 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 from scipy.sparse import csr_matrix
 
-from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
-from allensdk.test_utilities.temp_dir import md_temp_dir
-
-from voxel_model.experiment import get_model_data
-from voxel_model.masks import SourceMask, TargetMask
 from voxel_model.interpolators import VoxelModel, RegionalizedVoxelModel
 
 @pytest.fixture(scope="module")
