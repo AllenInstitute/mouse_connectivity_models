@@ -80,7 +80,6 @@ def test_get_weights(voxel_model, centroids):
     assert( n_cols == centroids.shape[1] )
 
     # assert normalized
-    print weights
     assert_array_almost_equal( weights.sum(axis=1), np.ones(n_rows) )
 
 # ----------------------------------------------------------------------------
