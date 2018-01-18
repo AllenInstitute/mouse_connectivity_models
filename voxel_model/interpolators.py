@@ -317,8 +317,6 @@ class RegionalizedModel(object):
         source_regions, self.source_counts = unique_with_order(self.source_key)
         target_regions, self.target_counts = unique_with_order(self.target_key)
 
-        print source_regions
-
         # integrate target regions
         # NOTE: probably more efficient to sort then stride by nt_regions
         temp = np.empty( (target_regions.size, self.weights.shape[0]) )

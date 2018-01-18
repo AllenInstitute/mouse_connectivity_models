@@ -56,11 +56,9 @@ def map_descendants(mcc, arr, region_ids_of_interest):
     structure_tree = mcc.get_structure_tree()
     descendant_ids = structure_tree.descendant_ids( region_ids_of_interest )
 
-    print len(np.unique(arr))
     for region_id, descendant_ids in zip(region_ids_of_interest, descendant_ids):
         # map descendants to roi
         idx = np.isin(arr, descendant_ids).nonzero()
         arr[ idx ] = region_id
 
-    print arr.max()
     return arr
