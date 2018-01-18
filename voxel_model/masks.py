@@ -36,6 +36,8 @@ def union_mask(mcc, structure_ids, return_key=False):
         """Pulls mask. helper"""
         mask = mcc.get_structure_mask(sid)[0]
         if return_key:
+            # cast array to accomodate larger structure ids
+            mask = mask.astype(np.uint32)
             np.multiply(mask, sid, mask)
 
         return mask
@@ -109,7 +111,8 @@ class Mask(object):
 
         if self.other_mask is not None:
             # allow for mask intersection
-            mask[ np.logical_not(mask, other_mask).nonzero() ] = 0
+            intersection = np.logical_and(mask, self.other_mask)
+            mask[ (~intersection).nonzero() ] = 0
 
         return mask
 
@@ -141,7 +144,8 @@ class Mask(object):
         try:
             return self._key
         except AttributeError:
-            self._key = self._get_mask(return_key=True)
+            key = self._get_mask(return_key=True)
+            self._key = key[ key.nonzero() ]
             return self._key
 
     def map_to_ccf(self, y):
