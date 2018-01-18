@@ -1,7 +1,8 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-# NOTE :: cythonize _BaseMask.map_to_ccf
+# TODO :: check allensdk.core.reference_space.many_structure_masks()
+# TODO :: cythonize _BaseMask.map_to_ccf
 
 from __future__ import division
 import numpy as np

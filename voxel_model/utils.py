@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import
 import numpy as np
+
 from .experiment import Experiment
 
 def get_experiment_ids(mcc, structure_ids, cre=None):
@@ -41,8 +42,25 @@ def get_model_data(mcc, experiment_ids, source_mask, target_mask):
 
     return source_voxels, X, y
 
-def get_id_acronym_map(mcc):
-    """Returns dict id : acronym"""
-    acronym_map = mcc.get_structure_tree().value_map(lambda x: x['id'],
-                                                     lambda x: x['acronym'])
-    return acronym_map
+def unique_with_order(arr):
+    """np.unique with counts in original order."""
+    return_params = { "return_index":True, "return_counts":True }
+    unique, indices, counts = np.unique(arr, **return_params)
+
+    order = np.argsort(indices)
+    return unique[order], counts[order]
+
+def map_descendants(mcc, arr, region_ids_of_interest):
+    """maps arr to regions of interest"""
+    # get list of list of descendants
+    structure_tree = mcc.get_structure_tree()
+    descendant_ids = structure_tree.descendant_ids( region_ids_of_interest )
+
+    print len(np.unique(arr))
+    for region_id, descendant_ids in zip(region_ids_of_interest, descendant_ids):
+        # map descendants to roi
+        idx = np.isin(arr, descendant_ids).nonzero()
+        arr[ idx ] = region_id
+
+    print arr.max()
+    return arr
