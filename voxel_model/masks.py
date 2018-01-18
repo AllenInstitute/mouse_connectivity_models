@@ -111,8 +111,8 @@ class Mask(object):
 
         if self.other_mask is not None:
             # allow for mask intersection
-            intersection = np.logical_and(mask, self.other_mask)
-            mask[ (~intersection).nonzero() ] = 0
+            # intersection = np.logical_and(mask, self.other_mask)
+            mask[ np.logical_not(self.other_mask).nonzero() ] = 0
 
         return mask
 
