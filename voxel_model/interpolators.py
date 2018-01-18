@@ -226,154 +226,25 @@ class VoxelModel(BaseEstimator):
 
         return self.weights_.dot(self.y_fit_)
 
-class RegionalizedVoxelModel(object):
+_REGION_METRICS = [
+    "connection_strength",
+    "connection_density",
+    "normalized_connection_strength",
+    "normalized_connection_density"
+]
+
+def unique_with_order(arr):
+    """np.unique with counts in original order."""
+    return_params = { "return_index":True, "return_counts":True }
+    unique, indices, counts = np.unique(arr, **return_params)
+
+    order = np.argsort(indices)
+    return unique[order], counts[order]
+
+class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
     Regionalizes the connectivity model in VoxelModel given a brain parcelation.
-
-    Parameters
-    ----------
-    see VoxelModel for:
-        * source_voxels
-        * epsilon
-        * kernel
-        * degree
-        * coef0
-        * gamma
-        * kernel_params
-
-    voxel_model : VoxelModel object, optional (default=None)
-        A VoxelModel object. The default instatiates a VoxelModel estimator
-        using the default setttings.
-
-        See VoxelModel for more details.
-
-    source_key : array-like, shape=(n_source_voxels,)
-        Flattened key relating each source voxel to a given brain region.
-
-    target_key : array-like, shape=(n_target_voxels,)
-        Flattened key relating each target voxel to a given brain region.
-
-    Examples
-    --------
-    >>> from voxel_model.interpolators import RegionalizedVoxelModel
-    >>> import numpy as np
-    >>> n_exps = 20
-    >>> n_source_voxels, n_target_voxels = 125, 200
-    >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
-    >>> injections = np.random.randn(n_exps, n_source_voxels)
-    >>> centroids = source_voxels[ np.random.choice(n_source_voxels,
-    >>>                                             n_exps,
-    >>>                                             replacement=False) ]
-    >>> X = np.hstack((centroids, injections))
-    >>> y = np.random.randn(n_exps, n_target_voxels)
-    >>> source_key = np.random.randint(0,10, size=n_source_voxels)
-    >>> target_key = np.random.randint(0,10, size=n_target_voxels)
-    >>> reg = RegionalizedVoxelModel(source_voxels, source_key, target_key)
-    >>> reg.fit(X, y)
-    >>> reg.get_region_matrx().shape
-    (10,10)
-    """
-
-    valid_regional_metrics = [
-        "connection_strength",
-        "connection_density",
-        "normalized_connection_strength",
-        "normalized_connection_density"
-    ]
-
-    def __init__(self, source_voxels, source_key, target_key,
-                 voxel_model=None, epsilon=0, kernel="linear", degree=3,
-                 coef0=1, gamma=None, kernel_params=None):
-        """ FIND WAY TO USE CLSMETHOD """
-        if not voxel_model is None:
-            self.voxel_model = voxel_model
-        else:
-            self.voxel_model = VoxelModel(source_voxels,
-                                          epsilon=epsilon,
-                                          kernel=kernel,
-                                          degree=degree,
-                                          coef0=coef0,
-                                          gamma=gamma,
-                                          kernel_params=kernel_params)
-
-        self.source_key = source_key
-        self.target_key = target_key
-
-    def fit(self, X, y):
-        """Fits the underlying VoxelModel estimator.
-
-        NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to
-            be consistent with the sklearn.core.BaseEstimator fit and predict
-            schema
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for
-            each training experiment.
-
-        y : {array-like, sparse matrix}, shape=(n_exps, n_target_voxels)
-            Normalized projection density for each training experiment
-
-        Returns
-        -------
-        self : returns an instance of self.
-        """
-        self.voxel_model.fit(X,y)
-
-    def predict(self, X, normalize=False):
-        """Predict regionalized connectivity given injection volumes.
-
-        NOTE : X is a concatenation (column wise) of the injection centroid
-            coordinates and the injection volumes. This choice was made to
-            be consistent with the sklearn.core.BaseEstimator fit and predict
-            schema
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)
-            Centroid coordinates concatenated with the injection density for
-            each test experiment.
-
-        Returns
-        -------
-        C : array, shape=(n_source_regions, n_target_regions)
-            Predicted regionalized connectivity.
-        """
-        # reshape 1xn
-        if len(X.shape) == 1:
-            X = X.reshape(1, -1)
-
-        # predict from grid level
-        voxel_prediction = self.voxel_model.predict(X)
-
-        # get target
-        t_regions = np.unique(target_key)
-
-        # return array
-        n_pred = X.shape[0]
-        nt_regions = len(t_regions)
-        region_pred = np.empty((n_pred, nt_regions))
-
-        for ii, region in enumerate(t_regions):
-            cols = np.isin(target_key, region)
-            # note, if region were 1 voxel, would not work
-            region_pred[:,ii] = voxel_prediction[:,cols].sum(axis=1)
-
-        if normalize:
-            inj_vols = X[:,self.dimension:].sum(axis=1)
-            np.divide(region_pred, inj_vols[:,np.newaxis], region_pred)
-
-        return region_pred
-
-    def get_region_matrix(self, metric="connection_strength"):
-        """Produces the full regionalized connectivity
-
-        Parameters
-        ----------
-        metric : string, optional (default="connection_strength")
             Metric with which to represent the regionalized connectivity.
             Valid choices are:
                 * "connection_strength" (default)
@@ -396,61 +267,118 @@ class RegionalizedVoxelModel(object):
                     The average voxel-scale connectivity between each pair of
                     source-target regions
 
-        Returns
-        -------
-        C : array-like, shape=(n_source_regions, n_target_regions)
-            The regionalized voxel-scale connectivity.
-        """
-        if metric not in self.valid_regional_metrics:
-            raise ValueError(
-                "metric must be one of {self.valid_regional_metrics}"
-            )
+    Parameters
+    ----------
 
-        # note, already fit, just used to return region weights
-        t_regions, t_counts = np.unique(target_key, return_counts=True)
-        s_regions, s_counts = np.unique(source_key, return_counts=True)
+    source_key : array-like, shape=(n_source_voxels,)
+        Flattened key relating each source voxel to a given brain region.
 
-        ns_regions = len(s_regions)
-        nt_regions = len(t_regions)
-        ns_points = self.weights_.shape[0]
+    target_key : array-like, shape=(n_target_voxels,)
+        Flattened key relating each target voxel to a given brain region.
+
+    Examples
+    --------
+    """
+
+    def __init__(self, weights, nodes, source_key, target_key):
+        self.weights = weights
+        self.nodes = nodes
+        self.source_key = source_key
+        self.target_key = target_key
+
+    def predict(self, X, normalize=False):
+        raise NotImplementedError
+
+    def _get_region_matrix(self):
+        """Produces the full regionalized connectivity"""
+
+        # get counts
+        source_regions, self.source_counts = unique_with_order(self.source_key)
+        target_regions, self.target_counts = unique_with_order(self.target_key)
 
         # integrate target regions
         # NOTE: probably more efficient to sort then stride by nt_regions
-        temp = np.empty([nt_regions, ns_points])
-        for ii, region in enumerate(t_regions):
-            cols = np.isin(target_key, region)
-            temp[ii,:] = self.weights_.dot(
-                np.einsum('ji->j', self.y_fit_[:,cols])
+        temp = np.empty( (target_regions.size, self.weights.shape[0]) )
+        for ii, region in enumerate(target_regions):
+            cols = np.isin(self.target_key, region)
+
+            # same output as weights.dot(nodes[:,cols]).sum(axis=1)
+            # but much more memory efficient to compute sum first
+            temp[ii,:] = self.weights.dot(
+                np.einsum('ji->j', self.nodes[:,cols])
             )
 
         # integrate source regions
         # NOTE: probably more efficient to sort then stride by ns_regions
-        region_matrix = np.empty([ns_regions, nt_regions])
-        for ii, region in enumerate(s_regions):
-            cols = np.isin(source_key, region)
-            # note, if region were 1 voxel, would not work
+        region_matrix = np.empty( (source_regions.size, target_regions.size) )
+        for ii, region in enumerate(source_regions):
+            cols = np.isin(self.source_key, region)
+
+            # NOTE : if region were 1 voxel, would not work
             region_matrix[ii,:] = temp[:,cols].sum(axis=1)
+
+        return region_matrix
+
+    @property
+    def region_matrix(self):
+        try:
+            return self._region_matrix
+        except AttributeError:
+            self._region_matrix = self._get_region_matrix()
+            return self._region_matrix
+
+    def get_metric(self, metric):
+        """ ... """
+        if metric not in _REGION_METRICS:
+            raise ValueError("metric must be one of", _REGION_METRICS)
 
         if metric == "connection_strength":
             # w_ij |X||Y|
-            return region_matrix
+            return self.region_matrix
+
         elif metric == "connection_density":
             # w_ij |X|
-            return np.divide(region_matrix,
-                             t_counts[np.newaxis,:],
-                             region_matrix)
+            return np.divide(self.region_matrix,
+                             self.target_counts[np.newaxis,:])
+
         elif metric == "normalized_connection_strength":
             # w_ij |Y|
-            return np.divide(region_matrix,
-                             s_counts[:,np.newaxis],
-                             region_matrix)
+            return np.divide(self.region_matrix,
+                             self.source_counts[:,np.newaxis])
+
         else:
             # normalized_connection_density
             # w_ij
-            return np.divide(region_matrix,
-                             np.outer(s_counts, t_counts),
-                             region_matrix)
+            return np.divide(self.region_matrix,
+                             np.outer(self.source_counts, self.target_counts))
 
+#         # note, already fit, just used to return region weights
+#         t_regions, t_counts = np.unique(target_key, return_counts=True)
+#         s_regions, s_counts = np.unique(source_key, return_counts=True)
+# 
+#         ns_regions = len(s_regions)
+#         nt_regions = len(t_regions)
+#         ns_points = self.weights_.shape[0]
+# 
+#         # integrate target regions
+#         # NOTE: probably more efficient to sort then stride by nt_regions
+#         temp = np.empty([nt_regions, ns_points])
+#         for ii, region in enumerate(t_regions):
+#             cols = np.isin(target_key, region)
+#             temp[ii,:] = self.weights_.dot(
+#                 np.einsum('ji->j', self.y_fit_[:,cols])
+#             )
+# 
+#         # integrate source regions
+#         # NOTE: probably more efficient to sort then stride by ns_regions
+#         region_matrix = np.empty([ns_regions, nt_regions])
+#         for ii, region in enumerate(s_regions):
+#             cols = np.isin(source_key, region)
+#             # note, if region were 1 voxel, would not work
+#             region_matrix[ii,:] = temp[:,cols].sum(axis=1)
+# 
+#         return region_matrix
+# 
 # class NadarayaWatson(BaseEstimator):
 #     """
 #     95% from sklearn.kernel_ridge.KernelRidge
