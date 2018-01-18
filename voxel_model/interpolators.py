@@ -1,13 +1,15 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-from __future__ import division
+from __future__ import division, absolute_import
 import numpy as np
 
 from sklearn.base import BaseEstimator
 from sklearn.metrics.pairwise import pairwise_kernels, check_pairwise_arrays
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.validation import check_is_fitted
+
+from voxel_model.utils import unique_with_order, map_descendants
 
 class VoxelModel(BaseEstimator):
     """Voxel scale interpolation model for mesoscale connectivity.
@@ -233,14 +235,6 @@ _REGION_METRICS = [
     "normalized_connection_density"
 ]
 
-def unique_with_order(arr):
-    """np.unique with counts in original order."""
-    return_params = { "return_index":True, "return_counts":True }
-    unique, indices, counts = np.unique(arr, **return_params)
-
-    order = np.argsort(indices)
-    return unique[order], counts[order]
-
 class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
@@ -280,11 +274,38 @@ class RegionalizedModel(object):
     --------
     """
 
-    def __init__(self, weights, nodes, source_key, target_key):
+    def _subset_data(self):
+        """Subsets data to regions of interest"""
+
+        # map keys to regions of interest
+        self.source_key = map_descendants(self.mcc, self.source_key,
+                                          self.region_ids_of_interest)
+        self.target_key = map_descendants(self.mcc, self.target_key,
+                                          self.region_ids_of_interest)
+
+        # intersect
+        rows = np.isin(self.source_key, self.region_ids_of_interest)
+        cols = np.isin(self.target_key, self.region_ids_of_interest)
+
+        # subset
+        self.weights = self.weights[rows, :]
+        self.nodes = self.nodes[:, cols]
+        self.source_key = self.source_key[rows]
+        self.target_key = self.target_key[cols]
+
+
+    def __init__(self, mcc, weights, nodes, source_key, target_key,
+                 region_ids_of_interest=None):
+        self.mcc = mcc
         self.weights = weights
         self.nodes = nodes
         self.source_key = source_key
         self.target_key = target_key
+        self.region_ids_of_interest = region_ids_of_interest
+
+        if self.region_ids_of_interest is not None:
+            # subset data to regions of interest
+            self._subset_data()
 
     def predict(self, X, normalize=False):
         raise NotImplementedError
@@ -295,6 +316,8 @@ class RegionalizedModel(object):
         # get counts
         source_regions, self.source_counts = unique_with_order(self.source_key)
         target_regions, self.target_counts = unique_with_order(self.target_key)
+
+        print source_regions
 
         # integrate target regions
         # NOTE: probably more efficient to sort then stride by nt_regions
