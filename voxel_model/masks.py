@@ -8,12 +8,6 @@ import numpy as np
 
 # only R hemisphere for source
 _HEMISPHERES = [1,2,3]
-_SOURCE_HEMISPHERE = 2
-_TARGET_HEMI_MAP = {
-    "ipsi" : 2, #right
-    "contra" : 1, #left
-    "both" : 3
-}
 
 def union_mask(mcc, structure_ids, return_key=False):
     """Returns the union of a set of structure masks.
@@ -58,7 +52,7 @@ def union_mask(mcc, structure_ids, return_key=False):
 
     return union
 
-class _BaseMask(object):
+class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
 
     ...
@@ -82,22 +76,40 @@ class _BaseMask(object):
     ----------
     """
 
-    def __init__(self, mcc, structure_ids, hemisphere):
+    def __init__(self, mcc, structure_ids, hemisphere=3, other_mask=None):
         self.mcc = mcc
         self.structure_ids = structure_ids
-        self.hemisphere = hemisphere
 
-    def _get_mask(self, return_key):
+        if hemisphere in _HEMISPHERES:
+            self.hemisphere = hemisphere
+        else:
+            raise ValueError("must one of", _HEMISPHERES)
+
+        if other_mask is None:
+            self.other_mask = other_mask
+        else:
+            if isinstance(other_mask, Mask):
+                # we only care about mask property
+                self.other_mask = other_mask.mask
+            else:
+                raise ValueError("if other_mask, must be mask object!")
+
+
+    def _get_mask(self, return_key=False):
         """   """
         mask = union_mask(self.mcc, self.structure_ids, return_key=return_key)
 
         midline = mask.shape[2]//2
         if self.hemisphere == 1:
             # contra
-            mask[:,:,:midline] = False
+            mask[:,:,:midline] = 0
         elif self.hemisphere == 2:
             # ipsi
-            mask[:,:,midline:] = False
+            mask[:,:,midline:] = 0
+
+        if self.other_mask is not None:
+            # allow for mask intersection
+            mask[ np.logical_not(mask, other_mask).nonzero() ] = 0
 
         return mask
 
@@ -123,20 +135,14 @@ class _BaseMask(object):
         """returns masked indices"""
         return self.mask.nonzero()
 
-#     @property
-#     def key(self):
-#         """Returns nonzero indices of mask"""
-#         return self.mask.flatten().nonzero()[0]
-
     @property
     def key(self):
+        """Returns flattened otology key"""
         try:
-            key = self._key
+            return self._key
         except AttributeError:
             self._key = self._get_mask(return_key=True)
-            key = self._key
-
-        return key.flatten().nonzero()[0]
+            return self._key
 
     def map_to_ccf(self, y):
         """Maps a masked vector y back to ccf
@@ -158,24 +164,3 @@ class _BaseMask(object):
             y_ccf[idx] = val
 
         return y_ccf.reshape(self.ccf_shape)
-
-class SourceMask(_BaseMask):
-    """Mask for source
-    """
-    def __init__(self, mcc, structure_ids):
-        super(SourceMask, self).__init__(mcc, structure_ids, _SOURCE_HEMISPHERE)
-
-class TargetMask(_BaseMask):
-    """Mask for target
-    """
-    # TODO: change to classmethod constructor
-    def __init__(self, mcc, structure_ids, hemisphere=3):
-        if hemisphere not in _HEMISPHERES:
-            try:
-                hemisphere = _TARGET_HEMI_MAP[hemisphere]
-            except KeyError:
-                raise ValueError("must pass {} or {} to hemisphere".format(
-                        _TARGET_HEMI_MAP.keys(), _HEMISPHERES
-                    ))
-
-        super(TargetMask, self).__init__(mcc, structure_ids, hemisphere)

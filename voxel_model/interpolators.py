@@ -226,7 +226,6 @@ class VoxelModel(BaseEstimator):
 
         return self.weights_.dot(self.y_fit_)
 
-
 class RegionalizedVoxelModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
