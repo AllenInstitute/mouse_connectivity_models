@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import pairwise_kernels, check_pairwise_arrays
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.validation import check_is_fitted
 
-from voxel_model.utils import unique_with_order, map_descendants
+from voxel_model.utils import lex_ordered_unique_counts, map_descendants
 
 class VoxelModel(BaseEstimator):
     """Voxel scale interpolation model for mesoscale connectivity.
@@ -279,13 +279,13 @@ class RegionalizedModel(object):
 
         # map keys to regions of interest
         self.source_key = map_descendants(self.mcc, self.source_key,
-                                          self.region_ids_of_interest)
+                                          self.roi_ids)
         self.target_key = map_descendants(self.mcc, self.target_key,
-                                          self.region_ids_of_interest)
+                                          self.roi_ids)
 
         # intersect
-        rows = np.isin(self.source_key, self.region_ids_of_interest)
-        cols = np.isin(self.target_key, self.region_ids_of_interest)
+        rows = np.isin(self.source_key, self.roi_ids)
+        cols = np.isin(self.target_key, self.roi_ids)
 
         # subset
         self.weights = self.weights[rows, :]
@@ -295,27 +295,36 @@ class RegionalizedModel(object):
 
 
     def __init__(self, mcc, weights, nodes, source_key, target_key,
-                 region_ids_of_interest=None):
+                 roi_ids=None):
         self.mcc = mcc
         self.weights = weights
         self.nodes = nodes
         self.source_key = source_key
         self.target_key = target_key
-        self.region_ids_of_interest = region_ids_of_interest
+        self.roi_ids = roi_ids
 
-        if self.region_ids_of_interest is not None:
+        if self.roi_ids is not None:
             # subset data to regions of interest
             self._subset_data()
 
     def predict(self, X, normalize=False):
         raise NotImplementedError
 
+    def _get_unique_counts(self, keyname):
+        """ ... """
+        key = getattr(self, keyname)
+
+        if self.roi_ids is not None:
+            return lex_ordered_unique_counts( key, self.roi_ids )
+        else:
+            return np.unique( key, return_counts=True)
+
     def _get_region_matrix(self):
         """Produces the full regionalized connectivity"""
 
         # get counts
-        source_regions, self.source_counts = unique_with_order(self.source_key)
-        target_regions, self.target_counts = unique_with_order(self.target_key)
+        source_regions, self.source_counts = self._get_unique_counts("source_key")
+        target_regions, self.target_counts = self._get_unique_counts("target_key")
 
         # integrate target regions
         # NOTE: probably more efficient to sort then stride by nt_regions

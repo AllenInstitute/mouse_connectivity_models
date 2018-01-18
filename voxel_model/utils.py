@@ -50,6 +50,18 @@ def unique_with_order(arr):
     order = np.argsort(indices)
     return unique[order], counts[order]
 
+def lex_ordered_unique_counts(arr, ordered):
+    """np.unique with counts in original order."""
+    unique, counts = np.unique(arr, return_counts=True)
+
+    if len(unique) < len(ordered):
+        # unique is a subset
+        ordered = ordered[ np.isin(ordered, unique) ]
+
+    # return unique and counts ordered by ordered
+    order = np.argsort( np.argsort(ordered) )
+    return unique[order], counts[order]
+
 def map_descendants(mcc, arr, region_ids_of_interest):
     """maps arr to regions of interest"""
     # get list of list of descendants
@@ -62,3 +74,19 @@ def map_descendants(mcc, arr, region_ids_of_interest):
         arr[ idx ] = region_id
 
     return arr
+
+# def get_permutation_grid(row_ordered, col_ordered,
+#                          row_current=None, col_current=None):
+#     """Permutes row/columns by ..."""
+#     # ensure row_current in row_ordered
+#     if row_current is not None:
+#         row_ordered = row_ordered[ np.isin(row_ordered, row_current) ]
+#     if col_current is not None:
+#         col_ordered = col_ordered[ np.isin(col_ordered, col_current) ]
+# 
+#     # find permutations
+#     row = np.argsort( np.argsort(row_ordered) )
+#     col = np.argsort( np.argsort(col_ordered) )
+# 
+#     # return permutation grid
+#     return np.ix_(row, col)
