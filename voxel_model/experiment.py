@@ -3,8 +3,6 @@
 from __future__ import division
 import numpy as np
 
-from allensdk.api.queries.mouse_connectivity_api import MouseConnectivityApi
-
 class Experiment(object):
     """Class containing the data from an anterograde injection
 
@@ -116,6 +114,6 @@ class Experiment(object):
 
     @property
     def centroid(self):
-        return MouseConnectivityApi().calculate_injection_centroid(
-            self.injection_density, self.injection_fraction, resolution=1
-        )
+        return self.mcc.api.calculate_injection_centroid( self.injection_density,
+                                                          self.injection_fraction,
+                                                          resolution=1 )
