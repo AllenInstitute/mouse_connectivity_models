@@ -1,7 +1,6 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-# TODO :: check allensdk.core.reference_space.many_structure_masks()
 # TODO :: cythonize _BaseMask.map_to_ccf
 
 from __future__ import division
@@ -9,51 +8,6 @@ import numpy as np
 
 # only R hemisphere for source
 _HEMISPHERES = [1,2,3]
-
-def union_mask(mcc, structure_ids, return_key=False):
-    """Returns the union of a set of structure masks.
-
-    Parameters
-    ----------
-    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
-        This supplies the interface for pulling experimental data
-        from the AllenSDK.
-
-    structure_ids : array-like, optional, shape (n_structure_ids,)
-        AllenSDK CCF Annotation stucture ids to be included in the model
-
-    return_key : bool, optional (default=False)
-        Return mask as a key (each element in array is structure id) (True)
-        or as binary mask (False)
-
-    Returns
-    -------
-    union : array-like, shape=(x_ccf, y_ccf, z_ccf)
-        Union of structure_masks from each structure_id
-    """
-    # TODO: could check that structures are not decendents of eachother
-
-    def pull_mask(sid):
-        """Pulls mask. helper"""
-        mask = mcc.get_structure_mask(sid)[0]
-        if return_key:
-            # cast array to accomodate larger structure ids
-            mask = mask.astype(np.uint32)
-            np.multiply(mask, sid, mask)
-
-        return mask
-
-    # fencepost
-    union = pull_mask(structure_ids[0])
-
-    if len(structure_ids) > 1:
-        for sid in structure_ids[1:]:
-            mask = pull_mask(sid)
-
-            # structures should be non overlapping!!!!
-            np.add(union, mask, union)
-
-    return union
 
 class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
@@ -100,8 +54,17 @@ class Mask(object):
 
     def _get_mask(self, return_key=False):
         """   """
-        mask = union_mask(self.mcc, self.structure_ids, return_key=return_key)
+        # annotation is a key?
+        if return_key:
+            # each elem in mask : structure id
+            mask = self.mcc.get_annotation_volume()[0]
+        else:
+            # binary mask
+            reference_space = self.mcc.get_reference_space()
+            mask = reference_space.make_structure_mask( self.structure_ids,
+                                                        direct_only=False )
 
+        # mask to hemisphere
         midline = mask.shape[2]//2
         if self.hemisphere == 1:
             # contra
@@ -110,6 +73,7 @@ class Mask(object):
             # ipsi
             mask[:,:,midline:] = 0
 
+        # mask to additional mask
         if self.other_mask is not None:
             # allow for mask intersection
             # intersection = np.logical_and(mask, self.other_mask)
