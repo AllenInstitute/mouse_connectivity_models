@@ -294,8 +294,7 @@ class RegionalizedModel(object):
         self.target_key = self.target_key[cols]
 
 
-    def __init__(self, mcc, weights, nodes, source_key, target_key,
-                 roi_ids=None):
+    def __init__(self, mcc, weights, nodes, source_key, target_key, roi_ids=None):
         self.mcc = mcc
         self.weights = weights
         self.nodes = nodes
@@ -329,23 +328,23 @@ class RegionalizedModel(object):
         # integrate target regions
         # NOTE: probably more efficient to sort then stride by nt_regions
         temp = np.empty( (target_regions.size, self.weights.shape[0]) )
-        for ii, region in enumerate(target_regions):
+        for i, region in enumerate(target_regions):
             cols = np.isin(self.target_key, region)
 
             # same output as weights.dot(nodes[:,cols]).sum(axis=1)
             # but much more memory efficient to compute sum first
-            temp[ii,:] = self.weights.dot(
+            temp[i,:] = self.weights.dot(
                 np.einsum('ji->j', self.nodes[:,cols])
             )
 
         # integrate source regions
         # NOTE: probably more efficient to sort then stride by ns_regions
         region_matrix = np.empty( (source_regions.size, target_regions.size) )
-        for ii, region in enumerate(source_regions):
+        for i, region in enumerate(source_regions):
             cols = np.isin(self.source_key, region)
 
             # NOTE : if region were 1 voxel, would not work
-            region_matrix[ii,:] = temp[:,cols].sum(axis=1)
+            region_matrix[i,:] = temp[:,cols].sum(axis=1)
 
         return region_matrix
 

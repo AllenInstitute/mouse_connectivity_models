@@ -165,7 +165,7 @@ class Mask(object):
         y_ccf = np.zeros(np.prod(self.ccf_shape))
 
         # SLOW!!! (cythonize???)
-        for idx, val in zip(self.key, y):
+        for idx, val in zip(self.coordinates, y):
             y_ccf[idx] = val
 
         return y_ccf.reshape(self.ccf_shape)
