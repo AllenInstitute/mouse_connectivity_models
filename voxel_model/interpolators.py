@@ -1,6 +1,8 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
+# TODO : eval overwrite of K (kernel)
+
 from __future__ import division, absolute_import
 import numpy as np
 
@@ -9,7 +11,7 @@ from sklearn.metrics.pairwise import pairwise_kernels, check_pairwise_arrays
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.validation import check_is_fitted
 
-from voxel_model.utils import lex_ordered_unique_counts, map_descendants
+from voxel_model.utils import lex_ordered_unique_counts
 
 class VoxelModel(BaseEstimator):
     """Voxel scale interpolation model for mesoscale connectivity.
@@ -127,11 +129,11 @@ class VoxelModel(BaseEstimator):
 
         # normalize by row sum
         factor = K.sum(axis=1)
-        if self.epsilon:
+        if self.epsilon > 0:
             factor += self.epsilon
         else:
             # esure no zero rows for division
-            factor = np.where(factor != 0, factor, 1)
+            factor[ (factor == 0) ] = 1.0
 
         # divide in place
         np.divide(K, factor[:,np.newaxis], K)
@@ -273,38 +275,21 @@ class RegionalizedModel(object):
     Examples
     --------
     """
-
-    def _subset_data(self):
-        """Subsets data to regions of interest"""
-
-        # map keys to regions of interest
-        self.source_key = map_descendants(self.mcc, self.source_key,
-                                          self.roi_ids)
-        self.target_key = map_descendants(self.mcc, self.target_key,
-                                          self.roi_ids)
-
-        # intersect
-        rows = np.isin(self.source_key, self.roi_ids)
-        cols = np.isin(self.target_key, self.roi_ids)
+    def _initial_subset(self, weights, nodes, source_key, target_key):
+        """Subsets data to regions defined by keys."""
+        # valid indices
+        rows = source_key.nonzero()[0]
+        cols = target_key.nonzero()[0]
 
         # subset
-        self.weights = self.weights[rows, :]
-        self.nodes = self.nodes[:, cols]
-        self.source_key = self.source_key[rows]
-        self.target_key = self.target_key[cols]
+        self.weights = weights[rows, :]
+        self.nodes = nodes[:, cols]
+        self.source_key = source_key[ rows ]
+        self.target_key = target_key[ cols ]
 
-
-    def __init__(self, mcc, weights, nodes, source_key, target_key, roi_ids=None):
-        self.mcc = mcc
-        self.weights = weights
-        self.nodes = nodes
-        self.source_key = source_key
-        self.target_key = target_key
-        self.roi_ids = roi_ids
-
-        if self.roi_ids is not None:
-            # subset data to regions of interest
-            self._subset_data()
+    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
+        self._initial_subset(weights, nodes, source_key, target_key)
+        self.ordering = ordering
 
     def predict(self, X, normalize=False):
         raise NotImplementedError
@@ -313,8 +298,8 @@ class RegionalizedModel(object):
         """ ... """
         key = getattr(self, keyname)
 
-        if self.roi_ids is not None:
-            return lex_ordered_unique_counts( key, self.roi_ids )
+        if self.ordering is not None:
+            return lex_ordered_unique_counts( key, self.ordering )
         else:
             return np.unique( key, return_counts=True)
 
