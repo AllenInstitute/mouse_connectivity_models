@@ -1,13 +1,23 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
+# TODO :: incorp save/load into Mask class
 # TODO :: cythonize _BaseMask.map_to_ccf
 
 from __future__ import division
+import pickle
 import numpy as np
+import operator as op
 
-# only R hemisphere for source
-_HEMISPHERES = [1,2,3]
+from functools import reduce
+
+def save_mask(mask, filename):
+    with open(filename, "wb") as fn:
+        pickle.dump(mask, fn, pickle.HIGHEST_PROTOCOL)
+
+def load_mask(filename):
+    with open(filename, "rb") as fn:
+        return pickle.load(fn)
 
 class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
@@ -33,53 +43,37 @@ class Mask(object):
     ----------
     """
 
-    def __init__(self, mcc, structure_ids, hemisphere=3, other_mask=None):
+    # only R hemisphere for source
+    _HEMISPHERES = [1,2,3]
+
+    def __init__(self, mcc, structure_ids, hemisphere=3):
         self.mcc = mcc
+        self.reference_space = self.mcc.get_reference_space()
         self.structure_ids = structure_ids
 
-        if hemisphere in _HEMISPHERES:
+        if hemisphere in self._HEMISPHERES:
             self.hemisphere = hemisphere
         else:
             raise ValueError("must one of", _HEMISPHERES)
 
-        if other_mask is None:
-            self.other_mask = other_mask
-        else:
-            if isinstance(other_mask, Mask):
-                # we only care about mask property
-                self.other_mask = other_mask.mask
-            else:
-                raise ValueError("if other_mask, must be mask object!")
-
-
-    def _get_mask(self, return_key=False):
-        """   """
-        # annotation is a key?
-        if return_key:
-            # each elem in mask : structure id
-            mask = self.mcc.get_annotation_volume()[0]
-        else:
-            # binary mask
-            reference_space = self.mcc.get_reference_space()
-            mask = reference_space.make_structure_mask( self.structure_ids,
-                                                        direct_only=False )
-
+    def _mask_to_hemisphere(self, mask):
+        """masks to hemi"""
         # mask to hemisphere
         midline = mask.shape[2]//2
         if self.hemisphere == 1:
             # contra
-            mask[:,:,:midline] = 0
+            mask[:,:,midline:] = 0
         elif self.hemisphere == 2:
             # ipsi
-            mask[:,:,midline:] = 0
-
-        # mask to additional mask
-        if self.other_mask is not None:
-            # allow for mask intersection
-            # intersection = np.logical_and(mask, self.other_mask)
-            mask[ np.logical_not(self.other_mask).nonzero() ] = 0
+            mask[:,:,:midline] = 0
 
         return mask
+
+    def _get_mask(self, structure_ids=None, return_key=False):
+        """ ...  """
+        mask = self.reference_space.make_structure_mask(self.structure_ids,
+                                                        direct_only=False)
+        return self._mask_to_hemisphere(mask)
 
     @property
     def mask(self):
@@ -90,8 +84,8 @@ class Mask(object):
             return self._mask
 
     @property
-    def ccf_shape(self):
-        return self.mask.shape
+    def annotation_shape(self):
+        return self.reference_space.annotation.shape
 
     @property
     def coordinates(self):
@@ -99,19 +93,48 @@ class Mask(object):
         return np.argwhere(self.mask)
 
     @property
-    def where(self):
+    def nonzero(self):
         """returns masked indices"""
         return self.mask.nonzero()
 
-    @property
-    def key(self):
-        """Returns flattened otology key"""
-        try:
-            return self._key
-        except AttributeError:
-            key = self._get_mask(return_key=True)
-            self._key = key[ key.nonzero() ]
-            return self._key
+    def get_key(self, structure_ids=None):
+        """Returns flattened annotation key.
+
+        ...
+        ...
+
+        Parameters
+        ----------
+        """
+        if structure_ids is None:
+            structure_ids = self.structure_ids
+            mask = self.mask
+        else:
+            # from allensdk.core.reference_space.make_structure_mask
+            mask = self.reference_space.make_structure_mask(structure_ids,
+                                                            direct_only=False)
+
+        # get descendants
+        descendant_ids = self.reference_space.structure_tree.descendant_ids(
+            structure_ids
+        )
+
+        # do not want to overwrite annotation
+        annotation = np.copy(self.reference_space.annotation)
+
+        for structure_id, descendants in zip(structure_ids, descendant_ids):
+            # set annotation equal to structure where it has descendants
+            idx = np.isin(annotation, descendants)
+            annotation[ idx ] = structure_id
+
+        # mask annotation to only structure ids
+        np.multiply(annotation, mask, annotation)
+
+        # mask to hemisphere
+        annotation = self._mask_to_hemisphere(annotation)
+
+        # returned flattened
+        return annotation[ annotation.nonzero() ]
 
     def map_to_ccf(self, y):
         """Maps a masked vector y back to ccf
