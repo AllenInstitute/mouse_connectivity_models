@@ -1,9 +1,75 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
+
 from __future__ import division
 import numpy as np
 
-class _Experiment(object):
+class _ExperimentData(object):
+    """ ...
+
+    ...
+    ...
+
+    Parameters
+    ----------
+    """
+    @classmethod
+    def from_mcc(cls, mcc, experiment_id):
+        # pull data
+        injection_density = mcc.get_injection_density(experiment_id)[0]
+        injection_fraction = mcc.get_injection_fraction(experiment_id)[0]
+        projection_density = mcc.get_projection_density(experiment_id)[0]
+
+        return cls(injection_density=injection_density,
+                   injection_fraction=injection_fraction,
+                   projection_density=projection_density)
+
+    def __init__(self, injection_density=None, injection_fraction=None,
+                 projection_density=None):
+        self.injection_density = injection_density
+        self.injection_fraction = injection_fraction
+        self.projection_density = projection_density
+
+    def __dict__(self):
+        return ["injection_density", "injection_fraction", "projection_density"]
+
+    @property
+    def injection_volume(self):
+        return self.injection_density.sum()
+
+    @property
+    def injection_hemisphere(self):
+        """Defined by hemisphere with majoirty of injection."""
+        midline = self.injection_density.shape[2]//2
+        l_inj_vol = self.injection_density[:,:,:midline].sum()
+        r_inj_vol = self.injection_density[:,:,midline:].sum()
+
+        if l_inj_vol > r_inj_vol:
+            # left hemisphere
+            return 1
+        else:
+            # right hemisphere
+            return 2
+
+    def mask_to_valid(self, data_mask):
+        """ ... """
+        if not data_mask.dtype == bool:
+            raise ValueError("data_mask must be boolean")
+
+        for var in self.__dict__():
+            arr = getattr(self, var)
+            arr[ ~data_mask ] = 0.
+            setattr(self, var, arr)
+
+    def flip_hemisphere(self):
+        """ ... """
+        for var in self.__dict__():
+            arr = getattr(self, var)
+            arr = arr[..., ::-1]
+            setattr(self, var, arr)
+
+
+class Experiment(object):
     """Class containing the data from an anterograde injection
 
     Experiment conveniently compiles the relevant information from a given
@@ -56,68 +122,42 @@ class _Experiment(object):
     (132,80,114)
     """
 
-    _DATA_KEYS = {
-        "injection_density" : "get_injection_density",
-        "injection_fraction" : "get_injection_fraction",
-        "projection_density" : "get_projection_density"
-    }
+    DATA_MASK_TOLERANCE = 0.5
+    INJECTION_HEMISPHERE = 2
 
     def __init__(self, mcc, experiment_id):
         self.mcc = mcc
         self.experiment_id = experiment_id
 
-        # pull data
-        self.data_mask = self.mcc.get_data_mask(self.experiment_id)[0]
+        # get api
+        self.api = self.mcc.api
 
-        for data_key, data_function in self._DATA_KEYS.items():
-            # pull data and mask to valid
-            data = getattr(self.mcc, data_function)(self.experiment_id)[0]
-            setattr(self, data_key, self._mask_to_valid(data))
+        # get experiment data
+        self.data = _ExperimentData.from_mcc(self.mcc, self.experiment_id)
 
-        self.centroid = self._get_centroid()
+        # mask data to valid
+        data_mask = self.mcc.get_data_mask(self.experiment_id)[0]
+        self.data.mask_to_valid( data_mask > self.DATA_MASK_TOLERANCE )
 
-        # flip if wrong hemi
-        if self.centroid[2] < self.data_mask.shape[2]//2:
-            self._flip_data()
-
-    def _flip_data(self):
-        """flip all data"""
-        self.data_mask = self.data_mask[...,::-1]
-
-        for data_key in self._DATA_KEYS.keys():
-            # flip each volume
-            data = getattr(self, data_key)
-            setattr(self, data_key, data[...,::-1])
-
-        self.centroid = self._get_centroid()
+        # flip if wrong hemisphere
+        if self.data.injection_hemisphere != self.INJECTION_HEMISPHERE:
+            self.data.flip_hemisphere()
 
 
-    def _get_centroid(self):
+    @property
+    def centroid(self):
         # get centroid
-        return self.mcc.api.calculate_injection_centroid(self.injection_density,
-                                                         self.injection_fraction,
-                                                         resolution=1)
-
-    def _mask_to_valid(self, data):
-        """Masks data to data mask
-
-        data_mask is not binary! It represents the fraction of the voxel
-        that is 'valid' data. We choose 0.5 as a threshold
-
-        Parameters
-        ----------
-        data : array-like, shape=
-        """
-        data[self.data_mask < 0.5] = 0.0
-        return data
+        return self.api.calculate_injection_centroid(self.data.injection_density,
+                                                     self.data.injection_fraction,
+                                                     resolution=1)
 
     @property
     def normalized_projection_density(self):
-        return np.divide(self.projection_density, self.injection_density.sum())
+        return np.divide(self.data.projection_density, self.data.injection_volume)
 
     @property
     def normalized_injection_density(self):
-        return np.divide(self.injection_density, self.injection_density.sum())
+        return np.divide(self.data.injection_density, self.data.injection_volume)
 
 class ModelData(object):
     """Container for model data...
@@ -136,7 +176,7 @@ class ModelData(object):
         X, y, centroids, total_volumes = [], [], [], []
         for experiment_id in self.experiment_ids:
             # get experiment data
-            exp = _Experiment(self.mcc, experiment_id)
+            exp = Experiment(self.mcc, experiment_id)
 
             # for min_ratio_contained
             total_volumes.append( exp.normalized_injection_density.sum() )
@@ -151,6 +191,20 @@ class ModelData(object):
 
         # return arrays
         return X, np.asarray(y), np.asarray(total_volumes)
+
+    def __init__(self, mcc, experiment_ids, source_mask, target_mask,
+                 min_injection_volume=0.0, min_projection_volume=0.0,
+                 min_ratio_contained=0.0):
+        self.mcc = mcc
+        self.experiment_ids = experiment_ids
+        self.source_mask = source_mask
+        self.target_mask = target_mask
+        self.min_injection_volume = min_injection_volume
+        self.min_projection_volume = min_projection_volume
+        self.min_ratio_contained = min_ratio_contained
+
+        # get all data
+        self._X, self._y, self._total_volumes = self._get_experiments()
 
     def _get_valid_rows(self):
         """ ... """
@@ -167,22 +221,13 @@ class ModelData(object):
         valid = ( valid_inj_ratios, valid_injections, valid_projections )
         return np.logical_and.reduce(valid)
 
-    def __init__(self, mcc, experiment_ids, source_mask, target_mask,
-                 min_injection_volume=0.0, min_projection_volume=0.0,
-                 min_ratio_contained=0.0):
-        self.mcc = mcc
-        self.experiment_ids = experiment_ids
-        self.source_mask = source_mask
-        self.target_mask = target_mask
-        self.min_injection_volume = min_injection_volume
-        self.min_projection_volume = min_projection_volume
-        self.min_ratio_contained = min_ratio_contained
-
-        # get all data
-        self._X, self._y, self._total_volumes = self._get_experiments()
-
-        # get valid rows
-        self.valid_rows = self._get_valid_rows()
+    @property
+    def valid_rows(self):
+        try:
+            return self._valid_rows
+        except AttributeError:
+            self._valid_rows = self._get_valid_rows()
+            return self._valid_rows
 
     @property
     def valid_experiment_ids(self):
