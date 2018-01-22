@@ -7,17 +7,6 @@
 from __future__ import division
 import pickle
 import numpy as np
-import operator as op
-
-from functools import reduce
-
-def save_mask(mask, filename):
-    with open(filename, "wb") as fn:
-        pickle.dump(mask, fn, pickle.HIGHEST_PROTOCOL)
-
-def load_mask(filename):
-    with open(filename, "rb") as fn:
-        return pickle.load(fn)
 
 class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
@@ -44,17 +33,21 @@ class Mask(object):
     """
 
     # only R hemisphere for source
-    _HEMISPHERES = [1,2,3]
+    VALID_HEMISPHERES = [1,2,3]
 
     def __init__(self, mcc, structure_ids, hemisphere=3):
         self.mcc = mcc
-        self.reference_space = self.mcc.get_reference_space()
         self.structure_ids = structure_ids
 
-        if hemisphere in self._HEMISPHERES:
+        if hemisphere in self.VALID_HEMISPHERES:
             self.hemisphere = hemisphere
         else:
-            raise ValueError("must one of", _HEMISPHERES)
+            raise ValueError("must one of", self.VALID_HEMISPHERES)
+
+        # get reference_space module and data structures
+        self.reference_space = self.mcc.get_reference_space()
+        self.structure_tree = self.reference_space.structure_tree
+        self.annotation = self.reference_space.annotation
 
     def _mask_to_hemisphere(self, mask):
         """masks to hemi"""
@@ -85,7 +78,7 @@ class Mask(object):
 
     @property
     def annotation_shape(self):
-        return self.reference_space.annotation.shape
+        return self.annotation.shape
 
     @property
     def coordinates(self):
@@ -106,6 +99,9 @@ class Mask(object):
         Parameters
         ----------
         """
+        # do not want to overwrite annotation
+        annotation = np.copy(self.annotation)
+
         if structure_ids is None:
             structure_ids = self.structure_ids
             mask = self.mask
@@ -115,12 +111,7 @@ class Mask(object):
                                                             direct_only=False)
 
         # get descendants
-        descendant_ids = self.reference_space.structure_tree.descendant_ids(
-            structure_ids
-        )
-
-        # do not want to overwrite annotation
-        annotation = np.copy(self.reference_space.annotation)
+        descendant_ids = self.structure_tree.descendant_ids( structure_ids )
 
         for structure_id, descendants in zip(structure_ids, descendant_ids):
             # set annotation equal to structure where it has descendants
@@ -156,3 +147,14 @@ class Mask(object):
             y_ccf[idx] = val
 
         return y_ccf.reshape(self.ccf_shape)
+
+    def save(self, filename):
+        """ ... """
+        with open(filename, "wb") as fn:
+            pickle.dump(self, fn, pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    def load(cls, filename):
+        """ ... """
+        with open(filename, "rb") as fn:
+            return pickle.load(fn)
