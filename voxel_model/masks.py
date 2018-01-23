@@ -3,6 +3,8 @@
 
 from __future__ import division
 import pickle
+import six
+import operator as op
 import numpy as np
 
 class Mask(object):
@@ -41,8 +43,11 @@ class Mask(object):
         else:
             raise ValueError("must one of", self.VALID_HEMISPHERES)
 
-        # get reference_space module and data structures
+        # get reference_space module and update to resolved structures
         self.reference_space = self.mcc.get_reference_space()
+        self.reference_space.remove_unassigned(update_self=True)
+
+        # get updated ref space data structures
         self.structure_tree = self.reference_space.structure_tree
         self.annotation = self.reference_space.annotation
 
@@ -82,12 +87,8 @@ class Mask(object):
         """Returns coordinates inside mask"""
         return np.argwhere(self.mask)
 
-    @property
-    def nonzero(self):
-        """returns masked indices"""
-        return self.mask.nonzero()
-
-    def get_key(self, structure_ids=None):
+    def get_key(self, structure_ids=None, disjoint_structures=True):
+        # TODO: look into cleaning up check for disjoint
         """Returns flattened annotation key.
 
         ...
@@ -105,23 +106,55 @@ class Mask(object):
             mask = self.mask
         else:
             # from allensdk.core.reference_space.make_structure_mask
+            # want only non overlapping structures (annotation)
             mask = self.reference_space.make_structure_mask(structure_ids,
                                                             direct_only=False)
-
         # get list of descendant_ids for each structure id
         # NOTE : descendant_ids includes the structure id
         descendant_ids = self.structure_tree.descendant_ids( structure_ids )
 
-        for structure_id, descendants in zip(structure_ids, descendant_ids):
-            if len(descendants) > 1:
-                # set annotation equal to structure where it has descendants
-                idx = np.isin(annotation, descendants)
-                annotation[ idx ] = structure_id
+        if disjoint_structures:
+            all_descendants = [ids[1:] for ids in descendant_ids if len(ids) > 1]
 
-        # return flattened @ nonzero idx of self.mask
-        return annotation[ self.nonzero ]
+            if all_descendants:
+                all_descendants = set(reduce(op.add, all_descendants))
 
-    def map_to_mask(self, y):
+                if set(structure_ids) & all_descendants:
+                    raise ValueError("structure_ids are not disjoint!")
+
+            for structure_id, descendants in zip(structure_ids, descendant_ids):
+                if len(descendants) > 1:
+                    # set annotation equal to structure where it has descendants
+                    idx = np.isin(annotation, descendants)
+                    annotation[ idx ] = structure_id
+
+            # mask to structure_ids
+            annotation[ np.logical_not(mask) ] = 0
+
+            return self.mask_volume(annotation)
+
+        else:
+            # would have to iterate through structure_ids hierarchically
+            raise NotImplementedError
+
+    def mask_volume(self, X):
+        """Masks a given volume
+
+        Paramters
+        ---------
+        X
+        Returns
+        -------
+        y
+        """
+
+        if X.shape != self.annotation_shape:
+            # TODO : better error statement
+            raise ValueError("X must be same shape as annotation")
+
+        return X[ self.mask.nonzero() ]
+
+    def map_masked_to_annotation(self, y):
         """Maps a masked vector y back to annotation volume
 
         Paramters
@@ -132,9 +165,9 @@ class Mask(object):
         y_ccf
         """
         # indices where y
-        idx = self.nonzero
+        idx = self.mask.nonzero()
 
-        if y.shape != idx[0].shape
+        if y.shape != idx[0].shape:
             # TODO : better error statement
             raise ValueError("Must be same shape as key")
 

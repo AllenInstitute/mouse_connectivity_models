@@ -1,5 +1,5 @@
 # virtualenv
-.voxel_model
+.env_py27
 .cache
 
 # output
