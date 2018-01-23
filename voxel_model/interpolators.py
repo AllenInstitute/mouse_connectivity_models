@@ -230,13 +230,6 @@ class VoxelModel(BaseEstimator):
 
         return self.weights_.dot(self.y_fit_)
 
-_REGION_METRICS = [
-    "connection_strength",
-    "connection_density",
-    "normalized_connection_strength",
-    "normalized_connection_density"
-]
-
 class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
@@ -275,9 +268,15 @@ class RegionalizedModel(object):
     Examples
     --------
     """
-    def _initial_subset(self, weights, nodes, source_key, target_key):
-        """Subsets data to regions defined by keys."""
-        # valid indices
+    VALID_REGION_METRICS = [
+        "connection_strength",
+        "connection_density",
+        "normalized_connection_strength",
+        "normalized_connection_density"
+    ]
+
+    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
+        # valid indices (source/target keys likely to have zeros)
         rows = source_key.nonzero()[0]
         cols = target_key.nonzero()[0]
 
@@ -286,9 +285,6 @@ class RegionalizedModel(object):
         self.nodes = nodes[:, cols]
         self.source_key = source_key[ rows ]
         self.target_key = target_key[ cols ]
-
-    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
-        self._initial_subset(weights, nodes, source_key, target_key)
         self.ordering = ordering
 
     def predict(self, X, normalize=False):
@@ -343,9 +339,6 @@ class RegionalizedModel(object):
 
     def get_metric(self, metric):
         """ ... """
-        if metric not in _REGION_METRICS:
-            raise ValueError("metric must be one of", _REGION_METRICS)
-
         if metric == "connection_strength":
             # w_ij |X||Y|
             return self.region_matrix
@@ -360,98 +353,9 @@ class RegionalizedModel(object):
             return np.divide(self.region_matrix,
                              self.source_counts[:,np.newaxis])
 
-        else:
-            # normalized_connection_density
+        elif metric == "normalized_connection_density":
             # w_ij
             return np.divide(self.region_matrix,
                              np.outer(self.source_counts, self.target_counts))
-
-#         # note, already fit, just used to return region weights
-#         t_regions, t_counts = np.unique(target_key, return_counts=True)
-#         s_regions, s_counts = np.unique(source_key, return_counts=True)
-# 
-#         ns_regions = len(s_regions)
-#         nt_regions = len(t_regions)
-#         ns_points = self.weights_.shape[0]
-# 
-#         # integrate target regions
-#         # NOTE: probably more efficient to sort then stride by nt_regions
-#         temp = np.empty([nt_regions, ns_points])
-#         for ii, region in enumerate(t_regions):
-#             cols = np.isin(target_key, region)
-#             temp[ii,:] = self.weights_.dot(
-#                 np.einsum('ji->j', self.y_fit_[:,cols])
-#             )
-# 
-#         # integrate source regions
-#         # NOTE: probably more efficient to sort then stride by ns_regions
-#         region_matrix = np.empty([ns_regions, nt_regions])
-#         for ii, region in enumerate(s_regions):
-#             cols = np.isin(source_key, region)
-#             # note, if region were 1 voxel, would not work
-#             region_matrix[ii,:] = temp[:,cols].sum(axis=1)
-# 
-#         return region_matrix
-# 
-# class NadarayaWatson(BaseEstimator):
-#     """
-#     95% from sklearn.kernel_ridge.KernelRidge
-#     """
-#     def __init__(self, kernel="linear", degree=3,
-#                  coef0=1, gamma=None, kernel_params=None):
-#         self.kernel = kernel
-#         self.gamma = gamma
-#         self.degree = degree
-#         self.coef0 = coef0
-#         self.kernel_params = kernel_params
-# 
-#     def _get_kernel(self, X, y=None):
-#         if callable(self.kernel):
-#             params = self.kernel_params or {}
-#         else:
-#             params = {"gamma": self.gamma,
-#                       "degree": self.degree,
-#                       "coef0": self.coef0}
-# 
-#         return pairwise_kernels(X, y, metric=self.kernel,
-#                              filter_params=True, **params)
-# 
-#     def _get_weights(self, X, y=None):
-# 
-#         K = self._get_kernel(X, y)
-# 
-#         factor = K.sum(axis=1)
-#         factor = np.where(factor > 0, factor, 1)
-# 
-#         # divide in place
-#         np.divide(K, factor[:,None], K)
-#         return K
-# 
-#     @property
-#     def _pairwise(self):
-#         return self.kernel == "precomputed"
-# 
-#     def fit(self, X, y):
-#         """
-#         """
-#         # Convert data
-#         X, y = check_X_y(X, y, accept_sparse=("csr", "csc"),
-#                          multi_output=True, y_numeric=True)
-# 
-#         if len(y.shape) == 1:
-#             y = y.reshape(-1, 1)
-# 
-#         self.X_fit_ = X
-#         self.y_fit_ = y
-# 
-#         return self
-# 
-#     def predict(self, X):
-#         """
-#         """
-#         check_is_fitted(self, ["X_fit_", "y_fit_"])
-#         w = self._get_weights(X, self.X_fit_)
-#         return np.dot(w, self.y_fit_)
-# 
-#     def voxel_weights(self, X):
-#         return self._get_weights(X, self.X_fit_)
+        else:
+            raise ValueError("metric must be one of", self.VALID_REGION_METRICS)
