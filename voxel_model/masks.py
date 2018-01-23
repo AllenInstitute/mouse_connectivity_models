@@ -1,9 +1,6 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-# TODO :: incorp save/load into Mask class
-# TODO :: cythonize _BaseMask.map_to_ccf
-
 from __future__ import division
 import pickle
 import numpy as np
@@ -103,6 +100,7 @@ class Mask(object):
         annotation = np.copy(self.annotation)
 
         if structure_ids is None:
+            # use structure_ids mask was originally built with
             structure_ids = self.structure_ids
             mask = self.mask
         else:
@@ -110,25 +108,21 @@ class Mask(object):
             mask = self.reference_space.make_structure_mask(structure_ids,
                                                             direct_only=False)
 
-        # get descendants
+        # get list of descendant_ids for each structure id
+        # NOTE : descendant_ids includes the structure id
         descendant_ids = self.structure_tree.descendant_ids( structure_ids )
 
         for structure_id, descendants in zip(structure_ids, descendant_ids):
-            # set annotation equal to structure where it has descendants
-            idx = np.isin(annotation, descendants)
-            annotation[ idx ] = structure_id
+            if len(descendants) > 1:
+                # set annotation equal to structure where it has descendants
+                idx = np.isin(annotation, descendants)
+                annotation[ idx ] = structure_id
 
-        # mask annotation to only structure ids
-        np.multiply(annotation, mask, annotation)
+        # return flattened @ nonzero idx of self.mask
+        return annotation[ self.nonzero ]
 
-        # mask to hemisphere
-        annotation = self._mask_to_hemisphere(annotation)
-
-        # returned flattened
-        return annotation[ annotation.nonzero() ]
-
-    def map_to_ccf(self, y):
-        """Maps a masked vector y back to ccf
+    def map_to_mask(self, y):
+        """Maps a masked vector y back to annotation volume
 
         Paramters
         ---------
@@ -137,16 +131,17 @@ class Mask(object):
         -------
         y_ccf
         """
-        if y.shape != self.key.shape:
+        # indices where y
+        idx = self.nonzero
+
+        if y.shape != idx[0].shape
+            # TODO : better error statement
             raise ValueError("Must be same shape as key")
 
-        y_ccf = np.zeros(np.prod(self.ccf_shape))
+        y_volume = np.zeros(self.annotation_shape)
+        y_volume[ idx ] = y
 
-        # SLOW!!! (cythonize???)
-        for idx, val in zip(self.coordinates, y):
-            y_ccf[idx] = val
-
-        return y_ccf.reshape(self.ccf_shape)
+        return y_volume
 
     def save(self, filename):
         """ ... """
