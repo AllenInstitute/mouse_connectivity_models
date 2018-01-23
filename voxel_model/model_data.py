@@ -17,8 +17,8 @@ class ModelData(object):
     def _get_experiments(self):
         """  ... """
         # masked columns
-        xcols = self.source_mask.nonzero
-        ycols = self.target_mask.nonzero
+        source_idx = self.source_mask.nonzero
+        target_idx = self.target_mask.nonzero
 
         X, y, centroids, total_volumes = [], [], [], []
         for experiment_id in self.experiment_ids:
@@ -29,8 +29,8 @@ class ModelData(object):
             total_volumes.append( exp.normalized_injection_density.sum() )
 
             # update
-            X.append( exp.normalized_injection_density[xcols] )
-            y.append( exp.normalized_projection_density[ycols] )
+            X.append( exp.normalized_injection_density[source_idx] )
+            y.append( exp.normalized_projection_density[target_idx] )
             centroids.append( exp.centroid )
 
         # stack centroids, injections
