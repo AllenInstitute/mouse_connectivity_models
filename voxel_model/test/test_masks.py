@@ -68,6 +68,7 @@ def bi_mask(mcc, structure_ids):
 # -----------------------------------------------------------------------------
 # tests
 def test_mask_to_hemisphere(ipsi_mask, contra_mask, bi_mask):
+
     midline = bi_mask.mask.shape[2]//2
 
     ipsi_left_hemi = ipsi_mask.mask[:,:,:midline]
@@ -96,6 +97,7 @@ def test_annotation_shape(ipsi_mask, contra_mask, annotation):
 # -----------------------------------------------------------------------------
 # tests
 def test_coordinates(bi_mask, annotation):
+
     coordinates = bi_mask.coordinates
 
     assert( coordinates.shape[1] == len(annotation.shape) )
@@ -104,6 +106,7 @@ def test_coordinates(bi_mask, annotation):
 # -----------------------------------------------------------------------------
 # tests
 def test_get_key(bi_mask, structure_ids):
+
     # use the internal structure ids
     base_key = bi_mask.get_key()
     copy_key = bi_mask.get_key(structure_ids)
@@ -142,6 +145,35 @@ def test_mask_volume(bi_mask, annotation):
     masked_annotation = bi_mask.mask_volume(annotation)
 
     assert_array_equal( masked_annotation, annotation[annotation.nonzero()] )
+
+# -----------------------------------------------------------------------------
+# tests
+def test_fill_volume_in_mask(bi_mask):
+
+    # copy/val fill
+    volume = np.zeros(bi_mask.annotation_shape)
+    val_filled = bi_mask.fill_volume_in_mask(volume, 9, inplace=False)
+
+    assert_array_equal( np.unique(val_filled), np.array([0,9]) )
+    assert( val_filled.sum() == 9*bi_mask.mask.sum())
+
+    # inplace/array fill
+    fill_arr = np.arange(bi_mask.coordinates.shape[0])
+    bi_mask.fill_volume_in_mask(volume, fill_arr, inplace=True)
+
+    assert_array_equal( np.unique(volume), fill_arr )
+
+    # test mismatch
+    args = (volume, range(11))
+    assert_raises(ValueError, bi_mask.fill_volume_in_mask, *args )
+
+# -----------------------------------------------------------------------------
+# tests
+def test_map_masked_to_annotation(bi_mask, annotation):
+
+    masked = bi_mask.mask_volume(annotation)
+
+    assert_array_equal( bi_mask.map_masked_to_annotation(masked), annotation )
 
 # -----------------------------------------------------------------------------
 # tests

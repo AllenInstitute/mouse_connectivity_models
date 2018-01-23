@@ -16,21 +16,19 @@ class ModelData(object):
     """
     def _get_experiments(self):
         """  ... """
-        # masked columns
-        source_idx = self.source_mask.nonzero
-        target_idx = self.target_mask.nonzero
-
         X, y, centroids, total_volumes = [], [], [], []
         for experiment_id in self.experiment_ids:
             # get experiment data
             exp = Experiment(self.mcc, experiment_id)
+            injection = exp.normalized_injection_density
+            projection = exp.normalized_projection_density
 
             # for min_ratio_contained
-            total_volumes.append( exp.normalized_injection_density.sum() )
+            total_volumes.append( injection.sum() )
 
             # update
-            X.append( exp.normalized_injection_density[source_idx] )
-            y.append( exp.normalized_projection_density[target_idx] )
+            X.append( self.source_mask.mask_volume(injection) )
+            y.append( self.target_mask.mask_volume(projection) )
             centroids.append( exp.centroid )
 
         # stack centroids, injections

@@ -154,6 +154,30 @@ class Mask(object):
 
         return X[ self.mask.nonzero() ]
 
+    def fill_volume_in_mask(self, X, fill, inplace=True):
+        """Masks a given volume
+
+        Paramters
+        ---------
+        X
+        Returns
+        -------
+        y
+        """
+
+        if X.shape != self.annotation_shape:
+            # TODO : better error statement
+            raise ValueError("X must be same shape as annotation")
+
+        if inplace:
+            # numpy throws value error if type(fill)=array && fill.shape != idx
+            X[ self.mask.nonzero() ] = fill
+
+        else:
+            Y = np.copy(X)
+            Y[ self.mask.nonzero() ] = fill
+            return Y
+
     def map_masked_to_annotation(self, y):
         """Maps a masked vector y back to annotation volume
 
