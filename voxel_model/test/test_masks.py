@@ -148,24 +148,24 @@ def test_mask_volume(bi_mask, annotation):
 
 # -----------------------------------------------------------------------------
 # tests
-def test_fill_volume_in_mask(bi_mask):
+def test_fill_volume_where_masked(bi_mask):
 
     # copy/val fill
     volume = np.zeros(bi_mask.annotation_shape)
-    val_filled = bi_mask.fill_volume_in_mask(volume, 9, inplace=False)
+    val_filled = bi_mask.fill_volume_where_masked(volume, 9, inplace=False)
 
     assert_array_equal( np.unique(val_filled), np.array([0,9]) )
     assert( val_filled.sum() == 9*bi_mask.mask.sum())
 
     # inplace/array fill
     fill_arr = np.arange(bi_mask.coordinates.shape[0])
-    bi_mask.fill_volume_in_mask(volume, fill_arr, inplace=True)
+    bi_mask.fill_volume_where_masked(volume, fill_arr, inplace=True)
 
     assert_array_equal( np.unique(volume), fill_arr )
 
     # test mismatch
     args = (volume, range(11))
-    assert_raises(ValueError, bi_mask.fill_volume_in_mask, *args )
+    assert_raises(ValueError, bi_mask.fill_volume_where_masked, *args )
 
 # -----------------------------------------------------------------------------
 # tests

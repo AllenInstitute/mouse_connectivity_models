@@ -154,7 +154,7 @@ class Mask(object):
 
         return X[ self.mask.nonzero() ]
 
-    def fill_volume_in_mask(self, X, fill, inplace=True):
+    def fill_volume_where_masked(self, X, fill, inplace=True):
         """Masks a given volume
 
         Paramters
