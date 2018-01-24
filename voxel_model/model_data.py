@@ -14,77 +14,87 @@ class ModelData(object):
     ...
 
     """
+
+    # normalizations
+    INJECTION_KEY="normalized_injection_density"
+    PROJECTION_KEY="normalized_projection_density"
+
+    # model experiment parameters
+    MIN_INJECTION_VOLUME=0.0
+    MIN_PROJECTION_VOLUME=0.0
+    MIN_RATIO_CONTAINED_INJECTION=0.0
+    
+    def _test_experiment_parameters(self, exp):
+
+        # defines if normalized
+        injection = getattr(exp, INJECTION_KEY)
+        projection = getattr(exp, PROJECTION_KEY)
+
+        # masked
+        masked_injection = self.source_mask.mask_volume(injection)
+        masked_projection = self.target_mask.mask_volume(projection)
+
+        masked_injection_volume = masked_injection.sum()
+        masked_projection_volume = masked_projection.sum()
+        contained_injection_ratios = masked_injection_volume / injection.sum()
+        
+        if all( (contained_injection_ratios >= self.MIN_RATIO_CONTAINED_INJECTION,
+                 masked_injection_volume >= self.MIN_INJECTION_VOLUME,
+                 masked_projection_volume >= self.MIN_PROJECTION_VOLUME) ):
+
+            return masked_injection, masked_projection
+
+        else:
+            # caught implicitly in self._get_experiments()
+            raise ValueError
+
+    def _init_arrays(self):
+        """ initializes arrays. """
+
+        n = len(experiment_ids)
+        annotation_dim = len(source_mask.annotation_shape)
+
+        x = np.empty( (n, source_mask.masked_shape[0]), dtype=np.float32 )
+        y = np.empty( (n, target_mask.masked_shape[0]), dtype=np.float32 )
+        centroids = np.empty( (n, annotation_dim), dtype=np.float32 )
+
+        return x, y, centroids
+
     def _get_experiments(self):
         """  ... """
-        X, y, centroids, total_volumes = [], [], [], []
-        for experiment_id in self.experiment_ids:
+
+        # initialize containers
+        x, y, centroids = self._init_arrays()
+
+        for i, experiment_id in enumerate(experiment_ids):
+
             # get experiment data
-            exp = Experiment(self.mcc, experiment_id)
-            injection = exp.normalized_injection_density
-            projection = exp.normalized_projection_density
+            exp = Experiment.from_mcc(mcc, experiment_id)
 
-            # for min_ratio_contained
-            total_volumes.append( injection.sum() )
+            try:
+                # test if meets parameters
+                injection, projection = self.test_experiment_parameters(exp)
 
-            # update
-            X.append( self.source_mask.mask_volume(injection) )
-            y.append( self.target_mask.mask_volume(projection) )
-            centroids.append( exp.centroid )
+            except ValueError:
+                pass
+
+            else:
+                # update
+                x[i] = injection
+                y[i] = projection
+                centroids[i] = exp.centroid
 
         # stack centroids, injections
-        X = np.hstack( (np.asarray(centroids), np.asarray(X)) )
+        return np.hstack( (centroids, x) ), y
 
-        # return arrays
-        return X, np.asarray(y), np.asarray(total_volumes)
-
-    def __init__(self, mcc, experiment_ids, source_mask, target_mask,
-                 min_injection_volume=0.0, min_projection_volume=0.0,
-                 min_ratio_contained=0.0):
+    def __init__(self, mcc, experiment_ids, source_mask, target_mask):
         self.mcc = mcc
         self.experiment_ids = experiment_ids
         self.source_mask = source_mask
         self.target_mask = target_mask
-        self.min_injection_volume = min_injection_volume
-        self.min_projection_volume = min_projection_volume
-        self.min_ratio_contained = min_ratio_contained
 
-        # get all data
-        self._X, self._y, self._total_volumes = self._get_experiments()
-
-    def _get_valid_rows(self):
-        """ ... """
-        # injection volumes
-        masked_volumes = self._X.sum(axis=1)
-        contained_ratios = np.divide(masked_volumes, self._total_volumes)
-
-        # tests
-        valid_inj_ratios = contained_ratios >= self.min_ratio_contained
-        valid_injections = masked_volumes >= self.min_injection_volume
-        valid_projections = self._y.sum(axis=1) >= self.min_projection_volume
-
-        # return valid rows
-        valid = ( valid_inj_ratios, valid_injections, valid_projections )
-        return np.logical_and.reduce(valid)
-
-    @property
-    def valid_rows(self):
-        try:
-            return self._valid_rows
-        except AttributeError:
-            self._valid_rows = self._get_valid_rows()
-            return self._valid_rows
-
-    @property
-    def valid_experiment_ids(self):
-        return self.experiment_ids[self.valid_rows]
-
-    @property
-    def X(self):
-        return self._X[self.valid_rows]
-
-    @property
-    def y(self):
-        return self._y[self.valid_rows]
+        # get all data & mask it to source/target masks
+        self.X, self.y = self._get_experiments()
 
     @property
     def source_voxels(self):
