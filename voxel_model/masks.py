@@ -87,6 +87,10 @@ class Mask(object):
         """Returns coordinates inside mask"""
         return np.argwhere(self.mask)
 
+    @property
+    def masked_shape(self):
+        return ( np.count_nonzero(self.mask), )
+
     def get_key(self, structure_ids=None, disjoint_structures=True):
         # TODO: look into cleaning up check for disjoint
         """Returns flattened annotation key.

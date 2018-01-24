@@ -84,6 +84,7 @@ class Experiment(object):
         hemi = 1 if l > r else 2
 
         if hemi != self.INJECTION_HEMISPHERE:
+            # flip experiment
             self.projection_density = self.projection_density[...,::-1]
             self.injection_density = self.injection_density[...,::-1]
 
