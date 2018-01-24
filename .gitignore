@@ -10,6 +10,7 @@
 *.pyc
 
 # temp files
+*.swo
 *.swp
 *#*#
 *~
