@@ -2,9 +2,11 @@
 # License:
 
 from __future__ import division
+from collections import namedtuple
 import numpy as np
 
-class Experiment(object):
+class Experiment(namedtuple("Experiment", ["injection_density",
+                                           "projection_density"])):
     """Class containing the data from an anterograde injection
 
     Experiment conveniently compiles the relevant information from a given
@@ -56,6 +58,7 @@ class Experiment(object):
     >>> exp.injection_density.shape
     (132,80,114)
     """
+    __slots__ = ()
 
     DATA_MASK_TOLERANCE = 0.5
     INJECTION_HEMISPHERE = 2
@@ -78,57 +81,54 @@ class Experiment(object):
         return cls(injection_density=injection_density,
                    projection_density=projection_density)
 
-    def _check_injection_hemisphere(self):
+    @staticmethod
+    def _check_injection_hemisphere(injection_density):
         """Flips experiment if wrong hemisphere."""
-        l, r = [ x.sum() for x in np.dsplit(self.injection_density, 2) ]
-        hemi = 1 if l > r else 2
+        l_hemi, r_hemi = np.dsplit(injection_density, 2)
+        injection_hemisphere = 1 if l_hemi.sum() > r_hemi.sum() else 2
 
-        if hemi != self.INJECTION_HEMISPHERE:
-            # flip experiment
-            self.projection_density = self.projection_density[...,::-1]
-            self.injection_density = self.injection_density[...,::-1]
+        return injection_hemisphere
 
-    def __init__(self, injection_density=None, projection_density=None):
-        if ( type(injection_density) == np.ndarray and 
+    def __new__(cls, injection_density=None, projection_density=None):
+        if ( type(injection_density) == np.ndarray and
                 type(projection_density) == np.ndarray ):
 
             if injection_density.shape != projection_density.shape:
                 raise ValueError( "injection_density and projection_density "
                                   "must be the same shape!" )
 
-            self.injection_density = injection_density
-            self.projection_density = projection_density
-
         else:
-            raise ValueError( "Both injection_density and projection_density " 
+            raise ValueError( "Both injection_density and projection_density "
                               "must be of type numpy.ndarray" )
 
-        # flip if wrong hemisphere
-        self._check_injection_hemisphere()
 
-    @property
-    def sum_injection(self):
-        return self.injection_density.sum()
+        # check injection hemisphere
+        injection_hemisphere = _check_injection_hemisphere(injection_density)
 
-    def _compute_centroid(self):
+        if injection_hemisphere != cls.INJECTION_HEMISPHERE:
+            # flip experiment
+            injection_density = injection_density[...,::-1]
+            projection_density = projection_density[...,::-1]
+
+        return super(Experiment, cls).__new__(cls, injection_density,
+                                              projection_density)
+
+    @staticmethod
+    def compute_centroid(injection_density):
         """Computes centroid in index coordinates"""
-        nonzero = self.injection_density[ self.injection_density.nonzero() ]
-        voxels = np.argwhere( self.injection_density )
+        nonzero = injection_density[ injection_density.nonzero() ]
+        voxels = np.argwhere( injection_density )
 
-        return np.dot(nonzero, voxels) / self.sum_injection
-        
+        return np.dot(nonzero, voxels) / injection_density.sum()
+
     @property
     def centroid(self):
-        try:
-            return self._centroid
-        except AttributeError:
-            self._centroid = self._compute_centroid()
-            return self._centroid
+        return compute_centroid(self.injection_density)
 
     @property
     def normalized_injection_density(self):
-        return self.injection_density / self.sum_injection
+        return self.injection_density / self.injection_density.sum()
 
     @property
     def normalized_projection_density(self):
-        return self.projection_density / self.sum_injection
+        return self.projection_density / self.injection_density.sum()
