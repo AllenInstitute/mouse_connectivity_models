@@ -4,9 +4,10 @@
 from __future__ import absolute_import
 import numpy as np
 
+from collections import namedtuple
 from .experiment import Experiment
 
-class ModelData(object):
+class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     """Container for model data...
 
     ...
@@ -14,88 +15,86 @@ class ModelData(object):
     ...
 
     """
+    __slots__ = ()
 
     # normalizations
     INJECTION_KEY="normalized_injection_density"
     PROJECTION_KEY="normalized_projection_density"
 
     # model experiment parameters
-    MIN_INJECTION_VOLUME=0.0
-    MIN_PROJECTION_VOLUME=0.0
+    MIN_INJECTION_SUM=0.0
+    MIN_PROJECTION_SUM=0.0
     MIN_RATIO_CONTAINED_INJECTION=0.0
-    
-    def _test_experiment_parameters(self, exp):
+
+    @staticmethod
+    def get_experiment_ids(mcc, structure_ids, cre=None):
+        """Returns all experiment ids given some structure_ids
+        PRIMARY INJECTION STRUCTURES
+        """
+        # filters injections by structure id OR DECENDENT
+        experiments = mcc.get_experiments(dataframe=False, cre=cre,
+                                          injection_structure_ids=structure_ids)
+        return [ experiment['id'] for experiment in experiments ]
+
+    def _valid_experiment(self, injection, projection, unmasked_injection_sum):
+
+        inj_sum = injection.sum()
+        proj_sum = projection.sum()
+        inj_ratios = injection_sum / unmasked_injection_sum
+
+        return all( (inj_ratios >= self.MIN_RATIO_CONTAINED_INJECTION,
+                     inj_sum >= self.MIN_INJECTION_SUM,
+                     proj_sum >= self.MIN_PROJECTION_SUM) )
+
+
+    def _get_experiment_attrs(self, exp, source_mask, target_mask):
 
         # defines if normalized
-        injection = getattr(exp, INJECTION_KEY)
-        projection = getattr(exp, PROJECTION_KEY)
+        injection = source_mask.mask_volume( getattr(exp, self.INJECTION_KEY) )
+        projection = target_mask.mask_volume( getattr(exp, self.PROJECTION_KEY) )
 
-        # masked
-        masked_injection = self.source_mask.mask_volume(injection)
-        masked_projection = self.target_mask.mask_volume(projection)
+        unmasked_injection_sum = exp.injection_sum
 
-        masked_injection_volume = masked_injection.sum()
-        masked_projection_volume = masked_projection.sum()
-        contained_injection_ratios = masked_injection_volume / injection.sum()
-        
-        if all( (contained_injection_ratios >= self.MIN_RATIO_CONTAINED_INJECTION,
-                 masked_injection_volume >= self.MIN_INJECTION_VOLUME,
-                 masked_projection_volume >= self.MIN_PROJECTION_VOLUME) ):
+        return injection, projection, unmasked_injection_sum
 
-            return masked_injection, masked_projection
-
-        else:
-            # caught implicitly in self._get_experiments()
-            raise ValueError
-
-    def _init_arrays(self):
-        """ initializes arrays. """
-
-        n = len(experiment_ids)
-        annotation_dim = len(source_mask.annotation_shape)
-
-        x = np.empty( (n, source_mask.masked_shape[0]), dtype=np.float32 )
-        y = np.empty( (n, target_mask.masked_shape[0]), dtype=np.float32 )
-        centroids = np.empty( (n, annotation_dim), dtype=np.float32 )
-
-        return x, y, centroids
-
-    def _get_experiments(self):
+    @classmethod
+    def from_mcc_and_masks(cls, mcc, structure_ids, source_mask, target_mask):
         """  ... """
 
         # initialize containers
-        x, y, centroids = self._init_arrays()
-
-        for i, experiment_id in enumerate(experiment_ids):
+        x, y, centroids = [], [], []
+        for experiment_id in get_experiment_ids:
 
             # get experiment data
             exp = Experiment.from_mcc(mcc, experiment_id)
 
-            try:
-                # test if meets parameters
-                injection, projection = self.test_experiment_parameters(exp)
+            # test if meets parameters
+            inj, proj, unmasked_inj_sum = self._get_experiment_attrs(exp)
 
-            except ValueError:
-                pass
-
-            else:
+            if self._valid_experiment(inj, proj, unmasked_inj_sum)
                 # update
-                x[i] = injection
-                y[i] = projection
-                centroids[i] = exp.centroid
+                x.append( injection )
+                y.append( projection )
+                centroids.append( exp.centroid )
 
         # stack centroids, injections
-        return np.hstack( (centroids, x) ), y
+        X = np.hstack( (np.asarray(centroids), np.asarray(x)) )
 
-    def __init__(self, mcc, experiment_ids, source_mask, target_mask):
-        self.mcc = mcc
-        self.experiment_ids = experiment_ids
-        self.source_mask = source_mask
-        self.target_mask = target_mask
+        return cls(X, np.asarray(y), source_mask.coordinates)
 
-        # get all data & mask it to source/target masks
-        self.X, self.y = self._get_experiments()
 
-    @property
-    def source_voxels(self):
-        return self.source_mask.coordinates
+    def __new__(cls, X, y, source_voxels):
+
+        if type(X) == np.ndarray and type(y) == np.ndarray:
+            if X.shape[0] != y.shape[0]:
+                raise ValueError("# of experiments in X and y is inconsistent")
+
+        elif type(source_voxels) == np.ndarray:
+            if source_voxels.shape[0] != injection_density.shape[1]:
+                raise ValueError( "# of voxels in X and source_voxels "
+                                  "is inconsistent" )
+        else:
+            raise ValueError( "X, y and source_voxels must all be of "
+                              "type numpy.ndarray" )
+
+        return super(ModelData, cls).__new__(X, y, source_voxels)

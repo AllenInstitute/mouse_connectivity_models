@@ -16,11 +16,6 @@ def test_test_experiment_parameters():
 
 # -----------------------------------------------------------------------------
 # tests
-def test_init_arrays():
-    pass
-
-# -----------------------------------------------------------------------------
-# tests
 def test_get_experiments():
     pass
 
