@@ -7,6 +7,15 @@ import numpy as np
 from collections import namedtuple
 from .experiment import Experiment
 
+def get_experiment_ids(mcc, structure_ids, cre=None):
+    """Returns all experiment ids given some structure_ids
+    PRIMARY INJECTION STRUCTURES
+    """
+    # filters injections by structure id OR DECENDENT
+    experiments = mcc.get_experiments(dataframe=False, cre=cre,
+                                      injection_structure_ids=structure_ids)
+    return [ experiment['id'] for experiment in experiments ]
+
 class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     """Container for model data...
 
@@ -25,16 +34,6 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     MIN_INJECTION_SUM=0.0
     MIN_PROJECTION_SUM=0.0
     MIN_RATIO_CONTAINED_INJECTION=0.0
-
-    @staticmethod
-    def get_experiment_ids(mcc, structure_ids, cre=None):
-        """Returns all experiment ids given some structure_ids
-        PRIMARY INJECTION STRUCTURES
-        """
-        # filters injections by structure id OR DECENDENT
-        experiments = mcc.get_experiments(dataframe=False, cre=cre,
-                                          injection_structure_ids=structure_ids)
-        return [ experiment['id'] for experiment in experiments ]
 
     def _valid_experiment(self, injection, projection, unmasked_injection_sum):
 
@@ -63,7 +62,7 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
         # initialize containers
         x, y, centroids = [], [], []
-        for experiment_id in get_experiment_ids:
+        for experiment_id in get_experiment_ids(mcc, structure_ids):
 
             # get experiment data
             exp = Experiment.from_mcc(mcc, experiment_id)
