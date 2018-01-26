@@ -57,20 +57,25 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
         return injection, projection, unmasked_injection_sum
 
     @classmethod
-    def from_mcc_and_masks(cls, mcc, structure_ids, source_mask, target_mask):
+    def from_mcc_and_masks(cls, mcc, source_mask, target_mask):
         """  ... """
+
+        # for convenience
+        structure_ids = source_mask.structure_ids
+        hemisphere = source_mask.hemisphere
 
         # initialize containers
         x, y, centroids = [], [], []
         for experiment_id in get_experiment_ids(mcc, structure_ids):
 
             # get experiment data
-            exp = Experiment.from_mcc(mcc, experiment_id)
+            exp = Experiment.from_mcc( mcc, experiment_id,
+                                       injection_hemisphere = hemisphere)
 
             # test if meets parameters
             inj, proj, unmasked_inj_sum = self._get_experiment_attrs(exp)
 
-            if self._valid_experiment(inj, proj, unmasked_inj_sum)
+            if self._valid_experiment(inj, proj, unmasked_inj_sum):
                 # update
                 x.append( injection )
                 y.append( projection )
