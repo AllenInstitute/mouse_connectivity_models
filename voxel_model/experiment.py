@@ -81,13 +81,6 @@ class Experiment(namedtuple("Experiment", ["injection_density",
         return cls(injection_density=injection_density,
                    projection_density=projection_density)
 
-    @staticmethod
-    def _check_injection_hemisphere(injection_density):
-        """Flips experiment if wrong hemisphere."""
-        l_hemi, r_hemi = np.dsplit(injection_density, 2)
-        injection_hemisphere = 1 if l_hemi.sum() > r_hemi.sum() else 2
-
-        return injection_hemisphere
 
     def __new__(cls, injection_density=None, projection_density=None):
         if ( type(injection_density) == np.ndarray and
@@ -113,7 +106,6 @@ class Experiment(namedtuple("Experiment", ["injection_density",
         return super(Experiment, cls).__new__(cls, injection_density,
                                               projection_density)
 
-    @staticmethod
     def compute_centroid(injection_density):
         """Computes centroid in index coordinates"""
         nonzero = injection_density[ injection_density.nonzero() ]

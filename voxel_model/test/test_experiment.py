@@ -97,8 +97,8 @@ def test_centroid(mcc, injection_density, injection_fraction):
     data = Experiment.from_mcc(mcc, experiment_id)
 
     api = MouseConnectivityApi()
-    mcc_centroid = api.calculate_injection_centroid( injection_density, 
-                                                     injection_fraction, 
+    mcc_centroid = api.calculate_injection_centroid( injection_density,
+                                                     injection_fraction,
                                                      resolution=1 )
 
     assert_array_equal( data.centroid, mcc_centroid )
@@ -106,7 +106,7 @@ def test_centroid(mcc, injection_density, injection_fraction):
 # -----------------------------------------------------------------------------
 # tests
 def test_normalized_injection_density(mcc):
-    
+
     experiment_id = 1023223
     data = Experiment.from_mcc(mcc, experiment_id)
 
@@ -115,7 +115,7 @@ def test_normalized_injection_density(mcc):
 # -----------------------------------------------------------------------------
 # tests
 def test_normalized_projection_density(mcc):
-    
+
     experiment_id = 1023223
     data = Experiment.from_mcc(mcc, experiment_id)
 
