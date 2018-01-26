@@ -58,10 +58,10 @@ def test_from_mcc(mcc, injection_density, injection_fraction, projection_density
 
 # -----------------------------------------------------------------------------
 # tests
-def test_check_injection_hemisphere(injection_density, projection_density):
+def test_get_injection_hemisphere(injection_density, projection_density):
 
     # left injection
-    l_inj = np.copy(injectiÂon_density)
+    l_inj = np.copy(injection_density)
     l_inj[...,l_inj.shape[-1]//2:] = 0
     l_data = Experiment(l_inj, projection_density)
 
@@ -87,11 +87,11 @@ def test_sum_injection(mcc, injection_density, injection_fraction):
     # 'true' injection density from constructor
     np.multiply(injection_density, injection_fraction, injection_density)
 
-    assert( data.sum_injection == injection_density.sum() )
+    assert( data.injection_density.sum() == injection_density.sum() )
 
 # -----------------------------------------------------------------------------
 # tests
-def test_centroid(mcc, injection_density, injection_fraction):
+def test_compute_centroid(mcc, injection_density, injection_fraction):
 
     experiment_id = 1023223
     data = Experiment.from_mcc(mcc, experiment_id)

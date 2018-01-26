@@ -81,6 +81,17 @@ class Experiment(namedtuple("Experiment", ["injection_density",
         return cls(injection_density=injection_density,
                    projection_density=projection_density)
 
+    @staticmethod
+    def _get_injection_hemisphere(injection_density):
+        """Gets injection hemisphere based on injection density."""
+
+        # split along depth dimension (forces arr.shape[2] % 2 == 0)
+        l_hemi, r_hemi = np.dsplit(injection_density, 2)
+
+        if l_hemi.sum() > r_hemi.sum():
+            return 1
+        else:
+            return 2
 
     def __new__(cls, injection_density=None, projection_density=None):
         if ( type(injection_density) == np.ndarray and
@@ -96,16 +107,17 @@ class Experiment(namedtuple("Experiment", ["injection_density",
 
 
         # check injection hemisphere
-        injection_hemisphere = _check_injection_hemisphere(injection_density)
+        injection_hemisphere = cls._get_injection_hemisphere(injection_density)
 
         if injection_hemisphere != cls.INJECTION_HEMISPHERE:
             # flip experiment
-            injection_density = injection_density[...,::-1]
-            projection_density = projection_density[...,::-1]
+            injection_density = np.flip( injection_density, axis=2 )
+            projection_density = np.flip( projection_density, axis=2 )
 
-        return super(Experiment, cls).__new__(cls, injection_density,
-                                              projection_density)
+        return super(Experiment, cls).__new__( cls, injection_density,
+                                               projection_density )
 
+    @staticmethod
     def compute_centroid(injection_density):
         """Computes centroid in index coordinates"""
         nonzero = injection_density[ injection_density.nonzero() ]
@@ -115,7 +127,7 @@ class Experiment(namedtuple("Experiment", ["injection_density",
 
     @property
     def centroid(self):
-        return compute_centroid(self.injection_density)
+        return self.compute_centroid(self.injection_density)
 
     @property
     def normalized_injection_density(self):
