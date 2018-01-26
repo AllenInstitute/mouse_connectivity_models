@@ -1,5 +1,5 @@
 # virtualenv
-.env_py27
+.env_py*
 .cache
 
 # output
