@@ -3,8 +3,35 @@ import mock
 import pytest
 import numpy as np
 
+from allensdk.core.reference_space import ReferenceSpace
+from allensdk.core.structure_tree import StructureTree
+
 @pytest.fixture(scope="session")
-def mcc():
+def tree():
+    return [{'id': 1, 'structure_id_path': [1]},
+            {'id': 2, 'structure_id_path': [1, 2]},
+            {'id': 3, 'structure_id_path': [1, 3]},
+            {'id': 4, 'structure_id_path': [1, 2, 4]},
+            {'id': 5, 'structure_id_path': [1, 2, 5]},
+            {'id': 6, 'structure_id_path': [1, 2, 5, 6]},
+            {'id': 7, 'structure_id_path': [1, 7]}]
+
+
+@pytest.fixture(scope="session")
+def annotation():
+    # leaves are 6, 4, 3
+    # additionally annotate 2, 5 for realism :)
+    annotation = np.zeros((10, 10, 10))
+    annotation[4:8, 4:8, 4:8] = 2
+    annotation[5:7, 5:7, 5:7] = 5
+    annotation[5:7, 5:7, 5] = 6
+    annotation[7, 7, 7] = 4
+    annotation[8:10, 8:10, 8:10] = 3
+
+    return annotation
+
+@pytest.fixture(scope="session")
+def mcc(tree, annotation):
 
     # data
     shape = (10,10,10)
@@ -23,5 +50,9 @@ def mcc():
     mcc.get_projection_density.return_value = (projection_density, )
 
     mcc.get_experiments.return_value = [ {"id":456}, {"id":12}, {"id":315}]
+
+    # reference space
+    rsp = ReferenceSpace(StructureTree(tree), annotation, [10, 10, 10])
+    mcc.get_reference_space.return_value = rsp
 
     return mcc
