@@ -61,10 +61,9 @@ class Experiment(namedtuple("Experiment", ["injection_density",
     __slots__ = ()
 
     DATA_MASK_TOLERANCE = 0.5
-    INJECTION_HEMISPHERE = 2
 
     @classmethod
-    def from_mcc(cls, mcc, experiment_id):
+    def from_mcc(cls, mcc, experiment_id, injection_hemisphere=2):
         # pull data
         data_mask = mcc.get_data_mask(experiment_id)[0]
         injection_density = mcc.get_injection_density(experiment_id)[0]
@@ -79,21 +78,23 @@ class Experiment(namedtuple("Experiment", ["injection_density",
         injection_density[ data_mask < cls.DATA_MASK_TOLERANCE ] = 0.
 
         return cls(injection_density=injection_density,
-                   projection_density=projection_density)
+                   projection_density=projection_density,
+                   injection_hemisphere=injection_hemisphere)
 
     @staticmethod
     def _get_injection_hemisphere(injection_density):
         """Gets injection hemisphere based on injection density."""
 
         # split along depth dimension (forces arr.shape[2] % 2 == 0)
-        l_hemi, r_hemi = np.dsplit(injection_density, 2)
+        l_hemi, r_hemi = np.split(injection_density, 2, axis=2)
 
         if l_hemi.sum() > r_hemi.sum():
             return 1
         else:
             return 2
 
-    def __new__(cls, injection_density=None, projection_density=None):
+    def __new__(cls, injection_density=None, projection_density=None,
+                injection_hemisphere=2):
         if ( type(injection_density) == np.ndarray and
                 type(projection_density) == np.ndarray ):
 
@@ -106,13 +107,17 @@ class Experiment(namedtuple("Experiment", ["injection_density",
                               "must be of type numpy.ndarray" )
 
 
-        # check injection hemisphere
-        injection_hemisphere = cls._get_injection_hemisphere(injection_density)
+        if injection_hemisphere in [1,2]:
+            # check injection hemisphere
+            computed_hemi = cls._get_injection_hemisphere(injection_density)
 
-        if injection_hemisphere != cls.INJECTION_HEMISPHERE:
-            # flip experiment
-            injection_density = np.flip( injection_density, axis=2 )
-            projection_density = np.flip( projection_density, axis=2 )
+            if injection_hemisphere != computed_hemi:
+                # flip experiment
+                injection_density = np.flip( injection_density, axis=2 )
+                projection_density = np.flip( projection_density, axis=2 )
+
+        elif injection_hemisphere != 3:
+            raise ValueError( "injection_hemisphere must be 1, 2, or 3" )
 
         return super(Experiment, cls).__new__( cls, injection_density,
                                                projection_density )
