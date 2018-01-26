@@ -7,7 +7,7 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 from scipy.sparse import csr_matrix
 
-from voxel_model.regionalized_voxel_model import RegionalizedVoxelModel
+from voxel_model.regionalized_model import RegionalizedModel
 
 # ----------------------------------------------------------------------------
 # test
