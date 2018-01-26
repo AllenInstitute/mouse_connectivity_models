@@ -18,41 +18,6 @@ from voxel_model.masks import Mask
 def structure_ids():
     return [2,3]
 
-@pytest.fixture(scope="module")
-def tree():
-    return [{'id': 1, 'structure_id_path': [1]},
-            {'id': 2, 'structure_id_path': [1, 2]},
-            {'id': 3, 'structure_id_path': [1, 3]},
-            {'id': 4, 'structure_id_path': [1, 2, 4]},
-            {'id': 5, 'structure_id_path': [1, 2, 5]},
-            {'id': 6, 'structure_id_path': [1, 2, 5, 6]},
-            {'id': 7, 'structure_id_path': [1, 7]}]
-
-
-@pytest.fixture(scope="module")
-def annotation():
-    # leaves are 6, 4, 3
-    # additionally annotate 2, 5 for realism :)
-    annotation = np.zeros((10, 10, 10))
-    annotation[4:8, 4:8, 4:8] = 2
-    annotation[5:7, 5:7, 5:7] = 5
-    annotation[5:7, 5:7, 5] = 6
-    annotation[7, 7, 7] = 4
-    annotation[8:10, 8:10, 8:10] = 3
-
-    return annotation
-
-@pytest.fixture(scope="module")
-def mcc(tree, annotation):
-    """Mocks mcc class"""
-
-    mcc = mock.Mock()
-
-    rsp = ReferenceSpace(StructureTree(tree), annotation, [10, 10, 10])
-    mcc.get_reference_space.return_value = rsp
-
-    return mcc
-
 @pytest.fixture(scope="function")
 def contra_mask(mcc, structure_ids):
     return Mask(mcc, structure_ids, hemisphere=1)
