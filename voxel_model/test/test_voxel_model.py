@@ -7,7 +7,7 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 from scipy.sparse import csr_matrix
 
-from voxel_model.interpolators import VoxelModel, RegionalizedVoxelModel
+from voxel_model.voxel_model import VoxelModel
 
 @pytest.fixture(scope="module")
 def source_voxels():
@@ -101,19 +101,4 @@ def test_voxel_predict_dense(voxel_model, centroids, X, X_csr, y):
 # ----------------------------------------------------------------------------
 # test
 def test_get_voxel_matrix(voxel_model):
-    pass
-
-# ----------------------------------------------------------------------------
-# test
-def test_region_fit(regionalized_voxel_model):
-    pass
-
-# ----------------------------------------------------------------------------
-# test
-def test_region_predict(regionalized_voxel_model):
-    pass
-
-# ----------------------------------------------------------------------------
-# test
-def test_get_region_matrix(regionalized_voxel_model):
     pass
