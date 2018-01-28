@@ -2,11 +2,11 @@
 # License:
 
 from __future__ import division
-from collections import namedtuple
 import numpy as np
 
-class Experiment(namedtuple("Experiment", ["injection_density",
-                                           "projection_density"])):
+__all__ = ["Experiment"]
+
+class Experiment(object):
     """Class containing the data from an anterograde injection
 
     Experiment conveniently compiles the relevant information from a given
@@ -58,28 +58,68 @@ class Experiment(namedtuple("Experiment", ["injection_density",
     >>> exp.injection_density.shape
     (132,80,114)
     """
-    __slots__ = ()
 
     DATA_MASK_TOLERANCE = 0.5
+    INJECTION_HEMISPHERE = 2
 
-    @classmethod
-    def from_mcc(cls, mcc, experiment_id, injection_hemisphere=2):
-        # pull data
-        data_mask = mcc.get_data_mask(experiment_id)[0]
-        injection_density = mcc.get_injection_density(experiment_id)[0]
-        injection_fraction = mcc.get_injection_fraction(experiment_id)[0]
-        projection_density = mcc.get_projection_density(experiment_id)[0]
 
-        # compute 'true' injection density (inplace)
+    @staticmethod
+    def _pull_data_volumes(mcc, experiment_id):
+        """Pulls data volumes using mcc module.
+
+        ...
+         mcc.get_<data_volume> returns a tuple ( data_volume, meta_data )
+
+        Parameters
+        ----------
+        """
+        return {
+            "data_mask" : mcc.get_data_mask(experiment_id)[0],
+            "injection_density" : mcc.get_injection_density(experiment_id)[0],
+            "injection_fraction" : mcc.get_injection_fraction(experiment_id)[0],
+            "projection_density" : mcc.get_projection_density(experiment_id)[0]
+        }
+
+    @staticmethod
+    def _mask_data_volume(arr, data_mask, tolerance=0):
+        """Masks data in place
+        """
+        arr[ data_mask < tolerance ] = 0.
+
+    @staticmethod
+    def _compute_true_injection_density(injection_density, injection_fraction):
+        """Computes 'true' injecton_density.
+
+        Takes into consideration injection fracion...
+
+        Parameters
+        ----------
+        """
+        # inplace
         np.multiply(injection_density, injection_fraction, injection_density)
 
-        # mask
-        projection_density[ data_mask < cls.DATA_MASK_TOLERANCE ] = 0.
-        injection_density[ data_mask < cls.DATA_MASK_TOLERANCE ] = 0.
+    @classmethod
+    def from_mcc(cls, mcc, experiment_id):
+        # pull data
+        data_volumes = _pull_data_volumes( mcc, experiment_id )
 
-        return cls(injection_density=injection_density,
-                   projection_density=projection_density,
-                   injection_hemisphere=injection_hemisphere)
+        # compute 'true' injection density (inplace)
+        _compute_true_injection_density( data_volumes["injection_density"],
+                                         data_volumes["injection_fraction"] )
+
+        # binarize mask
+        data_mask = _get_bool_data_mask( data_volumes["data_mask"],
+                                         cls.DATA_MASK_TOLERANCE )
+
+        # mask data in place
+        masker = partial( _mask_data_volume, data_mask=data_mask,
+                          tolerance=cls.DATA_MASK_TOLERANCE )
+        _ = map( masker, (data_volumes["injection_density"],
+                          data_volumes["projection_density"]) )
+
+        # return class
+        return cls(injection_density=data_volumes["injection_density"],
+                   projection_density=data_volumes["projection_density"])
 
     @staticmethod
     def _get_injection_hemisphere(injection_density):
@@ -88,13 +128,24 @@ class Experiment(namedtuple("Experiment", ["injection_density",
         # split along depth dimension (forces arr.shape[2] % 2 == 0)
         l_hemi, r_hemi = np.split(injection_density, 2, axis=2)
 
+        # return injecton hemisphere based on sum of injection_density
         if l_hemi.sum() > r_hemi.sum():
             return 1
         else:
             return 2
 
-    def __new__(cls, injection_density=None, projection_density=None,
-                injection_hemisphere=2):
+    @staticmethod
+    def _flip_hemisphere(arr):
+        """flips along 2 axis (hemipshere)
+
+        ...
+        Parameters
+        ----------
+        """
+        return np.flip( arr, axis=2 )
+
+    def __init__(self, injection_density=None, projection_density=None):
+
         if ( type(injection_density) == np.ndarray and
                 type(projection_density) == np.ndarray ):
 
@@ -106,24 +157,20 @@ class Experiment(namedtuple("Experiment", ["injection_density",
             raise ValueError( "Both injection_density and projection_density "
                               "must be of type numpy.ndarray" )
 
+        # check injection hemisphere
+        computed_hemisphere = _get_injection_hemisphere( injection_density )
 
-        if injection_hemisphere in [1,2]:
-            # check injection hemisphere
-            computed_hemi = cls._get_injection_hemisphere(injection_density)
+        if computed_hemisphere != self.INJECTION_HEMISPHERE:
+            # flip experiment
+            injection_density, projection_density = map(
+                _flip_hemisphere, ( injection_density, projection_density )
+            )
 
-            if injection_hemisphere != computed_hemi:
-                # flip experiment
-                injection_density = np.flip( injection_density, axis=2 )
-                projection_density = np.flip( projection_density, axis=2 )
-
-        elif injection_hemisphere != 3:
-            raise ValueError( "injection_hemisphere must be 1, 2, or 3" )
-
-        return super(Experiment, cls).__new__( cls, injection_density,
-                                               projection_density )
+        self.injection_density = injection_density
+        self.projection_density = projection_density
 
     @staticmethod
-    def compute_centroid(injection_density):
+    def _compute_centroid(injection_density):
         """Computes centroid in index coordinates"""
         nonzero = injection_density[ injection_density.nonzero() ]
         voxels = np.argwhere( injection_density )
@@ -132,7 +179,7 @@ class Experiment(namedtuple("Experiment", ["injection_density",
 
     @property
     def centroid(self):
-        return self.compute_centroid(self.injection_density)
+        return compute_centroid(self.injection_density)
 
     @property
     def normalized_injection_density(self):
@@ -141,3 +188,15 @@ class Experiment(namedtuple("Experiment", ["injection_density",
     @property
     def normalized_projection_density(self):
         return self.projection_density / self.injection_density.sum()
+
+    def injection_ratio_contained(self, source_mask):
+        """Returns the raito contained in a given mask.
+
+        ...
+
+        Parameters
+        ----------
+        """
+        masked_injection = source_mask.mask_volume( self.injection_density )
+
+        return masked_injection / injection_density.sum()
