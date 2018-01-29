@@ -28,7 +28,7 @@ def _pull_data_volumes(mcc, experiment_id):
         "projection_density" : mcc.get_projection_density(experiment_id)[0]
     }
 
-def _mask_data_volume(data_volume, data_mask, tolerance=0, inplace=False):
+def _mask_data_volume(data_volume, data_mask, tolerance=0):
     """Masks data in place
     """
     if data_volume.shape != data_mask.shape:
@@ -37,8 +37,7 @@ def _mask_data_volume(data_volume, data_mask, tolerance=0, inplace=False):
     # mask data volume
     data_volume[ data_mask < tolerance ] = 0.
 
-    if not inplace:
-        return data_volume
+    return data_volume
 
 def _compute_true_injection_density(injection_density, injection_fraction,
                                     inplace=False):
@@ -55,6 +54,7 @@ def _compute_true_injection_density(injection_density, injection_fraction,
 
     if inplace:
         np.multiply( injection_density, injection_fraction, injection_density )
+        return injection_density
     else:
         return np.multiply( injection_density, injection_fraction )
 
@@ -174,26 +174,21 @@ class Experiment(object):
 
         # mask data in place
         masker = partial(_mask_data_volume, data_mask=data_volumes["data_mask"],
-                         tolerance=cls.DATA_MASK_TOLERANCE, inplace=True)
+                         tolerance=cls.DATA_MASK_TOLERANCE)
 
-        masker( data_volumes["injection_density"] )
-        masker( data_volumes["projection_density"] )
+        injection_density = masker( data_volumes["injection_density"] )
+        projection_density = masker( data_volumes["projection_density"] )
 
         # check injection hemisphere
-        computed_hemisphere = _get_injection_hemisphere(
-            data_volumes["injection_density"]
-        )
+        computed_hemisphere = _get_injection_hemisphere( injection_density )
         if computed_hemisphere != injection_hemisphere:
 
             # flip experiment
             injection_density, projection_density = map(
-                _flip_hemisphere, ( data_volumes["injection_density"],
-                                    data_volumes["projection_density"] )
+                _flip_hemisphere, ( injection_density, projection_density )
             )
 
-        # return class
-        return cls( injection_density=data_volumes["injection_density"],
-                    projection_density=data_volumes["projection_density"])
+        return cls( injection_density, projection_density )
 
 
     def __init__(self, injection_density=None, projection_density=None):
@@ -237,7 +232,7 @@ class Experiment(object):
 
         masked_injection = mask_object.mask_volume( self.injection_density )
 
-        return masked_injection / injection_density.sum()
+        return masked_injection.sum() / self.injection_density.sum()
 
     def mask_volume(self, volume, mask_object):
         """Returns masked volume (flattened)
