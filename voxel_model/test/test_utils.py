@@ -4,7 +4,7 @@ from functools import reduce
 from numpy.testing import assert_array_equal
 
 from voxel_model.utils \
-    import unique_with_order, lex_ordered_unique_counts, column_fill_stack
+    import unique_with_order, lex_ordered_unique_counts, padded_diagonal_fill
 
 # -----------------------------------------------------------------------------
 # tests:
@@ -18,13 +18,13 @@ def test_lex_ordered_unique_counts():
 
 # -----------------------------------------------------------------------------
 # tests:
-def test_column_fill_stack():
+def test_padded_diagonal_fill():
     a = 1*np.ones((2,5))
     b = 2*np.ones((1,4))
     c = 3*np.ones((3,1))
     d = 4*np.ones((1,1))
 
-    filled = column_fill_stack([a,b,c,d])
+    filled = padded_diagonal_fill([a,b,c,d])
 
     assert( filled.shape == (7,11) )
     assert( filled.sum() == np.add.reduce(map(np.sum, [a,b,c,d])) )

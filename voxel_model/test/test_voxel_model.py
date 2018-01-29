@@ -56,10 +56,6 @@ def source_key():
 def target_key():
     return np.array([[[9,9],[3,3]],[[9,9],[3,3]],[[9,9],[3,3]]]).ravel(),
 
-@pytest.fixture(scope="function")
-def regionalized_voxel_model(source_voxels, source_key, target_key):
-    return RegionalizedVoxelModel(source_voxels, source_key, target_key)
-
 # ----------------------------------------------------------------------------
 # test
 def test_get_kernel(voxel_model, centroids):

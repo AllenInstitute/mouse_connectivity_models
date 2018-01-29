@@ -6,9 +6,9 @@ import numpy as np
 
 from numpy.testing import assert_array_equal, assert_raises
 
-from voxel_model.model_data import ModelData, get_experiment_ids
+from voxel_model.model_data \
+        import ModelData, get_experiment_ids, generate_experiments_from_mcc
 
-# mock ????
 from voxel_model.experiment import Experiment
 from voxel_model.masks import Mask
 
@@ -36,17 +36,16 @@ def test_get_experiment_ids(mcc):
     assert( isinstance(experiment_ids, list) )
     assert( all([ isinstance(eid, int) for eid in experiment_ids ]) )
 
+# -----------------------------------------------------------------------------
+# tests
+def test_generate_experiments_from_mcc(mcc):
+    pass
+
 # =============================================================================
 # ModelData class
 # -----------------------------------------------------------------------------
 # tests
-def test_valid_experiment(mcc, source_mask, target_mask):
-    pass
-
-# -----------------------------------------------------------------------------
-# tests
-def test_get_experiment_attrs():
-    structure_ids = [12, 315]
+def test_is_valid_experiment(mcc, source_mask, target_mask):
     pass
 
 # -----------------------------------------------------------------------------
