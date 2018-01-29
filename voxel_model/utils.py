@@ -2,20 +2,10 @@
 # License:
 
 from __future__ import absolute_import
+from itertools import izip
 import numpy as np
-from collections import namedtuple
 
 from .experiment import Experiment
-
-def get_experiment_ids(mcc, structure_ids, cre=None):
-    """Returns all experiment ids given some structure_ids
-    PRIMARY INJECTION STRUCTURES
-    """
-    # filters injections by structure id OR DECENDENT
-    experiments = mcc.get_experiments(dataframe=False, cre=cre,
-                                      injection_structure_ids=structure_ids)
-    return [ experiment['id'] for experiment in experiments ]
-
 
 def unique_with_order(arr):
     """np.unique with counts in original order."""
@@ -37,12 +27,20 @@ def lex_ordered_unique_counts(arr, ordered):
     order = np.argsort( np.argsort(ordered) )
     return unique[order], counts[order]
 
-def column_fill_stack(arrays):
+def padded_diagonal_fill(arrays):
     """stacks uneven arrays padding with zeros"""
     # get a total count of needed columns
-    n_cols = np.add.reduce([arr.shape[1] for arr in arrays])
 
-    arrays = [np.hstack( (arr, np.zeros((arr.shape[0], n_cols-arr.shape[1]))) )
-              for arr in arrays]
+    shapes = [x.shape for x in arrays]
+    padded = np.zeros( map(sum, izip(*shapes)) )
 
-    return np.vstack( arrays )
+    i, j = 0, 0
+    for arr in arrays:
+        n_rows, n_cols = arr.shape
+
+        padded[i:i+n_rows, j:j+n_cols] = arr
+
+        i += n_rows
+        j += n_cols
+
+    return padded
