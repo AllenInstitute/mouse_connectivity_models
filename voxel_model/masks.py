@@ -2,10 +2,10 @@
 # License:
 
 from __future__ import division
+from functools import reduce
 import pickle
-import six
-import operator as op
 import numpy as np
+import operator as op
 
 class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
