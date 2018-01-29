@@ -7,6 +7,12 @@ import numpy as np
 
 from .experiment import Experiment
 
+__all__ = [
+    "unique_with_order",
+    "lex_ordered_unique_counts",
+    "padded_diagonal_fill"
+]
+
 def unique_with_order(arr):
     """np.unique with counts in original order."""
     return_params = { "return_index":True, "return_counts":True }
