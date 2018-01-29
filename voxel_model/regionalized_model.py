@@ -3,6 +3,21 @@ import numpy as np
 
 from .utils import lex_ordered_unique_counts
 
+__all__ = [
+    "RegionalizedModel"
+]
+
+def _generate_column_sets(key, region_set):
+    """Yields indices of columns where kye==region...
+
+    ...
+
+    Parameters
+    ----------
+    """
+    for region in region_set:
+        yield np.isin(key, region).nonzero()[0]
+
 class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
@@ -49,24 +64,34 @@ class RegionalizedModel(object):
     ]
 
     def __init__(self, weights, nodes, source_key, target_key, ordering=None):
-        # valid indices (source/target keys likely to have zeros)
+        if weights.shape[1] != nodes.shape[0]:
+            raise ValueError("weights and nodes must have equal inner dimension")
+
+        if source_key.size != weights.shape[0]:
+            raise ValueError("rows of weights and elements in source_key "
+                             "must be equal size")
+
+        if target_key.size != nodes.shape[1]:
+            raise ValueError("columns of nodes and elements in target_key "
+                             "must be of equal size")
+
+        # want only valid indices (source/target keys likely to have zeros)
         rows = source_key.nonzero()[0]
         cols = target_key.nonzero()[0]
 
         # subset
-        self.weights = weights[rows, :]
-        self.nodes = nodes[:, cols]
-        self.source_key = source_key[ rows ]
-        self.target_key = target_key[ cols ]
+        # TODO : look into if copy necessary/better performance
+        self.weights = weights[rows, :].copy()
+        self.nodes = nodes[:, cols].copy()
+        self.source_key = source_key[ rows ].copy()
+        self.target_key = target_key[ cols ].copy()
         self.ordering = ordering
 
     def predict(self, X, normalize=False):
         raise NotImplementedError
 
-    def _get_unique_counts(self, keyname):
+    def _get_unique_counts(self, key):
         """ ... """
-        key = getattr(self, keyname)
-
         if self.ordering is not None:
             return lex_ordered_unique_counts( key, self.ordering )
         else:
@@ -76,30 +101,29 @@ class RegionalizedModel(object):
         """Produces the full regionalized connectivity"""
 
         # get counts
-        source_regions, self.source_counts = self._get_unique_counts("source_key")
-        target_regions, self.target_counts = self._get_unique_counts("target_key")
+        source_regions, source_counts = self._get_unique_counts(self.source_key)
+        target_regions, target_counts = self._get_unique_counts(self.target_key)
 
         # integrate target regions
-        # NOTE: probably more efficient to sort then stride by nt_regions
         temp = np.empty( (target_regions.size, self.weights.shape[0]) )
-        for i, region in enumerate(target_regions):
-            cols = np.isin(self.target_key, region)
+        column_iterator = _generate_column_sets(self.target_key, target_regions)
 
+        for i, columns in enumerate(column_iterator):
             # same output as weights.dot(nodes[:,cols]).sum(axis=1)
-            # but much more memory efficient to compute sum first
-            temp[i,:] = self.weights.dot(
-                np.einsum('ji->j', self.nodes[:,cols])
-            )
+            # but much more efficient to compute sum first
+            temp[i,:] = self.weights.dot( self.nodes[:,columns].sum(axis=1) )
 
         # integrate source regions
-        # NOTE: probably more efficient to sort then stride by ns_regions
-        region_matrix = np.empty( (source_regions.size, target_regions.size) )
-        for i, region in enumerate(source_regions):
-            cols = np.isin(self.source_key, region)
+        region_matrix = np.empty( (source_regions.size, temp.size[0]) )
+        column_iterator = _generate_column_sets(self.source_key, source_regions)
 
+        for i, columns in enumerate(column_iterator):
             # NOTE : if region were 1 voxel, would not work
-            region_matrix[i,:] = temp[:,cols].sum(axis=1)
+            region_matrix[i,:] = temp[:,columns].sum(axis=1)
 
+        # want counts for metrics
+        self.source_counts = source_counts
+        self.target_counts = target_counts
         return region_matrix
 
     @property
