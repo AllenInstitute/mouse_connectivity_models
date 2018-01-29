@@ -7,6 +7,35 @@ import pickle
 import numpy as np
 import operator as op
 
+__all__ = [
+    "Mask"
+]
+
+def _validate_descendant_ids(structure_ids, descendant_ids):
+    """ ... """
+    # check lengths (for zip)
+    if len(structure_ids) != len(descendant_ids):
+        return False
+
+    return all( [dids[0] == sid for sid, dids
+                  in zip(structure_ids, descendant_ids)] )
+
+def _check_disjoint_structures(structure_ids, descendant_ids):
+    """ checks that descendants are disjoint """
+
+    if _validate_descendant_ids(structure_ids, descendant_ids):
+        # first elem in descendant_ids is structure id from which they descend
+        only_descendants = [ids[1:] for ids in descendant_ids if len(ids) > 1]
+
+        if set(structure_ids) & set(reduce(op.add, only_descendants, [])):
+            # a structure_id is a descendant of another
+            return False
+
+        # else: descendant_ids == structure_ids, assume @ bottom of annotation
+        return True
+
+    return False
+
 class Mask(object):
     """Base Mask class for SourceMask and TargetMask.
 
@@ -34,14 +63,17 @@ class Mask(object):
     # only R hemisphere for source
     VALID_HEMISPHERES = [1,2,3]
 
+    def _check_hemisphere(self, hemisphere):
+        """ ..."""
+        if hemisphere not in self.VALID_HEMISPHERES:
+            raise ValueError("must one of", self.VALID_HEMISPHERES)
+
+        return hemisphere
+
     def __init__(self, mcc, structure_ids, hemisphere=3):
         self.mcc = mcc
         self.structure_ids = structure_ids
-
-        if hemisphere in self.VALID_HEMISPHERES:
-            self.hemisphere = hemisphere
-        else:
-            raise ValueError("must one of", self.VALID_HEMISPHERES)
+        self.hemisphere = self._check_hemisphere(hemisphere)
 
         # get reference_space module and update to resolved structures
         self.reference_space = self.mcc.get_reference_space()
@@ -51,31 +83,37 @@ class Mask(object):
         self.structure_tree = self.reference_space.structure_tree
         self.annotation = self.reference_space.annotation
 
-    def _mask_to_hemisphere(self, mask):
+    @staticmethod
+    def _mask_to_hemisphere(mask, hemisphere):
         """masks to hemi"""
         # mask to hemisphere
         midline = mask.shape[2]//2
-        if self.hemisphere == 1:
+        if hemisphere == 1:
             # contra
             mask[:,:,midline:] = 0
-        elif self.hemisphere == 2:
+        elif hemisphere == 2:
             # ipsi
             mask[:,:,:midline] = 0
 
         return mask
 
-    def _get_mask(self, structure_ids=None, return_key=False):
+    def _get_mask(self, structure_ids, hemisphere=None):
         """ ...  """
-        mask = self.reference_space.make_structure_mask(self.structure_ids,
-                                                        direct_only=False)
-        return self._mask_to_hemisphere(mask)
+        if hemisphere is not None:
+            hemisphere = self._check_hemisphere( hemisphere )
+        else:
+            hemisphere = self.hemisphere
+
+        mask = self.reference_space.make_structure_mask( structure_ids,
+                                                         direct_only=False )
+        return Mask._mask_to_hemisphere( mask, hemisphere )
 
     @property
     def mask(self):
         try:
             return self._mask
         except AttributeError:
-            self._mask = self._get_mask(return_key=False)
+            self._mask = self._get_mask(self.structure_ids)
             return self._mask
 
     @property
@@ -91,7 +129,7 @@ class Mask(object):
     def masked_shape(self):
         return ( np.count_nonzero(self.mask), )
 
-    def get_key(self, structure_ids=None, disjoint_structures=True):
+    def get_key(self, structure_ids=None, hemisphere=None):
         # TODO: look into cleaning up check for disjoint
         """Returns flattened annotation key.
 
@@ -101,45 +139,35 @@ class Mask(object):
         Parameters
         ----------
         """
-        # do not want to overwrite annotation
-        annotation = np.copy(self.annotation)
-
         if structure_ids is None:
-            # use structure_ids mask was originally built with
             structure_ids = self.structure_ids
-            mask = self.mask
-        else:
-            # from allensdk.core.reference_space.make_structure_mask
-            # want only non overlapping structures (annotation)
-            mask = self.reference_space.make_structure_mask(structure_ids,
-                                                            direct_only=False)
+
         # get list of descendant_ids for each structure id
-        # NOTE : descendant_ids includes the structure id
         descendant_ids = self.structure_tree.descendant_ids( structure_ids )
 
-        if disjoint_structures:
-            all_descendants = [ids[1:] for ids in descendant_ids if len(ids) > 1]
+        if not _check_disjoint_structures( structure_ids, descendant_ids ):
+            raise ValueError("structures are not disjoint")
 
-            if all_descendants:
-                all_descendants = set(reduce(op.add, all_descendants))
-
-                if set(structure_ids) & all_descendants:
-                    raise ValueError("structure_ids are not disjoint!")
-
-            for structure_id, descendants in zip(structure_ids, descendant_ids):
-                if len(descendants) > 1:
-                    # set annotation equal to structure where it has descendants
-                    idx = np.isin(annotation, descendants)
-                    annotation[ idx ] = structure_id
-
-            # mask to structure_ids
-            annotation[ np.logical_not(mask) ] = 0
-
-            return self.mask_volume(annotation)
-
+        if structure_ids is self.structure_ids and hemisphere is None:
+            # saves time if already computed
+            mask = self.mask
         else:
-            # would have to iterate through structure_ids hierarchically
-            raise NotImplementedError
+            mask = self._get_mask( structure_ids, hemisphere=hemisphere )
+
+        # do not want to overwrite annotation
+        annotation = self.annotation.copy()
+
+        for structure_id, descendants in zip(structure_ids, descendant_ids):
+
+            if len(descendants) > 1:
+                # set annotation equal to structure where it has descendants
+                idx = np.isin(annotation, descendants)
+                annotation[ idx ] = structure_id
+
+        # mask to structure_ids
+        annotation[ np.logical_not(mask) ] = 0
+
+        return self.mask_volume(annotation)
 
     def mask_volume(self, X):
         """Masks a given volume
@@ -173,14 +201,11 @@ class Mask(object):
             # TODO : better error statement
             raise ValueError("X must be same shape as annotation")
 
-        if inplace:
-            # numpy throws value error if type(fill)=array && fill.shape != idx
-            X[ self.mask.nonzero() ] = fill
+        _X = X.copy() if not inplace else X
 
-        else:
-            Y = np.copy(X)
-            Y[ self.mask.nonzero() ] = fill
-            return Y
+        # numpy throws value error if type(fill)=array && fill.shape != idx
+        _X[ self.mask.nonzero() ] = fill
+        return _X
 
     def map_masked_to_annotation(self, y):
         """Maps a masked vector y back to annotation volume
