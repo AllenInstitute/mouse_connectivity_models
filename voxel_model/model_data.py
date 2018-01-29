@@ -26,7 +26,7 @@ def generate_experiments_from_mcc(mcc, experiment_ids,
     ----------
     """
     for eid in experiment_ids:
-        yield Experiment.from_mcc( mcc, experiment_id,
+        yield Experiment.from_mcc( mcc, eid,
                                    injection_hemisphere=injection_hemisphere)
 
 class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
@@ -48,7 +48,8 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     MIN_PROJECTION_SUM=0.0
     MIN_RATIO_CONTAINED_INJECTION=0.0
 
-    def _is_valid_experiment(self, injection, projection, injection_ratio):
+    @classmethod
+    def _is_valid_experiment(cls, injection, projection, injection_ratio):
         """ ...
 
         Parameters
@@ -56,16 +57,18 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
         """
 
-        return all( (injection_ratio >= self.MIN_RATIO_CONTAINED_INJECTION,
-                     injection.sum() >= self.MIN_INJECTION_SUM,
-                     projection.sum() >= self.MIN_PROJECTION_SUM) )
+        return all( (injection_ratio >= cls.MIN_RATIO_CONTAINED_INJECTION,
+                     injection.sum() >= cls.MIN_INJECTION_SUM,
+                     projection.sum() >= cls.MIN_PROJECTION_SUM) )
 
     @classmethod
-    def from_mcc_and_masks(cls, mcc, source_mask, target_mask):
+    def from_mcc_and_masks( cls, mcc, source_mask, target_mask,
+            experiment_ids=None ):
         """  ... """
 
         # get list of experment ids
-        experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids)
+        if experiment_ids is None:
+            experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids)
 
         # initialize containers
         x, y, centroids = [], [], []
@@ -79,7 +82,7 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
             # get ratio in/out
             injection_ratio = exp.get_injection_ratio_contained( source_mask )
 
-            if self._valid_experiment( injection, projection, injection_ratio ):
+            if cls._is_valid_experiment( injection, projection, injection_ratio ):
                 # update
                 x.append( injection )
                 y.append( projection )
@@ -93,11 +96,11 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
     def __new__(cls, X, y, source_voxels):
 
-        if type(X) == np.ndarray and type(y) == np.ndarray:
+        if isinstance(X, np.ndarray) and isinstance(y, np.ndarray):
             if X.shape[0] != y.shape[0]:
                 raise ValueError("# of experiments in X and y is inconsistent")
 
-        elif type(source_voxels) == np.ndarray:
+        elif isinstance(source_voxels, np.ndarray):
             if source_voxels.shape[0] != injection_density.shape[1]:
                 raise ValueError( "# of voxels in X and source_voxels "
                                   "is inconsistent" )
@@ -105,4 +108,4 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
             raise ValueError( "X, y and source_voxels must all be of "
                               "type numpy.ndarray" )
 
-        return super(ModelData, cls).__new__(X, y, source_voxels)
+        return super(ModelData, cls).__new__(cls, X, y, source_voxels)
