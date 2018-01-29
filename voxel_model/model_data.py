@@ -16,6 +16,19 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
                                       injection_structure_ids=structure_ids)
     return [ experiment['id'] for experiment in experiments ]
 
+def generate_experiments_from_mcc(mcc, experiment_ids,
+                                  injection_hemisphere=None):
+    """Generates Experiment objects.
+
+    ...
+
+    Parameters
+    ----------
+    """
+    for eid in experiment_ids:
+        yield Experiment.from_mcc( mcc, experiment_id,
+                                   injection_hemisphere=injection_hemisphere)
+
 class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     """Container for model data...
 
@@ -35,47 +48,38 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
     MIN_PROJECTION_SUM=0.0
     MIN_RATIO_CONTAINED_INJECTION=0.0
 
-    def _valid_experiment(self, injection, projection, unmasked_injection_sum):
+    def _is_valid_experiment(self, injection, projection, injection_ratio):
+        """ ...
 
-        inj_sum = injection.sum()
-        proj_sum = projection.sum()
-        inj_ratios = injection_sum / unmasked_injection_sum
+        Parameters
+        ----------
 
-        return all( (inj_ratios >= self.MIN_RATIO_CONTAINED_INJECTION,
-                     inj_sum >= self.MIN_INJECTION_SUM,
-                     proj_sum >= self.MIN_PROJECTION_SUM) )
+        """
 
-
-    def _get_experiment_attrs(self, exp, source_mask, target_mask):
-
-        # defines if normalized
-        injection = source_mask.mask_volume( getattr(exp, self.INJECTION_KEY) )
-        projection = target_mask.mask_volume( getattr(exp, self.PROJECTION_KEY) )
-
-        unmasked_injection_sum = exp.injection_sum
-
-        return injection, projection, unmasked_injection_sum
+        return all( (injection_ratio >= self.MIN_RATIO_CONTAINED_INJECTION,
+                     injection.sum() >= self.MIN_INJECTION_SUM,
+                     projection.sum() >= self.MIN_PROJECTION_SUM) )
 
     @classmethod
     def from_mcc_and_masks(cls, mcc, source_mask, target_mask):
         """  ... """
 
-        # for convenience
-        structure_ids = source_mask.structure_ids
-        hemisphere = source_mask.hemisphere
+        # get list of experment ids
+        experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids)
 
         # initialize containers
         x, y, centroids = [], [], []
-        for experiment_id in get_experiment_ids(mcc, structure_ids):
+        for exp in generate_experiments_from_mcc( mcc, experiment_ids,
+                                                  source_mask.hemisphere ):
 
-            # get experiment data
-            exp = Experiment.from_mcc( mcc, experiment_id,
-                                       injection_hemisphere = hemisphere)
+            # get masked experiment data volumes
+            injection = exp.mask_volume( cls.INJECTION_KEY, source_mask )
+            projection = exp.mask_volume( cls.PROJECTION_KEY, target_mask )
 
-            # test if meets parameters
-            inj, proj, unmasked_inj_sum = self._get_experiment_attrs(exp)
+            # get ratio in/out
+            injection_ratio = exp.get_injection_ratio_contained( source_mask )
 
-            if self._valid_experiment(inj, proj, unmasked_inj_sum):
+            if self._valid_experiment( injection, projection, injection_ratio ):
                 # update
                 x.append( injection )
                 y.append( projection )
