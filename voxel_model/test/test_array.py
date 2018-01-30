@@ -7,7 +7,7 @@ import numpy as np
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from voxel_model.implicit_construction import VoxelModelArray
+from voxel_model.array import Array
 
 @pytest.fixture(scope="module")
 def weights():
@@ -24,7 +24,7 @@ def true_array(weights, nodes):
 
 @pytest.fixture(scope="function")
 def voxel_model(weights, nodes):
-    return VoxelModelArray(weights=weights, nodes=nodes)
+    return Array(weights=weights, nodes=nodes)
 
 # ============================================================================
 # constructors
@@ -32,7 +32,7 @@ def voxel_model(weights, nodes):
 # test
 def test_from_hdf5():
     args = ("weights.hdf5", "nodes.hdf5")
-    assert_raises( NotImplementedError, VoxelModelArray.from_hdf5, *args )
+    assert_raises( NotImplementedError, Array.from_hdf5, *args )
 
 # ----------------------------------------------------------------------------
 # test
@@ -46,7 +46,7 @@ def test_from_csv(tmpdir, weights, nodes):
     np.savetxt(f1, weights, delimiter=",")
     np.savetxt(f2, nodes, delimiter=",")
 
-    voxel_model = VoxelModelArray.from_csv(f1, f2)
+    voxel_model = Array.from_csv(f1, f2)
 
     assert_array_equal( weights, voxel_model.weights )
     assert_array_equal( nodes, voxel_model.nodes )
@@ -63,7 +63,7 @@ def test_from_npy(tmpdir, weights, nodes):
     np.save(f1, weights)
     np.save(f2, nodes)
 
-    voxel_model = VoxelModelArray.from_npy(f1, f2)
+    voxel_model = Array.from_npy(f1, f2)
 
     assert_array_equal( weights, voxel_model.weights )
     assert_array_equal( nodes, voxel_model.nodes )
@@ -79,15 +79,15 @@ def test_from_fitted_true_array():
 # test
 def test_init():
     # not both arrays
-    assert_raises( ValueError, VoxelModelArray, [1], np.array([1]) )
+    assert_raises( ValueError, Array, [1], np.array([1]) )
 
     # wrong sizes
     a, b = map(np.ones, [(10,10), (100,10)])
-    assert_raises( ValueError, VoxelModelArray, a, b )
+    assert_raises( ValueError, Array, a, b )
 
     # dtype mismatch
     b = np.ones((10,10)).astype(np.float32)
-    assert_raises( ValueError, VoxelModelArray, a, b )
+    assert_raises( ValueError, Array, a, b )
 
 # ----------------------------------------------------------------------------
 # test
@@ -104,7 +104,7 @@ def test_getitem(voxel_model, true_array):
 # ----------------------------------------------------------------------------
 # test
 def test_len(weights, nodes):
-    model = VoxelModelArray(weights, nodes)
+    model = Array(weights, nodes)
 
     assert( len(weights) == len(model) )
 
@@ -113,7 +113,7 @@ def test_len(weights, nodes):
 # ----------------------------------------------------------------------------
 # test
 def test_dtype(weights, nodes):
-    model = VoxelModelArray(weights, nodes)
+    model = Array(weights, nodes)
 
     assert( model.dtype == weights.dtype )
     assert( model.dtype == nodes.dtype )

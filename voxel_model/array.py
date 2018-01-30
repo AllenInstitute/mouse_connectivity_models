@@ -3,11 +3,11 @@
 
 from __future__ import division
 from functools import partial, reduce
-import os
-import numpy as np
 import operator as op
+import numpy as np
 
-class VoxelModelArray(object):
+
+class Array(object):
     """Class for implicit construction of the voxel model.
 
     See voxel_model.VoxelModel for weights/nodes descriptions
