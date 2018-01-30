@@ -124,12 +124,16 @@ def test_from_mcc(mcc, experiment):
 # tests
 def test_normalized_injection_density(experiment):
 
+    assert( experiment.normalized_injection_density.shape == \
+            experiment.injection_density.shape )
     assert( experiment.normalized_injection_density.dtype == np.float )
 
 # -----------------------------------------------------------------------------
 # tests
 def test_normalized_projection_density(experiment):
 
+    assert( experiment.normalized_projection_density.shape == \
+            experiment.projection_density.shape )
     assert( experiment.normalized_projection_density.dtype == np.float )
 
 # -----------------------------------------------------------------------------

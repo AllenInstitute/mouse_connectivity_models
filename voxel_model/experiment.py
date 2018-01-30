@@ -152,12 +152,16 @@ class Experiment(object):
     """
 
     DATA_MASK_TOLERANCE = 0.5
+    DEFAULT_INJECTION_HEMISPHERE = 2
     VALID_INJECTION_HEMISPHERES = [1,2,3]
 
     @classmethod
-    def from_mcc(cls, mcc, experiment_id, injection_hemisphere=2):
+    def from_mcc(cls, mcc, experiment_id, injection_hemisphere=None):
 
-        if injection_hemisphere not in cls.VALID_INJECTION_HEMISPHERES:
+        if injection_hemisphere is None:
+            injection_hemisphere = cls.DEFAULT_INJECTION_HEMISPHERE
+
+        elif injection_hemisphere not in cls.VALID_INJECTION_HEMISPHERES:
             raise ValueError( "Injection hemisphere must be in "
                               "{.VALID_INJECTION_HEMISPHERES}".format(cls) )
 
@@ -236,7 +240,7 @@ class Experiment(object):
 
         return masked_injection.sum() / self.injection_density.sum()
 
-    def mask_volume(self, volume, mask_object):
+    def mask_volume(self, volume, mask):
         """Returns masked volume (flattened)
 
         ...
@@ -250,7 +254,7 @@ class Experiment(object):
         except AttributeError:
             raise ValueError( "volume must be a valid data_volume" )
 
-        if isinstance(mask_object, Mask):
+        if isinstance(mask, Mask):
             return mask.mask_volume( data_volume )
         else:
             # assume np.ndarray
