@@ -1,14 +1,17 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
-# License: 
+# License:
 
+from __future__ import division
+from functools import partial, reduce
 import os
 import numpy as np
+import operator as op
 
 class ImplicitModel(object):
     """Class for implicit construction of the voxel model
 
     Allows for implicit construction of the voxel model. Contains functions
-    percieved to be useful in this end. If additional functionality wanted, 
+    percieved to be useful in this end. If additional functionality wanted,
     please contact author.
 
     Can be intatiated from:
@@ -39,95 +42,128 @@ class ImplicitModel(object):
     >>> implicit_model.get_row(0)
     [0.0000141, 0.0000001, ..., 0.0000093]
     """
+    ndim = 2
 
-    def __init__(self, weights=None, nodes=None, 
-                 dir_path=None, voxel_model=None):
-        if weights is not None and nodes is not None:
-            if weights.shape[1] != nodes.shape[0]:
-                raise ValueError("weight and nodes must match in inner diameter")
+    @classmethod
+    def from_hdf5(cls, weights_file, nodes_file, **kwargs):
+        raise NotImplementedError
 
-            self.weights = weights
-            self.nodes = nodes
-        elif dir_path is not None:
-            try:
-                weights_path = os.path.join(dir_path, "weights.csv")
-                nodes_path = os.path.join(dir_path, "nodes.csv")
-                
-                self.weights = np.loadtxt(weights_path, delimiter=",")
-                self.nodes = np.loadtxt(nodes_path, delimiter=",")
+    @classmethod
+    def from_csv(cls, weights_file, nodes_file, **kwargs):
+        """ uses np.loadtxt!!!!!! """
+        loader = partial(np.loadtxt, delimiter=",", ndmin=cls.ndim, **kwargs)
 
-            except IOError:
-                raise ValueError("dir_path does not exist")
-        elif voxel_model is not None:
-            try:
-                self.weights = voxel_model.weights
-                self.nodes = voxel_model.y_fit_
-            except AttributeError:
-                raise ValueError("VoxelModel has not been fit!")
+        weights, nodes = map(loader, (weights_file, nodes_file))
+        return cls(weights, nodes)
 
-    def get_row(self, i):
-        """Returns a row of the full voxel connectivity matrix
+    @classmethod
+    def from_npy(cls, weights_file, nodes_file, **kwargs):
+        """ uses np.load!!!!!! """
+        loader = partial(np.load, allow_pickle=True, **kwargs)
 
-        Parameters
-        ----------
-        i :: int
-            index of wanted row
+        weights, nodes = map(loader, (weights_file, nodes_file))
+        return cls(weights, nodes)
 
-        Returns
-        -------
-        array, shape=(,n_voxels)
-            row of voxel x voxel connectivity matrix
+    @classmethod
+    def from_fitted_voxel_model(cls, voxel_model):
+        """ from fitted voxel model """
+        try:
+            weights = voxel_model.weights
+            nodes = voxel_model.y_fit_
+
+        except AttributeError:
+            raise ValueError("VoxelModel has not been fit!")
+
+        return cls(weights, nodes)
+
+    def __init__(self, weights, nodes):
+        if not ( isinstance(weights, np.ndarray) and
+                 isinstance(nodes, np.ndarray ) ):
+            raise ValueError( "both weights and nodes must be numpy.ndarray" )
+
+        if weights.shape[1] != nodes.shape[0]:
+            raise ValueError( "weights and nodes must have equal "
+                              "inner dimension" )
+
+        if weights.dtype != nodes.dtype:
+            raise ValueError( "weights and nodes must be of the same dtype" )
+
+        self.weights = weights
+        self.nodes = nodes
+
+    def __getitem__(self, key):
+        """Allows for slice indexing similar to np.ndarray.
+
+        ...
         """
-        return self.weights[i].dot(self.nodes)
+        if isinstance(key, slice):
+            # row slice
+            return self.weights[key].dot(self.nodes)
 
-    def get_column(self, j):
-        """Returns a column of the full voxel connectivity matrix
+        elif isinstance(key, tuple):
+            if len(key) != self.ndim:
+                raise ValueError("slice is not compatible with array")
 
-        Parameters
-        ----------
-        j :: int
-            index of wanted column
+            # row/colum slice
+            return self.weights[key[0],:].dot( self.nodes[:,key[1]] )
 
-        Returns
-        -------
-        array, shape=(n_voxels,)
-            column of voxel x voxel connectivity matrix
+        else:
+            raise ValueError("slice is not compatible with array")
+
+    def __len__(self):
+        return self.weights.shape[0]
+
+    @property
+    def dtype(self):
+        return self.weights.dtype #choice doesnt matter
+
+    @property
+    def shape(self):
+        return (self.weights.shape[0], self.nodes.shape[1])
+
+    @property
+    def size(self):
+        return reduce(op.mul, self.shape)
+
+    @property
+    def T(self):
+        return self.transpose()
+
+    def transpose(self):
+        """DOES NOT RETURN VIEW"""
+        self.nodes = self.nodes.T
+        self.weights = self.weights.T
+
+        return self
+
+    def astype(self, dtype, **kwargs):
+        """ ...
+
+        Consistent with numpy.ndarray.astype with copy
+
         """
-        return self.weights.dot(self.nodes[:,j])
+        self.weights = self.weights(dtype, **kwargs)
+        self.nodes = self.nodes(dtype, **kwargs)
 
-    def get_rows(self, row_indices):
-        """Returns rows of the full voxel connectivity matrix
+        return self
 
-        Good for chunked computations on rows
+    def sum(self, axis=None):
+        """ .... """
+        if axis is None:
+            return self.weights.sum(axis=0).dot( self.nodes(axis=1) )
 
-        Parameters
-        ----------
-        row_indices :: list of int
-            indices of wanted rows
+        elif axis == 0:
+            return self.weights.sum(axis=axis).dot( self.nodes )
 
-        Returns
-        -------
-        array, shape=(len(row_indices),n_voxels)
-            rows of voxel x voxel connectivity matrix
-        """
-        return self.weights[row_indices].dot(self.nodes)
+        elif axis in [-1,1]:
+            return self.weights.dot( self.nodes.sum(axis=axis) )
 
-    def get_columns(self, column_indices):
-        """Returns columns of the full voxel connectivity matrix
+        else:
+            raise ValueError("if given, axis must be in 0,1,-1,None")
 
-        Good for chunked computations on columns
-
-        Parameters
-        ----------
-        column_indices :: int
-            index of wanted column
-
-        Returns
-        -------
-        array, shape=(n_voxels,len(row_indices))
-            columns of voxel x voxel connectivity matrix
-        """
-        return self.weights.dot(self.nodes[:,column_indices])
+    def mean(self, axis=None):
+        """ ... """
+        return self.sum(axis=axis) / self.shape[::-1][axis]
 
     def iterrows(self):
         """Generator for yielding rows of the voxel matrix"""
@@ -138,3 +174,29 @@ class ImplicitModel(object):
         """Generator for yielding columns of the voxel matrix"""
         for column in self.nodes.T:
             yield self.weights.dot(column)
+
+    def iterrow_blocks(self, n_blocks=0):
+        """Generator for yielding rows of the voxel matrix"""
+        max_blocks = self.weights.shape[0]
+        if n_blocks > max_blocks:
+            raise ValueError( "n_blocks > max_blocks ({})".format(max_blocks) )
+
+        elif n_blocks < 1:
+            raise ValueError( "n_blocks < 1" )
+
+        row_blocks = np.array_split( self.weights, n_blocks, axis=0 )
+        for block in row_blocks:
+            yield block.dot( self.nodes )
+
+    def itercolumns_blocks(self, n_blocks=0):
+        """Generator for yielding rows of the voxel matrix"""
+        max_blocks = self.nodes.shape[1]
+        if n_blocks > max_blocks:
+            raise ValueError( "n_blocks > max_blocks ({})".format(max_blocks) )
+
+        elif n_blocks < 1:
+            raise ValueError( "n_blocks < 1" )
+
+        col_blocks = np.array_split( self.nodes, n_blocks, axis=1 )
+        for block in col_blocks:
+            yield self.weights.dot( block )

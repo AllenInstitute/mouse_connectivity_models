@@ -4,6 +4,8 @@ NOTE :: NEED to add testing for __init__ esp for passing fitted voxel_model
 from __future__ import division
 import pytest
 import numpy as np
+from numpy.testing \
+    import assert_array_equal, assert_array_almost_equal, assert_raises
 
 from voxel_model.implicit_construction import ImplicitModel
 
@@ -22,51 +24,115 @@ def nodes():
                      [2, 2, 2, 1, 0, 7, 6, 9]])
 
 @pytest.fixture(scope="module")
-def true_voxel_model(weights, nodes):
+def true_model(weights, nodes):
     return weights.dot(nodes)
 
 @pytest.fixture(scope="module")
 def implicit_model(weights, nodes):
     return ImplicitModel(weights=weights, nodes=nodes)
 
+# ============================================================================
+# constructors
 # ----------------------------------------------------------------------------
-# test 
-def test_get_row(implicit_model, true_voxel_model):
-    n_rows = implicit_model.weights.shape[0]
-    for i in range(n_rows):
-        np.testing.assert_array_equal(implicit_model.get_row(i), 
-                                      true_voxel_model[i])
+# test
+def test_from_hdf5():
+    args = ("weights.hdf5", "nodes.hdf5")
+    assert_raises( NotImplementedError, ImplicitModel.from_hdf5, *args )
 
 # ----------------------------------------------------------------------------
-# test 
-def test_get_column(implicit_model, true_voxel_model):
-    n_cols = implicit_model.nodes.shape[1]
-    for j in range(n_cols):
-        np.testing.assert_array_equal(implicit_model.get_column(j),
-                                      true_voxel_model[:,j])
+# test
+def test_from_csv():
+    pass
 
 # ----------------------------------------------------------------------------
-# test 
-def test_get_rows(implicit_model, true_voxel_model):
-    rows = [0, 2, 3]
-    np.testing.assert_array_equal(implicit_model.get_rows(rows),
-                                  true_voxel_model[rows])
+# test
+def test_from_npy():
+    pass
 
 # ----------------------------------------------------------------------------
-# test 
-def test_get_columns(implicit_model, true_voxel_model):
-    cols = [0, 2, 3, 6]
-    np.testing.assert_array_equal(implicit_model.get_columns(cols),
-                                  true_voxel_model[:, cols])
+# test
+def test_from_fitted_voxel_model():
+    pass
+
+# ============================================================================
+# dunder methods
+# ----------------------------------------------------------------------------
+# test
+def test_init():
+    pass
 
 # ----------------------------------------------------------------------------
-# test 
-def test_iterrows(implicit_model, true_voxel_model):
+# test
+def test_getitem():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_len():
+    pass
+
+# ============================================================================
+# properties
+# ----------------------------------------------------------------------------
+# test
+def test_dtype():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_shape():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_size():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_T():
+    pass
+
+# ============================================================================
+# methods
+# ----------------------------------------------------------------------------
+# test
+def test_transpose():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_astype():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_sum():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_mean():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_iterrows(true_model, implicit_model):
     for i, row in enumerate(implicit_model.iterrows()):
-        np.testing.assert_array_equal(row, true_voxel_model[i])
+        assert_array_equal( row, true_model[i] )
 
 # ----------------------------------------------------------------------------
-# test 
-def test_itercols(implicit_model, true_voxel_model):
+# test
+def test_itercolumns(true_model, implicit_model):
     for j, column in enumerate(implicit_model.itercolumns()):
-        np.testing.assert_array_equal(column, true_voxel_model[:, j])
+        assert_array_equal( column, true_model[:, j] )
+
+# ----------------------------------------------------------------------------
+# test
+def test_iterrow_blocks():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_itercolumns_blocks():
+    pass
