@@ -2,10 +2,10 @@
 # License:
 
 from __future__ import absolute_import
-import numpy as np
-
 from collections import namedtuple
 from .experiment import Experiment
+import numpy as np
+
 
 def get_experiment_ids(mcc, structure_ids, cre=None):
     """Returns all experiment ids given some structure_ids
@@ -63,7 +63,7 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
     @classmethod
     def from_mcc_and_masks( cls, mcc, source_mask, target_mask,
-            experiment_ids=None ):
+                            experiment_ids=None ):
         """  ... """
 
         # get list of experment ids
@@ -82,7 +82,7 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
             # get ratio in/out
             injection_ratio = exp.get_injection_ratio_contained( source_mask )
 
-            if cls._is_valid_experiment( injection, projection, injection_ratio ):
+            if cls._is_valid_experiment(injection, projection, injection_ratio):
                 # update
                 x.append( injection )
                 y.append( projection )
@@ -96,16 +96,13 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
     def __new__(cls, X, y, source_voxels):
 
-        if isinstance(X, np.ndarray) and isinstance(y, np.ndarray):
-            if X.shape[0] != y.shape[0]:
-                raise ValueError("# of experiments in X and y is inconsistent")
+        # assumes all are numpy arrays inheritly
+        if X.shape[0] != y.shape[0]:
+            raise ValueError("# of experiments in X and y is inconsistent")
 
-        elif isinstance(source_voxels, np.ndarray):
-            if source_voxels.shape[0] != injection_density.shape[1]:
-                raise ValueError( "# of voxels in X and source_voxels "
-                                  "is inconsistent" )
-        else:
-            raise ValueError( "X, y and source_voxels must all be of "
-                              "type numpy.ndarray" )
+        print X.shape
+        if source_voxels.shape[0] != X.shape[1] - source_voxels.shape[1]:
+            raise ValueError( "# of voxels in X and source_voxels "
+                              "is inconsistent" )
 
         return super(ModelData, cls).__new__(cls, X, y, source_voxels)

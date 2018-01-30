@@ -12,18 +12,6 @@ from voxel_model.model_data \
 from voxel_model.experiment import Experiment
 from voxel_model.masks import Mask
 
-@pytest.fixture(scope="module")
-def source_mask(mcc):
-    # NOTE : see conftest (annotation and tree
-    structure_ids = [3]
-    return Mask(mcc, structure_ids, hemisphere=2)
-
-@pytest.fixture(scope="module")
-def target_mask(mcc):
-    # NOTE : see conftest (annotation and tree
-    structure_ids = [2,3,4,5,6]
-    return Mask(mcc, structure_ids, hemisphere=3)
-
 # =============================================================================
 # Module level functions
 # -----------------------------------------------------------------------------
@@ -39,21 +27,50 @@ def test_get_experiment_ids(mcc):
 # -----------------------------------------------------------------------------
 # tests
 def test_generate_experiments_from_mcc(mcc):
-    pass
+    structure_ids = [12, 315]
+    experiment_ids = get_experiment_ids(mcc, structure_ids)
+
+    for exp in generate_experiments_from_mcc(mcc, experiment_ids):
+        assert( type(exp) == Experiment )
+
 
 # =============================================================================
 # ModelData class
 # -----------------------------------------------------------------------------
 # tests
-def test_is_valid_experiment(mcc, source_mask, target_mask):
-    pass
+def test_is_valid_experiment():
+    a = np.ones(5)
+
+    assert( ModelData._is_valid_experiment(a, a, 1) )
+    assert( not ModelData._is_valid_experiment(-a, a, 1) )
+    assert( not ModelData._is_valid_experiment(a, -a, 1) )
+    assert( not ModelData._is_valid_experiment(a, a, -1) )
 
 # -----------------------------------------------------------------------------
 # tests
-def test_from_mcc_and_masks():
-    pass
+def test_from_mcc_and_masks(mcc):
+    source_mask = Mask(mcc, [3], hemisphere=2)
+    target_mask = Mask(mcc, [2,3,4,5,6], hemisphere=3)
+
+    data = ModelData.from_mcc_and_masks(mcc, source_mask, target_mask)
+
+    assert( isinstance(data, tuple) )
+    assert( isinstance(data.X, np.ndarray) )
+    assert( isinstance(data.y, np.ndarray) )
+    assert( isinstance(data.source_voxels, np.ndarray) )
+
 
 # -----------------------------------------------------------------------------
 # tests
 def test_new():
-    pass
+    x = np.ones((10,103)) # hstack(centroids, injection)
+    y = np.ones((10,200))
+    a = np.ones((100,3))
+
+    assert( isinstance(ModelData(x,y,a), tuple) )
+
+    # incompatible inner dimensions
+    assert_raises( ValueError, ModelData, x, np.ones((5,200)), a )
+
+    # incompatible coords
+    assert_raises( ValueError, ModelData, x, y, np.ones((50,3)) )
