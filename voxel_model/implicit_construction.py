@@ -7,40 +7,22 @@ import os
 import numpy as np
 import operator as op
 
-class ImplicitModel(object):
-    """Class for implicit construction of the voxel model
-
-    Allows for implicit construction of the voxel model. Contains functions
-    percieved to be useful in this end. If additional functionality wanted,
-    please contact author.
-
-    Can be intatiated from:
-        * weights & nodes matrices
-        * path to directory containing weights & nodes matrices
-        * fitted voxel_model.VoxelModel object
+class VoxelModelArray(object):
+    """Class for implicit construction of the voxel model.
 
     See voxel_model.VoxelModel for weights/nodes descriptions
 
     Parameters
     ----------
-    weights : array-like, optional (default None), shape (n_voxels, n_exps)
+    weights : array-like, shape (n_voxels, n_exps)
         Weights matrix from fitted VoxelModel.
-    nodes : array-like, optional (default None), shape (n_exps, n_voxels)
+    nodes : array-like, shape (n_exps, n_voxels)
         Nodes matrix from fitted VoxelModel.
-    dir_path : string, optional (default None)
-        Path to directory containing weights & nodes matrices from previously
-        fitted VoxelModel.
-    voxel_model : voxel_model.VoxelModel object
-        Fitted VoxelModel object.
-        MUST BE FITTED!
 
     Examples
     --------
 
     >>> from voxel_model.implicit_construction import ImplicitModel
-    >>> implicit_model = ImplicitModel(dir_path="./fitted_model_data/")
-    >>> implicit_model.get_row(0)
-    [0.0000141, 0.0000001, ..., 0.0000093]
     """
     ndim = 2
 
@@ -96,11 +78,8 @@ class ImplicitModel(object):
 
         ...
         """
-        if isinstance(key, slice):
-            # row slice
-            return self.weights[key].dot(self.nodes)
 
-        elif isinstance(key, tuple):
+        if isinstance(key, tuple):
             if len(key) != self.ndim:
                 raise ValueError("slice is not compatible with array")
 
@@ -108,7 +87,8 @@ class ImplicitModel(object):
             return self.weights[key[0],:].dot( self.nodes[:,key[1]] )
 
         else:
-            raise ValueError("slice is not compatible with array")
+            # row : slice, int, list
+            return self.weights[key].dot(self.nodes)
 
     def __len__(self):
         return self.weights.shape[0]
@@ -131,8 +111,7 @@ class ImplicitModel(object):
 
     def transpose(self):
         """DOES NOT RETURN VIEW"""
-        self.nodes = self.nodes.T
-        self.weights = self.weights.T
+        self.nodes, self.weights = self.weights.T, self.nodes.T
 
         return self
 
@@ -142,28 +121,30 @@ class ImplicitModel(object):
         Consistent with numpy.ndarray.astype with copy
 
         """
-        self.weights = self.weights(dtype, **kwargs)
-        self.nodes = self.nodes(dtype, **kwargs)
+        self.weights = self.weights.astype(dtype, **kwargs)
+        self.nodes = self.nodes.astype(dtype, **kwargs)
 
         return self
 
     def sum(self, axis=None):
         """ .... """
         if axis is None:
-            return self.weights.sum(axis=0).dot( self.nodes(axis=1) )
+            return self.weights.sum(axis=0).dot( self.nodes.sum(axis=1) )
 
         elif axis == 0:
             return self.weights.sum(axis=axis).dot( self.nodes )
 
-        elif axis in [-1,1]:
-            return self.weights.dot( self.nodes.sum(axis=axis) )
-
         else:
-            raise ValueError("if given, axis must be in 0,1,-1,None")
+            # [-1, 1] or IndexError
+            return self.weights.dot( self.nodes.sum(axis=axis) )
 
     def mean(self, axis=None):
         """ ... """
-        return self.sum(axis=axis) / self.shape[::-1][axis]
+
+        # IndexError if axis not in [None, -1, 0, 1]
+        n = self.size if axis is None else self.shape[axis]
+
+        return self.sum(axis=axis) / n
 
     def iterrows(self):
         """Generator for yielding rows of the voxel matrix"""
@@ -175,27 +156,21 @@ class ImplicitModel(object):
         for column in self.nodes.T:
             yield self.weights.dot(column)
 
-    def iterrow_blocks(self, n_blocks=0):
+    def iterrows_blocked(self, n_blocks=0):
         """Generator for yielding rows of the voxel matrix"""
-        max_blocks = self.weights.shape[0]
-        if n_blocks > max_blocks:
-            raise ValueError( "n_blocks > max_blocks ({})".format(max_blocks) )
 
-        elif n_blocks < 1:
-            raise ValueError( "n_blocks < 1" )
+        if n_blocks > self.weights.shape[0] or n_blocks < 1:
+            raise ValueError( "invalid number of blocks" )
 
         row_blocks = np.array_split( self.weights, n_blocks, axis=0 )
         for block in row_blocks:
             yield block.dot( self.nodes )
 
-    def itercolumns_blocks(self, n_blocks=0):
+    def itercolumns_blocked(self, n_blocks=0):
         """Generator for yielding rows of the voxel matrix"""
-        max_blocks = self.nodes.shape[1]
-        if n_blocks > max_blocks:
-            raise ValueError( "n_blocks > max_blocks ({})".format(max_blocks) )
 
-        elif n_blocks < 1:
-            raise ValueError( "n_blocks < 1" )
+        if n_blocks > self.weights.shape[0] or n_blocks < 1:
+            raise ValueError( "invalid number of blocks" )
 
         col_blocks = np.array_split( self.nodes, n_blocks, axis=1 )
         for block in col_blocks:
