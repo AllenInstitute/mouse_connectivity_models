@@ -93,9 +93,6 @@ def compute_centroid(injection_density):
     Parameters
     ----------
     """
-    if not isinstance(injection_density, np.ndarray):
-        raise ValueError("injection_density must be a numpy array")
-
     nonzero = injection_density[ injection_density.nonzero() ]
     voxels = np.argwhere( injection_density )
 
@@ -219,7 +216,7 @@ class Experiment(object):
     def normalized_projection_density(self):
         return self.projection_density / self.injection_density.sum()
 
-    def get_injection_ratio_contained(self, mask_object):
+    def get_injection_ratio_contained(self, mask):
         """Returns the raito contained in a given mask.
 
         ...
@@ -227,10 +224,15 @@ class Experiment(object):
         Parameters
         ----------
         """
-        if not isinstance(mask_object, Mask):
-            raise ValueError( "mask_object must be an instance of Mask" )
+        if isinstance(mask, Mask):
+            masked_injection = self.mask_volume( "injection_density", mask )
+        else:
+            # assume np.ndarray
+            if mask.shape != self.injection_density.shape:
+                raise ValueError( "if mask is array, it must have the "
+                                  "same shape as injection density" )
 
-        masked_injection = mask_object.mask_volume( self.injection_density )
+            masked_injection = self.injection_density[ mask.nonzero() ]
 
         return masked_injection.sum() / self.injection_density.sum()
 
@@ -242,13 +244,18 @@ class Experiment(object):
         Parameters
         ----------
         """
-        if not isinstance(mask_object, Mask):
-            raise ValueError( "mask_object must be an instance of Mask" )
-
         try:
             # get volume
             data_volume = getattr(self, volume)
         except AttributeError:
             raise ValueError( "volume must be a valid data_volume" )
 
-        return mask_object.mask_volume( data_volume )
+        if isinstance(mask_object, Mask):
+            return mask.mask_volume( data_volume )
+        else:
+            # assume np.ndarray
+            if mask.shape != self.injection_density.shape:
+                raise ValueError( "if mask is array, it must have the "
+                                  "same shape as injection density" )
+
+            return data_volume[ mask.nonzero() ]
