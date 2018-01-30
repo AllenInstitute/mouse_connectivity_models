@@ -1,17 +1,17 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-# TODO : eval overwrite of K (kernel)
+# NOTE : REMOVED epsilon parameter
 
-from __future__ import division
+from __future__ import division, absolute_import
 import numpy as np
 
-from sklearn.base import BaseEstimator
-from sklearn.metrics.pairwise import pairwise_kernels, check_pairwise_arrays
-from sklearn.utils import check_array, check_X_y
 from sklearn.utils.validation import check_is_fitted
 
-class InjectionModel(BaseEstimator):
+from . import NadarayaWatson
+
+
+class InjectionModel(NadarayaWatson):
     """Voxel scale interpolation model for mesoscale connectivity.
 
     Model details can be found at <PAPER>.
@@ -30,31 +30,6 @@ class InjectionModel(BaseEstimator):
     ----------
     source_voxels : array-like, shape=(n_voxels, 3)
         List of voxel coordinates at which to interpolate.
-
-    epsilon : float, optional (default=0)
-        Nonnegative regularization parameter, similar to a ridging parameter.
-
-    kernel : string or callable, default="linear"
-        Kernel mapping used internally. A callable should accept two arguments
-        and the keyword arguments passed to this object as kernel_params, and
-        should return a floating point number.
-
-    gamma : float, default=None
-        Gamma parameter for the RBF, laplacian, polynomial, exponential chi2
-        and sigmoid kernels. Interpretation of the default value is left to
-        the kernel; see the documentation for sklearn.metrics.pairwise.
-        Ignored by other kernels.
-
-    degree : float, default=3
-        Degree of the polynomial kernel. Ignored by other kernels.
-
-    coef0 : float, default=1
-        Zero coefficient for polynomial and sigmoid kernels.
-        Ignored by other kernels.
-
-    kernel_params : mapping of string to any, optional
-        Additional parameters (keyword arguments) for kernel function passed
-        as callable object.
 
     Attributes
     ----------
@@ -94,53 +69,31 @@ class InjectionModel(BaseEstimator):
     >>> reg.fit(X, y)
     >>>
     """
-    def __init__(self, source_voxels, epsilon=0, kernel="linear", degree=3,
-                 coef0=1, gamma=None, kernel_params=None):
+    def __init__(self, source_voxels, **kwargs):
+
+        super(InjectionModel, self).__init__(**kwargs)
 
         self.source_voxels = source_voxels
         self.dimension = self.source_voxels.shape[1]
-        if epsilon >= 0:
-            self.epsilon = epsilon
-        else:
-            raise ValueError("epsilon must be nonnegative")
 
-        self.kernel = kernel
-        self.gamma = gamma
-        self.degree = degree
-        self.coef0 = coef0
-        self.kernel_params = kernel_params
+    def _stack_X(self, X):
+        """Helper function if tuple is passed as X = (centroids, X)."""
 
-    def _get_kernel(self, X, y=None):
-        """taken from sklearn.kernel_ridge"""
-        if callable(self.kernel):
-            params = self.kernel_params or {}
-        else:
-            params = {"gamma": self.gamma,
-                      "degree": self.degree,
-                      "coef0": self.coef0}
+        help_string = "\nIs your tuple :: X = (centroids, injections)?\n"
 
-        return pairwise_kernels(X, y, metric=self.kernel,
-                                filter_params=True, **params)
+        if len(X) != 2:
+            raise ValueError( "tuple must be length 2." + help_string )
 
-    def _get_weights(self, centroids):
-        K = self._get_kernel(self.source_voxels, centroids)
+        if X[0].shape[1] != self.dimension:
+            raise ValueError( "centroids array (X[0]) has the wrong "
+                              "dimension." + help_string )
 
-        # normalize by row sum
-        factor = K.sum(axis=1)
-        if self.epsilon > 0:
-            factor += self.epsilon
-        else:
-            # esure no zero rows for division
-            factor[ (factor == 0) ] = 1.0
+        if X[1].shape[1] != self.source_voxels.shape[0]:
+            raise ValueError( "injection array (X[1]) has wrong number of "
+                              "voxels (columns)." + help_string )
 
-        # divide in place
-        np.divide(K, factor[:,np.newaxis], K)
-
-        return K
-
-    @property
-    def _pairwise(self):
-        return self.kernel == "precomputed"
+        # stack centroids and injections horizontally (column wise)
+        return np.hstack(X)
 
     def fit(self, X, y, sample_weight=None):
         """Fit Voxel Model.
@@ -163,24 +116,17 @@ class InjectionModel(BaseEstimator):
         -------
         self : returns an instance of self.
         """
-        # Convert data
-        X, y = check_X_y(X, y, accept_sparse=("csr", "csc"),
-                         multi_output=True, y_numeric=True)
+        if isinstance(X, tuple):
+            X = self._stack_X(X)
 
-        if sample_weight is not None and not isinstance(sample_weight, float):
-            sample_weight = check_array(sample_weight, ensure_2d=False)
-
-            # dont want to rescale X!!!!
-            y = np.multiply(sample_weight[:,np.newaxis], y)
-
-        if len(y.shape) == 1:
-            y = y.reshape(-1, 1)
+        X, y = self._fit(X, y, sample_weight)
 
         # centroids are dense, rest is sparse
-        self.centroids_fit_ = X[:,:self.dimension]#.toarray()
-        self.y_fit_ = y
+        self.y_ = y
 
-        self.weights_ = self._get_weights(self.centroids_fit_)
+        # cleave off centroids
+        centroids = X[:,:self.dimension]
+        self.weights_ = self._compute_weights( centroids )
 
         return self
 
@@ -203,27 +149,23 @@ class InjectionModel(BaseEstimator):
         C : array, shape=(X.shape[0], y_fit_.shape[1])
             Predicted normalized projection densities.
         """
-        check_is_fitted(self, ["weights_"])
+        if isinstance(X, tuple):
+            X = self._stack_X(X)
 
-        # if len(X.shape) == 1:
-        #     X = X.reshape(-1, 1)
+        check_is_fitted(self, ["weights_", "y_"])
 
-        X_predict_ = X[:,self.dimension:]
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
 
-        return X_predict_.dot(self.weights_).dot(self.y_fit_)
+        injection = X[:,self.dimension:]
 
-    def get_voxel_matrix(self):
-        """Produces the full n_source_voxels x n_target_voxels connectivity.
+        return injection.dot(self.weights_).dot(self.y_)
 
-        NOTE : when dealing with real data, this function will likely produce
-            an array on the order of TBs and will most likely not fit in memory.
-            Only use on small subsets of real data or on toy data.
+    def get_weights(self):
+        check_is_fitted(self, ["weights_", "y_"])
+        return self.weights_
 
-        Returns
-        -------
-        C : array, shape=(n_source_voxels, n_target_voxels)
-            The full voxel x voxel connectivity.
-        """
-        check_is_fitted(self, ["weights_"])
-
-        return self.weights_.dot(self.y_fit_)
+    @property
+    def weights(self):
+        check_is_fitted(self, ["weights_", "y_"])
+        return self.weights_
