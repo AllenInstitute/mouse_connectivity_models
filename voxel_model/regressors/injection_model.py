@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import pairwise_kernels, check_pairwise_arrays
 from sklearn.utils import check_array, check_X_y
 from sklearn.utils.validation import check_is_fitted
 
-class VoxelModel(BaseEstimator):
+class InjectionModel(BaseEstimator):
     """Voxel scale interpolation model for mesoscale connectivity.
 
     Model details can be found at <PAPER>.
