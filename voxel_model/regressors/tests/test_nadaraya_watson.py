@@ -28,9 +28,33 @@ def model():
 
 # ----------------------------------------------------------------------------
 # test
+def test_get_kernel(model, centroids, y):
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_compute_weights():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
+def test_check_fit_arrays():
+    pass
+
+# ----------------------------------------------------------------------------
+# test
 def test_predict(model, source_voxels, centroids, y):
     dense = model.fit(centroids, y).predict(source_voxels)
-    sparse = model.fit(centroids, csr_matrix(y)).predict(source_voxels)
+    sparse_y = model.fit(centroids, csr_matrix(y)).predict(source_voxels)
+    sparse_x = model.fit(csr_matrix(centroids), y).predict(source_voxels)
+    sparse_p = model.fit(centroids, y).predict(csr_matrix(source_voxels))
 
 
-    assert_array_almost_equal( dense, sparse )
+    assert_array_almost_equal( dense, sparse_y )
+    assert_array_almost_equal( dense, sparse_x )
+    assert_array_almost_equal( dense, sparse_p )
+
+# ----------------------------------------------------------------------------
+# test
+def test_get_weights():
+    pass

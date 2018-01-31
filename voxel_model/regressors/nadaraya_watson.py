@@ -135,7 +135,7 @@ class NadarayaWatson(BaseEstimator):
     def _pairwise(self):
         return self.kernel == "precomputed"
 
-    def _fit(self, X, y, sample_weight):
+    def _check_fit_arrays(self, X, y, sample_weight):
         # Convert data
         X, y = check_X_y(X, y, accept_sparse=("csr", "csc"),
                          multi_output=True, y_numeric=True)
@@ -154,7 +154,7 @@ class NadarayaWatson(BaseEstimator):
     def fit(self, X, y, sample_weight=None):
         """
         """
-        X, y = self._fit(X, y, sample_weight)
+        X, y = self._check_fit_arrays(X, y, sample_weight)
 
         self.X_ = X
         self.y_ = y
@@ -173,7 +173,7 @@ class NadarayaWatson(BaseEstimator):
 
         if issparse(self.y_):
             # has to be of form sparse.dot(dense)
-            # faster than w.dot( y_.toarray() )
+            # more efficient than w.dot( y_.toarray() )
             return self.y_.T.dot(w.T).T
         else:
             return w.dot( self.y_ )
