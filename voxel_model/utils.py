@@ -2,7 +2,6 @@
 # License:
 
 from __future__ import absolute_import
-from itertools import izip
 import numpy as np
 
 from .experiment import Experiment
@@ -38,7 +37,7 @@ def padded_diagonal_fill(arrays):
     # get a total count of needed columns
 
     shapes = [x.shape for x in arrays]
-    padded = np.zeros( map(sum, izip(*shapes)) )
+    padded = np.zeros( tuple(map(sum, zip(*shapes))) )
 
     i, j = 0, 0
     for arr in arrays:

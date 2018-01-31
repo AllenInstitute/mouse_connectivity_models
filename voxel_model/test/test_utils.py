@@ -1,4 +1,5 @@
 import pytest
+import operator as op
 import numpy as np
 from functools import reduce
 from numpy.testing import assert_array_equal
@@ -23,11 +24,12 @@ def test_padded_diagonal_fill():
     b = 2*np.ones((1,4))
     c = 3*np.ones((3,1))
     d = 4*np.ones((1,1))
+    arrs = (a,b,c,d)
 
-    filled = padded_diagonal_fill([a,b,c,d])
+    filled = padded_diagonal_fill(arrs)
 
     assert( filled.shape == (7,11) )
-    assert( filled.sum() == np.add.reduce(map(np.sum, [a,b,c,d])) )
+    assert( filled.sum() == reduce(op.add, map(np.sum, arrs)) )
 
     assert_array_equal( filled[0:2,0:5], a )
     assert_array_equal( filled[2:3,5:9], b )

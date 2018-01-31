@@ -206,10 +206,10 @@ def test_iterrows_blocked(true_array, voxel_model):
         assert_array_equal( block, true_array[rows[i]] )
 
     func = voxel_model.iterrows_blocked(n_blocks=0)
-    assert_raises( ValueError, func.next)
+    assert_raises( ValueError, next, func)
 
     func = voxel_model.iterrows_blocked(n_blocks=20)
-    assert_raises( ValueError, func.next)
+    assert_raises( ValueError, next, func)
 
 # ----------------------------------------------------------------------------
 # test
@@ -224,7 +224,7 @@ def test_itercolumns_blocked(true_array, voxel_model):
         assert_array_equal( block, true_array[:,cols[i]] )
 
     func = voxel_model.itercolumns_blocked(n_blocks=0)
-    assert_raises( ValueError, func.next)
+    assert_raises( ValueError, next, func)
 
     func = voxel_model.itercolumns_blocked(n_blocks=20)
-    assert_raises( ValueError, func.next)
+    assert_raises( ValueError, next, func)
