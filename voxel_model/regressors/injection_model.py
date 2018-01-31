@@ -105,7 +105,7 @@ class InjectionModel(NadarayaWatson):
             # assume array
             centroids = X[:,:self.dimension]
 
-        X, y = self._fit(centroids, y, sample_weight)
+        X, y = self._check_fit_arrays(centroids, y, sample_weight)
 
         self.y_ = y
         self.weights_ = self._compute_weights( self.source_voxels, centroids )
