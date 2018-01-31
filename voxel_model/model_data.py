@@ -29,7 +29,8 @@ def generate_experiments_from_mcc(mcc, experiment_ids,
         yield Experiment.from_mcc( mcc, eid,
                                    injection_hemisphere=injection_hemisphere)
 
-class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
+class ModelData(namedtuple("ModelData", ["centroids", "injections",
+                                         "projections", "source_voxels"])):
     """Container for model data...
 
     ...
@@ -71,7 +72,7 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
             experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids)
 
         # initialize containers
-        x, y, centroids = [], [], []
+        centroids, injections, projections = [], [], []
         for exp in generate_experiments_from_mcc( mcc, experiment_ids,
                                                   source_mask.hemisphere ):
 
@@ -84,24 +85,31 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
 
             if cls._is_valid_experiment(injection, projection, injection_ratio):
                 # update
-                x.append( injection )
-                y.append( projection )
+                injections.append( injection )
+                projections.append( projection )
                 centroids.append( exp.centroid )
 
-        # stack centroids, injections
-        X = np.hstack( (np.asarray(centroids), np.asarray(x)) )
-
-        return cls(X, np.asarray(y), source_mask.coordinates)
+        return cls(np.asarray(centroids), np.asarray(injections),
+                   np.asarray(projections), source_mask.coordinates)
 
 
-    def __new__(cls, X, y, source_voxels):
+    def __new__(cls, centroids, injections, projections, source_voxels):
 
         # assumes all are numpy arrays inheritly
-        if X.shape[0] != y.shape[0]:
-            raise ValueError("# of experiments in X and y is inconsistent")
+        if injections.shape[0] != projections.shape[0]:
+            raise ValueError("# of experiments in injections and "
+                             "projections is inconsistent")
 
-        if source_voxels.shape[0] != X.shape[1] - source_voxels.shape[1]:
-            raise ValueError( "# of voxels in X and source_voxels "
+        if injections.shape[0] != centroids.shape[0]:
+            raise ValueError("# of experiments in centroids and "
+                             "injections/projections is inconsistent")
+
+        if source_voxels.shape[0] != injections.shape[1]:
+            raise ValueError( "# of voxels in injections and source_voxels "
                               "is inconsistent" )
 
-        return super(ModelData, cls).__new__(cls, X, y, source_voxels)
+        if centroids.shape[1] != source_voxels.shape[1]:
+            raise ValueError( "dimension of centroids and voxels is not equal")
+
+        return super(ModelData, cls).__new__(cls, centroids, injections,
+                                             projections, source_voxels)

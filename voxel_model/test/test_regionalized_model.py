@@ -10,7 +10,7 @@ from voxel_model.regionalized_model import RegionalizedModel
 # ----------------------------------------------------------------------------
 # test
 def test_predict():
-    assert_raises( NotImplementedError, RegionalizedModel.predict, 0, 0 )
+    pass
 
 # ----------------------------------------------------------------------------
 # test

@@ -55,22 +55,30 @@ def test_from_mcc_and_masks(mcc):
     data = ModelData.from_mcc_and_masks(mcc, source_mask, target_mask)
 
     assert( isinstance(data, tuple) )
-    assert( isinstance(data.X, np.ndarray) )
-    assert( isinstance(data.y, np.ndarray) )
+    assert( isinstance(data.centroids, np.ndarray) )
+    assert( isinstance(data.injections, np.ndarray) )
+    assert( isinstance(data.projections, np.ndarray) )
     assert( isinstance(data.source_voxels, np.ndarray) )
 
 
 # -----------------------------------------------------------------------------
 # tests
 def test_new():
-    x = np.ones((10,103)) # hstack(centroids, injection)
+    c = np.ones((10,3))
+    x = np.ones((10,100))
     y = np.ones((10,200))
     a = np.ones((100,3))
 
-    assert( isinstance(ModelData(x,y,a), tuple) )
+    assert( isinstance(ModelData(c,x,y,a), tuple) )
 
     # incompatible inner dimensions
-    assert_raises( ValueError, ModelData, x, np.ones((5,200)), a )
+    assert_raises( ValueError, ModelData, c, x, np.ones((5,200)), a )
 
-    # incompatible coords
-    assert_raises( ValueError, ModelData, x, y, np.ones((50,3)) )
+    # incompatible # centroids
+    assert_raises( ValueError, ModelData, np.ones((50,3)), x, y, a )
+
+    # incompatible dim centroids
+    assert_raises( ValueError, ModelData, np.ones((10,4)), x, y, a )
+
+    # incompatible # coords
+    assert_raises( ValueError, ModelData, c, x, y, np.ones((50,3)) )
