@@ -4,8 +4,10 @@
 # NOTE : REMOVED epsilon parameter
 
 from __future__ import division, absolute_import
+import operator as op
 import numpy as np
 
+from scipy.sparse import issparse
 from sklearn.utils.validation import check_is_fitted
 
 from . import NadarayaWatson
@@ -76,25 +78,6 @@ class InjectionModel(NadarayaWatson):
         self.source_voxels = source_voxels
         self.dimension = self.source_voxels.shape[1]
 
-    def _stack_X(self, X):
-        """Helper function if tuple is passed as X = (centroids, X)."""
-
-        help_string = "\nIs your tuple :: X = (centroids, injections)?\n"
-
-        if len(X) != 2:
-            raise ValueError( "tuple must be length 2." + help_string )
-
-        if X[0].shape[1] != self.dimension:
-            raise ValueError( "centroids array (X[0]) has the wrong "
-                              "dimension." + help_string )
-
-        if X[1].shape[1] != self.source_voxels.shape[0]:
-            raise ValueError( "injection array (X[1]) has wrong number of "
-                              "voxels (columns)." + help_string )
-
-        # stack centroids and injections horizontally (column wise)
-        return np.hstack(X)
-
     def fit(self, X, y, sample_weight=None):
         """Fit Voxel Model.
 
@@ -116,17 +99,16 @@ class InjectionModel(NadarayaWatson):
         -------
         self : returns an instance of self.
         """
-        if isinstance(X, tuple):
-            X = self._stack_X(X)
+        if isinstance(X, tuple) or isinstance(X, list):
+            centroids = X[0]
+        else:
+            # assume array
+            centroids = X[:,:self.dimension]
 
-        X, y = self._fit(X, y, sample_weight)
+        X, y = self._fit(centroids, y, sample_weight)
 
-        # centroids are dense, rest is sparse
         self.y_ = y
-
-        # cleave off centroids
-        centroids = X[:,:self.dimension]
-        self.weights_ = self._compute_weights( centroids )
+        self.weights_ = self._compute_weights( self.source_voxels, centroids )
 
         return self
 
@@ -149,19 +131,24 @@ class InjectionModel(NadarayaWatson):
         C : array, shape=(X.shape[0], y_fit_.shape[1])
             Predicted normalized projection densities.
         """
-        if isinstance(X, tuple):
-            X = self._stack_X(X)
-
         check_is_fitted(self, ["weights_", "y_"])
 
-        if len(X.shape) == 1:
-            X = X.reshape(-1, 1)
+        if isinstance(X, tuple):
+            injection = X[1]
+        else:
+            #assume array
+            injection = X[:,self.dimension:]
 
-        injection = X[:,self.dimension:]
+        if len(injection.shape) == 1:
+            injection = injection.reshape(-1, 1)
 
-        return injection.dot(self.weights_).dot(self.y_)
+        # has to be of form sparse.dot(dense)
+        y = self.y_.toarray() if issparse(self.y_) else self.y_
+
+        return injection.dot(self.weights_).dot(y)
 
     def get_weights(self):
+        """Overwrite of NadarayaWatson.get_weights."""
         check_is_fitted(self, ["weights_", "y_"])
         return self.weights_
 
