@@ -156,3 +156,8 @@ class InjectionModel(NadarayaWatson):
     def weights(self):
         check_is_fitted(self, ["weights_", "y_"])
         return self.weights_
+
+    @property
+    def nodes(self):
+        check_is_fitted(self, ["weights_", "y_"])
+        return self.y_
