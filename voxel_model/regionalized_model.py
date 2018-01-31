@@ -1,7 +1,7 @@
 from __future__ import division, absolute_import
 import numpy as np
 
-from .utils import lex_ordered_unique_counts
+from .utils import lex_ordered_unique
 
 __all__ = [
     "RegionalizedModel"
@@ -93,7 +93,8 @@ class RegionalizedModel(object):
     def _get_unique_counts(self, key):
         """ ... """
         if self.ordering is not None:
-            return lex_ordered_unique_counts( key, self.ordering )
+            return lex_ordered_unique( key, self.ordering, allow_extra=True,
+                                       return_counts=True )
         else:
             return np.unique( key, return_counts=True)
 

@@ -2,20 +2,68 @@ import pytest
 import operator as op
 import numpy as np
 from functools import reduce
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_equal, assert_raises
 
 from voxel_model.utils \
-    import unique_with_order, lex_ordered_unique_counts, padded_diagonal_fill
+    import ordered_unique, lex_ordered_unique, padded_diagonal_fill
 
 # -----------------------------------------------------------------------------
 # tests:
-def test_unique_with_order():
-    pass
+def test_ordered_unique():
+    arr = [0,1,1,2,5,7,1,5,2,9,6,2,6]
+    unq = [0,1,2,5,7,9,6]
+    idx = list(map(arr.index, unq))
+    cnt = list(map(arr.count, unq))
+
+    plain = ordered_unique(arr)
+    index = ordered_unique(arr, return_index=True)
+    counts = ordered_unique(arr, return_counts=True)
+    both = ordered_unique(arr, return_index=True, return_counts=True)
+
+    assert_array_equal( plain, unq )
+    for x,y in zip(index, (unq,idx)):
+        assert_array_equal(x, y)
+
+    for x,y in zip(counts, (unq,cnt)):
+        assert_array_equal(x, y)
+
+    for x,y in zip(both, (unq,idx,cnt)):
+        assert_array_equal(x, y)
 
 # -----------------------------------------------------------------------------
 # tests:
-def test_lex_ordered_unique_counts():
-    pass
+def test_lex_ordered_unique():
+    arr = [0,1,1,2,5,7,1,5,2,9,6,2,6]
+    unq = [1,5,7,6,0,9,2]
+    idx = list(map(arr.index, unq))
+    cnt = list(map(arr.count, unq))
+
+    plain = lex_ordered_unique(arr, unq)
+    index = lex_ordered_unique(arr, unq, return_index=True)
+    counts = lex_ordered_unique(arr, unq, return_counts=True)
+    both = lex_ordered_unique(arr, unq, return_index=True, return_counts=True)
+
+    assert_array_equal( plain, unq )
+    for x,y in zip(index, (unq,idx)):
+        assert_array_equal(x, y)
+
+    for x,y in zip(counts, (unq,cnt)):
+        assert_array_equal(x, y)
+
+    for x,y in zip(both, (unq,idx,cnt)):
+        assert_array_equal(x, y)
+
+
+    # extra value in lex order (not in arr)
+    extra = lex_ordered_unique(arr, unq+[10], allow_extra=True)
+    assert_array_equal( extra, unq )
+    assert_raises( ValueError, lex_ordered_unique, arr, unq+[10] )
+
+    # duplicate
+    assert_raises( ValueError, lex_ordered_unique, arr, unq+[0] )
+
+    # assert lex order has not changed
+    assert( isinstance(unq, list) )
 
 # -----------------------------------------------------------------------------
 # tests:
