@@ -100,7 +100,6 @@ class ModelData(namedtuple("ModelData", ["X", "y", "source_voxels"])):
         if X.shape[0] != y.shape[0]:
             raise ValueError("# of experiments in X and y is inconsistent")
 
-        print X.shape
         if source_voxels.shape[0] != X.shape[1] - source_voxels.shape[1]:
             raise ValueError( "# of voxels in X and source_voxels "
                               "is inconsistent" )
