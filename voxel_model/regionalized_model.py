@@ -3,9 +3,6 @@ import numpy as np
 
 from .utils import lex_ordered_unique
 
-__all__ = [
-    "RegionalizedModel"
-]
 
 class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
@@ -36,7 +33,7 @@ class RegionalizedModel(object):
     Parameters
     ----------
 
-    source_key : voxel_array-like, shape=(n_source_voxels,)
+    source_key : array-like, shape=(n_source_voxels,)
         Flattened key relating each source voxel to a given brain region.
 
     target_key : array-like, shape=(n_target_voxels,)
@@ -59,12 +56,12 @@ class RegionalizedModel(object):
 
     def __init__(self, weights, nodes, source_key, target_key, ordering=None):
 
-        if source_key.size != voxel_array.shape[0]:
-            raise ValueError("rows of voxel_array and elements in source_key "
+        if source_key.size != weights.shape[0]:
+            raise ValueError("rows of weights and elements in source_key "
                              "must be equal size")
 
-        if target_key.size != voxel_array.shape[1]:
-            raise ValueError("columns of voxel_array and elements in target_key "
+        if target_key.size != nodes.shape[1]:
+            raise ValueError("columns of nodes and elements in target_key "
                              "must be of equal size")
 
         # want only valid indices (source/target keys likely to have zeros)
@@ -75,7 +72,7 @@ class RegionalizedModel(object):
         self.weights = weights[rows, :]
         self.nodes = nodes[:, cols]
         self.source_key = source_key[rows]
-        self.target_key = target_key[rows]
+        self.target_key = target_key[cols]
         self.ordering = ordering
 
     def predict(self, X, normalize=False):
@@ -97,19 +94,19 @@ class RegionalizedModel(object):
         target_regions, target_counts = self._get_unique_counts(self.target_key)
 
         # integrate target regions
-        temp = np.empty( (target_regions.size, self.weights.shape[0]) )
+        temp = np.empty((target_regions.size, self.weights.shape[0]))
         for i, region in enumerate(target_regions):
 
             # same as voxel_array[:,cols].sum(axis=1), but more efficient
-            columns = self.target_key == region
-            temp[i,:] = self.weights.dot( self.nodes[:,columns].sum(axis=1) )
+            columns = np.nonzero(self.target_key == region)[0]
+            temp[i,:] = self.weights.dot( np.sum(self.nodes[:,columns],axis=1) )
 
         # integrate source regions
-        region_matrix = np.empty( (source_regions.size, temp.size[0]) )
+        region_matrix = np.empty((source_regions.size, target_regions.size))
         for i, region in enumerate(source_regions):
 
             # NOTE : if region were 1 voxel, would not work?
-            columns = self.source_key == region
+            columns = np.nonzero(self.source_key == region)[0]
             region_matrix[i,:] = temp[:,columns].sum(axis=1)
 
         # want counts for metrics
