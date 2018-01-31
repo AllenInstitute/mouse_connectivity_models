@@ -7,17 +7,6 @@ __all__ = [
     "RegionalizedModel"
 ]
 
-def _generate_column_sets(key, region_set):
-    """Yields indices of columns where kye==region...
-
-    ...
-
-    Parameters
-    ----------
-    """
-    for region in region_set:
-        yield np.isin(key, region).nonzero()[0]
-
 class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
@@ -47,7 +36,7 @@ class RegionalizedModel(object):
     Parameters
     ----------
 
-    source_key : array-like, shape=(n_source_voxels,)
+    source_key : voxel_array-like, shape=(n_source_voxels,)
         Flattened key relating each source voxel to a given brain region.
 
     target_key : array-like, shape=(n_target_voxels,)
@@ -63,16 +52,19 @@ class RegionalizedModel(object):
         "normalized_connection_density"
     ]
 
-    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
-        if weights.shape[1] != nodes.shape[0]:
-            raise ValueError("weights and nodes must have equal inner dimension")
+    @classmethod
+    def from_voxel_array(cls, voxel_array, *args, **kwargs):
+        """If weights and nodes passed explicitly"""
+        return cls(voxel_array.weights, voxel_array.nodes, *args, **kwargs)
 
-        if source_key.size != weights.shape[0]:
-            raise ValueError("rows of weights and elements in source_key "
+    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
+
+        if source_key.size != voxel_array.shape[0]:
+            raise ValueError("rows of voxel_array and elements in source_key "
                              "must be equal size")
 
-        if target_key.size != nodes.shape[1]:
-            raise ValueError("columns of nodes and elements in target_key "
+        if target_key.size != voxel_array.shape[1]:
+            raise ValueError("columns of voxel_array and elements in target_key "
                              "must be of equal size")
 
         # want only valid indices (source/target keys likely to have zeros)
@@ -80,11 +72,10 @@ class RegionalizedModel(object):
         cols = target_key.nonzero()[0]
 
         # subset
-        # TODO : look into if copy necessary/better performance
-        self.weights = weights[rows, :].copy()
-        self.nodes = nodes[:, cols].copy()
-        self.source_key = source_key[ rows ].copy()
-        self.target_key = target_key[ cols ].copy()
+        self.weights = weights[rows, :]
+        self.nodes = nodes[:, cols]
+        self.source_key = source_key[rows]
+        self.target_key = target_key[rows]
         self.ordering = ordering
 
     def predict(self, X, normalize=False):
@@ -96,7 +87,7 @@ class RegionalizedModel(object):
             return lex_ordered_unique( key, self.ordering, allow_extra=True,
                                        return_counts=True )
         else:
-            return np.unique( key, return_counts=True)
+            return np.unique( key, return_counts=True )
 
     def _get_region_matrix(self):
         """Produces the full regionalized connectivity"""
@@ -107,19 +98,18 @@ class RegionalizedModel(object):
 
         # integrate target regions
         temp = np.empty( (target_regions.size, self.weights.shape[0]) )
-        column_iterator = _generate_column_sets(self.target_key, target_regions)
+        for i, region in enumerate(target_regions):
 
-        for i, columns in enumerate(column_iterator):
-            # same output as weights.dot(nodes[:,cols]).sum(axis=1)
-            # but much more efficient to compute sum first
+            # same as voxel_array[:,cols].sum(axis=1), but more efficient
+            columns = self.target_key == region
             temp[i,:] = self.weights.dot( self.nodes[:,columns].sum(axis=1) )
 
         # integrate source regions
         region_matrix = np.empty( (source_regions.size, temp.size[0]) )
-        column_iterator = _generate_column_sets(self.source_key, source_regions)
+        for i, region in enumerate(source_regions):
 
-        for i, columns in enumerate(column_iterator):
-            # NOTE : if region were 1 voxel, would not work
+            # NOTE : if region were 1 voxel, would not work?
+            columns = self.source_key == region
             region_matrix[i,:] = temp[:,columns].sum(axis=1)
 
         # want counts for metrics
@@ -128,32 +118,28 @@ class RegionalizedModel(object):
         return region_matrix
 
     @property
-    def region_matrix(self):
+    def connection_strength(self):
+        # w_ij |X||Y|
         try:
             return self._region_matrix
         except AttributeError:
             self._region_matrix = self._get_region_matrix()
             return self._region_matrix
 
-    def get_metric(self, metric):
-        """ ... """
-        if metric == "connection_strength":
-            # w_ij |X||Y|
-            return self.region_matrix
+    @property
+    def connection_density(self):
+        # w_ij |X|
+        return np.divide(self.connection_strength,
+                         self.target_counts[np.newaxis,:])
 
-        elif metric == "connection_density":
-            # w_ij |X|
-            return np.divide(self.region_matrix,
-                             self.target_counts[np.newaxis,:])
+    @property
+    def normalized_connection_strength(self):
+        # w_ij |Y|
+        return np.divide(self.connection_strength,
+                         self.source_counts[:,np.newaxis])
 
-        elif metric == "normalized_connection_strength":
-            # w_ij |Y|
-            return np.divide(self.region_matrix,
-                             self.source_counts[:,np.newaxis])
-
-        elif metric == "normalized_connection_density":
-            # w_ij
-            return np.divide(self.region_matrix,
-                             np.outer(self.source_counts, self.target_counts))
-        else:
-            raise ValueError("metric must be one of", self.VALID_REGION_METRICS)
+    @property
+    def normalized_connection_density(self):
+        # w_ij
+        return np.divide(self.connection_strength,
+                         np.outer(self.source_counts, self.target_counts))
