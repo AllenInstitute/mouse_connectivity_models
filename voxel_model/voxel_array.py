@@ -7,7 +7,7 @@ import operator as op
 import numpy as np
 
 
-class Array(object):
+class VoxelArray(object):
     """Class for implicit construction of the voxel model.
 
     See voxel_model.VoxelModel for weights/nodes descriptions
