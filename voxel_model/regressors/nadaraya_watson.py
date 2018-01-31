@@ -6,6 +6,7 @@
 from __future__ import division
 import numpy as np
 
+from scipy.sparse import issparse
 from sklearn.base import BaseEstimator
 from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.utils import check_array, check_X_y
@@ -163,13 +164,19 @@ class NadarayaWatson(BaseEstimator):
     def predict(self, X):
         """
         """
-        check_is_fitted(self, ["x_", "y_"])
+        check_is_fitted(self, ["X_", "y_"])
 
-        if len(x.shape) == 1:
-            x = x.reshape(-1, 1)
+        if len(X.shape) == 1:
+            X = X.reshape(-1, 1)
 
         w = self.get_weights(X)
-        return np.dot(w, self.y_)
+
+        if issparse(self.y_):
+            # has to be of form sparse.dot(dense)
+            # faster than w.dot( y_.toarray() )
+            return self.y_.T.dot(w.T).T
+        else:
+            return w.dot( self.y_ )
 
     def get_weights(self, X):
         check_is_fitted(self, ["X_", "y_"])
