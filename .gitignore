@@ -1,3 +1,12 @@
+# vi buffers
+*.swp
+
+# force gen new lock file
+Pipfile.lock
+
+# Pytest compiled
+.pytest_cache/
+
 # Sphinx gallery temp dir
 docs/auto_examples/
 
@@ -64,7 +73,7 @@ target/
 # pyenv python configuration file
 .python-version
 
-# ide specific 
+# ide specific
 .idea/
 .history/
 .vscode/

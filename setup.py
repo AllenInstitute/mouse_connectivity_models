@@ -9,10 +9,5 @@ setup(
     url = 'https://github.com/AllenInstitute/voxel_model',
     packages = find_packages(),
     include_package_data=True,
-    entry_points={
-          'console_scripts': [
-              'voxel_model = voxel_model.__main__:main'
-        ]
-    },
     setup_requires=['pytest-runner'],
 )

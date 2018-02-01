@@ -6,18 +6,21 @@ name = "pypi"
 
 [packages]
 
-allensdk = { git = https://github.com/AllenInstitute/AllenSDK.git#egg=AllenSDK }
+allensdk = { git = 'https://github.com/AllenInstitute/AllenSDK.git' }
+argschema = "*"
 matplotlib = "*"
 pillow = "*"
-argschema = "*"
+sklearn = "*"
 
 [dev-packages]
 
 bumpversion = "*"
-tox = "*"
-coverage = "*"
-sphinx = "*"
 cookiecutter = "*"
-sphinx-gallery = "*"
+coverage = "*"
+mock = "*"
+nose = "*"
 pytest = "*"
 "ruamel.yaml" = "*"
+sphinx = "*"
+sphinx-gallery = "*"
+tox = "*"
