@@ -14,7 +14,6 @@ from .experiment import Experiment
 
 def get_experiment_ids(mcc, structure_ids, cre=None):
     """Returns all experiment ids given some structure_ids
-    PRIMARY INJECTION STRUCTURES
     """
     # filters injections by structure id OR DECENDENT
     experiments = mcc.get_experiments(dataframe=False, cre=cre,
@@ -116,7 +115,7 @@ class ModelData(namedtuple("ModelData", ["centroids", "injections",
     @classmethod
     def from_mcc_and_masks(cls, mcc, source_mask, target_mask,
                            experiment_ids=None):
-        """Alternative constructor allowing for pulling griddata.
+        """Alternative constructor allowing for pulling grid data.
 
         Uses voxel_model.experment to generate grid data using allensdk.
         Masks are supplied to restrict the grid data to only those brain
