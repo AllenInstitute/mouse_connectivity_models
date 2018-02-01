@@ -1,35 +1,11 @@
-# voxel_scale_mesoscale_connectivity
+voxel_model
+===============================
 
+https://github.com/AllenInstitute/voxel_model
 
+High resolution data-driven model of the mouse connectome
 
 [![Build Status](https://travis-ci.org/jknox13/voxel_model.dev.svg?branch=master)](https://travis-ci.org/jknox13/voxel_model.dev)
-
-Python module containing the functionality ...
-
-Install/testing instructions:
-
-1. Clone repository
-```
-git clone https://github.com/jknox13/voxel_model.git
-```
-
-2. Initialize virutal environment (or conda env, up to you) (using python2.7 in this case)
-```
-virtualenv --python=/usr/bin/python2.7 .voxel_model
-```
-
-3. activate env
-```
-source .voxel_model/bin/activate
-```
-
-4. install requirements/testing requirements
-```
-pip install -r requirements.txt
-pip install -r test_requirements.txt
-```
-
-5. to test
-```
-python -m pytest
-```   
+Level of Support
+===============================
+We are not currently supporting this code, but simply releasing it to the community AS IS but are not able to provide any guarantees of support. The community is welcome to submit issues, but you should not expect an active response.

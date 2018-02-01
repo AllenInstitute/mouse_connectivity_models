@@ -1,0 +1,13 @@
+default_context:
+  _copy_without_render:
+  - docs/aibs_sphinx
+  _template: https://github.com/AllenInstitute/pyproject_template.git
+  email: josephk@alleninstitute.org
+  full_name: Joseph Knox
+  project_name: voxel_model
+  project_namespace: ''
+  project_short_description: High resolution data-driven model of the mouse connectome
+  project_slug: voxel_model
+  repo_url: https://github.com/AllenInstitute/voxel_model
+  user_name: josephk
+  version: 0.1.0
