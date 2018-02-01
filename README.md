@@ -2,7 +2,7 @@
 
 
 
-[![Build Status](https://travis-ci.org/jknox13/voxel_model.svg?branch=master)](https://travis-ci.org/jknox13/voxel_model)
+[![Build Status](https://travis-ci.org/jknox13/voxel_model.dev.svg?branch=master)](https://travis-ci.org/jknox13/voxel_model.dev)
 
 Python module containing the functionality ...
 
