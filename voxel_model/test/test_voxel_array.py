@@ -79,7 +79,7 @@ def test_from_fitted_true_array():
 # test
 def test_init():
     # not both arrays
-    assert_raises( ValueError, VoxelArray, [1], np.array([1]) )
+    assert_raises( AttributeError, VoxelArray, [1], np.array([1]) )
 
     # wrong sizes
     a, b = map(np.ones, [(10,10), (100,10)])
