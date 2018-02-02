@@ -1,4 +1,6 @@
-"""Module containing ModelData container"""
+"""
+Module containing ModelData container
+"""
 
 # TODO : revise ModelData docstring :: Attributes
 # TODO : revise ModelData docstring :: Examples

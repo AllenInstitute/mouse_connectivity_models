@@ -1,4 +1,6 @@
-"""Module containing Experiment object and supporting functions"""
+"""
+Module containing Experiment object and supporting functions
+"""
 
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:

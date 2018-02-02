@@ -1,6 +1,7 @@
-"""Module containing VoxelArray: object for implictly constructing the
-    voxel-voxel connectivity matrix.
-    """
+"""
+Module containing VoxelArray: object for implictly constructing the
+voxel-voxel connectivity matrix.
+"""
 
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:

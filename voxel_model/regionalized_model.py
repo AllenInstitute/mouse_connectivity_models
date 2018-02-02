@@ -1,3 +1,11 @@
+"""
+Module containing the RegionalizedModel object, used in evaluating the
+voxel-voxel model at the level of regions.
+"""
+
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License:
+
 from __future__ import division, absolute_import
 import numpy as np
 
@@ -55,7 +63,6 @@ class RegionalizedModel(object):
         return cls(voxel_array.weights, voxel_array.nodes, *args, **kwargs)
 
     def __init__(self, weights, nodes, source_key, target_key, ordering=None):
-
         if source_key.size != weights.shape[0]:
             raise ValueError("rows of weights and elements in source_key "
                              "must be equal size")
@@ -76,22 +83,23 @@ class RegionalizedModel(object):
         self.ordering = ordering
 
     def predict(self, X, normalize=False):
+        """Predict regional projection."""
+        # TODO : implement
         raise NotImplementedError
 
     def _get_unique_counts(self, key):
-        """ ... """
-        if self.ordering is not None:
-            return lex_ordered_unique( key, self.ordering, allow_extra=True,
-                                       return_counts=True )
-        else:
-            return np.unique( key, return_counts=True )
+        """Returns unique and counts in appropriate order."""
+        if self.ordering is None:
+            return np.unique(key, return_counts=True)
+
+        return lex_ordered_unique(key, self.ordering, allow_extra=True,
+                                  return_counts=True)
 
     def _get_region_matrix(self):
         """Produces the full regionalized connectivity"""
-
         # get counts
-        source_regions, source_counts = self._get_unique_counts(self.source_key)
-        target_regions, target_counts = self._get_unique_counts(self.target_key)
+        source_regions, self.source_counts = self._get_unique_counts(self.source_key)
+        target_regions, self.target_counts = self._get_unique_counts(self.target_key)
 
         # integrate target regions
         temp = np.empty((target_regions.size, self.weights.shape[0]))
@@ -99,7 +107,7 @@ class RegionalizedModel(object):
 
             # same as voxel_array[:,cols].sum(axis=1), but more efficient
             columns = np.nonzero(self.target_key == region)[0]
-            temp[i,:] = self.weights.dot( np.sum(self.nodes[:,columns],axis=1) )
+            temp[i, :] = self.weights.dot(np.sum(self.nodes[:, columns], axis=1))
 
         # integrate source regions
         region_matrix = np.empty((source_regions.size, target_regions.size))
@@ -107,16 +115,13 @@ class RegionalizedModel(object):
 
             # NOTE : if region were 1 voxel, would not work?
             columns = np.nonzero(self.source_key == region)[0]
-            region_matrix[i,:] = temp[:,columns].sum(axis=1)
+            region_matrix[i, :] = temp[:, columns].sum(axis=1)
 
-        # want counts for metrics
-        self.source_counts = source_counts
-        self.target_counts = target_counts
         return region_matrix
 
     @property
     def connection_strength(self):
-        # w_ij |X||Y|
+        """w_ij |X||Y|"""
         try:
             return self._region_matrix
         except AttributeError:
@@ -125,18 +130,18 @@ class RegionalizedModel(object):
 
     @property
     def connection_density(self):
-        # w_ij |X|
+        """w_ij |X|"""
         return np.divide(self.connection_strength,
-                         self.target_counts[np.newaxis,:])
+                         self.target_counts[np.newaxis, :])
 
     @property
     def normalized_connection_strength(self):
-        # w_ij |Y|
+        """w_ij |Y|"""
         return np.divide(self.connection_strength,
-                         self.source_counts[:,np.newaxis])
+                         self.source_counts[:, np.newaxis])
 
     @property
     def normalized_connection_density(self):
-        # w_ij
+        """w_ij"""
         return np.divide(self.connection_strength,
                          np.outer(self.source_counts, self.target_counts))

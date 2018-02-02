@@ -1,6 +1,11 @@
+"""
+
+"""
+
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
+# TODO : docs and example
 # TODO : eval overwrite of K (kernel)
 
 from __future__ import division
@@ -14,41 +19,22 @@ from sklearn.utils.validation import check_is_fitted
 
 
 class NadarayaWatson(BaseEstimator):
-    """
-    95% from sklearn.kernel_ridge.KernelRidge
-    """
-    """Voxel scale interpolation model for mesoscale connectivity.
+    """NadarayaWatson Estimator.
 
-    Model details can be found at <PAPER>.
-
-    Functions similar/identical to sklearn.kernel_ridge.KernelRidge:
-        * _get_kernel
-        * _pairwise
-    Also the documentation for the following is taken verbatim:
-        * kernel
-        * gamma
-        * degree
-        * coef0
-        * kernel_params
+    see sklearn.kernel_ridge.KernelRidge for more info on parameters
 
     Parameters
     ----------
-    source_voxels : array-like, shape=(n_voxels, 3)
-        List of voxel coordinates at which to interpolate.
-
-    epsilon : float, optional (default=0)
-        Nonnegative regularization parameter, similar to a ridging parameter.
-
     kernel : string or callable, default="linear"
-        Kernel mapping used internally. A callable should accept two arguments
-        and the keyword arguments passed to this object as kernel_params, and
-        should return a floating point number.
+        Kernel mapping used to compute weights.
+
+        see the documentation for sklearn.kernel_ridge.KernelRidge.
 
     gamma : float, default=None
         Gamma parameter for the RBF, laplacian, polynomial, exponential chi2
-        and sigmoid kernels. Interpretation of the default value is left to
-        the kernel; see the documentation for sklearn.metrics.pairwise.
-        Ignored by other kernels.
+        and sigmoid kernels. Ignored by other kernels.
+
+        see the documentation for sklearn.metrics.pairwise.
 
     degree : float, default=3
         Degree of the polynomial kernel. Ignored by other kernels.
@@ -58,46 +44,23 @@ class NadarayaWatson(BaseEstimator):
         Ignored by other kernels.
 
     kernel_params : mapping of string to any, optional
-        Additional parameters (keyword arguments) for kernel function passed
-        as callable object.
-
-    Attributes
-    ----------
-    centroids_fit_ : array, shape=(n_exps, 3)
-        Centroid coordinates of the injections used to fit the model.
-
-    y_fit_ : array, shape=(n_exps, n_target_voxels)
-        The projection volume in the target for each experiment.
-
-    weights_ : array, shape=(n_source_voxels, n_exps)
-        The fitted weights matrix.
+        Additional parameters for kernel function passed as callable object.
 
     References
     ----------
-    * Joseph Knox ...
-      "High Resolution Voxel ...."
 
     See also
     --------
     sklearn.kernel_ridge:
-        Kernel Ridge Regression estimator from which this estimator is based.
+        Kernel Ridge Regression estimator from which the structure of
+        this estimator is based.
 
     Examples
     --------
-    >>> from voxel_model.interpolators import VoxelModel
     >>> import numpy as np
-    >>> n_exps = 20
-    >>> n_source_voxels, n_target_voxels = 125, 200
-    >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
-    >>> injections = np.random.randn(n_exps, n_source_voxels)
-    >>> centroids = source_voxels[ np.random.choice(n_source_voxels,
-    >>>                                             n_exps,
-    >>>                                             replacement=False) ]
-    >>> X = np.hstack((centroids, injections))
-    >>> y = np.random.randn(n_exps, n_target_voxels)
-    >>> reg = VoxelModel(source_voxels, kernel="rbf", gamma=1.5)
-    >>> reg.fit(X, y)
+    >>> from voxel_model.regressors import NadarayaWatson
     >>>
+
     """
     def __init__(self, kernel="linear", degree=3,
                  coef0=1, gamma=None, kernel_params=None):
@@ -108,6 +71,7 @@ class NadarayaWatson(BaseEstimator):
         self.kernel_params = kernel_params
 
     def _get_kernel(self, X, y=None):
+        """Gets kernel matrix."""
         if callable(self.kernel):
             params = self.kernel_params or {}
         else:
@@ -119,15 +83,15 @@ class NadarayaWatson(BaseEstimator):
                                 filter_params=True, **params)
 
     def _compute_weights(self, X, y=None):
-
+        """Computes model weights."""
         K = self._get_kernel(X, y)
         factor = K.sum(axis=1)
 
         # we only want to normalize nonzero rows
-        factor[ factor==0 ] = 1
+        factor[factor == 0] = 1
 
         # divide in place
-        np.divide(K, factor[:,np.newaxis], K)
+        np.divide(K, factor[:, np.newaxis], K)
 
         return K
 
@@ -136,6 +100,7 @@ class NadarayaWatson(BaseEstimator):
         return self.kernel == "precomputed"
 
     def _check_fit_arrays(self, X, y, sample_weight):
+        """Checks fit arrays and scales y if sample_weight is not None."""
         # Convert data
         X, y = check_X_y(X, y, accept_sparse=("csr", "csc"),
                          multi_output=True, y_numeric=True)
@@ -144,7 +109,7 @@ class NadarayaWatson(BaseEstimator):
             sample_weight = check_array(sample_weight, ensure_2d=False)
 
             # dont want to rescale X!!!!
-            y = np.multiply(sample_weight[:,np.newaxis], y)
+            y = np.multiply(sample_weight[:, np.newaxis], y)
 
         if len(y.shape) == 1:
             y = y.reshape(-1, 1)
@@ -175,14 +140,16 @@ class NadarayaWatson(BaseEstimator):
             # has to be of form sparse.dot(dense)
             # more efficient than w.dot( y_.toarray() )
             return self.y_.T.dot(w.T).T
-        else:
-            return w.dot( self.y_ )
+
+        return w.dot(self.y_)
 
     def get_weights(self, X):
+        """Return model weights."""
         check_is_fitted(self, ["X_", "y_"])
         return self._compute_weights(X, self.X_)
 
     @property
     def nodes(self):
+        """Nodes (data)"""
         check_is_fitted(self, ["X_", "y_"])
         return self.y_

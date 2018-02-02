@@ -1,4 +1,6 @@
-"""Module containing utility functions"""
+"""
+Module containing utility functions
+"""
 
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:

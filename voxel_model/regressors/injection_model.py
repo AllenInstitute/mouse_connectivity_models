@@ -1,10 +1,13 @@
+"""
+Module containing object InjectionModel. The only difference between this
+estimator and regressors.NadarayaWatson is that this one treats the full
+injection as the X, and thus must be passed as X = (centroids, injections)
+"""
+
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 
-# NOTE : REMOVED epsilon parameter
-
 from __future__ import division, absolute_import
-import operator as op
 import numpy as np
 
 from scipy.sparse import issparse
@@ -18,31 +21,12 @@ class InjectionModel(NadarayaWatson):
 
     Model details can be found at <PAPER>.
 
-    Functions similar/identical to sklearn.kernel_ridge.KernelRidge:
-        * _get_kernel
-        * _pairwise
-    Also the documentation for the following is taken verbatim:
-        * kernel
-        * gamma
-        * degree
-        * coef0
-        * kernel_params
+    see voxel_model.regressors.NadarayaWatson for mechanics
 
     Parameters
     ----------
     source_voxels : array-like, shape=(n_voxels, 3)
         List of voxel coordinates at which to interpolate.
-
-    Attributes
-    ----------
-    centroids_fit_ : array, shape=(n_exps, 3)
-        Centroid coordinates of the injections used to fit the model.
-
-    y_fit_ : array, shape=(n_exps, n_target_voxels)
-        The projection volume in the target for each experiment.
-
-    weights_ : array, shape=(n_source_voxels, n_exps)
-        The fitted weights matrix.
 
     References
     ----------
@@ -56,8 +40,8 @@ class InjectionModel(NadarayaWatson):
 
     Examples
     --------
-    >>> from voxel_model.interpolators import VoxelModel
     >>> import numpy as np
+    >>> from voxel_model.interpolators import VoxelModel
     >>> n_exps = 20
     >>> n_source_voxels, n_target_voxels = 125, 200
     >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
@@ -70,6 +54,7 @@ class InjectionModel(NadarayaWatson):
     >>> reg = VoxelModel(source_voxels, kernel="rbf", gamma=1.5)
     >>> reg.fit(X, y)
     >>>
+
     """
     def __init__(self, source_voxels, **kwargs):
 
@@ -99,16 +84,16 @@ class InjectionModel(NadarayaWatson):
         -------
         self : returns an instance of self.
         """
-        if isinstance(X, tuple) or isinstance(X, list):
+        if isinstance(X, (list, tuple)):
             centroids = X[0]
         else:
             # assume array
-            centroids = X[:,:self.dimension]
+            centroids = X[:, :self.dimension]
 
         X, y = self._check_fit_arrays(centroids, y, sample_weight)
 
         self.y_ = y
-        self.weights_ = self._compute_weights( self.source_voxels, centroids )
+        self.weights_ = self._compute_weights(self.source_voxels, centroids)
 
         return self
 
@@ -130,14 +115,15 @@ class InjectionModel(NadarayaWatson):
         -------
         C : array, shape=(X.shape[0], y_fit_.shape[1])
             Predicted normalized projection densities.
+
         """
         check_is_fitted(self, ["weights_", "y_"])
 
-        if isinstance(X, tuple):
+        if isinstance(X, (list, tuple)):
             injection = X[1]
         else:
             #assume array
-            injection = X[:,self.dimension:]
+            injection = X[:, self.dimension:]
 
         if len(injection.shape) == 1:
             injection = injection.reshape(-1, 1)
@@ -154,10 +140,12 @@ class InjectionModel(NadarayaWatson):
 
     @property
     def weights(self):
+        """Return model weights."""
         check_is_fitted(self, ["weights_", "y_"])
         return self.weights_
 
     @property
     def nodes(self):
+        """Return model nodes (data)."""
         check_is_fitted(self, ["weights_", "y_"])
         return self.y_

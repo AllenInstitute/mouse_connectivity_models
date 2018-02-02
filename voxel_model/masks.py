@@ -1,4 +1,6 @@
-"""Module containing Mask object and supporting functions"""
+"""
+Module containing Mask object and supporting functions
+"""
 
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
