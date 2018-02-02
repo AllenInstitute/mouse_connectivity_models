@@ -167,8 +167,8 @@ def compute_centroid(injection_density):
         centroid onf injection_density in index coordinates.
 
     """
-    nonzero = injection_density[ injection_density.nonzero() ]
-    voxels = np.argwhere( injection_density )
+    nonzero = injection_density[injection_density.nonzero()]
+    voxels = np.argwhere(injection_density)
 
     return np.dot(nonzero, voxels) / injection_density.sum()
 
@@ -274,56 +274,79 @@ class Experiment(object):
 
     @property
     def centroid(self):
+        """Returns centroid of the injection density."""
         return compute_centroid(self.injection_density)
 
     @property
     def normalized_injection_density(self):
+        """Returns injection density normalized to have unit sum."""
         return self.injection_density / self.injection_density.sum()
 
     @property
     def normalized_projection_density(self):
+        """Returns projection_density normalized by the total injection_density"""
         return self.projection_density / self.injection_density.sum()
 
     def get_injection_ratio_contained(self, mask):
         """Returns the raito contained in a given mask.
 
-        ...
+        Useful in determining the spread of an injection accross a mask boundary.
+
+        see voxel_model.masks for more info.
 
         Parameters
         ----------
+        mask - Mask object or array, shape (x_ccf, y_ccf, z_ccf)
+            Object or boolean array that defines the in/out boundary.
+
+        Returns
+        -------
+        float
+            Ratio of the total injection in/out of the mask.
+
         """
         if isinstance(mask, Mask):
-            masked_injection = self.mask_volume( "injection_density", mask )
+            masked_injection = self.mask_volume("injection_density", mask)
         else:
             # assume np.ndarray
             if mask.shape != self.injection_density.shape:
-                raise ValueError( "if mask is array, it must have the "
-                                  "same shape as injection density" )
+                raise ValueError("if mask is array, it must have the "
+                                 "same shape as injection density")
 
-            masked_injection = self.injection_density[ mask.nonzero() ]
+            masked_injection = self.injection_density[mask.nonzero()]
 
         return masked_injection.sum() / self.injection_density.sum()
 
     def mask_volume(self, volume, mask):
-        """Returns masked volume (flattened)
+        """Returns masked volume (flattened).
 
-        ...
+        Identical functionality to voxel_model.masks.Mask.mask_volume
 
         Parameters
         ----------
+        volume - string
+            Name of the data_volume to mask.
+        mask - Mask object or array, shape (x_ccf, y_ccf, z_ccf)
+            Object or boolean array that defines the in/out boundary.
+
+        Returns
+        -------
+        array - 1D
+            Flattened data_volume where the mask is valid.
+
         """
         try:
             # get volume
             data_volume = getattr(self, volume)
         except AttributeError:
-            raise ValueError( "volume must be a valid data_volume" )
+            raise ValueError("volume must be a valid data_volume")
 
         if isinstance(mask, Mask):
-            return mask.mask_volume( data_volume )
+            return mask.mask_volume(data_volume)
         else:
             # assume np.ndarray
             if mask.shape != self.injection_density.shape:
-                raise ValueError( "if mask is array, it must have the "
-                                  "same shape as injection density" )
+                raise ValueError("if mask is array, it must have the "
+                                 "same shape as injection density")
 
-            return data_volume[ mask.nonzero() ]
+            return data_volume[mask.nonzero()]

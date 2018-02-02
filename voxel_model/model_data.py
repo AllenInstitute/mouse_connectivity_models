@@ -54,7 +54,7 @@ def generate_experiments_from_mcc(mcc, experiment_ids,
                                   injection_hemisphere=injection_hemisphere)
 
 class ModelData(namedtuple("ModelData", ["centroids", "injections",
-                                       "projections", "source_voxels"])):
+                                         "projections", "source_voxels"])):
     """Container for grid data.
 
     A conveinence class used to generate arrays used in the model defined in
