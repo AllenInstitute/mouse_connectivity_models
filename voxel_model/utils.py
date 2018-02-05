@@ -9,6 +9,21 @@ from __future__ import absolute_import
 from itertools import compress
 import numpy as np
 
+from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+
+
+def get_mcc(manifest_file=None):
+    """Returns a MouseConnectivityCache instance with the default settings."""
+    if manifest_file is None:
+        manifest_file = "connectivity/mouse_connectivity_manifest.json"
+
+    # use 100 micron resolution and the most up to date ccf
+    return MouseConnectivityCache(
+        manifest_file=manifest_file,
+        resolution=100,
+        ccf_version="annotation/ccf_2017"
+    )
+
 
 def ordered_unique(arr, return_index=False, return_counts=False, axis=None):
     """np.unique in the order in which the unique values occur.
