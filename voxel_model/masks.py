@@ -17,6 +17,7 @@ __all__ = [
     "Mask"
 ]
 
+
 def _validate_descendant_ids(structure_ids, descendant_ids):
     """Validates that descendant_ids are of the correct form."""
     if len(structure_ids) != len(descendant_ids):
@@ -25,6 +26,7 @@ def _validate_descendant_ids(structure_ids, descendant_ids):
 
     return all([dids[0] == sid for sid, dids
                 in zip(structure_ids, descendant_ids)])
+
 
 def _check_disjoint_structures(structure_ids, descendant_ids):
     """Validates that structures are disjoint."""
@@ -40,6 +42,7 @@ def _check_disjoint_structures(structure_ids, descendant_ids):
         return True
 
     return False
+
 
 class Mask(object):
     """Object for masking the grid data from allensdk.
@@ -82,8 +85,21 @@ class Mask(object):
     >>>
 
     """
-    # only R hemisphere for source
     VALID_HEMISPHERES = [1, 2, 3]
+    DEFAULT_STRUCTURE_IDS = [
+        315,   # Isocortex
+        698,   # OLF
+        1089,  # HPF
+        703,   # CTXsp
+        477,   # STR
+        803,   # PAL
+        549,   # TH
+        1097,  # HY
+        313,   # MB
+        771,   # P
+        354,   # MY
+        512    # CB
+    ]
 
     def _check_hemisphere(self, hemisphere):
         """Ensures hemisphere is valid."""
@@ -92,9 +108,14 @@ class Mask(object):
 
         return hemisphere
 
-    def __init__(self, mcc, structure_ids, hemisphere=3):
+    def __init__(self, mcc, structure_ids=None, hemisphere=3):
         self.mcc = mcc
-        self.structure_ids = structure_ids
+
+        if structure_ids is None:
+            self.structure_ids = self.DEFAULT_STRUCTURE_IDS
+        else:
+            self.structure_ids = structure_ids
+
         self.hemisphere = self._check_hemisphere(hemisphere)
 
         # get reference_space module and update to resolved structures
@@ -152,6 +173,41 @@ class Mask(object):
     def masked_shape(self):
         """Shape a data volume would become after masking."""
         return (np.count_nonzero(self.mask),)
+
+    def get_structure_indices(self, structure_ids=None, hemisphere=None):
+        # TODO: look into cleaning up check for disjoint
+        """Returns flattened annotation key.
+
+        Useful in performing structure specific computations on the voxel-voxel
+        array.
+
+        Parameters
+        ----------
+        structure_ids : list, optional (defalut=None)
+            Ids of structures which to include in the key. If None, the
+            structure_ids used to make the Mask object will be used.
+
+        hemisphere : int, optional (defalut=None)
+            Hemisphere to include in the key. If None, the hemisphere used
+            to maske the Mask object will be used.
+
+        Returns
+        -------
+
+        """
+        if structure_ids is None:
+            structure_ids = self.structure_ids
+
+        if structure_ids is self.structure_ids and hemisphere is None:
+            # saves time if already computed
+            mask = self.mask
+        else:
+            mask = self._get_mask(structure_ids, hemisphere=hemisphere)
+
+        # mask this mask to self.mask
+        aligned = self.mask_volume(mask)
+
+        return aligned.nonzero()[0]
 
     def get_key(self, structure_ids=None, hemisphere=None):
         # TODO: look into cleaning up check for disjoint
@@ -213,7 +269,8 @@ class Mask(object):
         Paramters
         ---------
         X - array, shape (x_ccf, y_ccf, z_ccf)
-            Data volume to be masked. Must be same shape as self.annotation_shape
+            Data volume to be masked. Must be same shape as
+            self.annotation_shape
 
         Returns
         -------
