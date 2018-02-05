@@ -3,11 +3,11 @@ Examples
 
 `build_model.py` : builds the voxel x voxel connectivity model  
 `build_region_matrices.py` : integrates the voxel x voxel matrix over the summary structures\*  
-`voxel_array.py` : displays the functionality of the `VoxelArray` object (see below)
+`voxel_array_example.py` : displays the functionality of the `VoxelArray` object (see below)
 
 \* `build_model.py` must be run before any other examples or analysis
 
-voxel_array.py
+VoxelArray
 ======================================
 
 Since the full voxel x voxel connectivity matrix is ~200,000 x ~400,000 elements, it will mostlikely not fit in your memory. Luckily, the connectivity matrix has low rank structure, and we can take advantage of this by only computing the connectivty matrix on the fly, in the area we want to perform computation.
