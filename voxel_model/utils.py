@@ -7,6 +7,7 @@ Module containing utility functions
 
 from __future__ import absolute_import
 from itertools import compress
+import os
 import numpy as np
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
@@ -15,13 +16,14 @@ from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 def get_mcc(manifest_file=None):
     """Returns a MouseConnectivityCache instance with the default settings."""
     if manifest_file is None:
-        manifest_file = "connectivity/mouse_connectivity_manifest.json"
+        manifest_file = os.path.join(os.getcwd(), "connectivity",
+                                     "mouse_connectivity_manifest.json")
 
     # use 100 micron resolution and the most up to date ccf
     return MouseConnectivityCache(
         manifest_file=manifest_file,
         resolution=100,
-        ccf_version="annotation/ccf_2017"
+        ccf_version=os.path.join("annotation", "ccf_2017")
     )
 
 
@@ -58,7 +60,7 @@ def ordered_unique(arr, return_index=False, return_counts=False, axis=None):
         Counts of the unique values.
 
     """
-    unique = np.unique(arr, return_index=True, return_counts=return_counts, axis=None)
+    unique = np.unique(arr, return_index=True, return_counts=return_counts, axis=axis)
 
     # unique[1] == indices always
     perm_order = np.argsort(unique[1])
@@ -68,6 +70,7 @@ def ordered_unique(arr, return_index=False, return_counts=False, axis=None):
         return tuple(map(lambda x: x[perm_order], compress(unique, return_arrs)))
 
     return unique[0][perm_order]
+
 
 def lex_ordered_unique(arr, lex_order, allow_extra=False, return_index=False,
                        return_counts=False, axis=None):
@@ -132,6 +135,7 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, return_index=False,
         return tuple(map(lambda x: x[perm_order], unique))
 
     return unique[0][perm_order]
+
 
 def padded_diagonal_fill(arrays):
     """Returns array filled with uneven arrays padding with zeros.
