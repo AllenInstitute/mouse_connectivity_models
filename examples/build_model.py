@@ -24,7 +24,7 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
         experiment_exclude = set(json.load(fn))
 
     # get parameters
-    with open(param_file) as fn:
+    with open(parameter_file) as fn:
         parameter_dict = json.load(fn)
 
     # all target masks the same
@@ -51,7 +51,7 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
                                                   experiment_ids=experiment_ids)
 
         # get hyperparameters from hyperparameter fitting
-        parameters = parameter_dict[unicode(sid)]  # json serialized
+        parameters = parameter_dict[str(sid)]  # json serialized
         kernel = Matern(**parameters)
 
         # build model
@@ -112,14 +112,15 @@ if __name__ == "__main__":
     ]
 
     # mcc settings
-    MANIFEST_FILE = "connectivity/mouse_connectivity_manifest.json"
+    MANIFEST_FILE = os.path.join(os.getcwd(), "connectivity",
+                                 "mouse_connectivity_manifest.json")
 
     # i/o settings
-    EXPERIMENT_EXCLUDE_FILE = os.path.join(os.path.abspath(__file__),
+    EXPERIMENT_EXCLUDE_FILE = os.path.join(os.path.dirname(__file__),
                                            "experiment_exclude.json")
-    PARAMETER_FILE = os.path.join(os.path.abspath(__file__),
+    PARAMETER_FILE = os.path.join(os.path.dirname(__file__),
                                   "hyperparameters.json")
-    OUTPUT_DIR = "data"
+    OUTPUT_DIR = os.path.join(os.getcwd(), "data")
 
     main(STRUCTURE_IDS, MANIFEST_FILE, EXPERIMENT_EXCLUDE_FILE,
          PARAMETER_FILE, OUTPUT_DIR)

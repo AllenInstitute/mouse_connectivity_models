@@ -31,11 +31,7 @@ def get_ordered_summary_structures(mcc):
     return ids[np.argsort(orders)]
 
 
-def main(manifest_file, output_dir, metrics):
-
-    # make sure dir exists
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+def main(manifest_file, data_dir, output_dir, metrics):
 
     # grab MouseConnectivityCache instance
     mcc = get_mcc(manifest_file)
@@ -44,8 +40,11 @@ def main(manifest_file, output_dir, metrics):
     region_ids = get_ordered_summary_structures(mcc)
 
     # load data
-    weights = np.load("data/weights.npy")
-    nodes = np.load("data/nodes.npy")
+    try:
+        weights = np.load(os.path.join(data_dir, "weights.npy"))
+        nodes = np.load(os.path.join(data_dir, "nodes.npy"))
+    except FileNotFoundError:
+        raise
 
     # get masks
     # source_mask = Mask.load("data/source_mask.pkl")
@@ -81,10 +80,12 @@ def main(manifest_file, output_dir, metrics):
 if __name__ == "__main__":
 
     # mcc settings
-    MANIFEST_FILE = "connectivity/mouse_connectivity_manifest.json"
+    MANIFEST_FILE = os.path.join(os.getcwd(), "connectivity",
+                                 "mouse_connectivity_manifest.json")
 
     # i/o settings
-    OUTPUT_DIR = "output/region_matrices"
+    DATA_DIR = os.path.join(os.getcwd(), "data")
+    OUTPUT_DIR = os.path.join(os.getcwd(), "output", "region_matrices")
 
     # wanted regionalized metrics
     METRICS = [
@@ -94,4 +95,8 @@ if __name__ == "__main__":
         "normalized_connection_density"
     ]
 
-    main(MANIFEST_FILE, OUTPUT_DIR, METRICS)
+    # make sure dir exists
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    main(MANIFEST_FILE, DATA_DIR, OUTPUT_DIR, METRICS)
