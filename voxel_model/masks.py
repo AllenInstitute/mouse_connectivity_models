@@ -233,8 +233,13 @@ class Mask(object):
             in the annotation. Each element in key is a structure_id.
 
         """
-        if structure_ids is None:
-            structure_ids = self.structure_ids
+        # do not want to overwrite annotation
+        annotation = self.annotation.copy()
+
+        if structure_ids is None and hemisphere is None:
+            # return key of all resolved structures in annotation
+            annotation[np.logical_not(self.mask)] = 0
+            return self.mask_volume(annotation)
 
         # get list of descendant_ids for each structure id
         descendant_ids = self.structure_tree.descendant_ids(structure_ids)
@@ -242,21 +247,15 @@ class Mask(object):
         if not _check_disjoint_structures(structure_ids, descendant_ids):
             raise ValueError("structures are not disjoint")
 
-        if structure_ids is self.structure_ids and hemisphere is None:
-            # saves time if already computed
-            mask = self.mask
-        else:
-            mask = self._get_mask(structure_ids, hemisphere=hemisphere)
-
-        # do not want to overwrite annotation
-        annotation = self.annotation.copy()
-
         for structure_id, descendants in zip(structure_ids, descendant_ids):
 
             if len(descendants) > 1:
                 # set annotation equal to structure where it has descendants
                 idx = np.isin(annotation, descendants)
                 annotation[idx] = structure_id
+
+        # get mask according to args
+        mask = self._get_mask(structure_ids, hemisphere=hemisphere)
 
         # mask to structure_ids
         annotation[np.logical_not(mask)] = 0
