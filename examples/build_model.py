@@ -122,5 +122,9 @@ if __name__ == "__main__":
                                   "hyperparameters.json")
     OUTPUT_DIR = os.path.join(os.getcwd(), "data")
 
+    # make sure dir exists
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
     main(STRUCTURE_IDS, MANIFEST_FILE, EXPERIMENT_EXCLUDE_FILE,
          PARAMETER_FILE, OUTPUT_DIR)
