@@ -29,6 +29,18 @@ This will build the model and place the model components in `<analysis_dir>/data
 
 Reading the documentation
 --------------------------------
+### Generating the documentation: ###
+
+Either run `tox` and wait till test are complete, or alternatively:
+
+From the `voxel_model` base directory, with the `voxel_model` `pipenv` activated:
+```
+pip install --upgrade --force git+https://github.com/sphinx-gallery/sphinx-gallery
+make -C docs clean html
+```
+
+### Viewing the documentation: ###
+
 From the `voxel_model` base directory, where `<port>` is an open port (say `8000`):
 
 1. change to `html` build directory:
