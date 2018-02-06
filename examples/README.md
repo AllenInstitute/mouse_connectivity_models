@@ -50,6 +50,13 @@ column = model[:, target]
 print( type(row) )
 ```
 
+If one wishes to operate on the full matrix (not recommended unless you have >1TB RAM!), computing the full matrix is similar to loading an `hdf5` file:
+
+```python
+full_array = model[:]
+```
+
+
 ### VoxelArray methods ###
 `VoxelArray` also has a few methods implemented from `numpy.ndarray`. These include:
 * `dtype`
@@ -63,4 +70,68 @@ print( type(row) )
 and are called just like their `numpy.ndarray` counter parts:
 ```python
 transposed = model.T
+```
+
+Using the Mask object
+=============================================
+Using the `Mask` object in conjunction with `VoxelArray` will allow you to perform meaningful analysis with the connectivity model.
+
+### Initializing a Mask object ###
+When working with the full connectivty matrix, first either load, or initialize the defualt `Mask` objects.
+
+```python
+from voxel_model.masks import Mask
+from voxel_model.utils import get_mcc
+
+# returns a MouseConnectivityCache instance from allensdk
+mcc = get_mcc()
+
+# defualt masks are constructed this way
+source_mask = Mask(mcc, hemisphere=2)
+target_mask = Mask(mcc, hemisphere=3)
+```
+
+### Use cases ###
+
+#### find out to which structure a given row/column belongs ####
+```python
+# find source voxel with greatest total connectivity
+source = np.argmax(model.sum(axis=1))
+
+# get key (flat array with values cooresponding to structure_ids)
+key = source_mask.get_key()
+structure_id = key[source]
+
+# get structure name using structure_tree object from allensdk
+structure_tree = mcc.get_structure_tree()
+structure_name = structure_tree.get_structures_by_id([structure_id])[0]["name"]
+
+print("Most connected source voxel is located in {}".format(structure_name))
+
+# also one can determine where in space the voxel is located
+source_coordinates = source_mask.coordinates
+voxel = source_coordinates[source]
+
+print("Most connected source voxel is located at {}".format(voxel))
+```
+
+#### find out to which rows/columns a given structure belongs ####
+```python
+# say we want to look at VISl
+structure_id = structure_tree.get_structures_by_acronym(["VISl"])[0]["id"]
+
+# rows of interest 
+row_idx = source_mask.get_structure_indices(structure_ids=[structure_id])
+
+# connectivity matrix with sources in VISl
+visl_connectivity = model[row_idx]
+```
+
+#### Map the connectivity of a voxel to ccf space ####
+```python
+# row of interest
+row = model[5562]
+
+# map to ccf space
+connection_volume = source_mask.map_masked_to_annotation(row)
 ```
