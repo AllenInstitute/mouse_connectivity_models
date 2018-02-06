@@ -23,7 +23,7 @@ pipenv install --dev
 pipenv shell
 pip install .
 cd ..
-python examples/build_model.py
+python voxel_model/examples/build_model.py
 ```
 This will build the model and place the model components in `<analysis_dir>/data/`
 
