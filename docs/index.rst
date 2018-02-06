@@ -16,7 +16,7 @@ Contents:
    installation
    usage
    authors
-   history
+   modules
 
 
 Indices and tables
