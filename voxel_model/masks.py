@@ -174,26 +174,9 @@ class Mask(object):
         """Shape a data volume would become after masking."""
         return (np.count_nonzero(self.mask),)
 
-    def get_structure_indices(self, structure_ids=None, hemisphere=None):
-        # TODO: look into cleaning up check for disjoint
-        """Returns flattened annotation key.
-
-        Useful in performing structure specific computations on the voxel-voxel
-        array.
-
-        Parameters
-        ----------
-        structure_ids : list, optional (defalut=None)
-            Ids of structures which to include in the key. If None, the
-            structure_ids used to make the Mask object will be used.
-
-        hemisphere : int, optional (defalut=None)
-            Hemisphere to include in the key. If None, the hemisphere used
-            to maske the Mask object will be used.
-
-        Returns
-        -------
-
+    def get_structure_flattened_mask(self, structure_ids=None, hemisphere=None):
+        """
+        ...
         """
         if structure_ids is None:
             structure_ids = self.structure_ids
@@ -205,7 +188,13 @@ class Mask(object):
             mask = self._get_mask(structure_ids, hemisphere=hemisphere)
 
         # mask this mask to self.mask
-        aligned = self.mask_volume(mask)
+        return self.mask_volume(mask)
+
+    def get_structure_indices(self, structure_ids=None, hemisphere=None):
+        """
+        ...
+        """
+        aligned = self.get_structure_flattened_mask(structure_ids, hemisphere)
 
         return aligned.nonzero()[0]
 
