@@ -47,8 +47,6 @@ def main(manifest_file, data_dir, output_dir, metrics):
         raise
 
     # get masks
-    # source_mask = Mask.load("data/source_mask.pkl")
-    # target_mask = Mask.load("data/target_mask.pkl")
     source_mask = Mask(mcc, hemisphere=2)
     target_mask = Mask(mcc, hemisphere=3)
 

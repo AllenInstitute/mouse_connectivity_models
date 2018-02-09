@@ -3,7 +3,9 @@ tree, annotataion taken directly (copied) from:
     allensdk.test.core.test_reference_space.rsp()
 """
 # TODO : test load/save
-from __future__ import division
+from __future__ import division, print_function, absolute_import
+
+import json
 import mock
 import pytest
 import numpy as np
@@ -18,17 +20,18 @@ from voxel_model.masks import Mask
 def structure_ids():
     return [2,3]
 
+
 @pytest.fixture(scope="function")
 def contra_mask(mcc, structure_ids):
-    return Mask(mcc, structure_ids, hemisphere=1)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=1)
 
 @pytest.fixture(scope="function")
 def ipsi_mask(mcc, structure_ids):
-    return Mask(mcc, structure_ids, hemisphere=2)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=2)
 
 @pytest.fixture(scope="function")
 def bi_mask(mcc, structure_ids):
-    return Mask(mcc, structure_ids, hemisphere=3)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=3)
 
 # -----------------------------------------------------------------------------
 # tests
@@ -142,10 +145,20 @@ def test_map_masked_to_annotation(bi_mask, annotation):
 
 # -----------------------------------------------------------------------------
 # tests
-def test_save():
-    pass
+def test_to_json(tmpdir, bi_mask):
+
+    fn = str(tmpdir.join("mask.json"))
+
+    # doesnt throw
+    bi_mask.to_json(fn)
+
+    with open(str(fn), "r") as f:
+        attrs = json.load(f)
+
+    for k, v in attrs.items():
+        assert( getattr(bi_mask, k) == v )
 
 # -----------------------------------------------------------------------------
 # tests
-def test_load():
+def test_from_json():
     pass

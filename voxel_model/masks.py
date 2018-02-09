@@ -7,11 +7,18 @@ Module containing Mask object and supporting functions
 
 # TODO : finish Mask docstring (examples)
 
-from __future__ import division
+from __future__ import division, absolute_import
 from functools import reduce
-import pickle
+import os
+import json
 import operator as op
 import numpy as np
+
+from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+
+
+from .utils import get_mcc
+
 
 __all__ = [
     "Mask"
@@ -72,13 +79,6 @@ class Mask(object):
     referece_space : reference_space object
         see allensdk.reference_space
 
-    structure_tree : structure_tree object
-        see allensdk.structure_tree
-
-    annotation : array, shape (x_ccf, y_ccf, z_ccf)
-        Array defining each voxel in the CCF as a given structure.
-        see allensdk.reference_space
-
     Examples
     --------
     >>> from voxel_model.masks import Mask
@@ -108,8 +108,14 @@ class Mask(object):
 
         return hemisphere
 
-    def __init__(self, mcc, structure_ids=None, hemisphere=3):
-        self.mcc = mcc
+    def __init__(self, mcc=None, manifest_file=None, structure_ids=None,
+                 hemisphere=3):
+
+        if mcc is None:
+            mcc = get_mcc(manifest_file)
+
+        # must happen after mcc incase manifest_file not passed
+        self.manifest_file = os.path.relpath(mcc.manifest_file)
 
         if structure_ids is None:
             self.structure_ids = self.DEFAULT_STRUCTURE_IDS
@@ -119,12 +125,16 @@ class Mask(object):
         self.hemisphere = self._check_hemisphere(hemisphere)
 
         # get reference_space module and update to resolved structures
-        self.reference_space = self.mcc.get_reference_space()
-        self.reference_space.remove_unassigned(update_self=True)
+        try:
+            self.reference_space = mcc.get_reference_space()
+        except AttributeError:
+            if not isinstance(mcc, MouseConnectivityCache):
+                raise ValueError("mcc must be a MouseConnectivityCache instance")
+            else:
+                raise
 
-        # get updated ref space data structures
-        self.structure_tree = self.reference_space.structure_tree
-        self.annotation = self.reference_space.annotation
+        # update reference space to include only assigned voxels
+        self.reference_space.remove_unassigned(update_self=True)
 
     @staticmethod
     def _mask_to_hemisphere(mask, hemisphere):
@@ -162,7 +172,7 @@ class Mask(object):
     @property
     def annotation_shape(self):
         """Shape of the annotation array (CCF)"""
-        return self.annotation.shape
+        return self.reference_space.annotation.shape
 
     @property
     def coordinates(self):
@@ -223,7 +233,7 @@ class Mask(object):
 
         """
         # do not want to overwrite annotation
-        annotation = self.annotation.copy()
+        annotation = self.reference_space.annotation.copy()
 
         if structure_ids is None and hemisphere is None:
             # return key of all resolved structures in annotation
@@ -231,7 +241,9 @@ class Mask(object):
             return self.mask_volume(annotation)
 
         # get list of descendant_ids for each structure id
-        descendant_ids = self.structure_tree.descendant_ids(structure_ids)
+        descendant_ids = self.reference_space.structure_tree.descendant_ids(
+            structure_ids
+        )
 
         if not _check_disjoint_structures(structure_ids, descendant_ids):
             raise ValueError("structures are not disjoint")
@@ -327,13 +339,20 @@ class Mask(object):
 
         return y_volume
 
-    def save(self, filename):
-        """Pikcles object"""
-        with open(filename, "wb") as fn:
-            pickle.dump(self, fn, pickle.HIGHEST_PROTOCOL)
+    def to_json(self, filename):
+        """Serializes object attributes"""
+        attrs = dict(manifest_file=self.manifest_file,
+                     structure_ids=self.structure_ids,
+                     hemisphere=self.hemisphere)
+
+        print(attrs)
+        with open(filename, "w") as f:
+            json.dump(attrs, f)
 
     @classmethod
-    def load(cls, filename):
-        """Loads mask from pickle"""
-        with open(filename, "rb") as fn:
-            return pickle.load(fn)
+    def from_json(cls, filename):
+        """Loads mask from json"""
+        with open(filename, "r") as f:
+            attrs = json.load(f)
+
+        return cls(**attrs)

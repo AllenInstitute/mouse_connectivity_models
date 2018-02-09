@@ -42,14 +42,14 @@ def mcc(tree, annotation):
     projection_density = np.ones(shape)
 
     # mock
-    mcc = mock.Mock()
+    mcc = mock.Mock(manifest_file="manifest_file")
 
     mcc.get_data_mask.return_value = (data_mask, )
     mcc.get_injection_density.return_value = (injection_density, )
     mcc.get_injection_fraction.return_value = (injection_fraction, )
     mcc.get_projection_density.return_value = (projection_density, )
 
-    mcc.get_experiments.return_value = [ {"id":456}, {"id":12}, {"id":315}]
+    mcc.get_experiments.return_value = [{"id":456}, {"id":12}, {"id":315}]
 
     # reference space
     rsp = ReferenceSpace(StructureTree(tree), annotation, [10, 10, 10])

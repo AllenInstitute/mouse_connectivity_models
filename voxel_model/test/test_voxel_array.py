@@ -40,7 +40,7 @@ def test_from_csv(tmpdir, weights, nodes):
     f1 = tmpdir.join("weights.csv")
     f2 = tmpdir.join("nodes.csv")
 
-    # numpy doesnt like unicode?
+    # get filenames not localpath objects
     f1, f2 = map(str, (f1, f2))
 
     np.savetxt(f1, weights, delimiter=",")
@@ -57,7 +57,7 @@ def test_from_npy(tmpdir, weights, nodes):
     f1 = tmpdir.join("weights.npy")
     f2 = tmpdir.join("nodes.npy")
 
-    # numpy doesnt like unicode?
+    # get filenames not localpath objects
     f1, f2 = map(str, (f1, f2))
 
     np.save(f1, weights)

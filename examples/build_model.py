@@ -28,7 +28,7 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
         parameter_dict = json.load(fn)
 
     # all target masks the same
-    target_mask = Mask(mcc, structure_ids, hemisphere=3)
+    target_mask = Mask(mcc, hemisphere=3)
 
     # mask for reordering source
     offset = 1  # start @ 1 so that nonzero can be used
@@ -40,7 +40,7 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
         print("building model for", sid)
 
         # get source mask
-        source_mask = Mask(mcc, [sid], hemisphere=2)
+        source_mask = Mask(mcc, structure_ids=[sid], hemisphere=2)
 
         # get experiments (only for wild type
         experiment_ids = get_experiment_ids(mcc, [sid], cre=False)
@@ -81,7 +81,7 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
     weights = weights[permutation, :]
 
     # get union of source masks
-    full_source = Mask(mcc, structure_ids, hemisphere=2)
+    full_source = Mask(mcc, hemisphere=2)
 
     print("saving")
     # save model

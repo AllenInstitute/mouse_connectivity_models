@@ -49,8 +49,8 @@ def test_is_valid_experiment():
 # -----------------------------------------------------------------------------
 # tests
 def test_from_mcc_and_masks(mcc):
-    source_mask = Mask(mcc, [3], hemisphere=2)
-    target_mask = Mask(mcc, [2,3,4,5,6], hemisphere=3)
+    source_mask = Mask(mcc=mcc, structure_ids=[3], hemisphere=2)
+    target_mask = Mask(mcc=mcc, structure_ids=[2,3,4,5,6], hemisphere=3)
 
     data = ModelData.from_mcc_and_masks(mcc, source_mask, target_mask)
 
