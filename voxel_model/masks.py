@@ -9,7 +9,6 @@ Module containing Mask object and supporting functions
 
 from __future__ import division, absolute_import
 from functools import reduce
-import os
 import json
 import operator as op
 import numpy as np
@@ -114,8 +113,19 @@ class Mask(object):
         if mcc is None:
             mcc = get_mcc(manifest_file)
 
+        # NOTE : check allensdk git repo for issue fix
         # must happen after mcc incase manifest_file not passed
-        self.manifest_file = os.path.relpath(mcc.manifest_file)
+        try:
+            self.manifest_file = mcc.manifest_file
+        except AttributeError:
+            # from get_mcc
+            if manifest_file is None:
+                import os
+                self.manifest_file = os.path.join(os.getcwd(), "connectivity",
+                                                  "mouse_connectivity_manifest.json")
+            else:
+                self.manifest_file = manifest_file
+
 
         if structure_ids is None:
             self.structure_ids = self.DEFAULT_STRUCTURE_IDS
