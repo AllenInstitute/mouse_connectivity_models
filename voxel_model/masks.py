@@ -180,9 +180,33 @@ class Mask(object):
             return self._mask
 
     @property
+    def structure_tree(self):
+        """Structure_tree object of reference space"""
+        return self.reference_space.structure_tree
+
+    @property
+    def annotation(self):
+        """Annotation object of reference space"""
+        return self.reference_space.annotation
+
+    def _get_assigned_structures(self):
+        # return flattened set of list of lists
+        descendants = self.structure_tree.descendant_ids(self.structure_ids)
+        return set(reduce(op.add, descendants, []))
+
+    @property
+    def assigned_structures(self):
+        """List of resolved structures in annotation"""
+        try:
+            return self._assigned_structures
+        except AttributeError:
+            self._assigned_structures = self._get_assigned_structures()
+            return self._assigned_structures
+
+    @property
     def annotation_shape(self):
         """Shape of the annotation array (CCF)"""
-        return self.reference_space.annotation.shape
+        return self.annotation.shape
 
     @property
     def coordinates(self):
@@ -243,7 +267,7 @@ class Mask(object):
 
         """
         # do not want to overwrite annotation
-        annotation = self.reference_space.annotation.copy()
+        annotation = self.annotation.copy()
 
         if structure_ids is None and hemisphere is None:
             # return key of all resolved structures in annotation
@@ -251,9 +275,7 @@ class Mask(object):
             return self.mask_volume(annotation)
 
         # get list of descendant_ids for each structure id
-        descendant_ids = self.reference_space.structure_tree.descendant_ids(
-            structure_ids
-        )
+        descendant_ids = self.structure_tree.descendant_ids(structure_ids)
 
         if not _check_disjoint_structures(structure_ids, descendant_ids):
             raise ValueError("structures are not disjoint")

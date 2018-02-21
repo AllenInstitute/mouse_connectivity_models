@@ -20,6 +20,9 @@ from voxel_model.masks import Mask
 def structure_ids():
     return [2,3]
 
+@pytest.fixture(scope="module")
+def descendant_ids():
+    return [2,3,4,5,6]
 
 @pytest.fixture(scope="function")
 def contra_mask(mcc, structure_ids):
@@ -47,13 +50,26 @@ def test_mask_to_hemisphere(ipsi_mask, contra_mask, bi_mask):
 
     combo = ipsi_mask.mask + contra_mask.mask
 
+
     assert_array_equal( combo, bi_mask.mask )
 
 # -----------------------------------------------------------------------------
 # tests
 def test_get_mask(bi_mask, annotation):
 
+
     assert_array_equal( bi_mask.mask, annotation != 0 )
+
+# -----------------------------------------------------------------------------
+# tests
+def test_assigned_structures(bi_mask, ipsi_mask, annotation, descendant_ids):
+
+    assert( bi_mask.assigned_structures == set(descendant_ids) )
+
+    ipsi_annot = annotation[...,annotation.shape[2]//2:]
+    ipsi_defined = np.unique(ipsi_annot[ipsi_annot.nonzero()]).astype(int)
+    assert( ipsi_mask.assigned_structures == set(ipsi_defined) )
+
 
 # -----------------------------------------------------------------------------
 # tests
