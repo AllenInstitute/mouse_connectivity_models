@@ -1,4 +1,4 @@
-"""
+""""
 Module containing Mask object and supporting functions
 """
 
@@ -233,6 +233,31 @@ class Mask(object):
 
         # mask this mask to self.mask
         return self.mask_volume(mask)
+
+    def get_flattened_voxel_index(self, voxel_idx):
+        """Return the index of a givel voxel in the flattened mask.
+
+        Parameters
+        ----------
+        voxel_idx : array
+            coordinates of voxel of which the flattened index position is wanted
+
+        Returns
+        -------
+        int
+            idx of voxel_idx in flattened mask
+        """
+
+        idx = np.where((self.coordinates == voxel_idx).all(axis=1))[0]
+
+        try:
+            # return int from array
+            return idx[0]
+        except IndexError as e:
+            # array is empty
+            raise ValueError("voxel index is not in mask.coordinates"
+                             "\nIndexError\n %s" % e)
+
 
     def get_structure_indices(self, structure_ids=None, hemisphere=None):
         """

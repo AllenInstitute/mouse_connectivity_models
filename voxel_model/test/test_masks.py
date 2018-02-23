@@ -89,6 +89,24 @@ def test_coordinates(bi_mask, annotation):
 
 # -----------------------------------------------------------------------------
 # tests
+def test_get_flattened_voxel_index(bi_mask, annotation):
+    full_key = annotation[annotation.nonzero()]
+
+    v1 = [7,7,7] # = 4
+    v2 = [9,9,9] # = 3
+    i1 = np.where(full_key == 4)[0][0]
+    i2 = np.where(full_key == 3)[0][7]
+
+    print( bi_mask.get_flattened_voxel_index(v1), i1 )
+    print( bi_mask.get_flattened_voxel_index(v2), i2 )
+    assert( bi_mask.get_flattened_voxel_index(v1) == i1 )
+    assert( bi_mask.get_flattened_voxel_index(v2) == i2 )
+
+    assert_raises( ValueError, bi_mask.get_flattened_voxel_index, [10,10,10] )
+    assert_raises( ValueError, bi_mask.get_flattened_voxel_index, [5, 5.5, 5] )
+
+# -----------------------------------------------------------------------------
+# tests
 def test_get_key(bi_mask, structure_ids):
 
     # use the internal structure ids
