@@ -116,7 +116,7 @@ class ModelData(namedtuple("ModelData", ["centroids", "injections",
 
     @classmethod
     def from_mcc_and_masks(cls, mcc, source_mask, target_mask,
-                           experiment_ids=None):
+                           experiment_ids=None, cre=None):
         """Alternative constructor allowing for pulling grid data.
 
         Uses voxel_model.experment to generate grid data using allensdk.
@@ -144,7 +144,7 @@ class ModelData(namedtuple("ModelData", ["centroids", "injections",
         """
         # get list of experment ids
         if experiment_ids is None:
-            experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids)
+            experiment_ids = get_experiment_ids(mcc, source_mask.structure_ids, cre)
 
         # initialize containers
         centroids, injections, projections = [], [], []
