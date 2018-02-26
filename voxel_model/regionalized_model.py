@@ -8,6 +8,7 @@ voxel-voxel model at the level of regions.
 
 from __future__ import division, absolute_import
 import numpy as np
+import pandas as pd
 
 from .utils import lex_ordered_unique
 
@@ -62,7 +63,7 @@ class RegionalizedModel(object):
         """If weights and nodes passed explicitly"""
         return cls(voxel_array.weights, voxel_array.nodes, *args, **kwargs)
 
-    def __init__(self, weights, nodes, source_key, target_key, ordering=None):
+    def __init__(self, weights, nodes, source_key, target_key, ordering=None, dataframe=True):
         if source_key.size != weights.shape[0]:
             raise ValueError("rows of weights and elements in source_key "
                              "must be equal size")
@@ -70,6 +71,9 @@ class RegionalizedModel(object):
         if target_key.size != nodes.shape[1]:
             raise ValueError("columns of nodes and elements in target_key "
                              "must be of equal size")
+
+        # metrics return dataframe?
+        self.dataframe = dataframe
 
         # want only valid indices (source/target keys likely to have zeros)
         rows = source_key.nonzero()[0]
@@ -116,6 +120,11 @@ class RegionalizedModel(object):
             # NOTE : if region were 1 voxel, would not work?
             columns = np.nonzero(self.source_key == region)[0]
             region_matrix[i, :] = temp[:, columns].sum(axis=1)
+
+        if self.dataframe:
+            region_matrix = pd.DataFrame(region_matrix)
+            region_matrix.index = source_regions
+            region_matrix.columns = target_regions
 
         return region_matrix
 
