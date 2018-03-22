@@ -1,5 +1,5 @@
 """
-
+Nadaraya-Watson Regression (also known as kernel regression)
 """
 
 # Authors: Joseph Knox josephk@alleninstitute.org
@@ -7,19 +7,19 @@
 
 # TODO : docs and example
 # TODO : eval overwrite of K (kernel)
-
 from __future__ import division
-import numpy as np
 
+import numpy as np
 from scipy.sparse import issparse
 
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.metrics.scorer import check_scoring
 from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.model_selection \
-    import check_cv, _check_fit_arrays, GridSearchCV, ParameterGrid
-from sklearn.utils import check_array, check_X_y
+    import GridSearchCV, ParameterGrid, check_cv, _check_param_grid
 from sklearn.utils.validation import check_is_fitted
+from sklearn.utils import check_array
+from sklearn.utils import check_X_y
 
 
 class NadarayaWatson(BaseEstimator, RegressorMixin):

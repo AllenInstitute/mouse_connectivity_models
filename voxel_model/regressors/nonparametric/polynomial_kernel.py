@@ -1,15 +1,20 @@
+"""
+Polynomial Kernel
+"""
+
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
+
 # TODO : docs and example
 # TODO: eval_gradient
-from __future__ import absolute_import, print_function, division
+from __future__ import division
 
 import numpy as np
 import scipy.special as sp
+from scipy.spatial.distance import pdist, cdist, squareform
 
 from sklearn.gaussian_process \
     import Kernel, StationaryKernelMixin, NormalizedKernelMixin, Hyperparameter
-from scipy.spatial.distance import pdist, cdist, squareform
 
 
 class Polynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
