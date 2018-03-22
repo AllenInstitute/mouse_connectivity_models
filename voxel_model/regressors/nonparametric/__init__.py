@@ -6,8 +6,8 @@ The :mod:`voxel_model.regressors.nonparametric` module implements ...
 # License:
 
 from .nadaraya_watson import NadarayaWatson, NadarayaWatsonCV
-from .polynomial_kernel import Polynomial
+from . import kernels
 
 __all__ = ['NadarayaWatson',
            'NadarayaWatsonCV',
-           'Polynomial']
+           'kernels']
