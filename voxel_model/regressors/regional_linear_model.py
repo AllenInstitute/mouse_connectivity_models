@@ -21,18 +21,18 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.externals import six
 
 
-class _BaseOh(six.with_metaclass(ABCMeta, BaseEstimator)):
+class _BaseNNRidge(six.with_metaclass(ABCMeta, BaseEstimator)):
 
     @abstractmethod
-    def __init__(self, kappa=1000):
-        self.kappa = kappa
+    def __init__(self, alpha=1.0):
+        self.alpha = alpha
 
     @staticmethod
-    def _fit_w(X, y):
+    def _fit_w(C, d):
         """returns weights"""
-        w = np.empty((X.shape[1], y.shape[1]))
-        for j, col in enumerate(y.T):
-            w[:, j] = sopt.nnls(X, col)[0]
+        w = np.empty((C.shape[1], d.shape[1]))
+        for j, col in enumerate(d.T):
+            w[:, j] = sopt.nnls(C, col)[0]
 
         return w
 
@@ -49,11 +49,32 @@ class _BaseOh(six.with_metaclass(ABCMeta, BaseEstimator)):
 
         return X.dot(self.weights_)
 
+def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
+    """Nonnegative ridge regression.
 
-class OhModel(_BaseOh, RegressorMixin):
+    ...
+    """
+    if alpha != 0.0:
+        # append
+        X_ = np.vstack((X, alpha*np.eye(X.shape[1])))
+        y_ = np.vstack((y, np.zeros((X.shape[1], y.shape[1]))))
+    else:
+        X_ = X
+        y_ = y
 
-    def __init__(self, kappa=1000):
-        self.kappa = kappa
+    w = np.empty((X_.shape[1], y_.shape[1]))
+    for j, col in enumerate(y_.T):
+        w[:, j] = sopt.nnls(X_, col)[0]
+
+    return w.T
+
+
+class NNRidge(LinearModel, RegressorMixin):
+
+    def __init__(self, alpha=1.0, normalize=False, copy_X=True):
+        self.alpha = alpha
+        self.normalize = normalize
+        self.copy_X = copy_X
 
     def fit(self, X, y, sample_weight=None):
         """ Fit Oh
@@ -70,23 +91,26 @@ class OhModel(_BaseOh, RegressorMixin):
         if len(y.shape) == 1:
             y = y.reshape(-1, 1)
 
-        self.condition_number_ = LA.cond(X)
-        if self.condition_number_ > self.kappa:
-            raise RuntimeError("condition number (%.3f) is greater than "
-                               "kappa (%.3f)" % (self.condition_number_, self.kappa))
 
         # fit weights
-        self.weights_ = self._fit_w(X, y)
+        self.coef_ = nonnegative_ridge_regression(X, y, alpha=self.alpha,
+                                                  sample_weight=sample_weight)
 
         return self
 
+    @property
+    def weights(self):
+        """Convenience property for pulling out regional matrix."""
+        check_is_fitted(self, ["coef_"])
+        return self.coef_.T
 
-class _OhModelCV(OhModel):
-    """Oh model with built in cv
-    not to be used directly
+
+class _LinearModelGCV(LinearModel):
+    """Linear Model with built in cv
+    Not to be used directly
     """
-    def __init__(self, kappa=1000, cv=None, scoring=None, store_cv_values=False):
-        super(_OhModelCV, self).__init__(kappa=kappa)
+    def __init__(self, alphas=(1e-1, 1, 1e1), cv=None, scoring=None, store_cv_values=False):
+        self.alphas = alphas
         self.cv = cv
         self.scoring = scoring
         self.store_cv_values = store_cv_values
@@ -95,7 +119,7 @@ class _OhModelCV(OhModel):
             self.cv = LeaveOneOut()
 
     def fit(self, X, y, sample_weight=None):
-        """ Fit Oh
+        """ Fit Linear Model
 
         X - regional, unionized
         y - regional, unionized
@@ -108,11 +132,6 @@ class _OhModelCV(OhModel):
         # MAY BE BAD
         if len(y.shape) == 1:
             y = y.reshape(-1, 1)
-
-        self.condition_number_ = LA.cond(X)
-        if self.condition_number_ > self.kappa:
-            raise RuntimeError("condition number (%.3f) is greater than "
-                               "kappa (%.3f)" % (self.condition_number_, self.kappa))
 
         W = []
         cv_values = np.empty(len(X))
@@ -129,7 +148,7 @@ class _OhModelCV(OhModel):
             identity_estimator.predict = lambda y_pred: y_pred
 
         for i, (train, test) in enumerate(self.cv.split(X, y)):
-            w = super(_OhModelCV, self)._fit_w(X[train], y[train])
+            w = super(_LinearModelCV, self)._fit_w(X[train], y[train])
             y_pred = X[test].dot(w)
 
             if error:
@@ -151,19 +170,21 @@ class _OhModelCV(OhModel):
         return self
 
 
-class OhModelCV(OhModel):
-    """Oh model with built in cv
+class LinearModelCV(LinearModel):
+    """Oh model with built in cv.
+
+    A utility class for easy nested cross validation.
     """
-    def __init__(self, kappa=1000, scoring=None, cv=None, store_cv_values=False):
-        super(OhModelCV, self).__init__(kappa=kappa)
+    def __init__(self, alpha=1000, scoring=None, cv=None, store_cv_values=False):
+        super(LinearModelCV, self).__init__(alpha=alpha)
         self.scoring = scoring
         self.cv = cv
         self.store_cv_values = store_cv_values
 
     def fit(self, X, y, sample_weight=None):
         """Fit Oh estimator."""
-        estimator = _OhModelCV(scoring=self.scoring, cv=self.cv,
-                               store_cv_values=self.store_cv_values)
+        estimator = _LinearModelCV(scoring=self.scoring, cv=self.cv,
+                                   store_cv_values=self.store_cv_values)
         estimator.fit(X, y, sample_weight=sample_weight)
         self.best_score_ = estimator.best_score_
         self.weights_ = estimator.weights_

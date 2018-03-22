@@ -1,6 +1,7 @@
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
 # TODO : docs and example
+# TODO: eval_gradient
 from __future__ import absolute_import, print_function, division
 
 import numpy as np
@@ -90,7 +91,7 @@ class Polynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
         return "{0}(support={1:.3g}, shape={2:.3g})".format(
             self.__class__.__name__, np.ravel(self.support)[0], np.ravel(self.shape[0]))
 
-
+# NOTE: potentially unnecessary functions computing metrics
 #def kernel_variance(decay):
 #    """int u^2 K^2(u) du"""
 #    #return a * length_scale * sp.beta(1.5, decay + 1)
