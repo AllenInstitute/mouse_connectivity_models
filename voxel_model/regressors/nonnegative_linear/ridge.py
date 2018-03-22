@@ -1,40 +1,45 @@
+"""
+Nonnegative Ridge Regression
+"""
+
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
+
 # TODO : docs and example
-from __future__ import print_function, absolute_import, division
-
 import numpy as np
-import scipy.optimize as sopt
 
-from sklearn.base import RegressorMixin
-from sklearn.linear_model import LinearModel, _rescale_data
-from sklearn.utils.validation import check_is_fitted
+from sklearn.linear_model import _rescale_data
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 from sklearn.utils import check_consistent_length
 
+from .base import NonnegativeLinear, _solve_nnls
 
-def _solve_nnls(X, y):
-    """Solves ..
 
+def _solve_ridge_nnls(X, y, alpha):
+    r"""Solves ...
+
+    very similar to sklearn.linear_model.ridge._solve_lsqr
+
+    $$ min ||Ax -y||_2^2 + \alpha\|x\|_2^2 $$
+    $$ min x^T (A^T A + \alpha I) x + (-2 A^T y)^T x
+    ...
     """
-    n_features = X.shape[1]
-    n_targets = y.shape[1]
-    coef = np.empty((n_targets, n_features), dtype=X.dtype)
-    res = np.empty(n_targets, dtype=np.float64)
+    # we set up as
+    sqrt_alpha = np.sqrt(alpha)
 
-    for i in range(n_targets):
-        y_column = y[:, i]
-        info = sopt.nnls(X, y_column)
+    # append ridging matrix and zeros
+    Q = X.T.dot(X) + np.diag(sqrt_alpha)
+    c = -2*X.T.dot(y)
 
-        coef[i] = info[0]
-        res[i] = info[1]
+    # solve nnls system
+    coef, res = _solve_nnls(Q, c)
 
     return coef, res
 
 
-def nonnegative_regression(X, y, sample_weight=None):
-    """Nonnegative regression.
+def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
+    """Nonnegative ridge regression.
 
     Very similar to sklearn.linear_model.ridge.ridge_regression, but uses
     nonnegativity constraint.
@@ -67,7 +72,19 @@ def nonnegative_regression(X, y, sample_weight=None):
 
         X, y = _rescale_data(X, y, sample_weight)
 
-    coef, res = _solve_nnls(X, y)
+    # there should be either 1 or n_targets penalties
+    # NOTE: different from sklearn.linear_model.ridge
+    alpha = np.asarray(alpha, dtype=X.dtype).ravel()
+    if alpha.size not in [1, n_features]:
+        raise ValueError("Number of targets and number of penalties "
+                         "do not correspond: %d != %d"
+                         % (alpha.size, n_features))
+
+    # NOTE: different from sklearn.linear_model.ridge
+    if alpha.size == 1 and n_features > 1:
+        alpha = np.repeat(alpha, n_features)
+
+    coef, res = _solve_ridge_nnls(X, y, alpha)
 
     if ravel:
         # When y was passed as 1d-array, we flatten the coefficients
@@ -76,15 +93,12 @@ def nonnegative_regression(X, y, sample_weight=None):
     return coef, res
 
 
-class NonnegativeLinear(LinearModel, RegressorMixin):
+class NonnegativeRidge(NonnegativeLinear):
 
-    # we do not allow fitting of intercept for now
-    fit_intercept = False
-    intercept = 0
-
-    def __init__(self, normalize=False, copy_X=True):
-        self.normalize = normalize
-        self.copy_X = copy_X
+    def __init__(self, alpha=1.0, normalize=False, copy_X=True):
+        super(NonnegativeRidge, self).__init__(normalize=normalize,
+                                               copy_X=copy_X)
+        self.alpha = alpha
 
     def fit(self, X, y, sample_weight=None):
         """ Fit Oh
@@ -109,13 +123,7 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
             sample_weight=sample_weight)
 
         # fit weights
-        self.coef_, self.res_ = nonnegative_regression(
-            X, y, sample_weight=sample_weight)
+        self.coef_, self.res_ = nonnegative_ridge_regression(
+            X, y, alpha=self.alpha, sample_weight=sample_weight)
 
         return self
-
-    @property
-    def weights(self):
-        """Convenience property for pulling out regional matrix."""
-        check_is_fitted(self, ["coef_"])
-        return self.coef_.T
