@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
+
+# Authors: Joseph Knox <josephk@alleninstitute.org.
+# License:
+
 from __future__ import division, print_function
+
 from collections import namedtuple
 
 import numpy as np
