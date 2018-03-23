@@ -7,6 +7,8 @@
 The :mod:`voxel_model.stats` module implements ...
 """
 
+from . import functions
 from . import model_selection
 
-__all__ = ['model_selection']
+__all__ = ['functions',
+           'model_selection']
