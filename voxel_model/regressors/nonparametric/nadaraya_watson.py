@@ -22,6 +22,20 @@ from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 
 
+def _normalize_kernel(K, overwrite=False):
+    """Normalizes kernel to have row sum == 1"""
+    factor = K.sum(axis=1)
+
+    # if kernel has finite support, do not divide by zero
+    factor[factor == 0] = 1
+
+    # divide in place
+    if overwrite:
+        return np.divide(K, factor[:, np.newaxis], K)
+
+    return K/factor[:, np.newaxis]
+
+
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
 
@@ -86,20 +100,6 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
         return pairwise_kernels(X, y, metric=self.kernel,
                                 filter_params=True, **params)
 
-    @staticmethod
-    def _smoother(K, overwrite=False):
-        """Computes nw weights"""
-        factor = K.sum(axis=1)
-
-        # we only want to normalize nonzero rows
-        factor[factor == 0] = 1
-
-        # divide in place
-        if overwrite:
-            return np.divide(K, factor[:, np.newaxis], K)
-
-        return K/factor[:, np.newaxis]
-
     @property
     def _pairwise(self):
         return self.kernel == "precomputed"
@@ -136,7 +136,7 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
         check_is_fitted(self, ["X_", "y_"])
         K = self._get_kernel(X, self.X_)
 
-        return self._smoother(K, overwrite=True)
+        return _normalize_kernel(K, overwrite=True)
 
     def predict(self, X):
         """
@@ -185,7 +185,7 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         fill digonal with 0, renormalize
         """
         np.fill_diagonal(K, 0)
-        S = self._smoother(K, overwrite=True) # also norms rows to 1
+        S = _normalize_kernel(K, overwrite=True)
 
         return S
 
