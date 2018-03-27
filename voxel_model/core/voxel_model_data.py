@@ -104,6 +104,8 @@ class VoxelModelData(_BaseModelData):
 
     def get_experiment_data(self, experiment_ids):
         """forms data arrays, returns self"""
+        def get_centroid(experiment):
+            return experiment.centroid
 
         def get_injection(experiment):
             injection = experiment.get_injection(self.normalized_injection)
@@ -113,16 +115,13 @@ class VoxelModelData(_BaseModelData):
             projection = experiment.get_projection(self.normalized_projection)
             return self.projection_mask.mask_volume(projection)
 
-        centroids, injections, projections = [], [], []
-        for experiment in self._experiment_generator(experiment_ids):
-            centroid = experiment.centroid
-            injection = get_injection(experiment)
-            projection = get_projection(experiment)
+        # get data
+        get_data = lambda x: (get_centroid(x), get_injection(x), get_projection(x))
+        arrays = map(get_data, self._experiment_generator(experiment_ids))
 
-            centroids.append(centroid)
-            injections.append(injection)
-            projections.append(projection)
+        centroids, injections, projections = map(np.array, zip(*arrays))
+        self.centroids = centroids
+        self.injections = injections
+        self.projections = projections
 
-        self.centroids = np.array(centroids)
-        self.injections = np.array(injections)
-        self.projections = np.array(projections)
+        return self

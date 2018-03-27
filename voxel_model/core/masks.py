@@ -6,22 +6,11 @@ Module containing Mask object and supporting functions
 # License:
 
 # TODO : finish Mask docstring (examples)
-
-from __future__ import division, absolute_import
+from __future__ import division
 from functools import reduce
-import json
+
 import operator as op
 import numpy as np
-
-from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
-
-
-from .utils import get_mcc
-
-
-__all__ = [
-    "Mask"
-]
 
 
 def _validate_descendant_ids(structure_ids, descendant_ids):
@@ -84,67 +73,24 @@ class Mask(object):
     >>>
 
     """
-    VALID_HEMISPHERES = [1, 2, 3]
-    DEFAULT_STRUCTURE_IDS = [
-        315,   # Isocortex
-        698,   # OLF
-        1089,  # HPF
-        703,   # CTXsp
-        477,   # STR
-        803,   # PAL
-        549,   # TH
-        1097,  # HY
-        313,   # MB
-        771,   # P
-        354,   # MY
-        512    # CB
-    ]
 
-    def _check_hemisphere(self, hemisphere):
-        """Ensures hemisphere is valid."""
-        if hemisphere not in self.VALID_HEMISPHERES:
-            raise ValueError("must one of", self.VALID_HEMISPHERES)
+    DEFAULT_STRUCTURE_IDS = tuple([8])
 
-        return hemisphere
-
-    def __init__(self, mcc=None, manifest_file=None, structure_ids=None,
-                 hemisphere=3):
-
-        if mcc is None:
-            mcc = get_mcc(manifest_file)
-
-        # NOTE : check allensdk git repo for issue fix
-        # must happen after mcc incase manifest_file not passed
-        try:
-            self.manifest_file = mcc.manifest_file
-        except AttributeError:
-            # from get_mcc
-            if manifest_file is None:
-                import os
-                self.manifest_file = os.path.join(os.getcwd(), "connectivity",
-                                                  "mouse_connectivity_manifest.json")
-            else:
-                self.manifest_file = manifest_file
-
+    def __init__(self, mcc, structure_ids=None, hemisphere=3):
 
         if structure_ids is None:
-            self.structure_ids = self.DEFAULT_STRUCTURE_IDS
-        else:
-            self.structure_ids = structure_ids
-
-        self.hemisphere = self._check_hemisphere(hemisphere)
-
-        # get reference_space module and update to resolved structures
-        try:
-            self.reference_space = mcc.get_reference_space()
-        except AttributeError:
-            if not isinstance(mcc, MouseConnectivityCache):
-                raise ValueError("mcc must be a MouseConnectivityCache instance")
-            else:
-                raise
+            structure_ids = self.DEFAULT_STRUCTURE_IDS
 
         # update reference space to include only assigned voxels
-        self.reference_space.remove_unassigned(update_self=True)
+        reference_space = mcc.get_reference_space()
+        reference_space.remove_unassigned(update_self=True)
+
+        self.mcc = mcc
+        self.structure_ids = structure_ids
+        self.hemisphere = hemisphere
+        self.reference_space = reference_space
+        self.annotation = reference_space.annotation
+        self.structure_tree = reference_space.structure_tree
 
     @staticmethod
     def _mask_to_hemisphere(mask, hemisphere):
@@ -161,9 +107,7 @@ class Mask(object):
 
     def _get_mask(self, structure_ids, hemisphere=None):
         """Gets mask property (boolean array)"""
-        if hemisphere is not None:
-            hemisphere = self._check_hemisphere(hemisphere)
-        else:
+        if hemisphere is None:
             hemisphere = self.hemisphere
 
         mask = self.reference_space.make_structure_mask(structure_ids,
@@ -178,16 +122,6 @@ class Mask(object):
         except AttributeError:
             self._mask = self._get_mask(self.structure_ids)
             return self._mask
-
-    @property
-    def structure_tree(self):
-        """Structure_tree object of reference space"""
-        return self.reference_space.structure_tree
-
-    @property
-    def annotation(self):
-        """Annotation object of reference space"""
-        return self.reference_space.annotation
 
     def _get_assigned_structures(self):
         # return flattened set of list of lists
@@ -395,21 +329,3 @@ class Mask(object):
         y_volume[idx] = y
 
         return y_volume
-
-    def to_json(self, filename):
-        """Serializes object attributes"""
-        attrs = dict(manifest_file=self.manifest_file,
-                     structure_ids=self.structure_ids,
-                     hemisphere=self.hemisphere)
-
-        print(attrs)
-        with open(filename, "w") as f:
-            json.dump(attrs, f)
-
-    @classmethod
-    def from_json(cls, filename):
-        """Loads mask from json"""
-        with open(filename, "r") as f:
-            attrs = json.load(f)
-
-        return cls(**attrs)

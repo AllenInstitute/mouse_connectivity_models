@@ -5,14 +5,14 @@ voxel-voxel connectivity matrix.
 
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License:
-
 from __future__ import division
 from functools import partial, reduce
+
 import operator as op
 import numpy as np
 
 
-class VoxelArray(object):
+class VoxelConnectivityArray(object):
     """Class for implicit construction of the voxel model.
 
     See voxel_model.VoxelModel for weights/nodes descriptions
