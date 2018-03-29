@@ -7,7 +7,7 @@ import numpy as np
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from voxel_model.masks import Mask
+from voxel_model.core.masks import Mask
 from voxel_model.core.experiment \
     import (_pull_grid_data, _mask_data_volume,
             _compute_true_injection_density, Experiment)

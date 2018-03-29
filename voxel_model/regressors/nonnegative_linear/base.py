@@ -10,7 +10,7 @@ import numpy as np
 import scipy.optimize as sopt
 
 from sklearn.base import RegressorMixin
-from sklearn.linear_model import LinearModel, _rescale_data
+from sklearn.linear_model.base import LinearModel, _rescale_data
 from sklearn.utils.validation import check_is_fitted
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y

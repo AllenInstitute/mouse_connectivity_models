@@ -8,7 +8,7 @@ Nonnegative Ridge Regression
 # TODO : docs and example
 import numpy as np
 
-from sklearn.linear_model import _rescale_data
+from sklearn.linear_model.base import _rescale_data
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 from sklearn.utils import check_consistent_length

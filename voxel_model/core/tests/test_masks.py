@@ -14,7 +14,7 @@ from numpy.testing import assert_array_equal, assert_raises
 from allensdk.core.reference_space import ReferenceSpace
 from allensdk.core.structure_tree import StructureTree
 
-from voxel_model.masks import Mask
+from voxel_model.core.masks import Mask
 
 @pytest.fixture(scope="module")
 def structure_ids():

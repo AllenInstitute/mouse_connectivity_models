@@ -13,7 +13,7 @@ import numpy as np
 import scipy.special as sp
 from scipy.spatial.distance import pdist, cdist, squareform
 
-from sklearn.gaussian_process \
+from sklearn.gaussian_process.kernels \
     import Kernel, StationaryKernelMixin, NormalizedKernelMixin, Hyperparameter
 
 
