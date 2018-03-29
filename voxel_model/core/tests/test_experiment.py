@@ -11,11 +11,12 @@ from voxel_model.core.masks import Mask
 from voxel_model.core.experiment \
     import (_pull_grid_data, _mask_data_volume,
             _compute_true_injection_density, Experiment)
+from voxel_model.tests.conftest import mcc, tree, annotation
 
-#@pytest.fixture(scope="module")
-#def experiment(mcc):
-#    experiment_id=1223452 # whatever
-#    return Experiment.from_mcc(mcc, experiment_id)
+@pytest.fixture(scope="module")
+def experiment(mcc):
+    experiment_id=1223452 # whatever
+    return Experiment.from_mcc(mcc, experiment_id)
 
 # =============================================================================
 # Module Level Functions
