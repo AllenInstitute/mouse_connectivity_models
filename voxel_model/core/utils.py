@@ -48,8 +48,8 @@ def get_injection_hemisphere_id(injection_density, majority=False):
         raise ValueError("injection_density must be 3-array")
 
     # split along depth dimension (forces arr.shape[2] % 2 == 0)
-    hemis = np.split(injection_density, 2, axis=2)
-    hemi_sums = map(np.sum, hemis)
+    hemis = np.dsplit(injection_density, 2)
+    hemi_sums = tuple(map(np.sum, hemis))
 
     # if not looking for either l or r
     if not majority and all(hemi_sums):

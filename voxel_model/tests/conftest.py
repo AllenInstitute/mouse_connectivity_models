@@ -7,6 +7,15 @@ from allensdk.core.reference_space import ReferenceSpace
 from allensdk.core.structure_tree import StructureTree
 
 @pytest.fixture(scope="session")
+def mask():
+    mask = mock.Mock()
+    mask.mask_volume.side_effect = lambda x: x
+    mask._mask.return_value = np.ones((10, 10, 10))
+
+    return mask
+
+
+@pytest.fixture(scope="session")
 def tree():
     return [{'id': 1, 'structure_id_path': [1]},
             {'id': 2, 'structure_id_path': [1, 2]},
@@ -30,11 +39,11 @@ def annotation():
 
     return annotation
 
+
 @pytest.fixture(scope="session")
 def mcc(tree, annotation):
-
     # data
-    shape = (10,10,10)
+    shape = (10, 10, 10)
 
     data_mask = np.ones(shape)
     injection_density = np.ones(shape)
@@ -54,5 +63,6 @@ def mcc(tree, annotation):
     # reference space
     rsp = ReferenceSpace(StructureTree(tree), annotation, [10, 10, 10])
     mcc.get_reference_space.return_value = rsp
+    mcc.get_structure_tree.return_value = StructureTree(tree)
 
     return mcc

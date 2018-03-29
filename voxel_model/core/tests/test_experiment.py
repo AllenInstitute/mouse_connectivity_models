@@ -83,7 +83,7 @@ def test_from_mcc(mcc, experiment):
 
 # -----------------------------------------------------------------------------
 # tests
-def test_get_injection_density():
+def test_get_injection():
     injd = np.random.rand(27).reshape(3, 3, 3)
     prjd = np.random.rand(27).reshape(3, 3, 3)
 
@@ -91,8 +91,8 @@ def test_get_injection_density():
 
     experiment = Experiment(injd, prjd)
 
-    assert experiment.get_injection_density() == injd
-    assert experiment.get_injection_density(True) == norm_injd
+    assert_array_equal(experiment.get_injection(), injd)
+    assert_array_equal(experiment.get_injection(True), norm_injd)
 
 
 # -----------------------------------------------------------------------------
@@ -105,8 +105,8 @@ def test_get_projection_density():
 
     experiment = Experiment(injd, prjd)
 
-    assert experiment.get_projection_density() == prjd
-    assert experiment.get_injection_density(True) == norm_prjd
+    assert_array_equal(experiment.get_projection(), prjd)
+    assert_array_equal(experiment.get_projection(True), norm_prjd)
 
 
 # -----------------------------------------------------------------------------

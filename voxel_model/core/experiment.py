@@ -201,7 +201,12 @@ class Experiment(object):
     @property
     def injection_hemisphere_id(self):
         """Returns injection hemisphere"""
-        return get_injection_hemisphere_id(self.injection_density)
+        return get_injection_hemisphere_id(self.injection_density, majority=True)
+
+    @property
+    def bilateral_injection(self):
+        """Returns injection hemisphere"""
+        return get_injection_hemisphere_id(self.injection_density) == 3
 
     @property
     def centroid(self):
@@ -218,12 +223,12 @@ class Experiment(object):
         """Returns projection_density normalized by the total injection_density"""
         return self.projection_density / self.injection_density.sum()
 
-    def get_injection_density(self, normalized=False):
+    def get_injection(self, normalized=False):
         if normalized:
             return self.normalized_injection_density
         return self.injection_density
 
-    def get_projection_density(self, normalized=False):
+    def get_projection(self, normalized=False):
         if normalized:
             return self.normalized_projection_density
         return self.projection_density

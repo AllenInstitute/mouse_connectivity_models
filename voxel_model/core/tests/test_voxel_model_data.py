@@ -7,7 +7,14 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_raises
 
 from voxel_model.core import VoxelModelData
-from voxel_model.tests.conftest import mcc, tree, annotation
+from voxel_model.tests.conftest import mcc, tree, annotation, mask
+
+@pytest.fixture(scope="function")
+def Data():
+    data = VoxelModelData
+    data.default_structure_ids = [6, 7]
+    return data
+
 
 # =============================================================================
 # VoxelModelData class
@@ -20,28 +27,31 @@ def test_default_structure_ids():
 
 # -----------------------------------------------------------------------------
 # tests
-def test_experiment_generator(mcc):
-    def get_experiment_list(data):
-        return list(data._experiment_generator(experiment_ids))
+def test_experiment_generator(mcc, Data):
+    def get_experiment_size(data):
+        size = 0
+        for _ in data._experiment_generator(experiment_ids):
+            size += 1
+        return size
     experiment_ids = [456, 12]
 
     # full
-    data = VoxelModelData(mcc)
-    exps = get_experiment_list(data)
+    data = Data(mcc)
+    exps = get_experiment_size(data)
 
-    assert len(exps) == 2
+    assert exps == 2
 
     # min inj/proj
-    data = VoxelModelData(mcc, min_injection_sum=np.inf)
-    exps = get_experiment_list(data)
+    data = Data(mcc, min_injection_sum=np.inf)
+    exps = get_experiment_size(data)
 
-    assert not exps
+    assert exps == 0
 
     # hemisphere id
-    data = VoxelModelData(mcc, injection_hemisphere_id=0)
-    exps = get_experiment_list(data)
+    data = Data(mcc, injection_hemisphere_id=-5, flip_experiments=False)
+    exps = get_experiment_size(data)
 
-    assert not exps
+    assert exps == 0
 
     # TODO: flip option
     # data = _BaseModelData(mcc, injection_hemisphere_id=1, flip_experiments=True)
@@ -49,14 +59,13 @@ def test_experiment_generator(mcc):
 
 # -----------------------------------------------------------------------------
 # tests
-def test_get_experiment_data(mcc):
+def test_get_experiment_data(Data, mcc, mask):
     experiment_ids = [456, 12]
 
-    # mock masks
-    mask = mock.Mock()
-    mask.mask_volume.side_effect = lambda x: x
 
-    data = VoxelModelData(mcc)
+    data = Data(mcc)
+    data.injection_mask = mask
+    data.projection_mask = mask
     data.get_experiment_data(experiment_ids)
 
     assert data.centroids.shape == (2, 3)

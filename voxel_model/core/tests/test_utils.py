@@ -16,7 +16,7 @@ def test_get_injection_hemisphere_id():
     ones, zeros = np.ones((4, 4)), np.zeros((4, 4))
     left, right = np.dstack((ones, zeros)), np.dstack((zeros, ones))
 
-    assert get_injection_hemisphere_id(left) == 1
+    assert get_injection_hemisphere_id(left, majority=True) == 1
     assert get_injection_hemisphere_id(right) == 2
 
     assert_raises(ValueError, get_injection_hemisphere_id, np.ones((4,4)))
