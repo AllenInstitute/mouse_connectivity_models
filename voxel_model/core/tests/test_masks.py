@@ -196,3 +196,39 @@ def test_to_json(tmpdir, bi_mask):
 # tests
 def test_from_json():
     pass
+
+# -----------------------------------------------------------------------------
+# tests
+def get_injection_ratio_contained(experiment):
+    # np.ndarray
+    mask = np.ones_like(experiment.injection_density)
+    mask[..., :mask.shape[2]//2] = 0
+
+    assert( experiment.get_injection_ratio_contained(mask) == 0.5 )
+
+    # Mask object
+    mask = Mask(mcc, [2,3], hemisphere=3)
+    assert( type(experiment.get_injection_ratio_contained(mask)) == float )
+
+    # wrong np.ndarray size
+    assert_raises(ValueError, experiment.get_injection_density, np.ones((2,2)))
+
+# -----------------------------------------------------------------------------
+# tests
+def mask_volume(experiment):
+    # np.ndarray
+    mask = np.ones_like(experiment.injection_density)
+    mask[..., :mask.shape[2]//2] = 0
+
+    n_nnz = len(mask.nonzero()[0])
+    assert(experiment.mask_volume("injection_density", mask).shape == (n_nnz,))
+
+    # Mask object
+    mask = Mask(mcc, [2,3], hemisphere=3)
+    assert( len(experiment.mask_volume("injection_density", mask).shape) == 1  )
+
+    # wrong np.ndarray size
+    assert_raises( ValueError, experiment.mask_volume, "data", mask )
+    assert_raises( ValueError, experiment.mask_volume, "injection_density",
+                   np.ones((2,2)) )
+
