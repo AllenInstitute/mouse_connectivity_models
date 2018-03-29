@@ -63,6 +63,10 @@ class InjectionModel(NadarayaWatson):
         self.source_voxels = source_voxels
         self.dimension = self.source_voxels.shape[1]
 
+    def _compute_weights(self, X, y=None):
+        K = self._get_kernel(X, y)
+        return self._normalize_kernel(K, overwrite=True)
+
     def fit(self, X, y, sample_weight=None):
         """Fit Voxel Model.
 
@@ -132,6 +136,7 @@ class InjectionModel(NadarayaWatson):
         y = self.y_.toarray() if issparse(self.y_) else self.y_
 
         return injection.dot(self.weights_).dot(y)
+
 
     def get_weights(self):
         """Overwrite of NadarayaWatson.get_weights."""

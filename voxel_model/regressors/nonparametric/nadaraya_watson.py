@@ -22,19 +22,6 @@ from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 
 
-def _normalize_kernel(K, overwrite=False):
-    """Normalizes kernel to have row sum == 1"""
-    factor = K.sum(axis=1)
-
-    # if kernel has finite support, do not divide by zero
-    factor[factor == 0] = 1
-
-    # divide in place
-    if overwrite:
-        return np.divide(K, factor[:, np.newaxis], K)
-
-    return K/factor[:, np.newaxis]
-
 
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
@@ -131,12 +118,27 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
 
         return self
 
+    @staticmethod
+    def _normalize_kernel(K, overwrite=False):
+        """Normalizes kernel to have row sum == 1"""
+        factor = K.sum(axis=1)
+
+        # if kernel has finite support, do not divide by zero
+        factor[factor == 0] = 1
+
+        # divide in place
+        if overwrite:
+            return np.divide(K, factor[:, np.newaxis], K)
+
+        return K/factor[:, np.newaxis]
+
+
     def get_weights(self, X):
         """Return model weights."""
         check_is_fitted(self, ["X_", "y_"])
         K = self._get_kernel(X, self.X_)
 
-        return _normalize_kernel(K, overwrite=True)
+        return self._normalize_kernel(K, overwrite=True)
 
     def predict(self, X):
         """

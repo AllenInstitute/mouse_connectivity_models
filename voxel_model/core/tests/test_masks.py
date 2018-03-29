@@ -3,9 +3,8 @@ tree, annotataion taken directly (copied) from:
     allensdk.test.core.test_reference_space.rsp()
 """
 # TODO : test load/save
-from __future__ import division, print_function, absolute_import
+from __future__ import division
 
-import json
 import mock
 import pytest
 import numpy as np
@@ -178,25 +177,6 @@ def test_map_masked_to_annotation(bi_mask, annotation):
 
     assert_array_equal( bi_mask.map_masked_to_annotation(masked), annotation )
 
-# -----------------------------------------------------------------------------
-# tests
-def test_to_json(tmpdir, bi_mask):
-
-    fn = str(tmpdir.join("mask.json"))
-
-    # doesnt throw
-    bi_mask.to_json(fn)
-
-    with open(str(fn), "r") as f:
-        attrs = json.load(f)
-
-    for k, v in attrs.items():
-        assert( getattr(bi_mask, k) == v )
-
-# -----------------------------------------------------------------------------
-# tests
-def test_from_json():
-    pass
 
 # -----------------------------------------------------------------------------
 # tests
@@ -231,5 +211,4 @@ def mask_volume(experiment):
     # wrong np.ndarray size
     assert_raises( ValueError, experiment.mask_volume, "data", mask )
     assert_raises( ValueError, experiment.mask_volume, "injection_density",
-                   np.ones((2,2)) )
-
+                   np.ones((2, 2)))
