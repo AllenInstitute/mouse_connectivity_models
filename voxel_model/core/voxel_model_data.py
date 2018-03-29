@@ -1,5 +1,10 @@
+"""
+Module containing VoxelModelData object and supporting functions
+"""
+
+# Authors: Joseph Knox josephk@alleninstitute.org
+# License:
 from abc import ABCMeta, abstractmethod, abstractproperty
-from functools import partial
 
 import six
 import numpy as np
@@ -16,7 +21,10 @@ class _BaseModelData(six.with_metaclass(ABCMeta)):
 
     @property
     def default_structure_ids(self):
-        """ taken from allenskd """
+        """Returns default structure ids.
+
+        taken from allensdk.core.mouse_connectivity_cache.MouseConnectivityCache
+        """
         if not hasattr(self, '_default_structure_ids'):
             tree = self.mcc.get_structure_tree()
             default_structures = tree.get_structures_by_set_id(self.DEFAULT_STRUCTURE_SET_IDS)
@@ -24,17 +32,23 @@ class _BaseModelData(six.with_metaclass(ABCMeta)):
 
         return self._default_structure_ids
 
-    def __init__(self, mcc,
-                 injection_structure_ids=None, injection_hemisphere_id=3,
-                 projection_structure_ids=None, projection_hemisphere_id=3,
-                 normalized_injection=True, normalized_projection=True,
-                 flip_experiments=True, data_mask_tolerance=0.0,
-                 min_injection_sum=0.0, min_projection_sum=0.0):
+    def __init__(self,
+                 mcc,
+                 injection_structure_ids=None,
+                 projection_structure_ids=None,
+                 injection_hemisphere_id=3,
+                 projection_hemisphere_id=3,
+                 normalized_injection=True,
+                 normalized_projection=True,
+                 flip_experiments=True,
+                 data_mask_tolerance=0.0,
+                 min_injection_sum=0.0,
+                 min_projection_sum=0.0):
 
         self.mcc = mcc
         self.injection_structure_ids = injection_structure_ids
-        self.injection_hemisphere_id = injection_hemisphere_id
         self.projection_structure_ids = projection_structure_ids
+        self.injection_hemisphere_id = injection_hemisphere_id
         self.projection_hemisphere_id = projection_hemisphere_id
         self.normalized_injection = normalized_injection
         self.normalized_projection = normalized_projection
@@ -44,8 +58,9 @@ class _BaseModelData(six.with_metaclass(ABCMeta)):
         self.min_projection_sum = min_projection_sum
 
     def _experiment_generator(self, experiment_ids):
-
+        """Generates experiment objections given their experiment ids"""
         for eid in experiment_ids:
+            # instatiate Exeriment object (pulling grid data)
             experiment = Experiment.from_mcc(self.mcc, eid, self.data_mask_tolerance)
 
             if (experiment.injection_density.sum() >= self.min_injection_sum and
@@ -69,18 +84,24 @@ class VoxelModelData(_BaseModelData):
     DEFAULT_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
 
-    def __init__(self, mcc,
-                 injection_structure_ids=None, injection_hemisphere_id=3,
-                 projection_structure_ids=None, projection_hemisphere_id=3,
-                 normalized_injection=True, normalized_projection=True,
-                 flip_experiments=True, data_mask_tolerance=0.0,
-                 min_injection_sum=0.0, min_projection_sum=0.0):
+    def __init__(self,
+                 mcc,
+                 injection_structure_ids=None,
+                 projection_structure_ids=None,
+                 injection_hemisphere_id=3,
+                 projection_hemisphere_id=3,
+                 normalized_injection=True,
+                 normalized_projection=True,
+                 flip_experiments=True,
+                 data_mask_tolerance=0.0,
+                 min_injection_sum=0.0,
+                 min_projection_sum=0.0):
 
         super(VoxelModelData, self).__init__(
             mcc,
             injection_structure_ids=injection_structure_ids,
-            injection_hemisphere_id=injection_hemisphere_id,
             projection_structure_ids=projection_structure_ids,
+            injection_hemisphere_id=injection_hemisphere_id,
             projection_hemisphere_id=projection_hemisphere_id,
             normalized_injection=normalized_injection,
             normalized_projection=normalized_projection,
@@ -105,13 +126,16 @@ class VoxelModelData(_BaseModelData):
     def get_experiment_data(self, experiment_ids):
         """forms data arrays, returns self"""
         def get_centroid(experiment):
+            """Returns experiment centroid"""
             return experiment.centroid
 
         def get_injection(experiment):
+            """Returns experiment injection masked & flattened"""
             injection = experiment.get_injection(self.normalized_injection)
             return self.injection_mask.mask_volume(injection)
 
         def get_projection(experiment):
+            """Returns experiment projection masked & flattened"""
             projection = experiment.get_projection(self.normalized_projection)
             return self.projection_mask.mask_volume(projection)
 
@@ -125,3 +149,4 @@ class VoxelModelData(_BaseModelData):
         self.projections = projections
 
         return self
+

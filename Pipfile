@@ -6,7 +6,7 @@ name = "pypi"
 
 [packages]
 
-allensdk = { git = 'https://github.com/AllenInstitute/AllenSDK.git' }
+allensdk = "*"
 argschema = "*"
 matplotlib = "*"
 pillow = "*"
