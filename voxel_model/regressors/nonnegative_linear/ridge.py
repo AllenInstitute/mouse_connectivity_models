@@ -22,15 +22,24 @@ def _solve_ridge_nnls(X, y, alpha):
     very similar to sklearn.linear_model.ridge._solve_lsqr
 
     $$ min ||Ax -y||_2^2 + \alpha\|x\|_2^2 $$
-    $$ min x^T (A^T A + \alpha I) x + (-2 A^T y)^T x
+    $$ min x^T (A^T A + \alpha I) x + (-2 A^T y)^T x $$
     ...
     """
+    if X.ndim != 2 or y.ndim != 2:
+        raise ValueError("X and y must be 2d arrays! May have to reshape "
+                         "X.reshape(-1, 1) or y.reshape(-1, 1).")
+
+    if alpha.size != X.shape[1]:
+        raise ValueError("Number of targets and number of penalties "
+                         "do not correspond: %d != %d"
+                         % (alpha.size, X.shape[1]))
+
     # we set up as
     sqrt_alpha = np.sqrt(alpha)
 
     # append ridging matrix and zeros
     Q = X.T.dot(X) + np.diag(sqrt_alpha)
-    c = -2*X.T.dot(y)
+    c = X.T.dot(y)
 
     # solve nnls system
     coef, res = _solve_nnls(Q, c)
@@ -110,7 +119,6 @@ class NonnegativeRidge(NonnegativeLinear):
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
 
         if X.ndim == 1:
-            # NOTE may be unnecessary/bad???
             X = X.reshape(-1, 1)
 
         if ((sample_weight is not None) and

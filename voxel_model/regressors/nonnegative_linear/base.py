@@ -21,7 +21,7 @@ def _solve_nnls(X, y):
     """Solves ..
 
     """
-    if len(X.shape) != 2 or len(y.shape) != 2:
+    if X.ndim != 2 or y.ndim != 2:
         raise ValueError("X and y must be 2d arrays! May have to reshape "
                          "X.reshape(-1, 1) or y.reshape(-1, 1).")
 
@@ -87,7 +87,7 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
 
     # we do not allow fitting of intercept for now
     fit_intercept = False
-    intercept = 0
+    intercept_ = 0
 
     def __init__(self, normalize=False, copy_X=True):
         self.normalize = normalize
