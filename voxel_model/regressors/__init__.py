@@ -4,6 +4,8 @@ The :mod:`voxel_model.regressors` module includes ...
 
 from .injection_model import InjectionModel
 
+from . import least_squares
+
 from .nonnegative_linear import NonnegativeLinear
 from .nonnegative_linear import NonnegativeRidge
 from .nonnegative_linear import nonnegative_regression
@@ -20,6 +22,7 @@ __all__ = ['InjectionModel',
            'NadarayaWatsonCV',
            'NonnegativeLinear',
            'NonnegativeRidge',
+           'least_squares',
            'nonnegative_regression',
            'nonnegative_ridge_regression',
            'nonparametric',
