@@ -1,6 +1,3 @@
-from __future__ import division
-import os
-import mock
 import pytest
 import numpy as np
 

@@ -17,32 +17,20 @@ from sklearn.gaussian_process.kernels \
     import Kernel, StationaryKernelMixin, NormalizedKernelMixin, Hyperparameter
 
 
-class Polynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
-    """Polynomial function kernel.
-
-    It is stationary ...
-
-
-    k(x, x') =
-
-    Parameters
-    -----------
-
+class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
+    """Base for polynomial kerel ...
     """
-    def __init__(self, shape=1.0, support=1.0, shape_bounds=(1e-5, 1e5),
-                 support_bounds=(0, 1e5)):
+    def __init__(self, shape=1.0, support=1.0, support_bounds=(0, 1e5)):
+        if shape < 0:
+            raise ValueError("shape must be nonnegative")
+
         self.shape = shape
         self.support = support
-        self.shape_bounds = shape_bounds
         self.support_bounds = support_bounds
 
     @property
     def anisotropic(self):
         return False
-
-    @property
-    def hyperparameter_shape(self):
-        return Hyperparameter("shape", "numeric", self.shape_bounds)
 
     @property
     def hyperparameter_support(self):
@@ -96,24 +84,70 @@ class Polynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
         return "{0}(support={1:.3g}, shape={2:.3g})".format(
             self.__class__.__name__, np.ravel(self.support)[0], np.ravel(self.shape[0]))
 
-# NOTE: potentially unnecessary functions computing metrics
-#def kernel_variance(decay):
-#    """int u^2 K^2(u) du"""
-#    #return a * length_scale * sp.beta(1.5, decay + 1)
-#    return sp.beta(1.5, decay + 1) / sp.beta(0.5, decay + 1)
-#
-#
-#def kernel_roughness(length_scale, decay):
-#    """ int K(u)^2 du """
-#    #return a**2 * length_scale * sp.beta(0.5, 2*decay + 1)
-#    return sp.beta(0.5, 2*decay + 1) / (length_scale * sp.beta(0.5, decay + 1)**2)
-#
-#
-#def kernel_efficiency(length_scale, decay):
-#    """ ... """
-#    return np.sqrt(kernel_variance(decay)) * kernel_roughness(length_scale, decay)
-#
-#
-#def kernel_rel_efficiency(length_scale, decay):
-#    """ relative to epanechnikov kernel with same length scale"""
-#    return kernel_efficiency(length_scale, decay) / kernel_efficiency(length_scale, 1)
+
+class Polynomial(_BasePolynomial):
+    """Polynomial function kernel.
+
+    It is stationary ...
+
+
+    k(x, x') =
+
+    Parameters
+    -----------
+
+    """
+    def __init__(self, shape=1.0, support=1.0, shape_bounds=(1e-5, 1e5),
+                 support_bounds=(0, 1e5)):
+        super(Polynomial, self).__init__(shape=shape,
+                                         support=support,
+                                         support_bounds=support_bounds)
+        self.shape_bounds = shape_bounds
+
+    @property
+    def hyperparameter_shape(self):
+        return Hyperparameter("shape", "numeric", self.shape_bounds)
+
+
+class Uniform(_BasePolynomial):
+    """Convenience for ..."""
+
+    SHAPE = 0
+
+    def __init__(self, support=1.0, support_bounds=(0, 1e5)):
+        super(Uniform, self).__init__(shape=Uniform.SHAPE,
+                                      support=support,
+                                      support_bounds=support_bounds)
+
+
+class Epanechnikov(_BasePolynomial):
+    """Convenience for ..."""
+
+    SHAPE = 1
+
+    def __init__(self, support=1.0, support_bounds=(0, 1e5)):
+        super(Epanechnikov, self).__init__(shape=Epanechnikov.SHAPE,
+                                           support=support,
+                                           support_bounds=support_bounds)
+
+
+class Biweight(_BasePolynomial):
+    """Convenience for ..."""
+
+    SHAPE = 2
+
+    def __init__(self, support=1.0, support_bounds=(0, 1e5)):
+        super(Biweight, self).__init__(shape=Biweight.SHAPE,
+                                       support=support,
+                                       support_bounds=support_bounds)
+
+
+class Triweight(_BasePolynomial):
+    """Convenience for ..."""
+
+    SHAPE = 3
+
+    def __init__(self, support=1.0, support_bounds=(0, 1e5)):
+        super(Triweight, self).__init__(shape=Triweight.SHAPE,
+                                        support=support,
+                                        support_bounds=support_bounds)
