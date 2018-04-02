@@ -12,6 +12,13 @@ import numpy as np
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
+def nonzero_unique(array):
+    unique = np.unique(array)
+    if unique[0] == 0:
+        return unique[1:]
+    return unique
+
+
 
 def get_mcc(manifest_file=None):
     """Returns a MouseConnectivityCache instance with the default settings."""

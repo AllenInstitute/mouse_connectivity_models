@@ -11,16 +11,13 @@ import numpy as np
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.metrics.regression import _check_reg_targets
 
-
-def _get_regions(key):
-    regions = np.unique(key)
-    if regions[0] == 0:
-        return regions[1:]
-    return regions
+from ..utils import nonzero_unique
 
 
 def _unionize(v, ipsi_key, contra_key):
     """unionizes v (:, len(k)) to regions defined in key"""
+    ipsi_key = np.asarray(ipsi_key)
+    contra_key = np.asarray(contra_key)
     if ipsi_key.shape != contra_key.shape:
         # NOTE: better error message
         raise ValueError("keys are incompatible")
@@ -30,8 +27,8 @@ def _unionize(v, ipsi_key, contra_key):
         raise ValueError("key must be the same size as the n columns in vector!")
 
     # get regions
-    ipsi_regions = _get_regions(ipsi_key)
-    contra_regions = _get_regions(contra_key)
+    ipsi_regions = nonzero_unique(ipsi_key)
+    contra_regions = nonzero_unique(contra_key)
 
     j = 0
     result = np.empty((v.shape[0], len(ipsi_regions) + len(contra_regions)))
@@ -50,8 +47,8 @@ def _voxelize(v, ipsi_key, contra_key):
         raise ValueError("keys are incompatible")
 
     # get regions
-    ipsi_regions = _get_regions(ipsi_key)
-    contra_regions = _get_regions(contra_key)
+    ipsi_regions = nonzero_unique(ipsi_key)
+    contra_regions = nonzero_unique(contra_key)
 
     v = np.atleast_2d(v)
     if v.shape[1] != len(ipsi_regions)+len(contra_regions):
@@ -112,8 +109,10 @@ def voxel_mean_squared_relative_error(y_true, y_pred, **kwargs):
 def mse_rel():
     return make_scorer(mean_squared_relative_error, greater_is_better=False)
 
+
 def regional_mse_rel(**kwargs):
     return make_scorer(regional_mean_squared_relative_error, greater_is_better=False, **kwargs)
+
 
 def voxel_mse_rel(**kwargs):
     return make_scorer(voxel_mean_squared_relative_error, greater_is_better=False, **kwargs)

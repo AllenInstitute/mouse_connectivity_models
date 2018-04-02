@@ -2,10 +2,20 @@ import pytest
 import operator as op
 import numpy as np
 from functools import reduce
-from numpy.testing import assert_array_equal, assert_raises
+from numpy.testing import assert_array_equal, assert_raises, assert_allclose
 
 from voxel_model.utils \
-    import ordered_unique, lex_ordered_unique, padded_diagonal_fill
+    import nonzero_unique, ordered_unique, lex_ordered_unique, padded_diagonal_fill
+
+
+def test_nonzero_unique():
+    # ------------------------------------------------------------------------
+    # test unique without zero
+    a = [0, 5, 1, 2, 0, 4, 0, 5]
+    nonzero_unq = [1, 2, 4, 5]
+
+    assert_allclose(nonzero_unq, nonzero_unique(a))
+
 
 # -----------------------------------------------------------------------------
 # tests:
