@@ -5,7 +5,7 @@ from scipy.sparse import csr_matrix, csc_matrix
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from voxel_model.regressors import InjectionModel
+from voxel_model.models import VoxelModel
 
 @pytest.fixture(scope="module")
 def centroids():
@@ -26,7 +26,7 @@ def X(centroids, injections):
 
 @pytest.fixture(scope="function")
 def model():
-    return InjectionModel(np.random.rand(100,3), kernel="rbf", gamma=1.0)
+    return VoxelModel(np.random.rand(100,3), kernel="rbf", gamma=1.0)
 
 # ----------------------------------------------------------------------------
 # test

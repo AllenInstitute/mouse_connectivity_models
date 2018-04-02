@@ -13,10 +13,10 @@ import numpy as np
 from scipy.sparse import issparse
 from sklearn.utils.validation import check_is_fitted
 
-from .nonparametric import NadarayaWatson
+from ..regressors import NadarayaWatson
 
 
-class InjectionModel(NadarayaWatson):
+class VoxelModel(NadarayaWatson):
     """Voxel scale interpolation model for mesoscale connectivity.
 
     Model details can be found at <PAPER>.
@@ -58,7 +58,7 @@ class InjectionModel(NadarayaWatson):
     """
     def __init__(self, source_voxels, **kwargs):
 
-        super(InjectionModel, self).__init__(**kwargs)
+        super(VoxelModel, self).__init__(**kwargs)
 
         self.source_voxels = source_voxels
         self.dimension = self.source_voxels.shape[1]

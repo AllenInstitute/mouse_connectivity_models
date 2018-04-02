@@ -2,8 +2,6 @@
 The :mod:`voxel_model.regressors` module includes ...
 """
 
-from .injection_model import InjectionModel
-
 from . import least_squares
 
 from .nonnegative_linear import NonnegativeLinear
@@ -17,8 +15,7 @@ from .nonparametric import NadarayaWatsonCV
 
 from . import scorers
 
-__all__ = ['InjectionModel',
-           'NadarayaWatson',
+__all__ = ['NadarayaWatson',
            'NadarayaWatsonCV',
            'NonnegativeLinear',
            'NonnegativeRidge',
