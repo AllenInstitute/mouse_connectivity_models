@@ -91,16 +91,17 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
     def _pairwise(self):
         return self.kernel == "precomputed"
 
-    def _check_fit_arrays(self, X, y, sample_weight):
+    def _check_fit_arrays(self, X, y, sample_weight=None):
         """Checks fit arrays and scales y if sample_weight is not None."""
         # Convert data
         X, y = check_X_y(X, y, accept_sparse=("csr", "csc"),
                          multi_output=True, y_numeric=True)
 
         if sample_weight is not None and not isinstance(sample_weight, float):
+            # TODO: break up?
             sample_weight = check_array(sample_weight, ensure_2d=False)
 
-            # dont want to rescale X!!!!
+            # do not want to rescale X!!!!
             y = np.multiply(sample_weight[:, np.newaxis], y)
 
         if len(y.shape) == 1:
@@ -120,7 +121,7 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
 
     @staticmethod
     def _normalize_kernel(K, overwrite=False):
-        """Normalizes kernel to have row sum == 1"""
+        """Normalizes kernel to have row sum == 1 if sum != 0"""
         factor = K.sum(axis=1)
 
         # if kernel has finite support, do not divide by zero
@@ -172,12 +173,14 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
     This class is not intended to be used directly. Use NadarayaWatsonCV instead.
     """
     def __init__(self, param_grid, scoring=None, store_cv_scores=False):
+        #TODO: check _check_param_grid in proper spot
         self.param_grid = param_grid
         self.scoring = scoring
-        self.store_cv_values = store_cv_scores
+        self.store_cv_scores = store_cv_scores
         _check_param_grid(param_grid)
 
-    def _get_param_iterator(self):
+    @property
+    def _param_iterator(self):
         return ParameterGrid(self.param_grid)
 
     def _errors_and_values_helper(self, K):
@@ -187,7 +190,7 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         fill digonal with 0, renormalize
         """
         np.fill_diagonal(K, 0)
-        S = _normalize_kernel(K, overwrite=True)
+        S = self._normalize_kernel(K, overwrite=True)
 
         return S
 
@@ -216,7 +219,7 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         """
         X, y = self._check_fit_arrays(X, y, sample_weight)
 
-        candidate_params = list(self._get_param_iterator())
+        candidate_params = list(self._param_iterator)
 
         scorer = check_scoring(self, scoring=self.scoring, allow_none=True)
         # error = scorer is None
@@ -280,17 +283,18 @@ class NadarayaWatsonCV(NadarayaWatson):
             self.best_score_ = estimator.best_score_
             self.n_splits_ = estimator.n_splits_
             best_params_ = estimator.best_params_
-            if self.store_cv_values:
+            if self.store_cv_scores:
                 self.best_index_ = estimator.best_index_
-                self.cv_values_ = estimator.cv_values_
+                self.cv_scores_ = estimator.cv_scores_
         else:
-            if self.store_cv_values:
+            if self.store_cv_scores:
                 raise ValueError("cv!=None and store_cv_score=True "
                                  "are incompatible")
             gs = GridSearchCV(NadarayaWatson(), self.param_grid,
                               cv=self.cv, scoring=self.scoring, refit=True)
             gs.fit(X, y, sample_weight=sample_weight)
             estimator = gs.best_estimator_
+            self.n_splits_ = gs.n_splits_
             self.best_score_ = gs.best_score_
             best_params_ = gs.best_params_
 
