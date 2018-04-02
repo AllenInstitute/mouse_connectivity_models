@@ -119,9 +119,3 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
             X, y, sample_weight=sample_weight)
 
         return self
-
-    @property
-    def weights(self):
-        """Convenience property for pulling out regional matrix."""
-        check_is_fitted(self, ["coef_"])
-        return self.coef_.T

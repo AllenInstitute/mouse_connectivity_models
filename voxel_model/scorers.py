@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.metrics.regression import _check_reg_targets
 
-from ..utils import nonzero_unique
+from .utils import nonzero_unique
 
 
 def _unionize(v, ipsi_key, contra_key):

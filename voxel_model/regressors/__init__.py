@@ -13,7 +13,6 @@ from . import nonparametric
 from .nonparametric import NadarayaWatson
 from .nonparametric import NadarayaWatsonCV
 
-from . import scorers
 
 __all__ = ['NadarayaWatson',
            'NadarayaWatsonCV',
@@ -22,5 +21,4 @@ __all__ = ['NadarayaWatson',
            'least_squares',
            'nonnegative_regression',
            'nonnegative_ridge_regression',
-           'nonparametric',
-           'scorers']
+           'nonparametric']

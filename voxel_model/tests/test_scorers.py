@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_raises
 
-from voxel_model.regressors.scorers \
+from voxel_model.scorers \
     import (_unionize, _voxelize, mean_squared_relative_error,
             regional_mean_squared_relative_error, voxel_mean_squared_relative_error,
             mse_rel, regional_mse_rel, voxel_mse_rel)
