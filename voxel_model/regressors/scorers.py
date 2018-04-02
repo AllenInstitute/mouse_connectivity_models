@@ -4,7 +4,6 @@
 
     MSE_rel =
 """
-from __future__ import division, print_function, absolute_import
 from scipy import linalg
 import numpy as np
 
@@ -18,6 +17,7 @@ def _unionize(v, ipsi_key, contra_key):
     """unionizes v (:, len(k)) to regions defined in key"""
     ipsi_key = np.asarray(ipsi_key)
     contra_key = np.asarray(contra_key)
+
     if ipsi_key.shape != contra_key.shape:
         # NOTE: better error message
         raise ValueError("keys are incompatible")
@@ -42,6 +42,9 @@ def _unionize(v, ipsi_key, contra_key):
 
 def _voxelize(v, ipsi_key, contra_key):
     """voxelized v (:, len(k)) to regions defined in key"""
+    ipsi_key = np.asarray(ipsi_key)
+    contra_key = np.asarray(contra_key)
+
     if ipsi_key.shape != contra_key.shape:
         # NOTE: better error message
         raise ValueError("keys are incompatible")
