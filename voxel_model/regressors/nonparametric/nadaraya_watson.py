@@ -22,7 +22,6 @@ from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 
 
-
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
 

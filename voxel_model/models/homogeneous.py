@@ -1,6 +1,10 @@
 """
 Homogeneous Linear Model from Oh et al. 2014.
 """
+
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
+
 import numpy as np
 import numpy.linalg as LA
 import scipy.linalg as linalg
@@ -10,29 +14,19 @@ from sklearn.utils.validation import check_is_fitted
 from ..regressors import NonnegativeLinear
 
 
-def svd_subset_selection(X, kappa=1000):
-    """greedily subset X to have good conditioning"""
-    def svd_subset(x, n):
-        """svd subset selection to return n cols that ~less lin dependent"""
-        if n > x.shape[1]:
-            raise ValueError("n cannot be greater than the number of columns of x")
-        _, _, vh  = linalg.svd(x, full_matrices=False, compute_uv=True)
-        _, _, p = linalg.qr(vh[:n], pivoting=True)
-        return p[:n]
-
+def svd_subset_selection(X, n):
+    """svd subset selection to return n cols that ~less lin dependent"""
     # NOTE: may want sklearn.utils.check_X_y
-    X_ = np.atleast_2d(X.copy())
+    X = np.atleast_2d(X.copy())
 
-    columns_ = np.arange(X.shape[1])
-    while LA.cond(X_):
-        if len(X_.shape) == 1:
-            raise ValueError("Cannot condition matrix well enough")
+    if n > X.shape[1]:
+        raise ValueError("n must be less than the number of columns of X")
+    if n < 1:
+        raise ValueError("n must be at least 1")
 
-        subset = svd_subset(X_, X_.shape[1] - 1)
-        X_ = X_[:, subset]
-        columns_ = columns_[:, subset]
-
-    return X_, columns_
+    _, _, vh  = linalg.svd(X, full_matrices=False, compute_uv=True)
+    _, _, p = linalg.qr(vh[:n], pivoting=True)
+    return p[:n]
 
 
 class HomogeneousModel(NonnegativeLinear):
@@ -42,23 +36,37 @@ class HomogeneousModel(NonnegativeLinear):
                                                copy_X=copy_X)
         self.kappa = kappa
 
+    def _condition_X(self, X):
+        """greedily subset X to have good conditioning"""
+        # NOTE: may want sklearn.utils.check_X_y
+        X = np.atleast_2d(X.copy())
+        columns = np.arange(X.shape[1])
+
+        while LA.cond(X) > self.kappa and X.shape[1] > 1:
+            # greedily subset columns of X using svd subset selection
+            subset = svd_subset_selection(X, X.shape[1] - 1)
+            X = X[:, subset]
+            columns = columns[:, subset]
+
+        return X, columns
+
     def fit(self, X, y, sample_weight=None):
         """Fits ...
 
         """
-        X_, columns_ = svd_subset_selection(X, kappa=self.kappa)
-        self.columns_ = columns_
+        X, columns = self._condition_X(X)
+        self.columns_ = columns
 
-        super(HomogeneousModel, self).fit(X_, y, sample_weight=sample_weight)
+        super(HomogeneousModel, self).fit(X, y, sample_weight=sample_weight)
 
     def predict(self, X):
         """Predicts ...
 
         """
         check_is_fitted(self, "columns_")
+        y_pred = super(HomogeneousModel, self).predict(X[:, self.columns_])
 
-        super(HomogeneousModel, self).predict(X[:, self.columns_])
-
+        return y_pred
 
     @property
     def weights(self):

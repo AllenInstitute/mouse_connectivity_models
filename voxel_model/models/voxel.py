@@ -5,7 +5,7 @@ injection as the X, and thus must be passed as X = (centroids, injections)
 """
 
 # Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# License: BSD 3
 
 from __future__ import division, absolute_import
 import numpy as np
@@ -57,7 +57,6 @@ class VoxelModel(NadarayaWatson):
 
     """
     def __init__(self, source_voxels, **kwargs):
-
         super(VoxelModel, self).__init__(**kwargs)
 
         self.source_voxels = source_voxels
