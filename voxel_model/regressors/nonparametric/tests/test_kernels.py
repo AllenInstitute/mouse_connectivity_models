@@ -1,21 +1,21 @@
 import pytest
 import numpy as np
-from numpy.testing import assert_raises
+from numpy.testing import assert_array_equal, assert_raises
 
-from voxel_model.regressors.nonparametric.kernels import Polynomial
+from voxel_model.regressors.nonparametric.kernels \
+    import _BasePolynomial, Polynomial, Uniform, Epanechnikov, Biweight, Triweight
 
 
 # ===========================================================================
-# Polynomial (kernel) class
+# _BasePolynomial (kernel) class
 # ===========================================================================
-
 def test_coefficient():
     # -----------------------------------------------------------------------
     # test coefficient property correct
-    uniform = Polynomial(shape=0)
-    epanechnikov = Polynomial(shape=1)
-    biweight = Polynomial(shape=2)
-    biweight_supp = Polynomial(shape=2, support=2)
+    uniform = _BasePolynomial(shape=0)
+    epanechnikov = _BasePolynomial(shape=1)
+    biweight = _BasePolynomial(shape=2)
+    biweight_supp = _BasePolynomial(shape=2, support=2)
 
     assert uniform.coefficient == pytest.approx(0.5)
     assert epanechnikov.coefficient == pytest.approx(0.75)
@@ -26,8 +26,11 @@ def test_coefficient():
 def test_call():
     # -----------------------------------------------------------------------
     # test __call__ returns what we expect
+    # TODO
 
     # -----------------------------------------------------------------------
     # test eval_gradient not implemented
+    kernel = _BasePolynomial(shape=3)
+    X = np.ones((10,10))
 
-    pass
+    assert_raises(NotImplementedError, kernel, X, eval_gradient=True)
