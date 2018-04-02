@@ -59,7 +59,7 @@ class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
             # convert from upper-triangular matrix to square matrix
             # (diag has all 0.0)
             K = squareform(dists)
-            np.multiply(dists, support**-2, out=K)
+            np.multiply(K, support**-2, out=K)
         else:
             dists = cdist(X, Y, metric='sqeuclidean')
             K = np.multiply(dists, support**-2)
@@ -82,7 +82,7 @@ class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
 
     def __repr__(self):
         return "{0}(support={1:.3g}, shape={2:.3g})".format(
-            self.__class__.__name__, np.ravel(self.support)[0], np.ravel(self.shape[0]))
+            self.__class__.__name__, np.ravel(self.support)[0], np.ravel(self.shape)[0])
 
 
 class Polynomial(_BasePolynomial):
