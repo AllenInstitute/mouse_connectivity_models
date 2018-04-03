@@ -5,7 +5,8 @@ import numpy as np
 from numpy.testing import assert_array_equal, assert_raises, assert_allclose
 
 from voxel_model.utils \
-    import nonzero_unique, ordered_unique, lex_ordered_unique, padded_diagonal_fill
+    import (nonzero_unique, unionize, ordered_unique, lex_ordered_unique,
+            padded_diagonal_fill)
 
 
 # ============================================================================
@@ -18,6 +19,22 @@ def test_nonzero_unique():
     nonzero_unq = [1, 2, 4, 5]
 
     assert_allclose(nonzero_unq, nonzero_unique(a))
+
+
+def test_unionize():
+    # ------------------------------------------------------------------------
+    # test output correct
+    volume = np.ones((10, 10))
+    key = np.hstack((np.arange(5), np.arange(5)))
+    result = 2 * np.ones((10, 4)) # only nonzero
+
+    assert_array_equal(unionize(volume, key), result)
+
+    # ------------------------------------------------------------------------
+    # test incompatible key shape
+    key = np.arange(9)
+
+    assert_raises(ValueError, unionize, volume, key)
 
 
 def test_ordered_unique():

@@ -8,9 +8,10 @@ Module containing utility functions
 from __future__ import absolute_import
 from itertools import compress
 import os
-import numpy as np
 
+import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+
 
 def nonzero_unique(array):
     # TODO: docstring
