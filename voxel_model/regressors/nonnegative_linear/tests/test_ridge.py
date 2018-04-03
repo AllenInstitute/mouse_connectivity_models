@@ -8,7 +8,6 @@ from voxel_model.regressors import nonnegative_ridge_regression, NonnegativeRidg
 # ============================================================================
 # Module level functions
 # ============================================================================
-
 def test_solve_ridge_nnls():
     # ------------------------------------------------------------------------
     # test X.ndim != 2 or y.ndim != 2
@@ -78,7 +77,6 @@ def test_nonnegative_ridge_regression():
 # ============================================================================
 # NonnegativeRidge class
 # ============================================================================
-
 def test_fit():
     # ------------------------------------------------------------------------
     # test sample_weight shape incompatibility

@@ -13,6 +13,7 @@ import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 def nonzero_unique(array):
+    # TODO: docstring
     unique = np.unique(array)
     if unique[0] == 0:
         return unique[1:]

@@ -58,7 +58,7 @@ def test_normalize_kernel():
 
 def test_nw_fit():
     # ------------------------------------------------------------------------
-    # test
+    # test setting of attrs
     reg = NadarayaWatson()
     X = np.random.rand(10, 10)
     y = np.random.rand(10, 3)
