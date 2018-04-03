@@ -8,8 +8,8 @@ Module containing Mask object and supporting functions
 # TODO : finish Mask docstring (examples)
 from __future__ import division
 from functools import reduce
-
 import operator as op
+
 import numpy as np
 
 
@@ -98,10 +98,10 @@ class Mask(object):
         # mask to hemisphere
         midline = mask.shape[2]//2
         if hemisphere == 1:
-            mask[:, :, midline:] = 0
+            mask[..., midline:] = 0
 
         elif hemisphere == 2:
-            mask[:, :, :midline] = 0
+            mask[..., :midline] = 0
 
         return mask
 
@@ -153,6 +153,7 @@ class Mask(object):
         return (np.count_nonzero(self.mask),)
 
     def get_structure_flattened_mask(self, structure_ids=None, hemisphere=None):
+        #TODO:
         """
         ...
         """

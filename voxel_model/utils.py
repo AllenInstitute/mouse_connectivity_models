@@ -20,6 +20,20 @@ def nonzero_unique(array):
     return unique
 
 
+def unionize(volume, key):
+    """Unionize voxel data to regional data"""
+    volume = np.atleast_2d(volume)
+    if volume.shape[1] != key.size:
+        # TODO: better error
+        raise ValueError("key is incompatible")
+
+    regions = nonzero_unique(key)
+    result = np.empty((volume.shape[0], regions.size))
+    for j, k in enumerate(regions):
+        result[:, j] = volume[:, np.where(key == k)[0]].sum(axis=1)
+
+    return result
+
 
 def get_mcc(manifest_file=None):
     """Returns a MouseConnectivityCache instance with the default settings."""

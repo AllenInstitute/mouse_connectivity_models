@@ -1,5 +1,6 @@
 """
 Greedy subset selection ...
+Reank Degeneracy and Least Squares Problems : Golub, Klema, Stewart 1976
 """
 
 # Authors: Joseph Knox <josephk@alleninstitute.org>
@@ -20,7 +21,7 @@ def svd_subset_selection(X, n):
     if n < 1:
         raise ValueError("n must be at least 1")
 
-    _, _, vh  = linalg.svd(X, full_matrices=False, compute_uv=True)
+    _, _, vh  = linalg.svd(X, full_matrices=False)
     _, _, p = linalg.qr(vh[:n], pivoting=True)
     return p[:n]
 
