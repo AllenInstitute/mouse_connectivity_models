@@ -14,7 +14,7 @@ from allensdk.core.reference_space import ReferenceSpace
 from allensdk.core.structure_tree import StructureTree
 
 from voxel_model.core.masks import Mask
-from voxel_model.tests.conftest import mcc, tree, annotation
+from voxel_model.core.tests.conftest import mcc, annotation
 
 @pytest.fixture(scope="module")
 def structure_ids():
