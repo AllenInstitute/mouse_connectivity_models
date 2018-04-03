@@ -43,9 +43,9 @@ class ScipyLeastSquares(six.with_metaclass(ABCMeta, RegressorMixin)):
             # NOTE may be unnecessary/bad???
             X = X.reshape(-1, 1)
 
-        if ((sample_weight is not None) and
-                np.atleast_1d(sample_weight).ndim > 1):
-            raise ValueError("Sample weights must be 1D array or scalar")
+        if sample_weight is not None:
+            if np.atleast_1d(sample_weight).ndim > 1:
+                raise ValueError("Sample weights must be 1D array or scalar")
 
             X, y = _rescale_data(X, y, sample_weight)
 
@@ -55,7 +55,10 @@ class ScipyLeastSquares(six.with_metaclass(ABCMeta, RegressorMixin)):
         lstsq_kws.update(least_squares_kwargs)
 
         # fit scipy.optimize.least_squares
-        opt_result = sopt.least_squares(self.residuals, self.x0, args=(X, y), **lstsq_kws)
+        opt_result = sopt.least_squares(self.residuals,
+                                        self.x0,
+                                        args=(X, y),
+                                        **lstsq_kws)
 
         # scipy.optimize.OptimizeResult (namedtuple)
         self.opt_result_ = opt_result

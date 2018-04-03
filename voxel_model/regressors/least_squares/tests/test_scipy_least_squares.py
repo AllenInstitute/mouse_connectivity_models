@@ -1,21 +1,24 @@
-# TODO: all testing
 import pytest
+import numpy as np
+from numpy.testing import assert_raises
 
 from voxel_model.regressors.least_squares import ScipyLeastSquares
 
-# ----------------------------------------------------------------------------
-# tests
-def test_residuals():
-    pass
+class Dummy(ScipyLeastSquares):
+    """Dummy class to instatiate ScipyLeastSquares for testing"""
 
+    def _predict(self, coeffs, X):
+        """dummy method returns None"""
+        return None
 
-# ----------------------------------------------------------------------------
-# tests
+# ============================================================================
+# ScipyLeastSquares class
+# ============================================================================
 def test_fit():
-    pass
+    # ------------------------------------------------------------------------
+    # tests incompatible sample weight
+    X = np.ones((10,10))
+    y = np.ones(10)
+    reg = Dummy(0)
 
-
-# ----------------------------------------------------------------------------
-# tests
-def test_predict():
-    pass
+    assert_raises(ValueError, reg.fit, X, y, np.ones((10,1)))
