@@ -7,7 +7,7 @@ import numpy as np
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from voxel_model.voxel_connectivity_array import VoxelConnectivityArray
+from voxel_model.models.voxel import VoxelConnectivityArray
 
 @pytest.fixture(scope="module")
 def weights():

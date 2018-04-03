@@ -2,8 +2,8 @@
 Module ...
 """
 
-from .voxel import VoxelModel
-from .homogeneous import HomogeneousModel
+from . import voxel
+from . import homogeneous
 
-__all__ =['VoxelModel',
-          'HomogeneousModel']
+__all__ =['voxel',
+          'homogeneous']

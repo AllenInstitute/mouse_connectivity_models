@@ -5,7 +5,7 @@ from scipy.sparse import csr_matrix, csc_matrix
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from voxel_model.models import VoxelModel
+from voxel_model.models.voxel import VoxelModel
 
 @pytest.fixture(scope="module")
 def centroids():

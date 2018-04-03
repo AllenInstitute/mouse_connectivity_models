@@ -5,7 +5,7 @@ import numpy as np
 
 from numpy.testing import assert_array_equal, assert_raises
 
-from voxel_model.regionalized_model import RegionalizedModel
+from voxel_model.models.voxel import RegionalizedModel
 
 # ----------------------------------------------------------------------------
 # test

@@ -7,7 +7,6 @@ voxel-voxel connectivity matrix.
 # License:
 from __future__ import division
 from functools import partial, reduce
-
 import operator as op
 import numpy as np
 

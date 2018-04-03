@@ -13,7 +13,7 @@ import numpy as np
 from scipy.sparse import issparse
 from sklearn.utils.validation import check_is_fitted
 
-from ..regressors import NadarayaWatson
+from ...regressors import NadarayaWatson
 
 
 class VoxelModel(NadarayaWatson):

@@ -10,7 +10,7 @@ from __future__ import division, absolute_import
 import numpy as np
 import pandas as pd
 
-from .utils import lex_ordered_unique
+from ...utils import lex_ordered_unique
 
 
 class RegionalizedModel(object):
