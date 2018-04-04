@@ -4,7 +4,7 @@ estimator and regressors.NadarayaWatson is that this one treats the full
 injection as the X, and thus must be passed as X = (centroids, injections)
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
+# Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: BSD 3
 
 from __future__ import division, absolute_import
