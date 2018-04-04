@@ -1,9 +1,9 @@
 """
-Nadaraya-Watson Regression (also known as kernel regression)
+Nadaraya-Watson Regression
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
 # TODO : docs and example
 # TODO : eval overwrite of K (kernel)
@@ -109,7 +109,19 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
         return X, y
 
     def fit(self, X, y, sample_weight=None):
-        """
+        """Fit Nadaraya Watson estimator.
+
+        Parameters
+        ----------
+        X : array, shape (n_samples, n_features)
+            Training data.
+
+        y : array, shape (n_samples, n_features)
+            Target values.
+
+        Returns
+        -------
+        self : returns an instance of self
         """
         X, y = self._check_fit_arrays(X, y, sample_weight)
 
@@ -141,7 +153,17 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
         return self._normalize_kernel(K, overwrite=True)
 
     def predict(self, X):
-        """
+        """Predict using the Nadaraya Watson model.
+
+        Parameters
+        ----------
+        X : array, shape (n_samples, n_features)
+            Training data.
+
+        Returns
+        -------
+        C : array, shape (n_samples,) or (n_samples, n_targets)
+            Returns predicted values.
         """
         check_is_fitted(self, ["X_", "y_"])
 
@@ -150,6 +172,7 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
 
         w = self.get_weights(X)
 
+        # TODO: evaluate sklearn.utils.extmath.safe_sparse_dot()
         if issparse(self.y_):
             # has to be of form sparse.dot(dense)
             # more efficient than w.dot( y_.toarray() )
@@ -210,12 +233,7 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         return S.dot(y)
 
     def fit(self, X, y, sample_weight=None):
-        """Fit Nadaraya Watson model
-
-
-        X - arr of data centroids (#samples, #dim)
-        y - arr of data projection (#samples, #voxels)
-        """
+        """Fit the model using efficient leave-one-out cross validation"""
         X, y = self._check_fit_arrays(X, y, sample_weight)
 
         candidate_params = list(self._param_iterator)
@@ -255,12 +273,44 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
 
 
 class NadarayaWatsonCV(NadarayaWatson):
-    """NadarayaWatson Estimator with builtin loocv
+    """NadarayaWatson Estimator with built in Leave-one-out cross validation.
 
-    ...
+    By default, it performs Leave-one-out cross validation efficiently, but
+    can accept cv argument to perform arbitrary cross validation splits.
 
     Parameters
     ----------
+    param_grid : dict or list of dictionaries
+        Dictionary with parameters names (string) as keys and lists of
+        parameter settings to try as values or a list of such dictionaries,
+        in which case the grids spanned by each dictionary in the list are
+        explored. This enables searching over any sequence of parameter settings.
+
+    scoring : string, callable or None, optional, default: None
+        A string (see sklearn.model_evaluation documentation) or a scorer
+        callable object / function with signature
+        ``scorer(estimator, X, y)``
+
+    cv : int, cross-validation generator or an iterable, optional, default: None
+        Determines the cross-validation splitting strategy. If None, perform
+        efficient leave-one-out cross validation, else use
+        sklearn.model_selection.GridSearchCV.
+
+    store_cv_scores : boolean, optional, default=False
+        Flag indicating if the cross-validation values should be stored in
+        `cv_scores_` attribute. This flag is only compatible with `cv=None`.
+
+    Attributes
+    ----------
+    cv_scores_ : array, shape = (n_samples, ~len(param_grid))
+        Cross-validation scores for each candidate parameter (if
+        `store_cv_scores=True` and `cv=None`)
+
+    best_score_ : float
+        Mean cross-validated score of the best performing estimator.
+
+    n_splits_ : int
+        Number of cross-validation splits (folds/iterations)
     """
     def __init__(self, param_grid, scoring=None, cv=None, store_cv_scores=False):
         self.param_grid = param_grid
@@ -273,7 +323,20 @@ class NadarayaWatsonCV(NadarayaWatson):
             setattr(self, k, v)
 
     def fit(self, X, y, sample_weight=None):
-        """Fit Nadaraya Watson estimator."""
+        """Fit Nadaraya Watson estimator.
+
+        Parameters
+        ----------
+        X : array, shape (n_samples, n_features)
+            Training data.
+
+        y : array, shape (n_samples, n_features)
+            Target values.
+
+        Returns
+        -------
+        self : returns an instance of self
+        """
         if self.cv is None:
             estimator = _NadarayaWatsonLOOCV(param_grid=self.param_grid,
                                              scoring=self.scoring,

@@ -1,12 +1,18 @@
-"""
-Polynomial Kernel
+"""Kernels for Nonparametric regression.
+
+These Kernels are compatible with sklearn.gaussian_process.kernels, and allow
+for kernel-engineering.
+
+Do not (for the moment) allow (analytic) gradient-based hyperparameter optimization.
+
+See sklearn.gaussian_process.kernels for more information.
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
-# TODO : docs and example
-# TODO: eval_gradient
+# TODO : further docs
+# TODO : eval_gradient
 from __future__ import division
 
 import numpy as np
@@ -18,12 +24,10 @@ from sklearn.gaussian_process.kernels \
 
 
 class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
-    """Base for polynomial kerel ...
-    """
+    """Base for polynomial family kernels"""
     def __init__(self, shape=1.0, support=1.0, support_bounds=(0, 1e5)):
         if shape < 0:
             raise ValueError("shape must be nonnegative")
-
         self.shape = shape
         self.support = support
         self.support_bounds = support_bounds
@@ -38,15 +42,11 @@ class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
 
     @property
     def coefficient(self):
-        """coefficient scaling the kernel to have int_D K(u)du == 1"""
+        """Coefficient to scale the kernel to have ``int_D K(u)du == 1``"""
         return 1.0 / (self.support * sp.beta(0.5, self.shape + 1))
 
     def __call__(self, X, Y=None, eval_gradient=False):
-        """return the kernel k(X, Y) and optionally its gradient.
-
-        Parameters
-        ----------
-        """
+        """Return the kernel k(X, Y) and optionally its gradient."""
         X = np.atleast_2d(X)
 
         # we may not want this
@@ -70,6 +70,7 @@ class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
         np.power(K, shape, out=K)
 
         if eval_gradient:
+            # TODO:
             #if self.hyperparameter_support.fixed and self.hyperparameter_shape.fixed:
             #    K_gradient = np.empty((X.shape[0], X.shape[0], 0))
             #else:
@@ -86,16 +87,33 @@ class _BasePolynomial(StationaryKernelMixin, NormalizedKernelMixin, Kernel):
 
 
 class Polynomial(_BasePolynomial):
-    """Polynomial function kernel.
+    """Polynomial kernel.
 
-    It is stationary ...
+    The class of Polynomial kernels can ...
 
+        ``K(x, y) = (1 + (d(x,y)/support)^2)^shape``
 
-    k(x, x') =
+    Note: not to be confused with the Polynomial kernel defined in
+          sklearn.pairwise. defined as:
+
+          ``K(x, y) = (gamma x^T y - c_0)^degree``
 
     Parameters
     -----------
+    shape : float, optional, default: 1.0
+        The shape parameter of the kernel. A shape of 0 is the Uniform kernel
+        (or boxcar kernel). As the shape approaches infinity, the kernel
+        approximates the Gaussian kernel in the limit.
 
+    support : float, optional, default: 1.0
+        The support (symmetric) of the kernel such that the kernel is equal
+        to exactly zero where ``d(x, y) > support``.
+
+    shape_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on shape.
+
+    support_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on support.
     """
     def __init__(self, shape=1.0, support=1.0, shape_bounds=(1e-5, 1e5),
                  support_bounds=(0, 1e5)):
@@ -110,7 +128,23 @@ class Polynomial(_BasePolynomial):
 
 
 class Uniform(_BasePolynomial):
-    """Convenience for ..."""
+    """Uniform kernel.
+
+    Identical to Polynomial(shape=0)
+
+    Parameters
+    -----------
+    support : float, optional, default: 1.0
+        The support (symmetric) of the kernel such that the kernel is equal
+        to exactly zero where ``d(x, y) > support``.
+
+    support_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on support.
+
+    See also
+    --------
+    Polynomial
+    """
 
     SHAPE = 0
 
@@ -121,7 +155,23 @@ class Uniform(_BasePolynomial):
 
 
 class Epanechnikov(_BasePolynomial):
-    """Convenience for ..."""
+    """Epanechnikov kernel.
+
+    Identical to Polynomial(shape=1)
+
+    Paramters
+    ---------
+    support : float, optional, default: 1.0
+        The support (symmetric) of the kernel such that the kernel is equal
+        to exactly zero where ``d(x, y) > support``.
+
+    support_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on support.
+
+    See also
+    --------
+    Polynomial
+    """
 
     SHAPE = 1
 
@@ -132,7 +182,23 @@ class Epanechnikov(_BasePolynomial):
 
 
 class Biweight(_BasePolynomial):
-    """Convenience for ..."""
+    """Biweight kernel.
+
+    Identical to Polynomial(shape=2)
+
+    Paramters
+    ---------
+    support : float, optional, default: 1.0
+        The support (symmetric) of the kernel such that the kernel is equal
+        to exactly zero where ``d(x, y) > support``.
+
+    support_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on support.
+
+    See also
+    --------
+    Polynomial
+    """
 
     SHAPE = 2
 
@@ -143,7 +209,23 @@ class Biweight(_BasePolynomial):
 
 
 class Triweight(_BasePolynomial):
-    """Convenience for ..."""
+    """Triweight kernel.
+
+    Identical to Polynomial(shape=3)
+
+    Paramters
+    ---------
+    support : float, optional, default: 1.0
+        The support (symmetric) of the kernel such that the kernel is equal
+        to exactly zero where ``d(x, y) > support``.
+
+    support_bounds : pair of floats >= 0, optional, default: (1e-5, 1e5)
+        The lower and upper bound on support.
+
+    See also
+    --------
+    Polynomial
+    """
 
     SHAPE = 3
 
