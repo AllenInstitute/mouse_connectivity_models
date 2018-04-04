@@ -18,9 +18,6 @@ from sklearn.utils import check_consistent_length
 
 
 def _solve_nnls(X, y):
-    """Solves ..
-
-    """
     if X.ndim != 2 or y.ndim != 2:
         raise ValueError("X and y must be 2d arrays! May have to reshape "
                          "X.reshape(-1, 1) or y.reshape(-1, 1).")
@@ -41,11 +38,25 @@ def _solve_nnls(X, y):
 
 
 def nonnegative_regression(X, y, sample_weight=None):
-    """Nonnegative regression.
+    """Solve the nonnegative least squares estimate regression problem.
 
-    Very similar to sklearn.linear_model.ridge.ridge_regression, but uses
-    nonnegativity constraint.
-    ...
+    Solves ``argmin_x \| Ax - y \|_2^2`` for ``x > 0`` using scipy.optimize.nnls
+
+    Parameters
+    ----------
+    X : array, shape = (n_samples, n_features)
+        Training data.
+
+    y : array, shape = (n_samples,) or (n_samples, n_targets)
+        Target values.
+
+    Returns
+    -------
+    coef : array, shape = (n_features,) or (n_samples, n_features)
+        Weight vector(s).
+
+    res : float
+        The residual, ``\| Ax - y \|_2``
     """
     # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
     # TODO order='F'?
@@ -84,20 +95,50 @@ def nonnegative_regression(X, y, sample_weight=None):
 
 
 class NonnegativeLinear(LinearModel, RegressorMixin):
+    """Nonnegative least squares linear model.
 
-    # we do not allow fitting of intercept for now
-    fit_intercept = False
+    This model solves a regression model where the loss function is the
+    nonnegative linear least squares function. This estimator has built-in
+    support for mulitvariate regression.
+
+    Attributes
+    ----------
+    coef_ : array, shape = (n_features,) or (n_features, n_targets)
+        Weight vector(s).
+
+    res_ : float
+        The residual, of the nonnegative least squares fitting.
+
+    Examples
+    --------
+    >>> from voxel_model.regressors import NonnegativeLinear
+    >>> import numpy as np
+    >>> n_samples, n_features = 10, 5
+    >>> np.random.seed(0)
+    >>> y = np.random.randn(n_samples)
+    >>> X = np.random.randn(n_samples, n_features)
+    >>> reg = NonnegativeLinear()
+    >>> reg.fit(X, y)
+    NonnegativeLinear()
+    """
+
+    # needed for compatibility with LinearModel.predict() (decision_function)
     intercept_ = 0
 
-    def __init__(self, normalize=False, copy_X=True):
-        self.normalize = normalize
-        self.copy_X = copy_X
-
     def fit(self, X, y, sample_weight=None):
-        """ Fit Oh
+        """Fit nonnegative least squares linear model.
 
-        X - regional, unionized
-        y - regional, unionized
+        Parameters
+        ----------
+        X : array, shape = (n_samples, n_features)
+            Training data.
+
+        y : array, shape = (n_samples,) or (n_samples, n_targets)
+            Target values.
+
+        Returns
+        -------
+        self : returns an instance of self.
         """
         # TODO: add support for sparse
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
@@ -110,6 +151,7 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
             raise ValueError("Sample weights must be 1D array or scalar")
 
         # NOTE: self.fit_intercept == False
+        # TODO: this is unnecessary unless we fit an intercept
         X, y, X_offset, y_offset, X_scale = self._preprocess_data(
             X, y, self.fit_intercept, self.normalize, self.copy_X,
             sample_weight=sample_weight)

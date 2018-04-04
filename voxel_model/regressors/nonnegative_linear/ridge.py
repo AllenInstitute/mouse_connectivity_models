@@ -17,14 +17,6 @@ from .base import NonnegativeLinear, _solve_nnls
 
 
 def _solve_ridge_nnls(X, y, alpha):
-    r"""Solves ...
-
-    very similar to sklearn.linear_model.ridge._solve_lsqr
-
-    $$ min ||Ax -y||_2^2 + \alpha\|x\|_2^2 $$
-    $$ min x^T (A^T A + \alpha I) x + (-2 A^T y)^T x $$
-    ...
-    """
     if X.ndim != 2 or y.ndim != 2:
         raise ValueError("X and y must be 2d arrays! May have to reshape "
                          "X.reshape(-1, 1) or y.reshape(-1, 1).")
@@ -48,11 +40,34 @@ def _solve_ridge_nnls(X, y, alpha):
 
 
 def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
-    """Nonnegative ridge regression.
+    """Solve the nonnegative least squares estimate regression problem.
 
-    Very similar to sklearn.linear_model.ridge.ridge_regression, but uses
-    nonnegativity constraint.
-    ...
+    Solves ``argmin_x \| Ax - y \|_2^2 + \alpha^2\| x \|_2^2`` for ``x > 0``
+    using scipy.optimize.nnls. This can be simplified to:
+        ``argmin_x \| Qx - c \|_2^2`` for ``x > 0``
+    where
+        ``Q = X^TX + \alpha I`` and ``c = X^Ty``
+
+    Parameters
+    ----------
+    X : array, shape = (n_samples, n_features)
+        Training data.
+
+    y : array, shape = (n_samples,) or (n_samples, n_targets)
+        Target values.
+
+    alpha : float or array with shape = (n_features,)
+        Regularization stength; must be a poisitve float. Improves the
+        conditioning of the problem and reduces the variance of the estimates.
+        Larger values specify stronger regularization.
+
+    Returns
+    -------
+    coef : array, shape = (n_features,) or (n_features, n_targets)
+        Weight vector(s).
+
+    res : float
+        The residual, ``\| Qx - c \|_2``
     """
     # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
     # TODO order='F'?
@@ -103,17 +118,58 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
 
 
 class NonnegativeRidge(NonnegativeLinear):
+    """Nonnegative least squares with L2 regularization.
 
-    def __init__(self, alpha=1.0, normalize=False, copy_X=True):
-        super(NonnegativeRidge, self).__init__(normalize=normalize,
-                                               copy_X=copy_X)
+    This model solves a regression model where the loss function is
+    the nonnegative linear least squares function and regularization is
+    given by the l2-norm. This estimator has built-in support for
+    mulitvariate regression.
+
+    Parameters
+    ----------
+    alpha : float or array with shape = (n_features,)
+        Regularization stength; must be a poisitve float. Improves the
+        conditioning of the problem and reduces the variance of the estimates.
+        Larger values specify stronger regularization.
+
+    Attributes
+    ----------
+    coef_ : array, shape = (n_features,) or (n_features, n_targets)
+        Weight vector(s).
+
+    res_ : float
+        The residual, of the nonnegative least squares fitting.
+
+    Examples
+    --------
+    >>> from voxel_model.regressors import NonnegativeRidge
+    >>> import numpy as np
+    >>> n_samples, n_features = 10, 5
+    >>> np.random.seed(0)
+    >>> y = np.random.randn(n_samples)
+    >>> X = np.random.randn(n_samples, n_features)
+    >>> reg = NonnegativeRidge(alpha=1.0)
+    >>> reg.fit(X, y)
+    NonnegativeRidge(alpha=1.0)
+    """
+
+    def __init__(self, alpha=1.0):
         self.alpha = alpha
 
     def fit(self, X, y, sample_weight=None):
-        """ Fit Oh
+        """Fit nonnegative least squares linear model with L2 regularization.
 
-        X - regional, unionized
-        y - regional, unionized
+        Parameters
+        ----------
+        X : array, shape = (n_samples, n_features)
+            Training data.
+
+        y : array, shape = (n_samples,) or (n_samples, n_targets)
+            Target values.
+
+        Returns
+        -------
+        self : returns an instance of self.
         """
         # TODO: add support for sparse
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
@@ -124,11 +180,6 @@ class NonnegativeRidge(NonnegativeLinear):
         if ((sample_weight is not None) and
                 np.atleast_1d(sample_weight).ndim > 1):
             raise ValueError("Sample weights must be 1D array or scalar")
-
-        # NOTE: self.fit_intercept=False
-        X, y, X_offset, y_offset, X_scale = self._preprocess_data(
-            X, y, self.fit_intercept, self.normalize, self.copy_X,
-            sample_weight=sample_weight)
 
         # fit weights
         self.coef_, self.res_ = nonnegative_ridge_regression(

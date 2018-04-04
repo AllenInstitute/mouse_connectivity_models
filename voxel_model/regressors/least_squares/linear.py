@@ -14,14 +14,14 @@ class Linear(ScipyLeastSquares):
     """Fits linear least squares model using ScipyLeastSquares.
 
     Fits the model:
-        $$ y = \beta_0 + \beta_1 x $$
+        `` y = \beta_0 + \beta_1 x ``
 
-    where $\beta_0$ and $\beta_1$ are scalars.
+    where ``\beta_0`` and ``\beta_1`` are scalars.
 
     Parameters
     ----------
     x0 : array shape (2,), optional, default np.array([0,0])
-        Initial guesses for $\beta_0$ and $\beta_1$
+        Initial guesses for ``\beta_0`` and ``\beta_1``
 
     **least_squares_kwargs :
         Keyword arguments to be provided to scipy.optimize.least_squares.
