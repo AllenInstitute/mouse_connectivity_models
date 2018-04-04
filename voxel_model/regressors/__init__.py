@@ -1,6 +1,12 @@
 """
-The :mod:`voxel_model.regressors` module includes ...
+The :mod:`voxel_model.regressors` module implements scikit-learn style estimators
+for solving various regression problems. It implements the NadarayaWatson
+regressor, a general least squares regressor, and both regularized and
+non-regularized Nonnegative least squares models.
 """
+
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# Licence: BSD 3
 
 from . import least_squares
 
