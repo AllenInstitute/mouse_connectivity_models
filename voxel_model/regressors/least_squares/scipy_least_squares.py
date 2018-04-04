@@ -6,8 +6,8 @@ Scikit-Learn wrapping for scipy.optimize.least_squares
 # License: BSD 3
 
 from abc import ABCMeta, abstractmethod
-import six
 
+import six
 import numpy as np
 import scipy.optimize as sopt
 
