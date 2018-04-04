@@ -10,7 +10,7 @@ from __future__ import division, absolute_import
 import numpy as np
 import pandas as pd
 
-from ...utils import lex_ordered_unique
+from ...utils import nonzero_unique, unionize
 
 
 class RegionalizedModel(object):
@@ -63,68 +63,68 @@ class RegionalizedModel(object):
         """If weights and nodes passed explicitly"""
         return cls(voxel_array.weights, voxel_array.nodes, *args, **kwargs)
 
-    def __init__(self, weights, nodes, source_key, target_key, ordering=None, dataframe=True):
+    def __init__(self, weights, nodes, source_key, target_key,
+                 ordering=None, dataframe=False):
         if source_key.size != weights.shape[0]:
             raise ValueError("rows of weights and elements in source_key "
                              "must be equal size")
-
         if target_key.size != nodes.shape[1]:
             raise ValueError("columns of nodes and elements in target_key "
                              "must be of equal size")
 
         # metrics return dataframe?
-        self.dataframe = dataframe
-
-        # want only valid indices (source/target keys likely to have zeros)
-        rows = source_key.nonzero()[0]
-        cols = target_key.nonzero()[0]
-
-        # subset
-        self.weights = weights[rows, :]
-        self.nodes = nodes[:, cols]
-        self.source_key = source_key[rows]
-        self.target_key = target_key[cols]
+        self.weights = weights
+        self.nodes = nodes
+        self.source_key = source_key
+        self.target_key = target_key
         self.ordering = ordering
+        self.dataframe = dataframe
 
     def predict(self, X, normalize=False):
         """Predict regional projection."""
         # TODO : implement
         raise NotImplementedError
 
-    def _get_unique_counts(self, key):
-        """Returns unique and counts in appropriate order."""
-        if self.ordering is None:
-            return np.unique(key, return_counts=True)
-
-        return lex_ordered_unique(key, self.ordering, allow_extra=True,
-                                  return_counts=True)
-
-    def _get_region_matrix(self):
+    def _regionalize_voxel_connectivity_array(self):
         """Produces the full regionalized connectivity"""
-        # get counts
-        source_regions, self.source_counts = self._get_unique_counts(self.source_key)
-        target_regions, self.target_counts = self._get_unique_counts(self.target_key)
+        # get counts for metrics
+        self.source_regions, self.source_counts = nonzero_unique(self.source_key)
+        self.target_regions, self.target_counts = nonzero_unique(self.target_key)
 
-        # integrate target regions
-        temp = np.empty((target_regions.size, self.weights.shape[0]))
-        for i, region in enumerate(target_regions):
+        # integrate over target regions (array is 2x as wide)
+        temp = np.empty((self.target_regions.size, self.weights.shape[0]))
+        for i, region in enumerate(self.target_regions):
 
-            # same as voxel_array[:,cols].sum(axis=1), but more efficient
+            # same as voxel_array[:,cols].sum(axis=1), but more space efficient
             columns = np.nonzero(self.target_key == region)[0]
             temp[i, :] = self.weights.dot(np.sum(self.nodes[:, columns], axis=1))
 
-        # integrate source regions
-        region_matrix = np.empty((source_regions.size, target_regions.size))
-        for i, region in enumerate(source_regions):
+        # integrate over source regions
+        # NOTE: transpose
+        return unionize(temp, self.source_key).T
 
-            # NOTE : if region were 1 voxel, would not work?
-            columns = np.nonzero(self.source_key == region)[0]
-            region_matrix[i, :] = temp[:, columns].sum(axis=1)
+    def _get_region_matrix(self):
+        region_matrix = self._regionalize_voxel_connectivity_array()
+
+        if self.ordering:
+            order = lambda x: np.array(self.ordering)[np.isin(self.ordering, x)]
+            permutation = lambda x: np.argsort(np.argsort(order(x)))
+
+            source_perm = permutation(self.source_regions)
+            target_perm = permutation(self.source_regions)
+
+            self.source_regions = self.source_regions[source_perm]
+            self.target_regions = self.target_regions[target_perm]
+
+            self.source_counts = self.source_counts[source_perm]
+            self.target_counts = self.target_counts[target_perm]
+
+            region_matrix = region_matrix[np.ix_(source_perm, target_perm)]
 
         if self.dataframe:
             region_matrix = pd.DataFrame(region_matrix)
-            region_matrix.index = source_regions
-            region_matrix.columns = target_regions
+            region_matrix.index = self.source_regions
+            region_matrix.columns = self.target_regions
 
         return region_matrix
 

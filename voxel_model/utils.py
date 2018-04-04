@@ -13,29 +13,6 @@ import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 
-def nonzero_unique(array):
-    # TODO: docstring
-    unique = np.unique(array)
-    if unique[0] == 0:
-        return unique[1:]
-    return unique
-
-
-def unionize(volume, key):
-    """Unionize voxel data to regional data"""
-    volume = np.atleast_2d(volume)
-    if volume.shape[1] != key.size:
-        # TODO: better error
-        raise ValueError("key is incompatible")
-
-    regions = nonzero_unique(key)
-    result = np.empty((volume.shape[0], regions.size))
-    for j, k in enumerate(regions):
-        result[:, j] = volume[:, np.where(key == k)[0]].sum(axis=1)
-
-    return result
-
-
 def get_mcc(manifest_file=None):
     """Returns a MouseConnectivityCache instance with the default settings."""
     if manifest_file is None:
@@ -50,7 +27,23 @@ def get_mcc(manifest_file=None):
     )
 
 
-def ordered_unique(arr, return_index=False, return_counts=False, axis=None):
+def nonzero_unique(array, **unique_kwargs):
+    # TODO: docstring
+    if 'return_inverse' in unique_kwargs:
+        raise NotImplementedError("lex ordiring of inverse array not "
+                                  "yet implemented")
+
+    if np.all(array):
+        return np.unique(array, **unique_kwargs)
+
+    unique = np.unique(array, **unique_kwargs)
+    if unique_kwargs:
+        return map(lambda x: x[1:], unique)
+
+    return unique[1:]
+
+
+def ordered_unique(array, **unique_kwargs):
     """np.unique in the order in which the unique values occur.
 
     Similar outuput to pd.unique(), although probably not as fast.
@@ -83,20 +76,25 @@ def ordered_unique(arr, return_index=False, return_counts=False, axis=None):
         Counts of the unique values.
 
     """
-    unique = np.unique(arr, return_index=True, return_counts=return_counts, axis=axis)
+    if 'return_inverse' in unique_kwargs:
+        raise NotImplementedError("lex ordiring of inverse array not "
+                                  "yet implemented")
 
-    # unique[1] == indices always
-    perm_order = np.argsort(unique[1])
-    return_arrs = (True, return_index, return_counts)
+    _return_index = unique_kwargs.pop('return_index', False)
+    unique = np.unique(array, return_index=True, **unique_kwargs)
 
-    if sum(return_arrs) > 1:
-        return tuple(map(lambda x: x[perm_order], compress(unique, return_arrs)))
+    # need indices (always @ index 1)
+    unique = list(unique)
+    indices = unique[1] if _return_index else unique.pop(1)
+    permutation = np.argsort(indices)
 
-    return unique[0][perm_order]
+    if unique_kwargs or _return_index:
+        return map(lambda x: x[permutation], unique)
+
+    return unique[0][permutation]
 
 
-def lex_ordered_unique(arr, lex_order, allow_extra=False, return_index=False,
-                       return_counts=False, axis=None):
+def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
     """np.unique in a given order.
 
         see numpy.unique for more info
@@ -133,13 +131,15 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, return_index=False,
         Counts of the unique values.
 
     """
+    if 'return_inverse' in unique_kwargs:
+        raise NotImplementedError("lex ordiring of inverse array not "
+                                  "yet implemented")
+
     if len(set(lex_order)) < len(lex_order):
         raise ValueError("lex_order must not contain duplicates")
 
-    unique = np.unique(arr, return_index=return_index,
-                       return_counts=return_counts, axis=axis)
-
-    if not return_index and not return_counts:
+    unique = np.unique(arr, **unique_kwargs)
+    if not unique_kwargs:
         unique = (unique,)
 
     if len(unique[0]) < len(lex_order):
@@ -152,12 +152,12 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, return_index=False,
                              "call with allow_extra=True")
 
     # generate a permutation order for unique
-    perm_order = np.argsort(np.argsort(lex_order))
+    permutation = np.argsort(np.argsort(lex_order))
 
     if len(unique) > 1:
-        return tuple(map(lambda x: x[perm_order], unique))
+        return tuple(map(lambda x: x[permutation], unique))
 
-    return unique[0][perm_order]
+    return unique[0][permutation]
 
 
 def padded_diagonal_fill(arrays):
@@ -189,3 +189,20 @@ def padded_diagonal_fill(arrays):
         j += n_cols
 
     return padded
+
+
+def unionize(volume, key, return_regions=False):
+    """Unionize voxel data to regional data"""
+    volume = np.atleast_2d(volume)
+    if volume.shape[1] != key.size:
+        # TODO: better error
+        raise ValueError("key is incompatible")
+
+    regions = nonzero_unique(key)
+    result = np.empty((volume.shape[0], regions.size))
+    for j, k in enumerate(regions):
+        result[:, j] = volume[:, np.where(key == k)[0]].sum(axis=1)
+
+    if return_regions:
+        return result, regions
+    return result

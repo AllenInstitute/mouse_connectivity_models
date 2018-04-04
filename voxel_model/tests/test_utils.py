@@ -21,22 +21,6 @@ def test_nonzero_unique():
     assert_allclose(nonzero_unq, nonzero_unique(a))
 
 
-def test_unionize():
-    # ------------------------------------------------------------------------
-    # test output correct
-    volume = np.ones((10, 10))
-    key = np.hstack((np.arange(5), np.arange(5)))
-    result = 2 * np.ones((10, 4)) # only nonzero
-
-    assert_array_equal(unionize(volume, key), result)
-
-    # ------------------------------------------------------------------------
-    # test incompatible key shape
-    key = np.arange(9)
-
-    assert_raises(ValueError, unionize, volume, key)
-
-
 def test_ordered_unique():
     # ------------------------------------------------------------------------
     # test standard output
@@ -45,27 +29,28 @@ def test_ordered_unique():
     idx = list(map(arr.index, unq))
     cnt = list(map(arr.count, unq))
 
-    plain = ordered_unique(arr)
-
-    assert_array_equal( plain, unq )
+    unique = ordered_unique(arr)
+    assert_array_equal(unique, unq)
 
     # ------------------------------------------------------------------------
     # test return index
-    index = ordered_unique(arr, return_index=True)
-    for x, y in zip(index, (unq, idx)):
-        assert_array_equal(x, y)
+    unique, index = ordered_unique(arr, return_index=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(index, idx)
 
     # ------------------------------------------------------------------------
     # test return counts
-    counts = ordered_unique(arr, return_counts=True)
-    for x, y in zip(counts, (unq, cnt)):
-        assert_array_equal(x, y)
+    unique, counts = ordered_unique(arr, return_counts=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(counts, cnt)
 
     # ------------------------------------------------------------------------
     # test return counts & index
-    both = ordered_unique(arr, return_index=True, return_counts=True)
-    for x, y in zip(both, (unq, idx, cnt)):
-        assert_array_equal(x, y)
+    unique, index, counts = ordered_unique(arr, return_index=True,
+                                           return_counts=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(index, idx)
+    assert_array_equal(counts, cnt)
 
 
 def test_lex_ordered_unique():
@@ -76,27 +61,28 @@ def test_lex_ordered_unique():
     idx = list(map(arr.index, unq))
     cnt = list(map(arr.count, unq))
 
-    plain = lex_ordered_unique(arr, unq)
-
-    assert_array_equal(plain, unq)
+    unique = lex_ordered_unique(arr, unq)
+    assert_array_equal(unique, unq)
 
     # ------------------------------------------------------------------------
     # test return index
-    index = lex_ordered_unique(arr, unq, return_index=True)
-    for x, y in zip(index, (unq, idx)):
-        assert_array_equal(x, y)
+    unique, index = lex_ordered_unique(arr, unq, return_index=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(index, idx)
 
     # ------------------------------------------------------------------------
     # test return counts
-    counts = lex_ordered_unique(arr, unq, return_counts=True)
-    for x, y in zip(counts, (unq, cnt)):
-        assert_array_equal(x, y)
+    unique, counts = lex_ordered_unique(arr, unq, return_counts=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(counts, cnt)
 
     # ------------------------------------------------------------------------
     # test return counts & index
-    both = lex_ordered_unique(arr, unq, return_index=True, return_counts=True)
-    for x, y in zip(both, (unq, idx, cnt)):
-        assert_array_equal(x, y)
+    unique, index, counts = lex_ordered_unique(arr, unq, return_index=True,
+                                               return_counts=True)
+    assert_array_equal(unique, unq)
+    assert_array_equal(index, idx)
+    assert_array_equal(counts, cnt)
 
     # ------------------------------------------------------------------------
     # test extra value in lex order (not in arr)
@@ -132,3 +118,19 @@ def test_padded_diagonal_fill():
     assert_array_equal(filled[2:3, 5:9], b)
     assert_array_equal(filled[3:6, 9:10], c)
     assert_array_equal(filled[6:7, 10:11], d)
+
+
+def test_unionize():
+    # ------------------------------------------------------------------------
+    # test output correct
+    volume = np.ones((10, 10))
+    key = np.hstack((np.arange(5), np.arange(5)))
+    result = 2 * np.ones((10, 4)) # only nonzero
+
+    assert_array_equal(unionize(volume, key), result)
+
+    # ------------------------------------------------------------------------
+    # test incompatible key shape
+    key = np.arange(9)
+
+    assert_raises(ValueError, unionize, volume, key)
