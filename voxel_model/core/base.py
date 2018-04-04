@@ -98,12 +98,130 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
 
 class VoxelData(_BaseData):
+    """Container class for voxel-scale grid data.
 
+    Parameters
+    ----------
+    mcc - MouseConnectivityCache object
+        MouseConnectivityCache object from allensdk.core.mouse_connectivity_cache.
+        Provides way to pull experiment grid-data from Allen Brain Atlas
+
+    injection_structure_ids : list, optional, default None
+        List of structure_ids to which the injection mask will be constrained.
+
+    projection_structure_ids : list, optional, default None
+        List of structure_ids to which the projection mask will be constrained.
+
+    injection_hemisphere_id : int, optional, defualt 3
+        Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
+        be constrained.
+
+    projection_hemisphere_id : int, optional, defualt 3
+        Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
+        be constrained.
+
+    normalized_injection : boolean, optional, default True
+        If True, the injection density will be normalized by the total
+        injection density for each experiment.
+
+    normalized_projection : boolean, optional, default True
+        If True, the projection density will be normalized by the total
+        injection density for each experiment.
+
+    flip_experiments : boolean, optional, default True
+        If True, experiment grid-data will be refelcted accross the midline.
+        Useful if you wish to include L hemisphere injections into a R
+        hemisphere model.
+
+    data_mask_tolerance : float, optional, default 0.0
+        Tolerance with which to include data in voxels informatically labeled
+        as having error. The data_mask for each experiment is an array with
+        values between (0, 1), where 1 indicates the voxel fully contains an
+        error, whereas 0 indicates the voxel does not contain any error. A value
+        of 0.0 thus indicates the highest threshold for data, whereas a value of
+        1.0 indicates that data will be included from all voxels.
+
+    min_injection_sum : float, optional, default 0.0
+        Includes experiments with at least the minimum total injection density.
+        NOTE: this is defined as the sum of the injection density for an
+              experiment and is affected by normalization
+
+    min_projection_sum : float, optional, default 0.0
+        Includes experiments with at least the minimum total projection density.
+        NOTE: this is defined as the sum of the projection density for an
+              experiment and is affected by normalization
+
+    Attributes
+    ----------
+    injection_mask : Mask object
+        Mask object used to constrain and flatten the injection_density from
+        each experiment. This object can also be used to generate a key relating
+        each column of the injections matrix to a corresponding structure or to
+        transform a given row of the injections matrix to its corresponding
+        brain volume.
+
+    projection_mask : Mask object
+        Mask object used to constrain and flatten the projection_density from
+        each experiment. This object can also be used to generate a key relating
+        each column of the projections matrix to a corresponding structure or to
+        transform a given row of the projections matrix to its corresponding
+        brain volume.
+
+    centroids : array, shape (n_experiments, 3)
+        Stacked array of injection centroids for each experiment.
+
+    injections : array, shape (n_experiments, n_source_voxels)
+        Stacked array of constrained, flattened injection densities for each
+        experiment.
+
+    projections : array, shape (n_experiments, n_target_voxels)
+        Stacked array of constrained, flattened projection densities for each
+        experiment.
+
+    See also
+    --------
+    RegionalData
+
+    Examples
+    --------
+    >>> from voxel_model import VoxelData
+    >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+    >>> mcc = MouseConnectivityCache()
+    >>> experiment_ids = (112514202, 139520203)
+    >>> voxel_data = VoxelData()
+    >>> voxel_data.get_experiment_data(experiment_ids)
+    VoxelData(injection_structure_ids=None,
+              projection_structure_ids=None,
+              injection_hemisphere_id=3,
+              projection_hemisphere_id=3,
+              normalized_injection=True,
+              normalized_projection=True,
+              flip_experiments=True,
+              data_mask_tolerance=0.0,
+              min_injection_sum=0.0,
+              min_projection_sum=0.0,
+              experiment_ids=(112514202, 139520203))
+    """
     DEFAULT_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
 
     def get_experiment_data(self, experiment_ids):
-        """forms data arrays, returns self"""
+        """Pulls voxel-scale grid data for experiments.
+
+        Uses the mcc property to pull grid data from the Allen Brain Atlas.
+        Note that only experiments passing all defined parameters will be
+        included.
+
+        Paramters
+        ---------
+        experiment_ids : list
+            Ids of candidate experiments to pull. Only the subset of these
+            experiments passing user defined object parameters will be pulled.
+
+        Returns
+        -------
+        self : returns an instance of self.
+        """
         def get_centroid(experiment):
             """Returns experiment centroid"""
             return experiment.centroid
@@ -132,7 +250,7 @@ class VoxelData(_BaseData):
         return self
 
     def get_regional_data(self):
-        """convenience method for regionalizing data"""
+        """Returns RegionalData object with same parameters."""
         regional_data = RegionalData.from_voxel_data(self)
 
         if hasattr(self, 'centroids'):
@@ -148,12 +266,122 @@ class VoxelData(_BaseData):
 
 
 class RegionalData(_BaseData):
+    """Container class for regionalized voxel-scale grid data.
+
+    Parameters
+    ----------
+    mcc - MouseConnectivityCache object
+        MouseConnectivityCache object from allensdk.core.mouse_connectivity_cache.
+        Provides way to pull experiment grid-data from Allen Brain Atlas
+
+    injection_structure_ids : list, optional, default None
+        List of structure_ids to which the injection mask will be constrained.
+
+    projection_structure_ids : list, optional, default None
+        List of structure_ids to which the projection mask will be constrained.
+
+    injection_hemisphere_id : int, optional, defualt 3
+        Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
+        be constrained.
+
+    projection_hemisphere_id : int, optional, defualt 3
+        Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
+        be constrained.
+
+    normalized_injection : boolean, optional, default True
+        If True, the injection density will be normalized by the total
+        injection density for each experiment.
+
+    normalized_projection : boolean, optional, default True
+        If True, the projection density will be normalized by the total
+        injection density for each experiment.
+
+    flip_experiments : boolean, optional, default True
+        If True, experiment grid-data will be refelcted accross the midline.
+        Useful if you wish to include L hemisphere injections into a R
+        hemisphere model.
+
+    data_mask_tolerance : float, optional, default 0.0
+        Tolerance with which to include data in voxels informatically labeled
+        as having error. The data_mask for each experiment is an array with
+        values between (0, 1), where 1 indicates the voxel fully contains an
+        error, whereas 0 indicates the voxel does not contain any error. A value
+        of 0.0 thus indicates the highest threshold for data, whereas a value of
+        1.0 indicates that data will be included from all voxels.
+
+    min_injection_sum : float, optional, default 0.0
+        Includes experiments with at least the minimum total injection density.
+        NOTE: this is defined as the sum of the injection density for an
+              experiment and is affected by normalization
+
+    min_projection_sum : float, optional, default 0.0
+        Includes experiments with at least the minimum total projection density.
+        NOTE: this is defined as the sum of the projection density for an
+              experiment and is affected by normalization
+
+    Attributes
+    ----------
+    injection_mask : Mask object
+        Mask object used to constrain and flatten the injection_density from
+        each experiment. This object can also be used to generate a key relating
+        each column of the injections matrix to a corresponding structure or to
+        transform a given row of the injections matrix to its corresponding
+        brain volume.
+
+    projection_mask : Mask object
+        Mask object used to constrain and flatten the projection_density from
+        each experiment. This object can also be used to generate a key relating
+        each column of the projections matrix to a corresponding structure or to
+        transform a given row of the projections matrix to its corresponding
+        brain volume.
+
+    centroids : array, shape (n_experiments, 3)
+        Stacked array of injection centroids for each experiment.
+
+    injections : array, shape (n_experiments, n_source_regions)
+        Stacked array of constrained, flattened injection densities for each
+        experiment.
+
+    projections : array, shape (n_experiments, n_target_regions)
+        Stacked array of constrained, flattened projection densities for each
+        experiment.
+
+    See also
+    --------
+    VoxelData
+
+    Examples
+    --------
+    >>> from voxel_model import RegionalData
+    >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
+    >>> mcc = MouseConnectivityCache()
+    >>> experiment_ids = (112514202, 139520203)
+    >>> voxel_data = RegionalData()
+    >>> voxel_data.get_experiment_data(experiment_ids)
+    VoxelData(injection_structure_ids=None,
+              projection_structure_ids=None,
+              injection_hemisphere_id=3,
+              projection_hemisphere_id=3,
+              normalized_injection=True,
+              normalized_projection=True,
+              flip_experiments=True,
+              data_mask_tolerance=0.0,
+              min_injection_sum=0.0,
+              min_projection_sum=0.0,
+              experiment_ids=(112514202, 139520203))
+    """
 
     DEFAULT_STRUCTURE_SET_ID = 167587189
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
 
     @classmethod
     def from_voxel_data(cls, voxel_data):
+        """Construct class from a VoxelData object.
+
+        Paramters
+        ---------
+        voxel_data : a VoxelData object
+        """
         return cls(voxel_data.mcc,
                    injection_structure_ids=voxel_data.injection_structure_ids,
                    projection_structure_ids=voxel_data.projection_structure_ids,
@@ -167,7 +395,7 @@ class RegionalData(_BaseData):
                    min_projection_sum=voxel_data.min_projection_sum)
 
     def _unionize_experiment_data(self):
-        """private helper method"""
+        """Private helper method to unionize voxel scale data to regions."""
         injection_key = self.injection_mask.get_key()
         projection_key = self.projection_mask.get_key()
 
@@ -177,7 +405,22 @@ class RegionalData(_BaseData):
         return self
 
     def get_experiment_data(self, experiment_ids):
-        """forms data arrays, returns self"""
+        """Pulls regionalized voxel-scale grid data for experiments.
+
+        Uses the mcc property to pull grid data from the Allen Brain Atlas.
+        Note that only experiments passing all defined parameters will be
+        included.
+
+        Paramters
+        ---------
+        experiment_ids : list
+            Ids of candidate experiments to pull. Only the subset of these
+            experiments passing user defined object parameters will be pulled.
+
+        Returns
+        -------
+        self : returns an instance of self.
+        """
         super(RegionalData, self).get_experiment_data(experiment_ids)
 
         return self._unionize_experiment_data()
