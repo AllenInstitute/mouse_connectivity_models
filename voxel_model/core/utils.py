@@ -2,8 +2,9 @@
 Module containing Experiment object and supporting functions
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
+
 from __future__ import division
 
 import numpy as np
@@ -20,7 +21,6 @@ def compute_centroid(injection_density):
     Returns
     -------
         centroid onf injection_density in index coordinates.
-
     """
     nonzero = injection_density[injection_density.nonzero()]
     voxels = np.argwhere(injection_density)
@@ -41,7 +41,7 @@ def get_injection_hemisphere_id(injection_density, majority=False):
 
     Returns
     -------
-    int
+    int : in (1,2,3)
         injection_hemisphere
     """
     if len(injection_density.shape) != 3:

@@ -2,14 +2,14 @@
 Module containing Experiment object and supporting functions
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
+
 from __future__ import division
 
 from functools import partial
 
 import numpy as np
-
 
 from .utils import compute_centroid, get_injection_hemisphere_id
 
@@ -234,12 +234,11 @@ class Experiment(object):
         return self.projection_density
 
     def flip(self):
-        """Flips experiment along midline
+        """Reflects experiment along midline.
 
         Returns
         -------
         self - flipped experiment
-
         """
         self.injection_density = self.injection_density[..., ::-1]
         self.projection_density = self.projection_density[..., ::-1]

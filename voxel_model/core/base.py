@@ -1,9 +1,10 @@
 """
-Module containing VoxelModelData object and supporting functions
+Module containing VoxelData and RegionalData objects.
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
+
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 import six

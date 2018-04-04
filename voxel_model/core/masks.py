@@ -2,8 +2,8 @@
 Module containing Mask object and supporting functions
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
 # TODO : finish Mask docstring (examples)
 from __future__ import division
@@ -196,8 +196,8 @@ class Mask(object):
 
     def get_structure_indices(self, structure_ids=None, hemisphere=None):
         """
-        ...
         """
+        #TODO: docstring
         aligned = self.get_structure_flattened_mask(structure_ids, hemisphere)
 
         return aligned.nonzero()[0]
