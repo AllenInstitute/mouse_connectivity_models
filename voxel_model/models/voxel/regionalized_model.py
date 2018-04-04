@@ -88,8 +88,10 @@ class RegionalizedModel(object):
     def _regionalize_voxel_connectivity_array(self):
         """Produces the full regionalized connectivity"""
         # get counts for metrics
-        self.source_regions, self.source_counts = nonzero_unique(self.source_key)
-        self.target_regions, self.target_counts = nonzero_unique(self.target_key)
+        self.source_regions, self.source_counts = nonzero_unique(
+            self.source_key, return_counts=True)
+        self.target_regions, self.target_counts = nonzero_unique(
+            self.target_key, return_counts=True)
 
         # integrate over target regions (array is 2x as wide)
         temp = np.empty((self.target_regions.size, self.weights.shape[0]))
@@ -100,18 +102,17 @@ class RegionalizedModel(object):
             temp[i, :] = self.weights.dot(np.sum(self.nodes[:, columns], axis=1))
 
         # integrate over source regions
-        # NOTE: transpose
         return unionize(temp, self.source_key).T
 
     def _get_region_matrix(self):
         region_matrix = self._regionalize_voxel_connectivity_array()
 
-        if self.ordering:
+        if self.ordering is not None:
             order = lambda x: np.array(self.ordering)[np.isin(self.ordering, x)]
             permutation = lambda x: np.argsort(np.argsort(order(x)))
 
             source_perm = permutation(self.source_regions)
-            target_perm = permutation(self.source_regions)
+            target_perm = permutation(self.target_regions)
 
             self.source_regions = self.source_regions[source_perm]
             self.target_regions = self.target_regions[target_perm]
