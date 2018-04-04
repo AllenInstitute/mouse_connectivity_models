@@ -2,8 +2,8 @@
 Nonnegative Linear Regression
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
 # TODO : docs and example
 import numpy as np
@@ -149,12 +149,6 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
         if ((sample_weight is not None) and
                 np.atleast_1d(sample_weight).ndim > 1):
             raise ValueError("Sample weights must be 1D array or scalar")
-
-        # NOTE: self.fit_intercept == False
-        # TODO: this is unnecessary unless we fit an intercept
-        X, y, X_offset, y_offset, X_scale = self._preprocess_data(
-            X, y, self.fit_intercept, self.normalize, self.copy_X,
-            sample_weight=sample_weight)
 
         # fit weights
         self.coef_, self.res_ = nonnegative_regression(

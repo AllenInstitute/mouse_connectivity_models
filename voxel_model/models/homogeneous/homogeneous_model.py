@@ -13,9 +13,7 @@ from .subset_selection import condition_with_svd_subset_selection
 
 class HomogeneousModel(NonnegativeLinear):
 
-    def __init__(self, kappa=1000, normalize=False, copy_X=True):
-        super(HomogeneousModel, self).__init__(normalize=normalize,
-                                               copy_X=copy_X)
+    def __init__(self, kappa=1000):
         self.kappa = kappa
 
     def fit(self, X, y, sample_weight=None):

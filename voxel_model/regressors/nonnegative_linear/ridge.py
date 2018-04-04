@@ -2,8 +2,8 @@
 Nonnegative Ridge Regression
 """
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
 # TODO : docs and example
 import numpy as np
@@ -26,10 +26,10 @@ def _solve_ridge_nnls(X, y, alpha):
                          "do not correspond: %d != %d"
                          % (alpha.size, X.shape[1]))
 
-    # we set up as
+    # we set up as alpha**2
     sqrt_alpha = np.sqrt(alpha)
 
-    # append ridging matrix and zeros
+    # rewrite as ||Ax - b||_2
     Q = X.T.dot(X) + np.diag(sqrt_alpha)
     c = X.T.dot(y)
 
