@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-test_voxel_model
+test_mouse_connectivity_models
 ----------------------------------
 
-Tests for `voxel_model` module.
+Tests for `mouse_connectivity_models` module.
 """
 import pytest
 
@@ -19,8 +19,4 @@ def decorated_example():
 def test_example(decorated_example):
     """Sample pytest test function with the pytest fixture as an argument.
     """
-    import voxel_model
-
-
-
-
+    import mcmodels

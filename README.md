@@ -1,7 +1,7 @@
-voxel_model
+mouse connectivity models
 ===============================
 
-https://github.com/AllenInstitute/voxel_model
+https://github.com/AllenInstitute/mouse_connectivity_models
 
 High resolution data-driven model of the mouse connectome
 
@@ -17,13 +17,13 @@ tl;dr
 Assuming pipenv is installed, and one wants to use the directory `<analysis_dir>` for computation:
 ```
 cd <analysis_dir>
-$ git clone https://github.com/AllenInstitute/voxel_model.git
-cd voxel_model
+$ git clone https://github.com/AllenInstitute/mouse_connectivity_models.git
+cd mouse_connectivity_models
 pipenv install --dev
 pipenv shell
 pip install .
 cd ..
-python voxel_model/examples/build_model.py
+python mouse_connectivity_models/examples/build_model.py
 ```
 This will build the model and place the model components in `<analysis_dir>/data/`
 
@@ -33,7 +33,7 @@ Reading the documentation
 
 Either run `tox` and wait till test are complete, or alternatively:
 
-From the `voxel_model` base directory, with the `voxel_model` `pipenv` activated:
+From the `mouse_connectivity_models` base directory, with the `mouse_connectivity_models` `pipenv` activated:
 ```
 pip install --upgrade --force git+https://github.com/sphinx-gallery/sphinx-gallery
 make -C docs clean html
@@ -41,7 +41,7 @@ make -C docs clean html
 
 ### Viewing the documentation: ###
 
-From the `voxel_model` base directory, where `<port>` is an open port (say `8000`):
+From the `mouse_connectivity_models` base directory, where `<port>` is an open port (say `8000`):
 
 1. change to `html` build directory:
 ```
@@ -86,4 +86,4 @@ If one would like to run the tests (and consequently build the documentation htm
 ```
 tox
 ```
-inside the `voxel_model` directory.
+inside the `mouse_connectivity_models` directory.

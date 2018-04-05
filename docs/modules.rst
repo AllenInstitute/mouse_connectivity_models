@@ -1,7 +1,7 @@
-voxel_model
+mcmodels
 ===========
 
 .. toctree::
    :maxdepth: 4
 
-   voxel_model
+   mcmodels

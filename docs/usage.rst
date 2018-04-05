@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use AIBS voxel_model in a project::
+To use AIBS mouse_connectivity_models in a project::
 
-    import voxel_model
+    import mcmodels

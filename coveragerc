@@ -1,3 +1,9 @@
 [report]
 omit =
-     voxel_model/test/*
+     mcmodels/tests/*
+     mcmodels/core/tests/*
+     mcmodels/models/homogeneous/tests/*
+     mcmodels/models/voxel/tests/*
+     mcmodels/regression/least_squares/tests/*
+     mcmodels/regression/nonnegative_linear/tests/*
+     mcmodels/regression/nonparametric/tests/*
