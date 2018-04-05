@@ -8,10 +8,10 @@ import numpy as np
 
 from sklearn.gaussian_process.kernels import Matern
 
-from mcmodels.masks import Mask
-from mcmodels.model_data import ModelData, get_experiment_ids
-from mcmodels.regressors import InjectionModel
-from mcmodels.utils import get_mcc, padded_diagonal_fill
+from mcmodels.core import VoxelData
+from mcmodels.core.masks import Mask
+from mcmodels.regressors import NadarayaWatson
+from mcmodels.utils import get_mcc, get_experiment_ids, padded_diagonal_fill
 
 def main(structure_ids, manifest_file, experiment_exclude_file,
          parameter_file, output_dir):
@@ -38,35 +38,36 @@ def main(structure_ids, manifest_file, experiment_exclude_file,
     nodes = []
     for sid in structure_ids:
         print("building model for", sid)
-
-        # get source mask
-        source_mask = Mask(mcc, structure_ids=[sid], hemisphere=2)
-
         # get experiments (only for wild type
         experiment_ids = get_experiment_ids(mcc, [sid], cre=False)
         experiment_ids = set(experiment_ids) - experiment_exclude
 
-        # get model data
-        model_data = ModelData.from_mcc_and_masks(mcc, source_mask, target_mask,
-                                                  experiment_ids=experiment_ids)
+        # data container
+        data = VoxelData(mcc,
+                         injection_structure_ids=[sid],
+                         injection_hemisphere_id=2,
+                         projection_hemisphere_id=3,
+                         flip_experiments=True,
+                         normalized_projection=True)
+        data.get_experiment_data(experiment_ids)
 
         # get hyperparameters from hyperparameter fitting
         parameters = parameter_dict[str(sid)]  # json serialized
         kernel = Matern(**parameters)
 
         # build model
-        voxel_model = InjectionModel(model_data.source_voxels, kernel=kernel)
-        voxel_model.fit((model_data.centroids, model_data.injections),
-                        model_data.projections)
+        voxel_model = NadarayaWatson(kernel=kernel)
+        voxel_model.fit(data.centroids, data.projections)
+        sid_weights = voxel_model.get_weights(data.injection_mask.coordinates)
 
         # append to lists
-        weights.append(voxel_model.weights)
+        weights.append(sid_weights)
         nodes.append(voxel_model.nodes)
 
         # assign ordering to full source
-        n_rows = voxel_model.weights.shape[0]
+        n_rows = sid_weights.shape[0]
         ordering = np.arange(offset, n_rows + offset, dtype=np.int)
-        source_mask.fill_volume_where_masked(cumm_source_mask, ordering)
+        data.injection_mask.fill_volume_where_masked(cumm_source_mask, ordering)
 
         # update offset
         offset += n_rows

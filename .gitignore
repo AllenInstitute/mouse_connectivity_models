@@ -80,3 +80,6 @@ target/
 .idea/
 .history/
 .vscode/
+
+# data
+connectivity

@@ -1,4 +1,4 @@
-from setuptools import setup#, find_packages
+from setuptools import setup, find_packages
 
 setup(
     name = 'mouse_connectivity_models',
@@ -7,7 +7,7 @@ setup(
     author = "Joseph Knox",
     author_email = "josephk@alleninstitute.org",
     url = 'https://github.com/AllenInstitute/mouse_connectivity_models',
-    packages = ["mcmodels"],#find_packages(),
+    packages = find_packages(),
     include_package_data=True,
     setup_requires=['pytest-runner'],
 )

@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
-from mcmodels.masks import Mask
-from mcmodels.regionalized_model import RegionalizedModel
+from mcmodels.core.masks import Mask
+from mcmodels.models.voxel import RegionalizedModel
 from mcmodels.utils import get_mcc
 
 
