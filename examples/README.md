@@ -3,7 +3,6 @@ Examples
 
 `build_model.py` : builds the voxel x voxel connectivity model  
 `build_region_matrices.py` : integrates the voxel x voxel matrix over the summary structures\*  
-`voxel_array_example.py` : displays the functionality of the `VoxelArray` object (see below)
 
 \* `build_model.py` must be run before any other examples or analysis
 
@@ -17,14 +16,14 @@ Since the full voxel x voxel connectivity matrix is ~200,000 x ~400,000 elements
 
 ```python
 import os
-from voxel_model.voxel_array import VoxelArray
+from mcmodels.models.voxel import VoxelConnectivityArray
 
 # assuming weights, nodes live in data/
 weights_file = os.path.join(os.getcwd(), "data", "weights.npy")
 nodes_file = os.path.join(os.getcwd(), "data", "nodes.npy")
 
 # construct a VoxelArray object from .npy files
-model = VoxelArray.from_npy(weights_file, nodes_file)
+model = VoxelConnectivityArray.from_npy(weights_file, nodes_file)
 ```
 
 This loads the factorization of the connectivity matrix into memory (~1G total).
@@ -80,8 +79,8 @@ Using the `Mask` object in conjunction with `VoxelArray` will allow you to perfo
 When working with the full connectivty matrix, first either load, or initialize the defualt `Mask` objects.
 
 ```python
-from voxel_model.masks import Mask
-from voxel_model.utils import get_mcc
+from mcmodels.core.masks import Mask
+from mcmodels.utils import get_mcc
 
 # returns a MouseConnectivityCache instance from allensdk
 mcc = get_mcc()
