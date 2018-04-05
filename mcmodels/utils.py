@@ -13,6 +13,14 @@ import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 
+def get_experiment_ids(mcc, structure_ids, cre=None):
+    """Returns all experiment ids with injection in ..."""
+    #TODO: improve doc
+    #filters injections by structure id or Decendent
+    experiments = mcc.get_experiments(dataframe=False, cre=cre,
+                                      injection_structure_ids=structure_ids)
+    return [experiment['id'] for experiment in experiments]
+
 def get_mcc(manifest_file=None):
     """Returns a MouseConnectivityCache instance with the default settings."""
     if manifest_file is None:
