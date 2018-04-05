@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
-from voxel_model.masks import Mask
-from voxel_model.regionalized_model import RegionalizedModel
-from voxel_model.utils import get_mcc
+from mcmodels.masks import Mask
+from mcmodels.regionalized_model import RegionalizedModel
+from mcmodels.utils import get_mcc
 
 
 def get_ordered_summary_structures(mcc):

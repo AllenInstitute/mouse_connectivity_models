@@ -8,10 +8,10 @@ import numpy as np
 
 from sklearn.gaussian_process.kernels import Matern
 
-from voxel_model.masks import Mask
-from voxel_model.model_data import ModelData, get_experiment_ids
-from voxel_model.regressors import InjectionModel
-from voxel_model.utils import get_mcc, padded_diagonal_fill
+from mcmodels.masks import Mask
+from mcmodels.model_data import ModelData, get_experiment_ids
+from mcmodels.regressors import InjectionModel
+from mcmodels.utils import get_mcc, padded_diagonal_fill
 
 def main(structure_ids, manifest_file, experiment_exclude_file,
          parameter_file, output_dir):
