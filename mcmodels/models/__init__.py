@@ -8,8 +8,13 @@ recent VoxelModel from Knox & Harris 2018.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # Licence: BSD 3
 
-from . import voxel
 from . import homogeneous
+from .homogeneous import HomogeneousModel
 
-__all__ =['voxel',
-          'homogeneous']
+from . import voxel
+from .voxel import VoxelModel
+
+__all__ =['HomogeneousModel',
+          'VoxelModel',
+          'homogeneous',
+          'voxel']
