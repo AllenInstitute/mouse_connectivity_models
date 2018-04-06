@@ -13,7 +13,7 @@ from numpy.testing import assert_array_equal, assert_raises
 from allensdk.core.reference_space import ReferenceSpace
 from allensdk.core.structure_tree import StructureTree
 
-from mcmodels.core.masks import Mask
+from mcmodels.core import Mask
 from mcmodels.core.tests.conftest import mcc, annotation
 
 @pytest.fixture(scope="module")

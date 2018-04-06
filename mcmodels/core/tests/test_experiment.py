@@ -5,10 +5,9 @@ import numpy as np
 from numpy.testing \
     import assert_array_equal, assert_array_almost_equal, assert_raises
 
-from mcmodels.core.masks import Mask
+from mcmodels.core import Mask, Experiment
 from mcmodels.core.experiment \
-    import (_pull_grid_data, _mask_data_volume,
-            _compute_true_injection_density, Experiment)
+    import _pull_grid_data, _mask_data_volume, _compute_true_injection_density
 from mcmodels.core.tests.conftest import mcc
 
 

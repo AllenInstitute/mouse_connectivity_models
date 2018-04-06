@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_raises, assert_array_equal
 
-from mcmodels.models.homogeneous import HomogeneousModel
+from mcmodels.models import HomogeneousModel
 
 
 # ============================================================================
