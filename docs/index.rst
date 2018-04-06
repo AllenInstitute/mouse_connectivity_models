@@ -1,15 +1,15 @@
-voxel_model documentation
+Documentation
 ======================================
 
 Contents:
 ==================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    readme
    installation
-   usage
+   user_guide
    authors
    modules
 

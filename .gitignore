@@ -81,5 +81,8 @@ target/
 .history/
 .vscode/
 
+# docs
+docs/modules/generated
+
 # data
 connectivity

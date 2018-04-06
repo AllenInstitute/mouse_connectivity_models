@@ -1,7 +1,7 @@
 .. highlight:: shell
 
 ======================================
-voxel_model Installation
+Installation
 ======================================
 
 .. code-block:: console

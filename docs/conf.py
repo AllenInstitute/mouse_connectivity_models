@@ -31,6 +31,7 @@ project_root = os.path.dirname(cwd)
 # version is used.
 sys.path.insert(0, project_root)
 
+#from github_link import make_linkcode_resolve
 
 # -- General configuration ---------------------------------------------
 
@@ -41,6 +42,7 @@ sys.path.insert(0, project_root)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
+#              'sphinx.ext.linkcode',
               'sphinx.ext.intersphinx',
               'sphinx.ext.viewcode',
               'sphinx.ext.mathjax',
@@ -289,13 +291,25 @@ texinfo_documents = [
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
 
+# Config for sphinx_issues
+
+#issues_uri = 'https://github.com/AllenInstitute/mouse_connectivity_models/issues/{issue}'
+#issues_github_path = 'AllenInstitute/mouse_connectivity_models'
+#issues_user_uri = 'https://github.com/{user}'
 
 def run_apidoc(_):
     from sphinx.apidoc import main
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     cur_dir = os.path.abspath(os.path.dirname(__file__))
+    generated = os.path.join(cur_dir, "modules", "generated")
     module = os.path.join(cur_dir,"..","mcmodels")
-    main(['-e', '-f', '-o', cur_dir, module])
+    main(['-e', '-f', '-o', generated, module])
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)
+
+# The following is used by sphinx.ext.linkcode to provide links to github
+#linkcode_resolve = make_linkcode_resolve('mcmodels',
+#                                         u'https://github.com/AllenInstitute/'
+#                                          'mouse_connectivity_models/blob/'
+#                                          '{revision}/{package}/{path}#L{lineno}')
