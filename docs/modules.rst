@@ -1,5 +1,5 @@
 mcmodels
-===========
+========
 
 .. toctree::
    :maxdepth: 4

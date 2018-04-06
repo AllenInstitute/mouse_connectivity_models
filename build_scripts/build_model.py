@@ -1,3 +1,6 @@
+"""
+Builds model
+"""
 # Authors:
 # License:
 

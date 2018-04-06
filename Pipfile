@@ -4,6 +4,7 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
+
 [packages]
 
 allensdk = "*"
@@ -11,6 +12,8 @@ argschema = "*"
 matplotlib = "*"
 pillow = "*"
 sklearn = "*"
+dev = "*"
+
 
 [dev-packages]
 
@@ -19,8 +22,9 @@ cookiecutter = "*"
 coverage = "*"
 mock = "*"
 nose = "*"
+numpydoc = "*"
 pytest = "*"
 "ruamel.yaml" = "*"
-sphinx = "*"
+sphinx = "<1.7"
 sphinx-gallery = "*"
 tox = "*"

@@ -31,7 +31,6 @@ project_root = os.path.dirname(cwd)
 # version is used.
 sys.path.insert(0, project_root)
 
-import mcmodels
 
 # -- General configuration ---------------------------------------------
 
@@ -40,15 +39,17 @@ import mcmodels
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'sphinx.ext.viewcode',
               'sphinx.ext.mathjax',
               'sphinx_gallery.gen_gallery']
 
 sphinx_gallery_conf = {
-    # path to your examples scripts
-    'examples_dirs' : './gallery',
-    # path where to save gallery generated examples
+     #path to your examples scripts,
+    'examples_dirs' : '../examples',
+     #path where to save gallery generated examples
     'gallery_dirs'  : 'auto_examples',
     'filename_pattern': '/',
     'backreferences_dir': False}
@@ -62,13 +63,14 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
-# The master toctree document.
+# The master toctree document.c
 master_doc = 'index'
 
 # General information about the project.
 project = u'mcmodels'
 copyright = u"2018. Allen Institute."
 
+import mcmodels
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
 # the built documents.
@@ -90,14 +92,14 @@ release = mcmodels.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
 #default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = False
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
@@ -173,10 +175,10 @@ html_sidebars = { '**': [ 'globaltoc.html', 'searchbox.html' ]}
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+#html_domain_indices = False
 
 # If false, no index is generated.
-#html_use_index = True
+#html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
@@ -201,7 +203,7 @@ html_show_copyright = False
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'mcmodelsdoc'
+htmlhelp_basename = 'mouse_connectivity_modelsdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------
@@ -214,21 +216,24 @@ latex_elements = {
     #'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
+    'preamble' : r"""
+        \usepackage{amsmath}\usepackage{amsfonts}\usepackage{bm}
+        \usepackage{morefloats}\usepackage{enumitem} \setlistdepth{10}
+        """
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'mcmodels.tex',
-     u'mcmodels Documentation',
+    ('index', 'user_guide.tex',
+     u'mouse_connectivity_models Documentation',
      u'Joseph Knox', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at
 # the top of the title page.
-#latex_logo = None
+latex_logo = None
 
 # For "manual" documents, if this is true, then toplevel headings
 # are parts, not chapters.
@@ -244,7 +249,7 @@ latex_documents = [
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = True
+#latex_domain_indices = False
 
 
 # -- Options for manual page output ------------------------------------
@@ -252,8 +257,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'mcmodels',
-     u'mcmodels Documentation',
+    ('index', 'user_guide',
+     u'mouse_connectivity_models Documentation',
      [u'Joseph Knox'], 1)
 ]
 
@@ -267,8 +272,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'mcmodels',
-     u'mcmodels Documentation',
+    ('index', 'mouse_connectivity_models',
+     u'mouse_connectivity_models Documentation',
      u'Joseph Knox',
      'mcmodels',
      'High resolution data-driven model of the mouse connectome',
@@ -284,12 +289,13 @@ texinfo_documents = [
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
 
+
 def run_apidoc(_):
     from sphinx.apidoc import main
     sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     module = os.path.join(cur_dir,"..","mcmodels")
-    main(['-e', '-o', cur_dir, module, '--force'])
+    main(['-e', '-f', '-o', cur_dir, module])
 
 def setup(app):
     app.connect('builder-inited', run_apidoc)

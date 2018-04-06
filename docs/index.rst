@@ -1,11 +1,6 @@
 voxel_model documentation
 ======================================
 
-Gallery:
-==================
-
-:ref:`examples-index`
-
 Contents:
 ==================
 
