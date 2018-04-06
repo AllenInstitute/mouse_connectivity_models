@@ -6,6 +6,12 @@ The :mod:`voxel_model.base` module implements objects useful in data manipulatio
 # License: BSD 3
 
 from .base import VoxelData, RegionalData
-from . import masks
-from . import experiment
+from .masks import Mask
+from .experiment import Experiment
 from . import utils
+
+__all__ = ['Experiment',
+           'Mask',
+           'RegionalData',
+           'VoxelData',
+           'utils']

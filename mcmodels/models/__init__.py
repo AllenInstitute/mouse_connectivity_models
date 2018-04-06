@@ -14,7 +14,7 @@ from .homogeneous import HomogeneousModel
 from . import voxel
 from .voxel import VoxelModel
 
-__all__ =['HomogeneousModel',
-          'VoxelModel',
-          'homogeneous',
-          'voxel']
+__all__ = ['HomogeneousModel',
+           'VoxelModel',
+           'homogeneous',
+           'voxel']
