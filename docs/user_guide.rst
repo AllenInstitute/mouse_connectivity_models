@@ -2,7 +2,6 @@ User Guide
 ==========
 
 .. toctree::
-        :numbered:
 
-        regressors
-        models
+        regressors.rst
+        models.rst

@@ -4,4 +4,4 @@ mcmodels
 .. toctree::
    :maxdepth: 4
 
-   modules/classes
+   modules/classes.rst

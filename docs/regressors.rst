@@ -1,4 +1,4 @@
 .. toctree::
 
-        modules/nonnegative_linear
-        modules/nonparametric
+        modules/nonnegative_linear.rst
+        modules/nonparametric.rst

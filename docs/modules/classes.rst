@@ -13,7 +13,7 @@ refer to the :ref:`full user guide <user_guide>` for further details.
 :mod:`mcmodels.core`: Core data related classes and utility functions
 =====================================================================
 .. automodule:: mcmodels.core
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 .. currentmodule:: mcmodels
@@ -21,9 +21,24 @@ refer to the :ref:`full user guide <user_guide>` for further details.
 .. autosummary::
         :toctree: generated/
 
-        core.base
-        core.experiment.Experiment
-        core.masks.Mask
+        core.VoxelData
+        core.RegionalData
+        core.Experiment
+        core.Mask
+
+Utitility fucntions
+-------------------
+.. automodule:: mcmodels.core.utils
+        :no-members:
+        :no-inherited-members:
+
+.. currentmodule:: mcmodels
+
+.. autosummary::
+        :toctree: generated/
+
+        core.utils.compute_centroid
+        core.utils.get_injection_hemisphere_id
 
 
 .. _regressors_ref:
@@ -31,64 +46,76 @@ refer to the :ref:`full user guide <user_guide>` for further details.
 :mod:`mcmodels.regressors`: Classes for Performing Regressions
 =====================================================================
 .. automodule:: mcmodels.regressors
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 
 .. _least_squares_ref:
 
 :mod:`mcmodels.regressors.least_squares`: Scipy Optimize Least Squares Wrapper
-=====================================================================
+===============================================================================
 .. automodule:: mcmodels.regressors.least_squares
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 **User Guide** See the :ref:`least_squares` section for further details.
 
-.. currentmodule:: mcmodels.regressors.least_squares
+.. currentmodule:: mcmodels
 
 .. autosummary::
         :toctree: generated/
 
-        ScipyLeastSquares
-        Linear
+        regressors.least_squares.ScipyLeastSquares
+        regressors.least_squares.Linear
 
 
 .. _nonnegative_linear_ref:
 
 :mod:`mcmodels.regressors.nonnegative_linear`: Nonnegative Least squares
-=====================================================================
+============================================================================
 .. automodule:: mcmodels.regressors.nonnegative_linear
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 **User Guide** See the :ref:`nonnegative_linear` section for further details.
 
-.. currentmodule:: mcmodels.regressors.nonnegative_linear
+.. currentmodule:: mcmodels
+
+Classes
+-------
 
 .. autosummary::
         :toctree: generated/
 
-        NonnegativeLinear
-        NonnegativeRidge
+        regressors.NonnegativeLinear
+        regressors.NonnegativeRidge
 
+Functions
+---------
+
+.. autosummary::
+        :toctree: generated/
+
+        regressors.nonnegative_regression
+        regressors.nonnegative_ridge_regression
 
 .. _nonparametric_ref:
 
 :mod:`mcmodels.regressors.nonparametric`: Nonparametric Regression
 =====================================================================
 .. automodule:: mcmodels.regressors.nonparametric
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 **User Guide** See the :ref:`nonparametric` section for further details.
 
-.. currentmodule:: mcmodels.regressors.nonparametric
+.. currentmodule:: mcmodels
 
 .. autosummary::
         :toctree: generated/
 
-        NadarayaWatson
+        regressors.NadarayaWatson
+        regressors.NadarayaWatsonCV
 
 Kernels:
 ---------
@@ -96,11 +123,11 @@ Kernels:
 .. autosummary::
         :toctree: generated/
 
-        kernels.Polynomial
-        kernels.Uniform
-        kernels.Epanechnikov
-        kernels.Biweight
-        kernels.Triweight
+        regressors.nonparametric.kernels.Polynomial
+        regressors.nonparametric.kernels.Uniform
+        regressors.nonparametric.kernels.Epanechnikov
+        regressors.nonparametric.kernels.Biweight
+        regressors.nonparametric.kernels.Triweight
 
 
 .. _models_ref:
@@ -108,7 +135,7 @@ Kernels:
 :mod:`mcmodels.models`: Published* Mesoscale Connectivity Models
 =====================================================================
 .. automodule:: mcmodels.models
-        :nomembers:
+        :no-members:
         :no-inherited-members:
 
 
@@ -116,59 +143,63 @@ Kernels:
 
 :mod:`mcmodels.regressors.homogeneous`: Homogeneous Regional Model
 =====================================================================
-.. automodule:: mcmodels.models
-        :nomembers:
+.. automodule:: mcmodels.models.homogeneous
+        :no-members:
         :no-inherited-members:
 
 **User Guide** See the :ref:`homogeneous` section for further details.
 
 Classes
 ------------
-.. currentmodule:: mcmodels.models.homogeneous
+.. currentmodule:: mcmodels
 
 .. autosummary::
         :toctree: generated/
 
-        HomogeneousModel
+        models.HomogeneousModel
 
 Functions
 -------------
 
-.. currentmodule:: mcmodels.models
+.. currentmodule:: mcmodels
 
 .. autosummary::
         :toctree: generated/
 
-        homogeneous.svd_subset_selection
-        homogeneous.condition_with_svd_subset_selection
+        models.homogeneous.svd_subset_selection
+        models.homogeneous.condition_with_svd_subset_selection
 
 
 .. _voxel_ref:
 
-:mod:`mcmodels.regressors.voxel`: Voxel-scale Model
+:mod:`mcmodels.models.voxel`: Voxel-scale Model
 =====================================================================
-.. automodule:: mcmodels.models
-        :nomembers:
+.. automodule:: mcmodels.models.voxel
+        :no-members:
         :no-inherited-members:
 
 **User Guide** See the :ref:`voxel` section for further details.
 
-.. currentmodule:: mcmodels.models.voxel
+.. currentmodule:: mcmodels
 
 .. autosummary::
         :toctree: generated/
 
-        RegionalizedModel
-        VoxelConnectivityArray
-        VoxelModel
+        models.VoxelModel
+
+.. autosummary::
+        :toctree: generated/
+
+        models.voxel.RegionalizedModel
+        models.voxel.VoxelConnectivityArray
 
 
 .. _utils_ref:
 
 :mod:`mcmodels.utils`: Utilities
 =====================================================================
-.. automodule:: mcmodels
-        :nomembers:
+.. automodule:: mcmodels.utils
+        :no-members:
         :no-inherited-members:
 
 .. currentmodule:: mcmodels

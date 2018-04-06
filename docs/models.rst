@@ -1,3 +1,4 @@
 .. toctree::
 
-        modules/homogeneous
+        modules/homogeneous.rst
+        modules/voxel.rst

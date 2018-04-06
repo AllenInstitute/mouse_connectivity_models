@@ -15,6 +15,7 @@
 
 import sys
 import os
+from six import u
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
@@ -32,6 +33,7 @@ project_root = os.path.dirname(cwd)
 sys.path.insert(0, project_root)
 
 #from github_link import make_linkcode_resolve
+#import sphinx_gallery
 
 # -- General configuration ---------------------------------------------
 
@@ -42,19 +44,19 @@ sys.path.insert(0, project_root)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
+              'numpydoc',
 #              'sphinx.ext.linkcode',
               'sphinx.ext.intersphinx',
               'sphinx.ext.viewcode',
               'sphinx.ext.mathjax',
               'sphinx_gallery.gen_gallery']
 
-sphinx_gallery_conf = {
-     #path to your examples scripts,
-    'examples_dirs' : '../examples',
-     #path where to save gallery generated examples
-    'gallery_dirs'  : 'auto_examples',
-    'filename_pattern': '/',
-    'backreferences_dir': False}
+# this is needed for some reason...
+# see https://github.com/numpy/numpydoc/issues/69
+numpydoc_class_members_toctree = False
+
+
+autodoc_default_flags = ['members', 'inherited_members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['aibs_sphinx/templates']
@@ -65,19 +67,25 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
 
+# Generate the plots for the gallery
+#plot_gallery = True
+
 # The master toctree document.c
 master_doc = 'index'
 
-# General information about the project.
-project = u'mcmodels'
-copyright = u"2018. Allen Institute."
+# generate autosummary even if no references
+autosummary_generate = True
 
-import mcmodels
+# General information about the project.
+project = u('mcmodels')
+copyright = u("2018. Allen Institute.")
+
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
 # the built documents.
 #
 # The short X.Y version.
+import mcmodels
 version = mcmodels.__version__
 # The full version, including alpha/beta/rc tags.
 release = mcmodels.__version__
@@ -94,7 +102,7 @@ release = mcmodels.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', '**tests**']
+exclude_patterns = ['_build']#, '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -253,6 +261,8 @@ latex_logo = None
 # If false, no module index is generated.
 #latex_domain_indices = False
 
+#trim_doctests_flags = True
+
 
 # -- Options for manual page output ------------------------------------
 
@@ -260,8 +270,8 @@ latex_logo = None
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'user_guide',
-     u'mouse_connectivity_models Documentation',
-     [u'Joseph Knox'], 1)
+     u('mouse_connectivity_models Documentation'),
+     [u('Joseph Knox')], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -274,9 +284,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'mouse_connectivity_models',
-     u'mouse_connectivity_models Documentation',
-     u'Joseph Knox',
+    ('index',
+     'mouse_connectivity_models',
+     u('mouse_connectivity_models Documentation'),
+     u('Joseph Knox'),
      'mcmodels',
      'High resolution data-driven model of the mouse connectome',
      'Miscellaneous'),
@@ -291,23 +302,36 @@ texinfo_documents = [
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
 
+sphinx_gallery_conf = {
+     #path to your examples scripts,
+    #'examples_dirs' : '../examples',
+     #path where to save gallery generated examples
+    #'gallery_dirs'  : 'auto_examples',
+    'doc_module' : 'mcmodels',
+    'filename_pattern': '/',
+    'backreferences_dir': os.path.join('modules', 'generated'),
+    'reference_url':{
+        'mcmodels' : None}
+}
+
+
 # Config for sphinx_issues
 
 #issues_uri = 'https://github.com/AllenInstitute/mouse_connectivity_models/issues/{issue}'
 #issues_github_path = 'AllenInstitute/mouse_connectivity_models'
 #issues_user_uri = 'https://github.com/{user}'
 
-def run_apidoc(_):
-    from sphinx.apidoc import main
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-    cur_dir = os.path.abspath(os.path.dirname(__file__))
-    generated = os.path.join(cur_dir, "modules", "generated")
-    module = os.path.join(cur_dir,"..","mcmodels")
-    main(['-e', '-f', '-o', generated, module])
-
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
-
+#def run_apidoc(_):
+#    from sphinx.apidoc import main
+#    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+#    cur_dir = os.path.abspath(os.path.dirname(__file__))
+#    generated = os.path.join(cur_dir, "modules", "generated")
+#    module = os.path.join(cur_dir,"..","mcmodels")
+#    main(['-e', '-f', '-o', generated, module])
+#
+#def setup(app):
+#    app.connect('builder-inited', run_apidoc)
+#
 # The following is used by sphinx.ext.linkcode to provide links to github
 #linkcode_resolve = make_linkcode_resolve('mcmodels',
 #                                         u'https://github.com/AllenInstitute/'

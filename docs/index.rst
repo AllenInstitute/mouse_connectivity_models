@@ -7,11 +7,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   readme
-   installation
-   user_guide
-   authors
-   modules
+   readme.rst
+   installation.rst
+   user_guide.rst
+   authors.rst
+   modules.rst
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
 
