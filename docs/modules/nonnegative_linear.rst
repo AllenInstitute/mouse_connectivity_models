@@ -4,7 +4,7 @@
 Nonnegative Least Squares Regression
 ====================================
 
-.. current_module:: mcmodels.regressors.nonnegative_linear
+.. currentmodule:: mcmodels.regressors.nonnegative_linear
 
 Nonnegative Least Squares Regression solves the equation :math:`Ax=b` subject
 to the constraint that the coefficients :math:`x` be nonnegative:

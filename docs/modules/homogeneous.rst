@@ -4,7 +4,7 @@
 Homogeneous Model from [Oh2014]_
 =========================================
 
-.. current_module:: mcmodels.models.homogeneous
+.. currentmodule:: mcmodels.models.homogeneous
 
 The homogeneous model from [Oh2014]_ EXPLAIN FURTHER
 

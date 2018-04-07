@@ -4,7 +4,7 @@
 Nonnparametric Regression
 ====================================
 
-.. current_module:: mcmodels.regressors.nonnparametric
+.. currentmodule:: mcmodels.regressors.nonnparametric
 
 Nonparametric regression is a data-driven alternative to least squares in which
 the predictor does not take a predetermined form. Kernel regression estimates

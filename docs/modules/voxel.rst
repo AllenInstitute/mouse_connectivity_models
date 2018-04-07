@@ -4,7 +4,7 @@
 New Voxel-scale Connectivity Model [Knox2018]_
 ===============================================
 
-.. current_module:: mcmodels.models.voxel
+.. currentmodule:: mcmodels.models.voxel
 The voxel-scale model from [Knox2018]_ EXPLAIN FURTHER
 
 

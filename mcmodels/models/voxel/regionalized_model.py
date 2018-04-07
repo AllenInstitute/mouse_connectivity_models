@@ -21,17 +21,17 @@ class RegionalizedModel(object):
             Metric with which to represent the regionalized connectivity.
             Valid choices are:
                 * "connection_strength" (default)
-                    W = w_ij |X||Y|
+                    W = w_ij \|X\|\|Y\|
                     The sum of the voxel-scale connectivity between each pair
                     of source-target regions.
 
                 * "connection_density"
-                    W = w_ij |X|
+                    W = w_ij \|X\|
                     The average voxel-scale connectivity between each source
                     voxel to each source region.
 
                 * "normalized_connection_strength"
-                    W = w_ij |Y|
+                    W = w_ij \|Y\|
                     The average voxel-scale connectivity between each source
                     region to each target voxel"
 
@@ -132,7 +132,7 @@ class RegionalizedModel(object):
 
     @property
     def connection_strength(self):
-        """w_ij |X||Y|"""
+        """w_ij \|X\|\|Y\|"""
         try:
             return self._region_matrix
         except AttributeError:
@@ -141,13 +141,13 @@ class RegionalizedModel(object):
 
     @property
     def connection_density(self):
-        """w_ij |X|"""
+        """w_ij \|X\|"""
         return np.divide(self.connection_strength,
                          self.target_counts[np.newaxis, :])
 
     @property
     def normalized_connection_strength(self):
-        """w_ij |Y|"""
+        """w_ij \|Y\|"""
         return np.divide(self.connection_strength,
                          self.source_counts[:, np.newaxis])
 
