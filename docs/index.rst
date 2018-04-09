@@ -1,18 +1,23 @@
-Documentation
-======================================
+Documentation of mouse_connectivity_models |version|
+======================================================
+Briefly explain the purpose of this package.
 
 Contents:
 ==================
 
-.. toctree::
-   :maxdepth: 2
+.. image:: cartoon.png
+        :width: 40%
+        :align: right
 
-   readme.rst
-   installation.rst
-   user_guide.rst
-   history.rst
-   authors.rst
-   modules.rst
+.. toctree::
+   :maxdepth: 1
+
+   installation
+   Glossary <glossary>
+   user_guide
+   history
+   authors
+   modules/classes
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
 
