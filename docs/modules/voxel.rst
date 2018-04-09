@@ -1,4 +1,4 @@
-.. _voxel
+.. _voxel:
 
 ===============================================
 New Voxel-scale Connectivity Model [Knox2018]_

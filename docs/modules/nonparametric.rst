@@ -1,4 +1,4 @@
-.. _nonparametric
+.. _nonparametric:
 
 ====================================
 Nonnparametric Regression

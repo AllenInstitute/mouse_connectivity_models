@@ -1,4 +1,4 @@
-.. _homogeneous
+.. _homogeneous:
 
 =========================================
 Homogeneous Model from [Oh2014]_
@@ -12,4 +12,5 @@ The homogeneous model from [Oh2014]_ EXPLAIN FURTHER
 .. topic:: References
 
         .. [Oh2014] "A mesoscale connectome of the mouse brain", Oh et al,
-        Nature. 2014.
+          Nature. 2014.
+

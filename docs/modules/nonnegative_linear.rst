@@ -1,4 +1,4 @@
-.. _nonnegative_linear
+.. _nonnegative_linear:
 
 ====================================
 Nonnegative Least Squares Regression
