@@ -17,13 +17,7 @@ General Terms
 
         voxel model
                 The connectivity model based on :term:`nonparametric regression`
-                at the resolution of :term:`voxel`s
-
-        source
-                The
-
-        target
-                The
+                at the resolution at the :term:`voxel` scale.
 
         voxel
                 A 3-D cubic volume element; the generalization of a pixel.
@@ -39,8 +33,7 @@ Technical Terms
 
         connection strength
                 The sum of the connection weights from all voxels in a
-                :term:`source` :term`region` to all voxels in a :term:`target`
-                :term:`region`.
+                source :term`region` to all voxels in a target :term:`region`.
 
         edge density
                 The total number of edges in a graph over the total possible
@@ -59,7 +52,7 @@ Technical Terms
 
         normalized connection strength
                 The :term:`connection strength` between two regions divided by
-                the size of the :term:`source` :term:`region`.
+                the size of the source :term:`region`.
 
         radial basis function
                 A monotonically decreasing, nonnegative function.
@@ -79,6 +72,7 @@ Biological Terms
         major brain division
                 The set of 12 major brain divisions from the 3D Allen Mouse
                 Brain Reference Atlas. These include:
+
                 * Isocortex
                 * Olfactory Areas
                 * Hippocampus
