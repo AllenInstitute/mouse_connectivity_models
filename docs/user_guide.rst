@@ -4,6 +4,7 @@ User Guide
 ==========
 
 .. toctree::
+        :numbered:
 
         regressors.rst
         models.rst
