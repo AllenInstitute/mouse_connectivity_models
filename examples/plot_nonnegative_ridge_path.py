@@ -41,14 +41,14 @@ import matplotlib.pyplot as plt
 from mcmodels.regressors import NonnegativeRidge
 
 # X is the 10x10 Hilbert matrix
-X = 1. / (np.arange(1, 11) + np.arange(0, 10)[:, np.newaxis])
+X = 1. / (np.arange(1, 11) + np.arange(10)[:, np.newaxis])
 y = np.ones(10)
 
 # #############################################################################
 # Compute paths
 
-n_alphas = 200
-alphas = np.logspace(-10, -2, n_alphas)
+n_alphas = 550
+alphas = np.logspace(-5, 5, n_alphas)
 
 coefs = []
 for a in alphas:
@@ -59,13 +59,20 @@ for a in alphas:
 # #############################################################################
 # Display results
 
-ax = plt.gca()
+fig, axes = plt.subplots(1, 2, figsize=(8, 3))
 
-ax.plot(alphas, coefs)
-ax.set_xscale('log')
-ax.set_xlim(ax.get_xlim()[::-1])  # reverse axis
-plt.xlabel('alpha')
-plt.ylabel('weights')
-plt.title('Ridge coefficients as a function of the regularization')
-plt.axis('tight')
+for ax in axes:
+    ax.plot(alphas, coefs, lw=2)
+    ax.set_xscale('log')
+    ax.set_xlabel('alpha')
+    ax.set_ylabel('weights')
+
+# trim subplots
+axes[0].set_xlim(1e-5, 1e5)
+axes[1].set_xlim(1e-1, 1e5)
+
+axes[0].set_ylim(0, 13)
+axes[1].set_ylim(0, 1)
+
+plt.suptitle('Ridge coefficients as a function of the regularization')
 plt.show()
