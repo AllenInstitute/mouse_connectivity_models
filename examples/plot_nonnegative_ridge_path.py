@@ -40,9 +40,10 @@ import matplotlib.pyplot as plt
 
 from mcmodels.regressors import NonnegativeRidge
 
-# X is the 10x10 Hilbert matrix
-X = 1. / (np.arange(1, 11) + np.arange(10)[:, np.newaxis])
-y = np.ones(10)
+# X is the n  x n Hilbert matrix
+n = 6
+X = 1. / (np.arange(1, n + 1) + np.arange(n)[:, np.newaxis])
+y = np.ones(n)
 
 # #############################################################################
 # Compute paths
@@ -71,7 +72,7 @@ for ax in axes:
 axes[0].set_xlim(1e-5, 1e5)
 axes[1].set_xlim(1e-1, 1e5)
 
-axes[0].set_ylim(0, 13)
+axes[0].set_ylim(0, 8)
 axes[1].set_ylim(0, 1)
 
 plt.suptitle('Ridge coefficients as a function of the regularization')
