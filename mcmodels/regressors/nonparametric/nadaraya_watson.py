@@ -312,11 +312,20 @@ class NadarayaWatsonCV(NadarayaWatson):
     n_splits_ : int
         Number of cross-validation splits (folds/iterations)
     """
-    def __init__(self, param_grid, scoring=None, cv=None, store_cv_scores=False):
+    def __init__(self, param_grid, scoring=None, cv=None, store_cv_scores=False,
+                 kernel="linear", degree=3, coef0=1, gamma=None, kernel_params=None):
         self.param_grid = param_grid
         self.scoring = scoring
         self.cv = cv
         self.store_cv_scores = store_cv_scores
+
+        # NadarayaWatson kwargs :: for compatibility
+        self.kernel = kernel
+        self.gamma = gamma
+        self.degree = degree
+        self.coef0 = coef0
+
+        self.kernel=kernel
 
     def _update_params(self, param_dict):
         for k, v in param_dict.items():
