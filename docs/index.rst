@@ -5,7 +5,7 @@ Briefly explain the purpose of this package.
 Contents:
 ==================
 
-.. image:: cartoon.png
+.. image:: images/cartoon.png
         :width: 40%
         :align: right
 

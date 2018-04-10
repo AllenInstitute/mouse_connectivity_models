@@ -33,12 +33,14 @@ project_root = os.path.dirname(cwd)
 sys.path.insert(0, project_root)
 
 #from github_link import make_linkcode_resolve
-#import sphinx_gallery
+
 
 # -- General configuration ---------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+needs_sphinx = '1.4'
+
+import sphinx_gallery
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -51,6 +53,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx_gallery.gen_gallery']
 
+
 # this is needed for some reason...
 # see https://github.com/numpy/numpydoc/issues/69
 numpydoc_class_members_toctree = False
@@ -61,6 +64,9 @@ autodoc_default_flags = ['members', 'inherited_members']
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['aibs_sphinx/templates']
 
+# generate autosummary even if no references
+autosummary_generate = True
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 
@@ -68,13 +74,11 @@ source_suffix = '.rst'
 #source_encoding = 'utf-8-sig'
 
 # Generate the plots for the gallery
-#plot_gallery = True
+# so dumb :: https://github.com/sphinx-gallery/sphinx-gallery/blob/master/sphinx_gallery/gen_gallery.py#L42
+plot_gallery = 'True'
 
 # The master toctree document.c
 master_doc = 'index'
-
-# generate autosummary even if no references
-autosummary_generate = True
 
 # General information about the project.
 project = u('mcmodels')
@@ -102,7 +106,7 @@ release = mcmodels.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']#, '**tests**']
+exclude_patterns = ['_build', 'aibs_sphinx']#, '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -167,7 +171,7 @@ html_theme_path = ['.']
 # here, relative to this directory. They are copied after the builtin
 # static files, so a file named "default.css" will overwrite the builtin
 # "default.css".
-html_static_path = ['_static', 'aibs_sphinx/static']
+html_static_path = ['_static', 'aibs_sphinx/static', 'images']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
@@ -185,10 +189,10 @@ html_sidebars = { '**': [ 'globaltoc.html', 'searchbox.html' ]}
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = False
+html_domain_indices = False
 
 # If false, no index is generated.
-#html_use_index = False
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
@@ -202,7 +206,7 @@ html_show_sphinx = False
 
 # If true, "(C) Copyright ..." is shown in the HTML footer.
 # Default is True.
-html_show_copyright = False
+html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages
 # will contain a <link> tag referring to it.  The value of this option
@@ -236,9 +240,9 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'user_guide.tex',
-     u'mouse_connectivity_models Documentation',
-     u'Joseph Knox', 'manual'),
+    ('index', 'user_guide.tex', u('mouse_connectivity_models user guide'),
+     u('mouse_connectivity_models Documentation'),
+     u('Joseph Knox'), 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at
@@ -259,9 +263,9 @@ latex_logo = None
 #latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = False
+latex_domain_indices = False
 
-#trim_doctests_flags = True
+trim_doctests_flags = True
 
 
 # -- Options for manual page output ------------------------------------
@@ -303,23 +307,13 @@ texinfo_documents = [
 #texinfo_show_urls = 'footnote'
 
 sphinx_gallery_conf = {
-     #path to your examples scripts,
-    #'examples_dirs' : '../examples',
-     #path where to save gallery generated examples
-    #'gallery_dirs'  : 'auto_examples',
     'doc_module' : 'mcmodels',
-    'filename_pattern': '/',
     'backreferences_dir': os.path.join('modules', 'generated'),
     'reference_url':{
         'mcmodels' : None}
 }
 
 
-# Config for sphinx_issues
-
-#issues_uri = 'https://github.com/AllenInstitute/mouse_connectivity_models/issues/{issue}'
-#issues_github_path = 'AllenInstitute/mouse_connectivity_models'
-#issues_user_uri = 'https://github.com/{user}'
 
 #def run_apidoc(_):
 #    from sphinx.apidoc import main

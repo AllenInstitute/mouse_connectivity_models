@@ -31,7 +31,6 @@ import time
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.patheffects as pe
 
 from sklearn.model_selection import GridSearchCV
 
@@ -47,12 +46,12 @@ y = np.sin(X).ravel()
 # Add noise to targets
 y[::5] += 3 * (0.5 - rng.rand(X.shape[0] // 5))
 
-X_plot = np.linspace(0, 5, 100000)[:, None]
+X_plot = np.linspace(0, 5, 1e3)[:, None]
 
 # #############################################################################
 # Fit regression model
 train_size = 100
-param_grid=dict(kernel=["rbf"], gamma=np.logspace(-2, 2, 51))
+param_grid=dict(kernel=["rbf"], gamma=np.logspace(-2, 2, 25))
 
 nw_gs = GridSearchCV(NadarayaWatson(), cv=5, param_grid=param_grid)
 nw_cv = NadarayaWatsonCV(param_grid)
@@ -61,14 +60,14 @@ nw_cv = NadarayaWatsonCV(param_grid)
 t0 = time.time()
 nw_gs.fit(X[:train_size], y[:train_size])
 gs_fit = time.time() - t0
-print("GridSearchCV 5 fold cross validation fitted in %.3f s" % gs_fit)
-print("\toptimal bandwidth found: %.3f" % nw_gs.best_estimator_.gamma)
+print("GridSearchCV 5 fold cross validation fitted in %.2f s" % gs_fit)
+print("\toptimal bandwidth found: %.2f" % nw_gs.best_estimator_.gamma)
 
 # fit leave-one-out using NadarayaWatsonCV
 t0 = time.time()
 nw_cv.fit(X[:train_size], y[:train_size])
 cv_fit = time.time() - t0
-print("NadarayaWatsonCV leave-one-out cross validation fitted in %.3f s" % cv_fit)
+print("NadarayaWatsonCV leave-one-out cross validation fitted in %.2f s" % cv_fit)
 print("\toptimal bandwidth found: %.3f" % nw_cv.gamma)
 
 # predict
@@ -80,9 +79,8 @@ y_cv = nw_cv.predict(X_plot)
 # Look at the results
 plt.scatter(X[:100], y[:100], c='k', label='data', zorder=1,
             edgecolors=(0, 0, 0))
-plt.plot(X_plot, y_gs, 'c-', lw=6, label='5-Fold GridSearchCV')
-plt.plot(X_plot, y_cv, c='r', lw=2, label='LOO NadarayaWatsonCV',
-         path_effects=[pe.Stroke(linewidth=4, foreground='k'), pe.Normal()])
+plt.plot(X_plot, y_gs, 'c-', lw=3, label='5-Fold GridSearchCV')
+plt.plot(X_plot, y_cv, 'r:', lw=3, label='LOO NadarayaWatsonCV')
 plt.xlabel('data')
 plt.ylabel('target')
 plt.title('Nadaraya-Watson Regression')
