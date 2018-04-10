@@ -18,6 +18,7 @@ Contents:
    history
    authors
    modules/classes
+   auto_examples/index
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
 
