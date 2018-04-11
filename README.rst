@@ -45,6 +45,7 @@ mouse_connectivity_models requires:
 
 For running the examples Matplotlib >= 1.3.1 is requried.
 
+
 User installation
 ~~~~~~~~~~~~~~~~~
 
@@ -56,6 +57,7 @@ install mouse_connectivity_models is using ``pip`` ::
 The documentation includes more detailed `installation instructions
 <http://AllenInstitute.github.io/mouse_connectivity_models/installation.html>`_
 
+
 Level of Support
 ----------------
 We are not currently supporting this code, but simply releasing it to the
@@ -63,31 +65,20 @@ community AS IS but are not able to provide any guarantees of support. The
 community is welcome to submit issues, but you should not expect an active
 response.
 
+
 Contrubuting
 ------------
 We encourage the community to contribute! Please first review the `Allen
 Institute Contributing Agreement <https://github.com/AllenInstitute/
-mouse_connectivity_models/blob/master/CONTRIBUTING.md>`_.
+mouse_connectivity_models/blob/master/CONTRIBUTING.md>`_, then refer to the
+`contributing guide <http://AllenInstitute.github.io/mouse_connectivity_models/
+contributing.html>`_.
 
-How to contribute
-~~~~~~~~~~~~~~~~~
 
-1. Fork the `main repository <https://github.com/AllenInstitute/
-mouse_connectivity_models>`_ on Github by following `this guide
-<https://help.github.com/articles/fork-a-repo>`_
-
-2. `Clone <https://git-scm.com/docs/git-clone>`_ your fork to your local
-   machine ::
-
-   $ git clone git@github.com:<github_username>/mouse_connectivity_models.git
-   $ cd mouse_connectivity_models
-
-3. Create a feature branch to hold your development changes ::
-
-   $ git checkout -b new-feature
-
-4. Use `pipenv <https://github.com/pypa/pipenv>`_ to install the ``dev``
-   dependencies. If you do not have ``pipenv`` currently installed ::
+Installing the ``dev`` requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use `pipenv <https://github.com/pypa/pipenv>`_ to install the ``dev``
+dependencies. If you do not have ``pipenv`` currently installed ::
 
    $ pip install pipenv
 
@@ -100,34 +91,12 @@ activate the virtual environment (to develop) ::
 
    $ pipenv shell
 
-5. All contributions must pass tests to be merged with the main repository. Any
-   new features must have test scripts written. We use `pytest
-   <https://pytest.org/>`_ for all testing. From outside the source directory
-   (``mcmodels``) ::
-
-   $ pytest mcmodels
-
-4. After your new feature passes all tests, `add
-   <https://git-scm.com/docs/git-add>`_ and `commit
-   <https://git-scm.com/docs/git-commit>`_ your changes ::
-
-   $ git add modified_files
-   $ git commit
-
-Please leave an informative, specific commit message. Push your changes to your
-remote branch ::
-
-   $ git push -u origin my-feature
-
-5. Create a pull request from your fork following these `instructions
-<https://help.github.com/articles/creating-a-pull-request-from-a-fork>`_
-
 
 Testing
 ~~~~~~~
 
 After installation, you can launch the test suite from outside the source
-directory (``mcmodels``) using ``pytest``::
+directory (``mcmodels``) using `pytest <https://pytest.org>`_ ::
 
         pytest mcmodels
 
@@ -138,4 +107,4 @@ Help and Support
 Documentation
 ~~~~~~~~~~~~~
 The documentation that supports mouse_connectivity_models can be found at the
-`Website <http://AllenInstitute.github.io/mouse_connectivity_models>_`.
+`Website <http://AllenInstitute.github.io/mouse_connectivity_models>`_.

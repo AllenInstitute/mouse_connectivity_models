@@ -18,6 +18,7 @@ Contents:
    auto_examples/index
    Glossary <glossary>
    Release history <whats_new>
+   contributing
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
 .. include:: ../AUTHORS.rst
