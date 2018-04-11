@@ -13,18 +13,11 @@ Contents:
    :maxdepth: 1
 
    installation
-   Glossary <glossary>
    user_guide
-   authors
    modules/classes
    auto_examples/index
+   Glossary <glossary>
+   Release history <whats_new>
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
-
-What's new - Release 0.1.0 (April 20th, 2018)
----------------------------------------------
-
-Everything: initial release!
-
-To find out more, take a look at our `CHANGELOG <http://github.com/
-AllenInstitute/mouse_connectivity_models/CHANGELOG.md>`_.
+.. include:: ../AUTHORS.rst

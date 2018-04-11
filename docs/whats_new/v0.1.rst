@@ -1,0 +1,18 @@
+Version 0.1
+===========
+
+**April 20, 2018**
+
+Changelog
+---------
+
+Major changes in this release include:
+
+- Everything: initial release!
+
+Authors
+-------
+
+The committer list for this release is the following:
+
+        * Joseph Knox
