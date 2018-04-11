@@ -15,16 +15,16 @@ Contents:
    installation
    Glossary <glossary>
    user_guide
-   history
    authors
    modules/classes
    auto_examples/index
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
 
 
-Indices and tables
-==================
+What's new - Release 0.1.0 (April 20th, 2018)
+---------------------------------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Everything: initial release!
+
+To find out more, take a look at our `CHANGELOG <http://github.com/
+AllenInstitute/mouse_connectivity_models/CHANGELOG.md>`_.
