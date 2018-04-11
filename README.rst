@@ -5,9 +5,9 @@ mouse_connectivity_models
 
 mouse_connectivity_models is a Python module for constructing and testing
 mesoscale connectivity models using data from the `Allen Institute for Brain
-Science<https://brain-map.org>`_.
+Science <https://brain-map.org>`_.
 
-It provides models written in `Scikit-Learn<http://scikit-learn.org>`_
+It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
 ``estimator`` style, and has been used in several publications INSERT CITATIONS.
 
 Website: http://AllenInstitute.github.io/mouse_connectivity_models
@@ -47,15 +47,16 @@ response.
 
 Contrubuting
 ------------
-We encourage the community to contribute! See
-https://github.com/AllenInstitute/mouse_connectivity_models/blob/master/CONTRIBUTING.md
+We encourage the community to contribute! See `CONTRIBUTING.md
+<https://github.com/AllenInstitute/mouse_connectivity_models/
+blob/master/CONTRIBUTING.md>`_
 for a quick tutorial on setting up your environment.
 
 Testing
 ~~~~~~~
 
 After installation, you can launch the test suite from outside the source
-directory (``mcmodels``) using ``pytest``
+directory (``mcmodels``) using ``pytest``::
 
         pytest mcmodels
 
@@ -65,5 +66,5 @@ Help and Support
 
 Documentation
 ~~~~~~~~~~~~~
-The documentation that supports mouse_connectivity_models can be found at:
-http://AllenInstitute.github.io/mouse_connectivity_models
+The documentation that supports mouse_connectivity_models can be found at the
+`Website <http://AllenInstitute.github.io/mouse_connectivity_models>_`.
