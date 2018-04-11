@@ -108,8 +108,8 @@ activate the virtual environment (to develop) ::
    $ pytest mcmodels
 
 4. After your new feature passes all tests, `add
-   https://git-scm.com/docs/git-add>`_ and `commit
-   https://git-scm.com/docs/git-commit>`_ your changes ::
+   <https://git-scm.com/docs/git-add>`_ and `commit
+   <https://git-scm.com/docs/git-commit>`_ your changes ::
 
    $ git add modified_files
    $ git commit
