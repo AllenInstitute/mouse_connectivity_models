@@ -144,13 +144,15 @@ class VoxelData(_BaseData):
 
     min_injection_sum : float, optional, default 0.0
         Includes experiments with at least the minimum total injection density.
-        NOTE: this is defined as the sum of the injection density for an
-              experiment and is affected by normalization
+
+    .. note:: this is defined as the sum of the injection density for an
+       experiment and is affected by normalization
 
     min_projection_sum : float, optional, default 0.0
         Includes experiments with at least the minimum total projection density.
-        NOTE: this is defined as the sum of the projection density for an
-              experiment and is affected by normalization
+
+    .. note:: this is defined as the sum of the projection density for an
+       experiment and is affected by normalization
 
     Attributes
     ----------
@@ -191,17 +193,12 @@ class VoxelData(_BaseData):
     >>> experiment_ids = (112514202, 139520203)
     >>> voxel_data = VoxelData()
     >>> voxel_data.get_experiment_data(experiment_ids)
-    VoxelData(injection_structure_ids=None,
-              projection_structure_ids=None,
-              injection_hemisphere_id=3,
-              projection_hemisphere_id=3,
-              normalized_injection=True,
-              normalized_projection=True,
-              flip_experiments=True,
-              data_mask_tolerance=0.0,
-              min_injection_sum=0.0,
-              min_projection_sum=0.0,
-              experiment_ids=(112514202, 139520203))
+    VoxelData(injection_structure_ids=None, projection_structure_ids=None,
+    injection_hemisphere_id=3, projection_hemisphere_id=3,
+    normalized_injection=True, normalized_projection=True,
+    flip_experiments=True, data_mask_tolerance=0.0,
+    min_injection_sum=0.0, min_projection_sum=0.0,
+    experiment_ids=(112514202, 139520203))
     """
     DEFAULT_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
@@ -213,8 +210,8 @@ class VoxelData(_BaseData):
         Note that only experiments passing all defined parameters will be
         included.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         experiment_ids : list
             Ids of candidate experiments to pull. Only the subset of these
             experiments passing user defined object parameters will be pulled.
@@ -312,13 +309,15 @@ class RegionalData(_BaseData):
 
     min_injection_sum : float, optional, default 0.0
         Includes experiments with at least the minimum total injection density.
-        NOTE: this is defined as the sum of the injection density for an
-              experiment and is affected by normalization
+
+    .. note:: this is defined as the sum of the injection density for an
+       experiment and is affected by normalization
 
     min_projection_sum : float, optional, default 0.0
         Includes experiments with at least the minimum total projection density.
-        NOTE: this is defined as the sum of the projection density for an
-              experiment and is affected by normalization
+
+    .. note:: this is defined as the sum of the projection density for an
+       experiment and is affected by normalization
 
     Attributes
     ----------
@@ -360,16 +359,11 @@ class RegionalData(_BaseData):
     >>> voxel_data = RegionalData()
     >>> voxel_data.get_experiment_data(experiment_ids)
     VoxelData(injection_structure_ids=None,
-              projection_structure_ids=None,
-              injection_hemisphere_id=3,
-              projection_hemisphere_id=3,
-              normalized_injection=True,
-              normalized_projection=True,
-              flip_experiments=True,
-              data_mask_tolerance=0.0,
-              min_injection_sum=0.0,
-              min_projection_sum=0.0,
-              experiment_ids=(112514202, 139520203))
+    projection_structure_ids=None, injection_hemisphere_id=3,
+    projection_hemisphere_id=3, normalized_injection=True,
+    normalized_projection=True, flip_experiments=True,
+    data_mask_tolerance=0.0, min_injection_sum=0.0,
+    min_projection_sum=0.0, experiment_ids=(112514202, 139520203))
     """
 
     DEFAULT_STRUCTURE_SET_ID = 167587189
@@ -379,9 +373,13 @@ class RegionalData(_BaseData):
     def from_voxel_data(cls, voxel_data):
         """Construct class from a VoxelData object.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         voxel_data : a VoxelData object
+
+        Returns
+        -------
+        RegionalData : an instatiation of the RegionalData object
         """
         return cls(voxel_data.mcc,
                    injection_structure_ids=voxel_data.injection_structure_ids,
@@ -412,8 +410,8 @@ class RegionalData(_BaseData):
         Note that only experiments passing all defined parameters will be
         included.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         experiment_ids : list
             Ids of candidate experiments to pull. Only the subset of these
             experiments passing user defined object parameters will be pulled.

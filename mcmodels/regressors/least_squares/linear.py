@@ -25,21 +25,19 @@ class Linear(ScipyLeastSquares):
 
     **least_squares_kwargs :
         Keyword arguments to be provided to scipy.optimize.least_squares.
-
         Options include:
-        ----------------
-            bounds
-            method
-            ftol
-            xtol
-            gtol
-            x_scale
-            loss
-            f_scale
-            max_nfev
-            diff_step
-            tr_solver
-            tr_options
+        - bounds
+        - method
+        - ftol
+        - xtol
+        - gtol
+        - x_scale
+        - loss
+        - f_scale
+        - max_nfev
+        - diff_step
+        - tr_solver
+        - tr_options
 
     See also
     --------

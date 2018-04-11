@@ -162,9 +162,9 @@ class Experiment(object):
         injection_hemisphere : int, optional (default=None)
             If None, defualts to Experiment.DEFAULT_INJECTION_HEMISPHERE (2).
             Valid arguments are:
-                1 : left hemisphere
-                2 : right hemisphere
-                3 : both hemispheres
+            - 1 : left hemisphere
+            - 2 : right hemisphere
+            - 3 : both hemispheres
 
         """
         if data_mask_tolerance is None:

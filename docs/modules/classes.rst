@@ -58,7 +58,7 @@ Utitility fucntions
         :no-members:
         :no-inherited-members:
 
-**User Guide** See the :ref:`least_squares` section for further details.
+**User Guide** See the TODO ``least_squares`` section for further details.
 
 .. currentmodule:: mcmodels
 

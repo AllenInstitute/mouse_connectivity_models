@@ -42,11 +42,16 @@ def _solve_ridge_nnls(X, y, alpha):
 def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
     """Solve the nonnegative least squares estimate regression problem.
 
-    Solves ``argmin_x \| Ax - y \|_2^2 + \alpha^2\| x \|_2^2`` for ``x > 0``
+    Solves
+    ..math:: argmin_x \| Ax - y \|_2^2 + \alpha^2\| x \|_2^2 for x > 0
+
     using scipy.optimize.nnls. This can be simplified to:
-        ``argmin_x \| Qx - c \|_2^2`` for ``x > 0``
+
+    ..math:: argmin_x \| Qx - c \|_2^2 for x > 0
+
     where
-        ``Q = X^TX + \alpha I`` and ``c = X^Ty``
+
+    ..math:: Q = X^TX + \alpha I and c = X^Ty
 
     Parameters
     ----------

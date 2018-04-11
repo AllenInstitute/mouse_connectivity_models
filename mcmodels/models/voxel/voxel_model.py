@@ -116,7 +116,7 @@ class VoxelModel(NadarayaWatson):
 
         Returns
         -------
-        C : array, shape=(X.shape[0], y_fit_.shape[1])
+        C : array, shape=(X.shape[0], y.shape[1])
             Predicted normalized projection densities.
 
         """

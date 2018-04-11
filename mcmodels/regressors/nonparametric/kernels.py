@@ -93,13 +93,13 @@ class Polynomial(_BasePolynomial):
 
         ``K(x, y) = (1 + (d(x,y)/support)^2)^shape``
 
-    Note: not to be confused with the Polynomial kernel defined in
-          sklearn.pairwise. defined as:
+    .. note:: not to be confused with the Polynomial kernel defined in
+       sklearn.pairwise. defined as:
 
           ``K(x, y) = (gamma x^T y - c_0)^degree``
 
     Parameters
-    -----------
+    ----------
     shape : float, optional, default: 1.0
         The shape parameter of the kernel. A shape of 0 is the Uniform kernel
         (or boxcar kernel). As the shape approaches infinity, the kernel
@@ -133,7 +133,7 @@ class Uniform(_BasePolynomial):
     Identical to Polynomial(shape=0)
 
     Parameters
-    -----------
+    ----------
     support : float, optional, default: 1.0
         The support (symmetric) of the kernel such that the kernel is equal
         to exactly zero where ``d(x, y) > support``.
@@ -159,8 +159,8 @@ class Epanechnikov(_BasePolynomial):
 
     Identical to Polynomial(shape=1)
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     support : float, optional, default: 1.0
         The support (symmetric) of the kernel such that the kernel is equal
         to exactly zero where ``d(x, y) > support``.
@@ -186,8 +186,8 @@ class Biweight(_BasePolynomial):
 
     Identical to Polynomial(shape=2)
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     support : float, optional, default: 1.0
         The support (symmetric) of the kernel such that the kernel is equal
         to exactly zero where ``d(x, y) > support``.
@@ -213,8 +213,8 @@ class Triweight(_BasePolynomial):
 
     Identical to Polynomial(shape=3)
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     support : float, optional, default: 1.0
         The support (symmetric) of the kernel such that the kernel is equal
         to exactly zero where ``d(x, y) > support``.

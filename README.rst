@@ -98,7 +98,7 @@ Testing
 After installation, you can launch the test suite from outside the source
 directory (``mcmodels``) using `pytest <https://pytest.org>`_ ::
 
-        pytest mcmodels
+   $ pytest mcmodels
 
 
 Help and Support

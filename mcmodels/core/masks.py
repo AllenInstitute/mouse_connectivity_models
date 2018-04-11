@@ -258,8 +258,8 @@ class Mask(object):
     def mask_volume(self, X):
         """Masks a given volume.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         X - array, shape (x_ccf, y_ccf, z_ccf)
             Data volume to be masked. Must be same shape as
             self.annotation_shape
@@ -278,8 +278,8 @@ class Mask(object):
     def fill_volume_where_masked(self, X, fill, inplace=True):
         """Fills a data volume where mask is valid.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         X : array, shape (x_ccf, y_ccf, z_ccf)
             Array to be filled where mask is valid.
 
@@ -307,8 +307,8 @@ class Mask(object):
     def map_masked_to_annotation(self, y):
         """Maps a masked vector y back to annotation volume.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         y : array, shape (masked_shape)
             Array to be mapped into where mask is valid.
 
