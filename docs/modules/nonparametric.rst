@@ -1,8 +1,8 @@
 .. _nonparametric:
 
-====================================
+=========================
 Nonnparametric Regression
-====================================
+=========================
 
 .. currentmodule:: mcmodels.regressors.nonnparametric
 
@@ -13,7 +13,7 @@ influence of the individual data points.
 
 
 Nadaraya Watson Regression
-====================================
+==========================
 
 An example of kernel regression is the Nadaraya-Watson [Nadaraya1010]_
 [Watson1010]_ regressor. The Nadaraya-Watson regressor estimates the response
@@ -24,6 +24,12 @@ An example of kernel regression is the Nadaraya-Watson [Nadaraya1010]_
         \hat{y}(x) = \frac{ \sum_i K(x, x_i) Y_i }{ \sum_j K(x, x_j) }
 
 where :math:`K(x, x')` is a kernel function.
+
+.. figure:: ../auto_examples/images/sphx_glr_plot_nadaraya_watson_001.png
+        :target: ../auto_examples/plot_nadaraya_watson.html
+        :align: center
+        :scale: 50%
+
 
 Efficient Leave-one-out Cross-Validation
 ========================================
@@ -41,6 +47,9 @@ where:
 and :math:`Y` is the row stacked array of the responses :math:`y`. For a given
 EXPLAIN FURTHER
 
+.. topic:: Examples
+
+        * :ref:`sphx_glr_auto_examples_plot_nadaraya_watson.py`
 
 
 .. topic:: References

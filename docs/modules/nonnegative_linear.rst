@@ -30,7 +30,7 @@ a weight between brain regions must be positive.
 
 
 Nonnegative Ridge Regression
-====================================
+============================
 
 The equation :math:`Ax=b` is said to be ill-conditioned if the columns of `A`
 are nearly linearly dependent. Ill-conditioned least squares problems are highly
@@ -54,6 +54,11 @@ where
 .. math::
         Q = A^T A + \alpha I \quad \text{and} \quad c = A^T b
 
+.. figure:: ../auto_examples/images/sphx_glr_plot_nonnegative_ridge_path_001.png
+        :target: ../auto_examples/plot_nonnegative_ridge_path.html
+        :align: center
+        :scale: 50%
+
 As with :class:`NonnegativeLinear`, :class:`NonnegativeRidge`  will take in its
 ``fit`` method arrays X, y and will store the coefficients :math:`w` in its
 ``coef_`` member:
@@ -64,3 +69,8 @@ As with :class:`NonnegativeLinear`, :class:`NonnegativeRidge`  will take in its
         NonnegativeRidge(alpha=1.0)
         >>> reg.coef_
 
+
+.. topic:: Examples
+
+        * :ref:`sphx_glr_auto_examples_plot_nonnegative_ridge_path.py`
+        * :ref:`sphx_glr_auto_examples_plot_nonnegative_linear_ridge_variance.py`
