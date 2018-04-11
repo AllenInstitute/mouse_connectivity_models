@@ -1,5 +1,20 @@
 .. -*- mode: rst -*-
 
+|Travis|_ |Codecov|_ |Python27|_ |Python35|_ |Python36|_
+
+.. |Travis| image:: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
+.. _Travis: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models
+
+.. |Python27| image:: https://img.shields.io/badge/python-2.7-blue.svg
+.. _Python27: https://badge.fury.io/py/mouse_connectivity_models
+
+.. |Python35| image:: https://img.shields.io/badge/python-3.5-blue.svg
+.. _Python35: https://badge.fury.io/py/mouse_connectivity_models
+
+.. |Python36| image:: https://img.shields.io/badge/python-3.6-blue.svg
+.. _Python36: https://badge.fury.io/py/mouse_connectivity_models
+
+
 mouse_connectivity_models
 ===============================
 

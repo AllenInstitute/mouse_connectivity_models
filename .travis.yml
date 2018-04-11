@@ -1,11 +1,32 @@
+sudo: false
+dist: trusty
 language: python
 python:
   - "2.7"
   - "3.5"
   - "3.6"
+
+
+env:
+  global:
+    - PYPI_VENDOR_DIR='./tests/pypi/'
+    - GIT_ASK_YESNO='false'
+  addons:
+    apt:
+      packages:
+        - libatlas-dev
+        - libatlas3gf-base
+
+  matrix:
+    - TEST_SUITE='not install'
+    - TEST_SUITE='install'
+      PYTEST_ADDOPTS='--cache-clear'
+
 install:
-  - pip install -r requirements.txt
-  - pip install -r test_requirements.txt
-# command to run tests
+  - "pip install --upgrade pip"
+  - "pip install pipenv"
+  - "pipenv install --dev"
+  - "pip install --no-deps --force --upgrade ."
+
 script:
-  - python -m pytest
+   - "pytest mcmodels"
