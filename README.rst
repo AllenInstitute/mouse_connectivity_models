@@ -5,6 +5,9 @@
 .. |Travis| image:: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
 .. _Travis: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models
 
+.. |Codecov| image:: https://codecov.io/github/AllenInstitute/mouse_connectivity_models/badge.svg?branch=master&svg=true
+.. _Codecov: https://codecov.io/github/AllenInstitute/mouse_connectivity_models?branch=master
+
 .. |Python27| image:: https://img.shields.io/badge/python-2.7-blue.svg
 .. _Python27: https://badge.fury.io/py/mouse_connectivity_models
 
