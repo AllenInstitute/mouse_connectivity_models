@@ -76,7 +76,7 @@ class Mask(object):
 
     DEFAULT_STRUCTURE_IDS = tuple([8])
 
-    def __init__(self, mcc, structure_ids=None, hemisphere=3):
+    def __init__(self, mcc, structure_ids=None, hemisphere_id=3):
 
         if structure_ids is None:
             structure_ids = self.DEFAULT_STRUCTURE_IDS
@@ -87,32 +87,32 @@ class Mask(object):
 
         self.mcc = mcc
         self.structure_ids = structure_ids
-        self.hemisphere = hemisphere
+        self.hemisphere_id = hemisphere_id
         self.reference_space = reference_space
         self.annotation = reference_space.annotation
         self.structure_tree = reference_space.structure_tree
 
     @staticmethod
-    def _mask_to_hemisphere(mask, hemisphere):
+    def _mask_to_hemisphere(mask, hemisphere_id):
         """Masks a given data volume to a hemisphere."""
         # mask to hemisphere
         midline = mask.shape[2]//2
-        if hemisphere == 1:
+        if hemisphere_id == 1:
             mask[..., midline:] = 0
 
-        elif hemisphere == 2:
+        elif hemisphere_id == 2:
             mask[..., :midline] = 0
 
         return mask
 
-    def _get_mask(self, structure_ids, hemisphere=None):
+    def _get_mask(self, structure_ids, hemisphere_id=None):
         """Gets mask property (boolean array)"""
-        if hemisphere is None:
-            hemisphere = self.hemisphere
+        if hemisphere_id is None:
+            hemisphere_id = self.hemisphere_id
 
         mask = self.reference_space.make_structure_mask(structure_ids,
                                                         direct_only=False)
-        return Mask._mask_to_hemisphere(mask, hemisphere)
+        return Mask._mask_to_hemisphere(mask, hemisphere_id)
 
     @property
     def mask(self):
@@ -152,7 +152,7 @@ class Mask(object):
         """Shape a data volume would become after masking."""
         return (np.count_nonzero(self.mask),)
 
-    def get_structure_flattened_mask(self, structure_ids=None, hemisphere=None):
+    def get_structure_flattened_mask(self, structure_ids=None, hemisphere_id=None):
         #TODO:
         """
         ...
@@ -160,11 +160,11 @@ class Mask(object):
         if structure_ids is None:
             structure_ids = self.structure_ids
 
-        if structure_ids is self.structure_ids and hemisphere is None:
+        if structure_ids is self.structure_ids and hemisphere_id is None:
             # saves time if already computed
             mask = self.mask
         else:
-            mask = self._get_mask(structure_ids, hemisphere=hemisphere)
+            mask = self._get_mask(structure_ids, hemisphere_id=hemisphere_id)
 
         # mask this mask to self.mask
         return self.mask_volume(mask)
@@ -194,15 +194,15 @@ class Mask(object):
                              "\nIndexError\n %s" % e)
 
 
-    def get_structure_indices(self, structure_ids=None, hemisphere=None):
+    def get_structure_indices(self, structure_ids=None, hemisphere_id=None):
         """
         """
         #TODO: docstring
-        aligned = self.get_structure_flattened_mask(structure_ids, hemisphere)
+        aligned = self.get_structure_flattened_mask(structure_ids, hemisphere_id)
 
         return aligned.nonzero()[0]
 
-    def get_key(self, structure_ids=None, hemisphere=None):
+    def get_key(self, structure_ids=None, hemisphere_id=None):
         # TODO: look into cleaning up check for disjoint
         """Returns flattened annotation key.
 
@@ -215,7 +215,7 @@ class Mask(object):
             Ids of structures which to include in the key. If None, the
             structure_ids used to make the Mask object will be used.
 
-        hemisphere : int, optional (defalut=None)
+        hemisphere_id : int, optional (defalut=None)
             Hemisphere to include in the key. If None, the hemisphere used
             to maske the Mask object will be used.
 
@@ -229,7 +229,7 @@ class Mask(object):
         # do not want to overwrite annotation
         annotation = self.annotation.copy()
 
-        if structure_ids is None and hemisphere is None:
+        if structure_ids is None and hemisphere_id is None:
             # return key of all resolved structures in annotation
             annotation[np.logical_not(self.mask)] = 0
             return self.mask_volume(annotation)
@@ -248,7 +248,7 @@ class Mask(object):
                 annotation[idx] = structure_id
 
         # get mask according to args
-        mask = self._get_mask(structure_ids, hemisphere=hemisphere)
+        mask = self._get_mask(structure_ids, hemisphere_id=hemisphere_id)
 
         # mask to structure_ids
         annotation[np.logical_not(mask)] = 0
@@ -330,3 +330,12 @@ class Mask(object):
         y_volume[idx] = y
 
         return y_volume
+
+    def __repr__(self):
+        if len(self.structure_ids) > 3:
+            structure_ids = "{x[0]}, ..., {x[-1]}".format(x=self.structure_ids)
+        else:
+            structure_ids = ", ".join(map(str, self.structure_ids))
+
+        return "{0}(hemisphere_id={1}, structure_ids=[{2}])".format(
+            self.__class__.__name__, self.hemisphere_id, structure_ids)
