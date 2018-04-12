@@ -10,7 +10,7 @@ Nonnegative Least Squares Regression solves the equation :math:`Ax=b` subject
 to the constraint that the coefficients :math:`x` be nonnegative:
 
 .. math::
-        \underset{x}{\text{argmin}} \| Ax - b \|_2^2, \text{subject to} x \geq 0
+        \underset{x}{\text{argmin}} \| Ax - b \|_2^2, \text{subject to } x \geq 0
 
 :class:`NonnegativeLinear` will take in its ``fit`` method arrays X, y and
 will store the coefficients :math:`w` in its ``coef_`` member:
@@ -47,7 +47,7 @@ where :math:`\alpha` is the penalty vector. We can rewrite this with a
 nonnegativity constraint as:
 
 .. math::
-        \text{argmin}_x \| Qx - c \|_2^2, \text{subject to} x \geq 0
+        \text{argmin}_x \| Qx - c \|_2^2, \text{subject to } x \geq 0
 
 where
 

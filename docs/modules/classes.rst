@@ -68,7 +68,7 @@ Utitility fucntions
         :toctree: generated/
 
         regressors.least_squares.ScipyLeastSquares
-        regressors.least_squares.Linear
+
 
 
 .. _nonnegative_linear_ref:

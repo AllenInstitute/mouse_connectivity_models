@@ -50,8 +50,47 @@ Core Package
 
 .. currentmodule:: mcmodels.core
 
+
+Data pulling classes
+---------------------
+
+.. currentmodule:: mcmodels.core.base
+
+The :class:`VoxelData` and :class:`RegionalData` classes are used to pull experimental
+data, selecting only experiments that pass user-defined parameters and selecting
+only the regions of the brain relevant to the desired analysis. The intended
+purpose of these classes is to form the ``X, y`` arrays to be used in fitting
+connectivity models of the form ``y = f(X)``.
+
+To pull experimental data for use in connectivity models, first instatiate your
+required data pulling class with your set of parameters, then call the
+``get_experiment_data()`` method:
+
+        >>> from mcmodels.core import VoxelData
+        >>> from mcmodels.utils import get_mcc, get_experiment_ids
+        >>>
+        >>> # returns a MouseConnectivityCache instance with some default settings
+        >>> mcc = get_mcc()
+        >>>
+        >>> # returns all experiments whose primary injection structure is in:
+        >>> experiment_ids = get_experiment_ids(mcc, [315])
+        >>>
+        >>> voxel_data = VoxelData(mcc, injection_structure_ids=[315])
+        >>> voxel_data.get_experiment_data(experiment_ids)
+        VoxelData( xxx )
+
+The ``get_experiment_data()`` method sets the attributes ``centroids``,
+``injections`` and ``projections`` to be used for fitting connectivity models:
+
+        >>> voxel_data.centroids.shape
+        (123, 3)
+
+
 Mask class
 ----------
+
+.. currentmodule:: mcmodels.core.masks
+
 In our package, we define mehtods relating to registering data into the 3D
 reference space in our ``Mask`` class. Spefifically, we can:
 
@@ -60,11 +99,59 @@ reference space in our ``Mask`` class. Spefifically, we can:
   3D reference space.
 - determine to which structure each element of a masked vector belongs
 
+:class:`Mask` is initialized with a ``MouseConnectivityCache`` object and optional
+keyword arguments for subetting either hemispheres or structures. In the case of
+the new :ref:`voxel scale model <voxel>`, we define the source to be right hemisphere,
+and in this case the cortex:
 
-Data pulling classes
----------------------
-The ``VoxelData`` and ``RegionalData`` classes are used to pull experimental
-data, selecting only experiments that pass user-defined parameters and selecting
-only the regions of the brain relevant to the desired analysis. The indended
-purpose of these classes is to form the ``X, y`` arrays to be used in fitting
-connectivity models of the form ``y = f(X)``.
+        >>> from mcmodels.core.mask import Mask
+        >>> from mcmodels.utils import get_mcc
+        >>>
+        >>> # returns a MouseConnectivityCache instance with some default settings
+        >>> mcc = get_mcc()
+        >>>
+        >>> source_mask = Mask(mcc, hemisphere=2, structure_ids=(315))
+        >>> source_mask
+        Mask(hemisphere_id=2, structure_ids=[315])
+
+The method ``get_experiment_data`` in  :class:`VoxelData` or :class:`RegionalData`
+sets source and target matrices as attributes which have masked, flattened
+injection and projection volumes for each experiment as rows. One can determine
+the structure_id of a given column in either of these arrays using the method
+``get_key()``:
+
+        >>> import numpy as np
+        >>> key = source_mask.get_key()
+        >>> key.shape
+        xxxx
+        >>> np.unique(key)
+        np.array([315])
+
+The key by default will include only the structure ids specified in the
+construction of the ``Mask`` object. However, we can pass specific
+``structure_ids`` to the ``get_key()`` method if we are interested in a finer or
+coarser level in the ontology
+
+        >>> # get set of summary structures
+        >>> summary_structures = source_mask.structure_tree.get_structures_by_set_id([165787189])[0]
+        >>> key = source_mask.get_key(structure_ids=summary_structures)
+        >>> len(np.unique(key))
+        293
+
+The ``key`` array has length equal to the number of voxels in the cortex (R
+hemisphere) as that is the definition of our ``mask``. However, if we just want
+the indices for a given structure:
+
+        >>> # get sturcture id correponding to VISp
+        >>> visp_id = source_mask.structure_tree.get_structures_by_acronym(["VISp"])[0]["id"]
+        >>> visp_idx = source_mask.get_structure_indices(structure_ids=[visp_id])
+        >>> len(visp_idx)
+        xxx
+
+Given a masked injection/projection volume (a row in the source or target arrays)
+one can map the flattened vector back to the 3D reference space:
+
+        >>> # our key is a masked, flattened volume, lets map it back
+        >>> key_volume = source_mask.map_masked_to_annotation(key)
+        >>> key_volume.shape
+        (132, 80, 114)
