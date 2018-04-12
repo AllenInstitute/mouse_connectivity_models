@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: BSD 3
 
-__version__ = '0.0.1'
+__version__ = '0.0.9'
 
 from . import core
 from . import models

@@ -16,6 +16,8 @@ refer to the :ref:`full user guide <user_guide>` for further details.
         :no-members:
         :no-inherited-members:
 
+**User Guide** See the :ref:`allen_data` section for further details.
+
 .. currentmodule:: mcmodels
 
 .. autosummary::

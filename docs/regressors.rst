@@ -1,3 +1,8 @@
+.. _regressors:
+
+Regressors
+----------
+
 .. toctree::
 
         modules/nonnegative_linear.rst
