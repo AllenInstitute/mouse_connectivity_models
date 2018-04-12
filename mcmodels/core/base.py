@@ -69,10 +69,10 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
         self.injection_mask = Mask(mcc=self.mcc,
                                    structure_ids=self.injection_structure_ids,
-                                   hemisphere=self.injection_hemisphere_id)
+                                   hemisphere_id=self.injection_hemisphere_id)
         self.projection_mask = Mask(mcc=self.mcc,
                                     structure_ids=self.projection_structure_ids,
-                                    hemisphere=self.projection_hemisphere_id)
+                                    hemisphere_id=self.projection_hemisphere_id)
 
     def _experiment_generator(self, experiment_ids):
         """Generates experiment objections given their experiment ids"""

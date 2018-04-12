@@ -26,15 +26,15 @@ def descendant_ids():
 
 @pytest.fixture(scope="function")
 def contra_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=1)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=1)
 
 @pytest.fixture(scope="function")
 def ipsi_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=2)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=2)
 
 @pytest.fixture(scope="function")
 def bi_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere=3)
+    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=3)
 
 # -----------------------------------------------------------------------------
 # tests
@@ -188,7 +188,7 @@ def get_injection_ratio_contained(experiment):
     assert( experiment.get_injection_ratio_contained(mask) == 0.5 )
 
     # Mask object
-    mask = Mask(mcc, [2,3], hemisphere=3)
+    mask = Mask(mcc, [2,3], hemisphere_id=3)
     assert( type(experiment.get_injection_ratio_contained(mask)) == float )
 
     # wrong np.ndarray size
@@ -205,7 +205,7 @@ def mask_volume(experiment):
     assert(experiment.mask_volume("injection_density", mask).shape == (n_nnz,))
 
     # Mask object
-    mask = Mask(mcc, [2,3], hemisphere=3)
+    mask = Mask(mcc, [2,3], hemisphere_id=3)
     assert( len(experiment.mask_volume("injection_density", mask).shape) == 1  )
 
     # wrong np.ndarray size
