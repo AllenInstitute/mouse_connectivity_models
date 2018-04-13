@@ -6,7 +6,21 @@ New Voxel-scale Connectivity Model [Knox2018]_
 
 .. currentmodule:: mcmodels.models.voxel
 
-The voxel-scale model from [Knox2018]_ EXPLAIN FURTHER
+The voxel-scale model from [Knox2018]_ is the first full brain voxel-scale of the
+mouse connectome. The model performs :ref:`Nadaraya-Watson regression
+<nadaraya_watson>`_ to infer the connectivity between each of the voxels in
+the brain into 12 :term:`major brain divisions` to each of the voxels in the
+whole brain. The source space is split between these major brain divisions as to
+prevent influence from injections performed into adjacent brain divisions.
+
+
+Assumptions
+-----------
+- Spatial smoothness within divisoins: the connectivity is assumed to vary smoothly
+  as a function of distance within each of the major brain divisions.
+- No influence between divisions: the connectivity is allowed to be discontinuous
+  at divison boundaries. These major brain divisions are in fact physically
+  separated by :term:`white matter`, supporting this assumption.
 
 
 VoxelArray Class

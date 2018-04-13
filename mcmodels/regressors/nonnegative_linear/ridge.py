@@ -7,6 +7,7 @@ Nonnegative Ridge Regression
 
 # TODO : docs and example
 import numpy as np
+from scipy import linalg
 
 from sklearn.linear_model.base import _rescale_data
 from sklearn.utils import check_array
@@ -29,8 +30,12 @@ def _solve_ridge_nnls(X, y, alpha):
     # we set up as alpha**2
     sqrt_alpha = np.sqrt(alpha)
 
+    # compute R^T R is more numerically stable than X^T X
+    # 'r' mode returns tuple: (R,)
+    R = linalg.qr(X, overwrite_a=False, mode='r', check_finite=False)[0]
+
     # rewrite as ||Ax - b||_2
-    Q = X.T.dot(X) + np.diag(sqrt_alpha)
+    Q = R.T.dot(R) + np.diag(sqrt_alpha)
     c = X.T.dot(y)
 
     # solve nnls system

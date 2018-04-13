@@ -69,7 +69,7 @@ Biological Terms
 .. glossary::
 
         coarse structures
-        major brain division
+        major brain divisions
                 The set of 12 major brain divisions from the 3D Allen Mouse
                 Brain Reference Atlas. These include:
 

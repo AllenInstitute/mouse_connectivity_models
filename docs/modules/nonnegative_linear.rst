@@ -30,7 +30,7 @@ a weight between brain regions must be positive.
 
 
 Nonnegative Ridge Regression
-============================
+----------------------------
 
 The equation :math:`Ax=b` is said to be ill-conditioned if the columns of `A`
 are nearly linearly dependent. Ill-conditioned least squares problems are highly
@@ -68,6 +68,26 @@ As with :class:`NonnegativeLinear`, :class:`NonnegativeRidge`  will take in its
         >>> reg.fit ([[0, 0], [1, 1], [2, 2]], [0, 1, 2])
         NonnegativeRidge(alpha=1.0)
         >>> reg.coef_
+
+
+Nonnegative Lasso
+-----------------
+
+
+
+Nonnegative Elastic Net
+---------------------------------
+
+Elastic net is a combination of L2 and L1 regularization. We will derive the
+above results here:
+
+.. math::
+        &\text{argmin}_x \quad \| Ax - b \|_2^2 + \lambda^2 \| x \|_2 + \alpha \| x \|_1 \\
+        &\text{argmin}_x \quad (Ax - b)^T(Ax - b) + \lambda^2 (x^T I x) + \alpha (1^T x) \\
+        &\text{argmin}_x \quad x^TA^TAx - 2b^TAx + b^Tb + x^T \lambda^2 I x + \alpha 1^T x \\
+        &\text{argmin}_x \quad x^TA^TAx + x^T \lambda^2 I x + \alpha 1^T x - 2b^TAx \\
+        &\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (\alpha 1^T - 2b^TA )x \\
+        &\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (1 \alpha^T - 2A^Tb )^Tx
 
 
 .. topic:: Examples
