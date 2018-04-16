@@ -4,13 +4,15 @@
 Nonnparametric Regression
 =========================
 
-.. currentmodule:: mcmodels.regressors.nonnparametric
+.. currentmodule:: mcmodels.regressors
 
 Nonparametric regression is a data-driven alternative to least squares in which
 the predictor does not take a predetermined form. Kernel regression estimates
 the response by convolving the data with a kernel function to combine the
 influence of the individual data points.
 
+
+.. _nadaraya_watson:
 
 Nadaraya Watson Regression
 ==========================
@@ -28,8 +30,9 @@ where :math:`K(x, x')` is a kernel function.
 .. figure:: ../auto_examples/images/sphx_glr_plot_nadaraya_watson_001.png
         :target: ../auto_examples/plot_nadaraya_watson.html
         :align: center
-        :scale: 50%
 
+
+The model learned by :class:`NadarayaWatson` MORE
 
 Efficient Leave-one-out Cross-Validation
 ========================================
@@ -46,6 +49,8 @@ where:
 
 and :math:`Y` is the row stacked array of the responses :math:`y`. For a given
 EXPLAIN FURTHER
+
+:class:`NadarayaWatsonCV` implements this MORE
 
 .. topic:: Examples
 

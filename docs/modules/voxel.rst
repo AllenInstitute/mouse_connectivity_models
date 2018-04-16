@@ -4,14 +4,16 @@
 New Voxel-scale Connectivity Model [Knox2018]_
 ===============================================
 
-.. currentmodule:: mcmodels.models.voxel
+.. currentmodule:: mcmodels.models
 
 The voxel-scale model from [Knox2018]_ is the first full brain voxel-scale of the
 mouse connectome. The model performs :ref:`Nadaraya-Watson regression
-<nadaraya_watson>`_ to infer the connectivity between each of the voxels in
+<nadaraya_watson>` to infer the connectivity between each of the voxels in
 the brain into 12 :term:`major brain divisions` to each of the voxels in the
 whole brain. The source space is split between these major brain divisions as to
 prevent influence from injections performed into adjacent brain divisions.
+
+:class:`VoxelModel` implements MORE
 
 
 Assumptions
@@ -23,8 +25,8 @@ Assumptions
   separated by :term:`white matter`, supporting this assumption.
 
 
-VoxelArray Class
-----------------
+:class:`VoxelConnectivityArray` Class
+---------------------------------------
 
 Since the full voxel x voxel connectivity matrix is ~200,000 x ~400,000 elements,
 it will mostlikely not fit in your memory. Luckily, the connectivity matrix has
@@ -33,7 +35,7 @@ connectivty matrix on the fly, in the area we want to perform computation.
 
 Loading the array
 ~~~~~~~~~~~~~~~~~
-:class:`VoxelArray` has a variety of construction options, for instance
+:class:`VoxelConnectivityArray` has a variety of construction options, for instance
 
         >>> import os
         >>> from mcmodels.models.voxel import VoxelConnectivityArray
@@ -58,7 +60,7 @@ or set of values:
         >>> # some given source/target voxels
         >>> source, target = 20353, 68902
         >>>
-        >>> # we index the VoxelArray object just like it is a numpy ndarray
+        >>> # we index the VoxelConnectivyArray object just like it is a numpy ndarray
         >>> connection_strength = vox_array[source, target]
         >>>
         >>> # a row would be the bi-lateral connection strength from a given voxel
@@ -68,7 +70,7 @@ or set of values:
         >>> # from each voxel in the right hemisphere
         >>> column = vox_array[:, target]
         >>>
-        >>> # indexing the VoxelArray object returns numpy ndarray
+        >>> # indexing the VoxelConnectivityArray object returns numpy ndarray
         >>> type(row)
         np.ndarray
 
@@ -82,10 +84,10 @@ computing the full matrix is similar to loading an `hdf5` file:
 
 
 
-VoxelArray methods
-~~~~~~~~~~~~~~~~~~
+VoxelConnectivityArray methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:class:`VoxelArray` also has a few methods implemented from ``numpy.ndarray``.
+VoxelConnectivityArray also has a few methods implemented from ``numpy.ndarray``.
 These include:
 - ``dtype``
 - ``shape``
@@ -102,8 +104,8 @@ and are called just like their ``numpy.ndarray`` counter parts:
         (xxx, xxx)
 
 
-RegionalizedModel class
------------------------
+:class:`RegionalizedModel` class
+--------------------------------
 
 .. currentmodule:: mcmodels.models.voxel.RegionalizedModel
 

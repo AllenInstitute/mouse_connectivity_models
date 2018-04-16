@@ -143,7 +143,7 @@ Kernels:
 
 .. _homogeneous_ref:
 
-:mod:`mcmodels.regressors.homogeneous`: Homogeneous Regional Model
+:mod:`mcmodels.models.homogeneous`: Homogeneous Regional Model
 =====================================================================
 .. automodule:: mcmodels.models.homogeneous
         :no-members:

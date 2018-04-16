@@ -4,7 +4,7 @@
 Nonnegative Least Squares Regression
 ====================================
 
-.. currentmodule:: mcmodels.regressors.nonnegative_linear
+.. currentmodule:: mcmodels.regressors
 
 Nonnegative Least Squares Regression solves the equation :math:`Ax=b` subject
 to the constraint that the coefficients :math:`x` be nonnegative:
@@ -57,7 +57,6 @@ where
 .. figure:: ../auto_examples/images/sphx_glr_plot_nonnegative_ridge_path_001.png
         :target: ../auto_examples/plot_nonnegative_ridge_path.html
         :align: center
-        :scale: 50%
 
 As with :class:`NonnegativeLinear`, :class:`NonnegativeRidge`  will take in its
 ``fit`` method arrays X, y and will store the coefficients :math:`w` in its

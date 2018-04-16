@@ -54,7 +54,7 @@ Core Package
 Data pulling classes
 ---------------------
 
-.. currentmodule:: mcmodels.core.base
+.. currentmodule:: mcmodels.core
 
 The :class:`VoxelData` and :class:`RegionalData` classes are used to pull experimental
 data, selecting only experiments that pass user-defined parameters and selecting
@@ -86,13 +86,13 @@ The ``get_experiment_data()`` method sets the attributes ``centroids``,
         (123, 3)
 
 
-Mask class
-----------
+.. currentmodule:: mcmodels.core
 
-.. currentmodule:: mcmodels.core.masks
+:class:`Mask` class
+-------------------
 
 In our package, we define mehtods relating to registering data into the 3D
-reference space in our ``Mask`` class. Spefifically, we can:
+reference space in our :class:`Mask` class. Spefifically, we can:
 
 - query only specific structures of the brain
 - map masked vectors of the brain back to their corresponding locations in the
@@ -114,7 +114,8 @@ and in this case the cortex:
         >>> source_mask
         Mask(hemisphere_id=2, structure_ids=[315])
 
-The method ``get_experiment_data`` in  :class:`VoxelData` or :class:`RegionalData`
+
+The method ``get_experiment_data`` in  ``VoxelData`` or ``RegionalData``
 sets source and target matrices as attributes which have masked, flattened
 injection and projection volumes for each experiment as rows. One can determine
 the structure_id of a given column in either of these arrays using the method

@@ -1,5 +1,5 @@
 """
-The :mod:`voxel_model.base` module implements objects useful in data manipulation.
+The :mod:`voxel_model.core` module implements objects useful in data manipulation.
 """
 
 # Authors: Joseph Knox josephk@alleninstitute.org>

@@ -4,7 +4,7 @@
 Homogeneous Model from [Oh2014]_
 =========================================
 
-.. currentmodule:: mcmodels.models.homogeneous
+.. currentmodule:: mcmodels.models
 
 The homogeneous model from [Oh2014]_ is a linear connectivity model via
 constrained optimization and linear regression of the form:
@@ -16,7 +16,7 @@ constrained optimization and linear regression of the form:
 that best fits the data given by the injections in the set :math:`S_E`.
 
 This is perhaps more clearly represented as a :ref:`nonnegative least squares
-regression problem <nonnegative_linear>`_:
+regression problem <nonnegative_linear>`:
 
 .. math::
         \underset{x}{\text{argmin}} \| Ax - b \|_2^2, \text{subject to } x \geq 0
@@ -26,6 +26,7 @@ minimize the L2 prediction error. Because many injections overlap several region
 the model attempls to assign credit to each of the source regions by relying on
 multiple non-overlapping injections.
 
+:class:`HomogeneousModel` implements MORE
 
 Assumptions
 -----------
