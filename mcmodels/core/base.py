@@ -46,8 +46,9 @@ class _BaseData(six.with_metaclass(ABCMeta)):
                  normalized_projection=True,
                  flip_experiments=True,
                  data_mask_tolerance=0.0,
-                 min_injection_volume=0.0,
-                 min_projection_volume=0.0):
+                 injection_volume_bounds=(0.0, np.inf),
+                 projection_volume_bounds=(0.0, np.inf),
+                 min_contained_injection_ratio=0.0):
 
         self.mcc = mcc
         self.injection_structure_ids = injection_structure_ids
@@ -58,8 +59,9 @@ class _BaseData(six.with_metaclass(ABCMeta)):
         self.normalized_projection = normalized_projection
         self.flip_experiments = flip_experiments
         self.data_mask_tolerance = data_mask_tolerance
-        self.min_injection_volume = min_injection_volume
-        self.min_projection_volume = min_projection_volume
+        self.injection_volume_bounds = injection_volume_bounds
+        self.projection_volume_bounds = projection_volume_bounds
+        self.min_contained_injection_ratio = min_contained_injection_ratio
 
         if self.injection_structure_ids is None:
             self.injection_structure_ids = self.default_structure_ids
@@ -76,16 +78,33 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
     def _experiment_generator(self, experiment_ids):
         """Generates experiment objections given their experiment ids"""
+        def valid_volume(experiment):
+            """Does experiment meet volume requirements?"""
+            # compute injection ratio contained within injection mask
+            contained_injection = self.injection_mask.mask_volume(
+                experiment.injection_density)
+            contained_ratio = contained_injection.sum() / experiment.injection_volume
+
+            # convert to mm^3
+            resolution = self.mcc.get_reference_space().resolution[0]
+            convert = lambda x: x * (1e-3 * resolution)**3
+
+            injection_volume = convert(experiment.injection_volume)
+            projection_volume = convert(experiment.projection_volume)
+
+            return (injection_volume > self.injection_volume_bounds[0] and
+                    injection_volume < self.injection_volume_bounds[1] and
+                    projection_volume > self.projection_volume_bounds[0] and
+                    projection_volume < self.projection_volume_bounds[1] and
+                    contained_ratio > self.min_contained_injection_ratio)
+
+
         for eid in experiment_ids:
-            # instatiate Exeriment object (pulling grid data)
-            experiment = Experiment.from_mcc(self.mcc,
-                                             eid,
-                                             self.data_mask_tolerance)
+            experiment = Experiment.from_mcc(self.mcc, eid, self.data_mask_tolerance)
 
-            if (experiment.injection_volume >= self.min_injection_volume and
-                    experiment.projection_volume >= self.min_projection_volume):
-
+            if valid_volume(experiment):
                 hemisphere_id = experiment.injection_hemisphere_id
+
                 if (self.injection_hemisphere_id == 3 or
                         hemisphere_id == self.injection_hemisphere_id):
                     yield experiment
@@ -142,11 +161,15 @@ class VoxelData(_BaseData):
         of 0.0 thus indicates the highest threshold for data, whereas a value of
         1.0 indicates that data will be included from all voxels.
 
-    min_injection_volume : float, optional, default 0.0
-        Includes experiments with at least the minimum total injection density.
+    injection_volume_bounds : float, optional, default (0.0, np.inf)
+        Includes experiments with total injection volume (mm^3) within bounds.
 
-    min_projection_volume : float, optional, default 0.0
-        Includes experiments with at least the minimum total projection density.
+    projection_volume_bounds : float, optional, default (0.0, np.inf)
+        Includes experiments with total projection volume (mm^3) within bounds.
+
+    min_contained_injection_ratio : float, optional, default 0.0
+        Includes experiments with total injection volume ratio within injection
+        mask.
 
     Attributes
     ----------
@@ -187,12 +210,7 @@ class VoxelData(_BaseData):
     >>> experiment_ids = (112514202, 139520203)
     >>> voxel_data = VoxelData()
     >>> voxel_data.get_experiment_data(experiment_ids)
-    VoxelData(injection_structure_ids=None, projection_structure_ids=None,
-    injection_hemisphere_id=3, projection_hemisphere_id=3,
-    normalized_injection=True, normalized_projection=True,
-    flip_experiments=True, data_mask_tolerance=0.0,
-    min_injection_sum=0.0, min_projection_sum=0.0,
-    experiment_ids=(112514202, 139520203))
+    xx
     """
     DEFAULT_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
@@ -301,12 +319,15 @@ class RegionalData(_BaseData):
         of 0.0 thus indicates the highest threshold for data, whereas a value of
         1.0 indicates that data will be included from all voxels.
 
-    min_injection_volume : float, optional, default 0.0
-        Includes experiments with at least the minimum total injection density.
+    injection_volume_bounds : float, optional, default (0.0, np.inf)
+        Includes experiments with total injection volume (mm^3) within bounds.
 
-    min_projection_volume : float, optional, default 0.0
-        Includes experiments with at least the minimum total projection density.
+    projection_volume_bounds : float, optional, default (0.0, np.inf)
+        Includes experiments with total projection volume (mm^3) within bounds.
 
+    min_contained_injection_ratio : float, optional, default 0.0
+        Includes experiments with total injection volume ratio within injection
+        mask.
 
     Attributes
     ----------
@@ -347,12 +368,7 @@ class RegionalData(_BaseData):
     >>> experiment_ids = (112514202, 139520203)
     >>> voxel_data = RegionalData()
     >>> voxel_data.get_experiment_data(experiment_ids)
-    VoxelData(injection_structure_ids=None,
-    projection_structure_ids=None, injection_hemisphere_id=3,
-    projection_hemisphere_id=3, normalized_injection=True,
-    normalized_projection=True, flip_experiments=True,
-    data_mask_tolerance=0.0, min_injection_sum=0.0,
-    min_projection_sum=0.0, experiment_ids=(112514202, 139520203))
+    xx
     """
 
     DEFAULT_STRUCTURE_SET_ID = 167587189
@@ -379,8 +395,9 @@ class RegionalData(_BaseData):
                    normalized_projection=voxel_data.normalized_projection,
                    flip_experiments=voxel_data.flip_experiments,
                    data_mask_tolerance=voxel_data.data_mask_tolerance,
-                   min_injection_volume=voxel_data.min_injection_volume,
-                   min_projection_volume=voxel_data.min_projection_volume)
+                   injection_volume_bounds=voxel_data.injection_volume_bounds,
+                   projection_volume_bounds=voxel_data.projection_volume_bounds,
+                   min_contained_injection_ratio=voxel_data.min_contained_injection_ratio)
 
     def _unionize_experiment_data(self):
         """Private helper method to unionize voxel scale data to regions."""

@@ -44,7 +44,7 @@ def test_experiment_generator(mcc, voxel_data):
 
     # ------------------------------------------------------------------------
     # tests pulls none when min_inj_volume too high
-    data = voxel_data(mcc, min_injection_volume=np.inf)
+    data = voxel_data(mcc, injection_volume_bounds=(np.inf, 0))
     exps = get_experiment_size(data)
 
     assert exps == 0
