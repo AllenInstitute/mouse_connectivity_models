@@ -46,8 +46,8 @@ class _BaseData(six.with_metaclass(ABCMeta)):
                  normalized_projection=True,
                  flip_experiments=True,
                  data_mask_tolerance=0.0,
-                 min_injection_sum=0.0,
-                 min_projection_sum=0.0):
+                 min_injection_volume=0.0,
+                 min_projection_volume=0.0):
 
         self.mcc = mcc
         self.injection_structure_ids = injection_structure_ids
@@ -58,8 +58,8 @@ class _BaseData(six.with_metaclass(ABCMeta)):
         self.normalized_projection = normalized_projection
         self.flip_experiments = flip_experiments
         self.data_mask_tolerance = data_mask_tolerance
-        self.min_injection_sum = min_injection_sum
-        self.min_projection_sum = min_projection_sum
+        self.min_injection_volume = min_injection_volume
+        self.min_projection_volume = min_projection_volume
 
         if self.injection_structure_ids is None:
             self.injection_structure_ids = self.default_structure_ids
@@ -82,8 +82,8 @@ class _BaseData(six.with_metaclass(ABCMeta)):
                                              eid,
                                              self.data_mask_tolerance)
 
-            if (experiment.injection_density.sum() >= self.min_injection_sum and
-                    experiment.projection_density.sum() >= self.min_projection_sum):
+            if (experiment.injection_volume >= self.min_injection_volume and
+                    experiment.projection_volume >= self.min_projection_volume):
 
                 hemisphere_id = experiment.injection_hemisphere_id
                 if (self.injection_hemisphere_id == 3 or
@@ -142,17 +142,11 @@ class VoxelData(_BaseData):
         of 0.0 thus indicates the highest threshold for data, whereas a value of
         1.0 indicates that data will be included from all voxels.
 
-    min_injection_sum : float, optional, default 0.0
+    min_injection_volume : float, optional, default 0.0
         Includes experiments with at least the minimum total injection density.
 
-    .. note:: this is defined as the sum of the injection density for an
-       experiment and is affected by normalization
-
-    min_projection_sum : float, optional, default 0.0
+    min_projection_volume : float, optional, default 0.0
         Includes experiments with at least the minimum total projection density.
-
-    .. note:: this is defined as the sum of the projection density for an
-       experiment and is affected by normalization
 
     Attributes
     ----------
@@ -307,17 +301,12 @@ class RegionalData(_BaseData):
         of 0.0 thus indicates the highest threshold for data, whereas a value of
         1.0 indicates that data will be included from all voxels.
 
-    min_injection_sum : float, optional, default 0.0
+    min_injection_volume : float, optional, default 0.0
         Includes experiments with at least the minimum total injection density.
 
-    .. note:: this is defined as the sum of the injection density for an
-       experiment and is affected by normalization
-
-    min_projection_sum : float, optional, default 0.0
+    min_projection_volume : float, optional, default 0.0
         Includes experiments with at least the minimum total projection density.
 
-    .. note:: this is defined as the sum of the projection density for an
-       experiment and is affected by normalization
 
     Attributes
     ----------
@@ -390,8 +379,8 @@ class RegionalData(_BaseData):
                    normalized_projection=voxel_data.normalized_projection,
                    flip_experiments=voxel_data.flip_experiments,
                    data_mask_tolerance=voxel_data.data_mask_tolerance,
-                   min_injection_sum=voxel_data.min_injection_sum,
-                   min_projection_sum=voxel_data.min_projection_sum)
+                   min_injection_volume=voxel_data.min_injection_volume,
+                   min_projection_volume=voxel_data.min_projection_volume)
 
     def _unionize_experiment_data(self):
         """Private helper method to unionize voxel scale data to regions."""

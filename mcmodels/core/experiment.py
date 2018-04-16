@@ -209,6 +209,16 @@ class Experiment(object):
         return get_injection_hemisphere_id(self.injection_density) == 3
 
     @property
+    def injection_volume(self):
+        """Returns total injection volume = sum(injection_density)"""
+        return self.injection_density.sum()
+
+    @property
+    def projection_volume(self):
+        """Returns total projection volume = sum(projection_density)"""
+        return self.projection_density.sum()
+
+    @property
     def centroid(self):
         """Returns centroid of the injection density."""
         return compute_centroid(self.injection_density)
@@ -216,12 +226,12 @@ class Experiment(object):
     @property
     def normalized_injection_density(self):
         """Returns injection density normalized to have unit sum."""
-        return self.injection_density / self.injection_density.sum()
+        return self.injection_density / self.injection_volume
 
     @property
     def normalized_projection_density(self):
         """Returns projection_density normalized by the total injection_density"""
-        return self.projection_density / self.injection_density.sum()
+        return self.projection_density / self.injection_volume
 
     def get_injection(self, normalized=False):
         if normalized:
