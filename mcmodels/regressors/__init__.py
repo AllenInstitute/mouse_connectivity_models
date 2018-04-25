@@ -8,6 +8,8 @@ non-regularized Nonnegative least squares models.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # Licence: BSD 3
 
+from . import least_squares
+
 from .nonnegative_linear import NonnegativeLinear
 from .nonnegative_linear import NonnegativeRidge
 from .nonnegative_linear import nonnegative_regression
@@ -22,6 +24,7 @@ __all__ = ['NadarayaWatson',
            'NadarayaWatsonCV',
            'NonnegativeLinear',
            'NonnegativeRidge',
+           'least_squares',
            'nonnegative_regression',
            'nonnegative_ridge_regression',
            'nonparametric']
