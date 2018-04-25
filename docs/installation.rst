@@ -3,33 +3,23 @@
 
 .. highlight:: shell
 
-===============
+============
 Installation
-===============
+============
 
-.. note::
-        This project is currently under development. You may wish to
-        :ref:`install the latest development verision<install_bleeding_edge>`.
-
-
-Installing the latest release
-=============================
+Dependencies
+~~~~~~~~~~~~
 
 mouse_connectivity_models requires:
 
-- Python (>= 2.7 or >= 3.5)
+- Python (>=2.7 or >= 3.4)
+- scikit-learn (>= 0.19)
 - allensdk (>= 0.14.4)
 
-If you already have a working installation of the allensdk, the easiest way to
-install mouse_connectivity_models is using ``pip`` ::
+For running the examples Matplotlib >= 1.3.1 is requried.
 
-        pip install -U mouse_connectivity_models
-
-
-.. _install_bleeding_edge:
-
-Bleeding Edge
-=============
+User installation
+~~~~~~~~~~~~~~~~~
 
 We use `Git <https://git-scm.com/>`_ for our version control and `Github
 <https://github.com/>`_ for hosting our main repository.

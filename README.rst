@@ -45,17 +45,16 @@ mouse_connectivity_models requires:
 
 For running the examples Matplotlib >= 1.3.1 is requried.
 
-
 User installation
 ~~~~~~~~~~~~~~~~~
 
-If you already have a working installation of the allensdk, the easiest way to
-install mouse_connectivity_models is using ``pip`` ::
+We use `Git <https://git-scm.com/>`_ for our version control and `Github
+<https://github.com/>`_ for hosting our main repository.
 
-        pip install -U mouse_connectivity_models
+You can check out the latest sources and install using ``pip``::
 
-The documentation includes more detailed `installation instructions
-<http://AllenInstitute.github.io/mouse_connectivity_models/installation.html>`_
+    $ git clone https://github.com/AllenInstitute/mouse_connectivity_models.git
+    $ pip install .
 
 
 Level of Support

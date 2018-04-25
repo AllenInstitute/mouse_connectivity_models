@@ -52,25 +52,6 @@ Utitility fucntions
         :no-inherited-members:
 
 
-.. _least_squares_ref:
-
-:mod:`mcmodels.regressors.least_squares`: Scipy Optimize Least Squares Wrapper
-===============================================================================
-.. automodule:: mcmodels.regressors.least_squares
-        :no-members:
-        :no-inherited-members:
-
-**User Guide** See the TODO ``least_squares`` section for further details.
-
-.. currentmodule:: mcmodels
-
-.. autosummary::
-        :toctree: generated/
-
-        regressors.least_squares.ScipyLeastSquares
-
-
-
 .. _nonnegative_linear_ref:
 
 :mod:`mcmodels.regressors.nonnegative_linear`: Nonnegative Least squares
