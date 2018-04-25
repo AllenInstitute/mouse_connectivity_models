@@ -8,11 +8,7 @@ name = "pypi"
 [packages]
 
 allensdk = "*"
-argschema = "*"
-matplotlib = "*"
-pillow = "*"
 sklearn = "*"
-dev = "*"
 
 
 [dev-packages]
@@ -20,9 +16,11 @@ dev = "*"
 bumpversion = "*"
 cookiecutter = "*"
 coverage = "*"
+matplotlib = "*"
 mock = "*"
 nose = "*"
 numpydoc = "*"
+pillow = "*"
 pytest = "*"
 "ruamel.yaml" = "*"
 sphinx = "<1.7"
