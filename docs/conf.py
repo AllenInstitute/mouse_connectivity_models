@@ -58,11 +58,13 @@ extensions = ['sphinx.ext.autodoc',
 # see https://github.com/numpy/numpydoc/issues/69
 numpydoc_class_members_toctree = False
 
+# Set python to be domain for whole docs
+primary_domain = 'py'
 
 autodoc_default_flags = ['members', 'inherited_members']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['aibs_sphinx/templates', 'templates']
+templates_path = ['aibs_sphinx/templates']#, 'templates']
 
 # generate autosummary even if no references
 autosummary_generate = True
@@ -106,7 +108,7 @@ release = mcmodels.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', 'aibs_sphinx', 'templates']#, '**tests**']
+exclude_patterns = ['_build', 'aibs_sphinx']#, 'templates']#, '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
