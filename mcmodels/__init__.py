@@ -16,10 +16,14 @@ __version__ = '0.0.9'
 
 from . import core
 from . import models
+from . import scorers
+from . import stats
 from . import regressors
 from . import utils
 
 __all__ = ['core',
            'models',
+           'scorers',
+           'stats',
            'regressors',
            'utils']
