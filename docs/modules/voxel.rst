@@ -4,7 +4,7 @@
 New Voxel-scale Connectivity Model [Knox2018]_
 ===============================================
 
-.. currentmodule:: mcmodels.models
+.. currentmodule:: mcmodels.models.voxel
 
 The voxel-scale model from [Knox2018]_ is the first full brain voxel-scale of the
 mouse connectome. The model performs :ref:`Nadaraya-Watson regression
@@ -87,15 +87,21 @@ computing the full matrix is similar to loading an `hdf5` file:
 VoxelConnectivityArray methods
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VoxelConnectivityArray also has a few methods implemented from ``numpy.ndarray``.
+**numpy.ndarray like methods**
+
+:class:`VoxelConnectivityArray` also has a few methods implemented from ``numpy.ndarray``.
 These include:
-- ``dtype``
-- ``shape``
-- ``size``
-- ``T``, ``transpose``
-- ``astype``
-- ``sum``
-- ``mean``
+
+.. currentmodule:: mcmodels.models.voxel.VoxelConnectivityArray
+
+- :attr:`dtype`
+- :attr:`shape`
+- :attr:`size`
+- :attr:`T`
+- :meth:`transpose`
+- :meth:`astype`
+- :meth:`sum`
+- :meth:`mean`
 
 and are called just like their ``numpy.ndarray`` counter parts:
 
@@ -103,6 +109,35 @@ and are called just like their ``numpy.ndarray`` counter parts:
         >>> transposed.shape
         (xxx, xxx)
 
+**initialization methods**
+
+.. currentmodule:: mcmodels.models.voxel
+
+Additionally, :class:`VoxelConnectivityArray` implements several loading methods
+to support loading the array from:
+
+- :meth:`VoxelConnectivityArray.from_hdf5`
+- :meth:`VoxelConnectivityArray.from_npy`
+- :meth:`VoxelConnectivityArray.from_csv`
+
+
+Also, an :class:`VoxelConnectivityArray` instance can be constructed from a fitted
+:class:`.VoxelModel` object:
+
+- :meth:`VoxelConnectivityArray.from_fitted_voxel_model`
+
+
+**iterator methods**
+
+In addition to being able to index :class:`VoxelConnectivityArray` as a ``numpy.ndarray``,
+:class:`VoxelConnectivityArray` implements several iterating methods:
+
+.. currentmodule:: mcmodels.models.voxel.VoxelConnectivityArray
+
+- :meth:`iterrows` : yields single rows
+- :meth:`itercolumns` : yields single columns
+- :meth:`iterrows_blocked` : yields blocks of rows given the number of blocks.
+- :meth:`itercolumns_blocked` : yields blocks of columns rows given the number of blocks.
 
 :class:`RegionalizedModel` class
 --------------------------------
