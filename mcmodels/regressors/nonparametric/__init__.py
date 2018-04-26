@@ -1,5 +1,5 @@
 """
-The :mod:`voxel_model.regressors.nonparametric` module implements Nonparametric
+The :mod:`mcmodels.regressors.nonparametric` module implements Nonparametric
 regression models and the polynomial family of kernels. This module includes
 NadarayaWatson regression and the Polynomial kernel.
 """

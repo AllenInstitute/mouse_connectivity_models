@@ -1,5 +1,5 @@
 """
-The :mod:`regressors` module implements scikit-learn style estimators
+The :mod:`mcmodels.regressors` module implements scikit-learn style estimators
 for solving various regression problems. It implements the NadarayaWatson
 regressor, a general least squares regressor, and both regularized and
 non-regularized Nonnegative least squares models.

@@ -1,5 +1,5 @@
 """
-The :mod:`voxel_model.regressors.nonnegative_linear` module implements linear
+The :mod:`mcmodels.regressors.nonnegative_linear` module implements linear
 models subject to the nonnegativity constraint. It includes Nonnegative linear
 regression and Nonnegative linear regression with L2 (Ridge) regularization.
 """
