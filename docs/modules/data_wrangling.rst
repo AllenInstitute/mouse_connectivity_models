@@ -64,7 +64,7 @@ connectivity models of the form ``y = f(X)``.
 
 To pull experimental data for use in connectivity models, first instatiate your
 required data pulling class with your set of parameters, then call the
-:meth:`VoxelData.get_experiment_data` method:
+:meth:`~VoxelData.get_experiment_data` method:
 
         >>> from mcmodels.core import VoxelData
         >>> from mcmodels.utils import get_mcc, get_experiment_ids
@@ -79,8 +79,8 @@ required data pulling class with your set of parameters, then call the
         >>> voxel_data.get_experiment_data(experiment_ids)
         VoxelData( xxx )
 
-The :meth:`VoxelData.get_experiment_data` method sets the attributes :attr:`centroids`,
-:attr:`injections` and :attr:`projections` to be used for fitting connectivity models:
+The :meth:`~VoxelData.get_experiment_data` method sets the attributes :attr:`~VoxelData.centroids`,
+:attr:`~VoxelData.injections` and :attr:`~VoxelData.projections` to be used for fitting connectivity models:
 
         >>> voxel_data.centroids.shape
         (123, 3)
@@ -115,11 +115,11 @@ and in this case the cortex:
         Mask(hemisphere_id=2, structure_ids=[315])
 
 
-The method :meth:`VoxelData.get_experiment_data` or (:meth:`RegionalData.get_experiment_data`)
+The method :meth:`~VoxelData.get_experiment_data` in :class:`VoxelData` or :class:`RegionalData`
 sets source and target matrices as attributes which have masked, flattened
 injection and projection volumes for each experiment as rows. One can determine
 the structure_id of a given column in either of these arrays using the method
-:meth:`Mask.get_key`:
+:meth:`~Mask.get_key` from the :class:`Mask` object:
 
         >>> import numpy as np
         >>> key = source_mask.get_key()
@@ -130,7 +130,7 @@ the structure_id of a given column in either of these arrays using the method
 
 The key by default will include only the structure ids specified in the
 construction of the :class:`Mask` object. However, we can pass specific
-``structure_ids`` to the :meth:`Mask.get_key` method if we are interested in a finer or
+``structure_ids`` to the :meth:`~Mask.get_key` method if we are interested in a finer or
 coarser level in the ontology
 
         >>> # get set of summary structures

@@ -12,8 +12,9 @@ to the constraint that the coefficients :math:`x` be nonnegative:
 .. math::
         \underset{x}{\text{argmin}} \| Ax - b \|_2^2, \text{subject to } x \geq 0
 
-:class:`NonnegativeLinear` will take in its :meth:`NonnegativeLinear.fit` method
-arrays X, y and will store the coefficients :math:`w` in its :attr:`coef_` member:
+:class:`NonnegativeLinear` will take in its :meth:`~NonnegativeLinear.fit` method
+arrays X, y and will store the coefficients :math:`w` in its
+:attr:`~NonnegativeLinear.coef_` member:
 
         >>> from mcmodels.regressors import NonnegativeLinear
         >>> reg = NonnegativeLinear()
@@ -59,8 +60,8 @@ where
         :align: center
 
 As with :class:`NonnegativeLinear`, :class:`NonnegativeRidge`  will take in its
-:meth:`NonnegativeRidge.fit` method arrays X, y and will store the coefficients
-:math:`w` in its :attr:`NonnegativeRidge.coef_` member:
+:meth:`~NonnegativeRidge.fit` method arrays X, y and will store the coefficients
+:math:`w` in its :attr:`~NonnegativeRidge.coef_` member:
 
         >>> from mcmodels.regressors import NonnegativeRidge
         >>> reg = NonnegativeRidge(alpha=1.0)
