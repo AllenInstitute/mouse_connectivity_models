@@ -8,6 +8,7 @@ Rank Degeneracy and Least Squares Problems : Golub, Klema, Stewart 1976
 import numpy as np
 import numpy.linalg as LA
 import scipy.linalg as linalg
+from sklearn.utils import check_random_state
 
 
 def svd_subset_selection(X, n):
@@ -39,11 +40,11 @@ def svd_subset_selection(X, n):
     return p[:n]
 
 
-def condition_with_svd_subset_selection(X, kappa=1000):
+def backward_subset_selection_conditioning(X, kappa=1000):
     """Conditioning through subselecting columns of X.
 
     Uses svd_subset_selection to greedily remove single columns of X till
-    the desired conditioning is reached
+    the desired conditioning is reached.
 
     Parameters
     ----------
@@ -59,13 +60,58 @@ def condition_with_svd_subset_selection(X, kappa=1000):
         Array with condition number < kappa, containing the ~lesser dependent
         columns of X.
     """
-    X = np.atleast_2d(X.copy())
-    columns = np.arange(X.shape[1])
+    n_cols = X.shape[1]
+    columns = np.arange(n_cols)
 
-    while LA.cond(X) > kappa and X.shape[1] > 1:
+    # initialize for first iteration
+    subset = np.arange(n_cols)
+
+    while LA.cond(X[:, subset]) > kappa and len(columns) > 1:
         # greedily subset columns of X using svd subset selection
-        subset = svd_subset_selection(X, X.shape[1] - 1)
-        X = X[:, subset]
-        columns = columns[:, subset]
+        subset = svd_subset_selection(X, len(columns) - 1)
+        columns = columns[subset]
 
-    return X, columns
+    return X[:, columns], columns
+
+
+def forward_subset_selection_conditioning(X, kappa=1000, random_state=None):
+    """Conditioning through subselecting columns of X.
+
+    Randomly select initial column of X, then greedily add columns that
+    minimially increase the conditioning.
+
+    Parameters
+    ----------
+    X : array, shape (n_samples, n_features)
+        Array whose columns we wish to subset.
+
+    kappa : float, optional, default: 1000
+        The maximum condition number desired.
+
+    Returns
+    -------
+    C : array, shape (n_samples, ?)
+        Array with condition number < kappa, containing the ~lesser dependent
+        columns of X.
+    """
+    n_cols = X.shape[1]
+    candidates = list(range(n_cols))
+
+    # initial random subset of single column
+    initial = check_random_state(random_state).choice(n_cols)
+
+    columns = [initial]
+    candidates.remove(initial)
+
+    while LA.cond(np.atleast_2d(X[:, columns])) < kappa and len(columns) < n_cols:
+        # greedily subset columns of X using svd subset selection
+        condition = [LA.cond(X[:, columns + [c]]) for c in candidates]
+        best = candidates[np.argmin(condition)]
+
+        # update
+        columns.append(best)
+        candidates.remove(best)
+
+    columns = np.sort(columns)
+
+    return X[:, columns], columns

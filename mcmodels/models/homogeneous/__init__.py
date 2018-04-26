@@ -8,9 +8,13 @@ value decomposition and QR pivoting.
 # License: Allen Institute Software License
 
 from .homogeneous_model import HomogeneousModel
-from .subset_selection \
-    import svd_subset_selection, condition_with_svd_subset_selection
+
+from .subset_selection import svd_subset_selection
+from .subset_selection import forward_subset_selection_conditioning
+from .subset_selection import backward_subset_selection_conditioning
+
 
 __all__ = ['HomogeneousModel',
-           'condition_with_svd_subset_selection',
+           'backward_subset_selection_conditioning',
+           'forward_subset_selection_conditioning',
            'svd_subset_selection']

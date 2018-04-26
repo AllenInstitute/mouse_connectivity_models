@@ -3,7 +3,8 @@ import numpy as np
 from numpy.testing import assert_raises, assert_array_equal
 
 from mcmodels.models.homogeneous \
-    import svd_subset_selection, condition_with_svd_subset_selection
+    import (svd_subset_selection, forward_subset_selection_conditioning,
+            backward_subset_selection_conditioning)
 
 # ============================================================================
 # Module level functions
@@ -27,13 +28,28 @@ def test_svd_subset_selection():
     assert removed_column.pop() in (2, 8, 9)
 
 
-def test_condition_X():
+def test_backward_subset_selection_conditioning():
     # ------------------------------------------------------------------------
     # test X is not overwritten
     X = np.random.rand(10, 10)
     kappa = np.inf
 
-    X_condioned, columns = condition_with_svd_subset_selection(X, kappa)
+    X_condioned, columns = backward_subset_selection_conditioning(X, kappa)
 
     assert X_condioned is not X
     assert_array_equal(X, X_condioned)
+
+
+def test_forward_subset_selection_conditioning():
+    # ------------------------------------------------------------------------
+    # test X is not overwritten
+    X = np.random.rand(10, 10)
+    kappa = np.inf
+
+    X_condioned, columns = forward_subset_selection_conditioning(X, kappa)
+    print(columns)
+
+    assert X_condioned is not X
+    assert_array_equal(X, X_condioned)
+
+

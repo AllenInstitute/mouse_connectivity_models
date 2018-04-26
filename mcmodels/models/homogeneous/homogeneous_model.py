@@ -7,7 +7,7 @@ Homogeneous Linear Model from Oh et al. 2014.
 from sklearn.utils.validation import check_is_fitted
 
 from ...regressors import NonnegativeLinear
-from .subset_selection import condition_with_svd_subset_selection
+from .subset_selection import backward_subset_selection_conditioning
 
 
 class HomogeneousModel(NonnegativeLinear):
@@ -55,7 +55,7 @@ class HomogeneousModel(NonnegativeLinear):
         -------
         self : returns an instance of self
         """
-        X, columns = condition_with_svd_subset_selection(X, self.kappa)
+        X, columns = backward_subset_selection_conditioning(X, self.kappa)
         self.columns_ = columns
 
         super(HomogeneousModel, self).fit(X, y, sample_weight=sample_weight)
