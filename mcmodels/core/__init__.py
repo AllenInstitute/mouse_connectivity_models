@@ -1,9 +1,8 @@
 """
 The :mod:`voxel_model.core` module implements objects useful in data manipulation.
 """
-
-# Authors: Joseph Knox josephk@alleninstitute.org>
-# License: BSD 3
+# Authors: Joseph Knox <josephk@alleninstitute.org>
+# License: Allen Institute Software License
 
 from .base import VoxelData, RegionalData
 from .masks import Mask

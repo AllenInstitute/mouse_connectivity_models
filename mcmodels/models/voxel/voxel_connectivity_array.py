@@ -2,9 +2,8 @@
 Module containing VoxelArray: object for implictly constructing the
 voxel-voxel connectivity matrix.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 from __future__ import division
 from functools import partial, reduce

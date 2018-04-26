@@ -2,9 +2,8 @@
 Module containing the RegionalizedModel object, used in evaluating the
 voxel-voxel model at the level of regions.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 from __future__ import division, absolute_import
 

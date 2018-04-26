@@ -1,9 +1,8 @@
 """
 Nadaraya-Watson Regression
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 # TODO : docs and example
 # TODO : eval overwrite of K (kernel)

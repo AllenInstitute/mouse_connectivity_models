@@ -2,9 +2,8 @@
 Greedy subset selection for conditioning of input data.
 Rank Degeneracy and Least Squares Problems : Golub, Klema, Stewart 1976
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 import numpy as np
 import numpy.linalg as LA

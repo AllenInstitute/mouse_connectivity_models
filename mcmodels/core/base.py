@@ -1,9 +1,8 @@
 """
 Module containing VoxelData and RegionalData objects.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 from abc import ABCMeta, abstractmethod, abstractproperty
 

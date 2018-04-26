@@ -5,9 +5,8 @@ The module also contains a VoxelConnectivityArray class to work with the model
 in memory (implicitly computing its weights) and a RegionalizedModel class to
 integrate the model weights to the regional level.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# Licence: BSD 3
+# License: Allen Institute Software License
 
 from .regionalized_model import RegionalizedModel
 from .voxel_connectivity_array import VoxelConnectivityArray

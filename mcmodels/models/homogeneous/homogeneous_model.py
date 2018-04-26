@@ -1,9 +1,8 @@
 """
 Homogeneous Linear Model from Oh et al. 2014.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 from sklearn.utils.validation import check_is_fitted
 

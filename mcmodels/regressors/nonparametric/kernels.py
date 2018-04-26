@@ -7,9 +7,8 @@ Do not (for the moment) allow (analytic) gradient-based hyperparameter optimizat
 
 See sklearn.gaussian_process.kernels for more information.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 # TODO : further docs
 # TODO : eval_gradient

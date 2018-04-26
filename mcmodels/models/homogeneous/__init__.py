@@ -4,9 +4,8 @@ Model for predicting regional connectivity from Oh et al. 2014. Additionally,
 the module implements a greedy conditioning procedure based on the singular
 value decomposition and QR pivoting.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# Licence: BSD 3
+# License: Allen Institute Software License
 
 from .homogeneous_model import HomogeneousModel
 from .subset_selection \

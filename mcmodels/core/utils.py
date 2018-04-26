@@ -1,9 +1,8 @@
 """
 Module containing Experiment object and supporting functions
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 from __future__ import division
 

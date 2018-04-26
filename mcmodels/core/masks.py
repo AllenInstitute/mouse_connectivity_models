@@ -1,9 +1,8 @@
 """"
 Module containing Mask object and supporting functions
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 # TODO : finish Mask docstring (examples)
 from __future__ import division

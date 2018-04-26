@@ -4,9 +4,8 @@ here at the Allen Institute for modeling mesoscale connectivity in the mouse.
 The module contains the HomogeneousModel from Oh et al. 2014 as well as the
 recent VoxelModel from Knox & Harris 2018.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# Licence: BSD 3
+# License: Allen Institute Software License
 
 from . import homogeneous
 from .homogeneous import HomogeneousModel

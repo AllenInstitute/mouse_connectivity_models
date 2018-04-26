@@ -3,11 +3,10 @@ Module containing object InjectionModel. The only difference between this
 estimator and regressors.NadarayaWatson is that this one treats the full
 injection as the X, and thus must be passed as X = (centroids, injections)
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
-from __future__ import division, absolute_import
+from __future__ import division
 import numpy as np
 
 from scipy.sparse import issparse

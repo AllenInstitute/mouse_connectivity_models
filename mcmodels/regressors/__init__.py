@@ -4,9 +4,8 @@ for solving various regression problems. It implements the NadarayaWatson
 regressor, a general least squares regressor, and both regularized and
 non-regularized Nonnegative least squares models.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# Licence: BSD 3
+# License: Allen Institute Software License
 
 from .nonnegative_linear import NonnegativeLinear
 from .nonnegative_linear import NonnegativeRidge
