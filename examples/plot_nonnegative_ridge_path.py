@@ -27,7 +27,6 @@ and the solution tends towards the ordinary least squares, coefficients
 exhibit big oscillations. In practise it is necessary to tune alpha
 in such a way that a balance is maintained between both.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 

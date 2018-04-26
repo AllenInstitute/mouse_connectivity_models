@@ -20,7 +20,6 @@ This example illustrates NW on an artificial dataset, which
 consists of a sinusoidal target function and strong noise added to every fifth
 datapoint.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 

@@ -8,9 +8,8 @@ in mouse developed at the Allen Institute for Brain Science.
 See https://AllenInstitute.githib.io/mouse_connectivity_models for complete
 documentation.
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
-# License: BSD 3
+# License: Allen Institute Software License
 
 __version__ = '0.0.9'
 

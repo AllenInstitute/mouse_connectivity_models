@@ -25,7 +25,6 @@ of the prediction is much more stable and the variance
 in the line itself is greatly reduced, in comparison to that
 of the standard linear regression
 """
-
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 

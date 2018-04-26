@@ -1,12 +1,10 @@
 """
 Module containing utility functions
 """
-
 # Authors: Joseph Knox josephk@alleninstitute.org
-# License:
+# License: Allen Institute Software License
 
 from __future__ import absolute_import
-from itertools import compress
 import os
 
 import numpy as np
@@ -14,15 +12,40 @@ from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 
 def get_experiment_ids(mcc, structure_ids, cre=None):
-    """Returns all experiment ids with injection in ..."""
-    #TODO: improve doc
+    """Returns all experiment ids with injection in structure_ids.
+
+    Parameters
+    ----------
+    mcc : MouseConnectivityCache object
+    structure_ids: list
+        Only return experiments that were injected in the structures provided here.
+        If None, return all experiments.  Default None.
+    cre: boolean or list
+        If True, return only cre-positive experiments.  If False, return only
+        cre-negative experiments.  If None, return all experients. If list, return
+        all experiments with cre line names in the supplied list. Default None.
+
+    Returns
+    -------
+    List of experiment ids satisfying the parameters.
+    """
     #filters injections by structure id or Decendent
     experiments = mcc.get_experiments(dataframe=False, cre=cre,
                                       injection_structure_ids=structure_ids)
     return [experiment['id'] for experiment in experiments]
 
 def get_mcc(manifest_file=None):
-    """Returns a MouseConnectivityCache instance with the default settings."""
+    """Returns a MouseConnectivityCache instance with the default settings.
+
+    Parameters
+    ----------
+    manifest_file : string
+        Path to file with which MouseConnectivityCache will cache its manifest.
+
+    Returns
+    -------
+    MouseConnectivityCache object
+    """
     if manifest_file is None:
         manifest_file = os.path.join(os.getcwd(), "connectivity",
                                      "mouse_connectivity_manifest.json")
@@ -36,6 +59,35 @@ def get_mcc(manifest_file=None):
 
 
 def nonzero_unique(array, **unique_kwargs):
+    """np.unique returning only nonzero unique elements.
+
+    Parameters
+    ----------
+    arr : array
+        Array of which unique values are wanted.
+
+    **unique_kwargs
+        Keyword arguments to be passed to numpy.unique. See `numpy.unique
+        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
+
+    Returns
+    -------
+    unique : array
+        Unique values sorted in the order in which they occur
+
+    unique_indices : array, optional
+        Indices of the first occurance of the unique values. Only returned if
+        return_indices kwarg is specified as True.
+
+    unique_counts : array
+        Counts of the unique values. Only returned if return_counts kwarg is
+        specified as True.
+
+    See Also
+    --------
+    ordered_unique
+    lex_ordered_unique
+    """
     # TODO: docstring
     if 'return_inverse' in unique_kwargs:
         raise NotImplementedError("lex ordiring of inverse array not "
@@ -56,33 +108,32 @@ def ordered_unique(array, **unique_kwargs):
 
     Similar outuput to pd.unique(), although probably not as fast.
 
-        see numpy.unique for more info
-
     Parameters
     ----------
     arr : array
         Array of which unique values are wanted.
 
-    return_index : boolean, optional (default=False)
-        If True, first index for each unique value is returned.
-
-    return_counts : boolean, optional (default=False)
-        If True, counts of unique values is returned.
-
-    axis : int, optional (defualt=None)
-        Axis along which to operate.
+    **unique_kwargs
+        Keyword arguments to be passed to numpy.unique. See `numpy.unique
+        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
 
     Returns
     -------
     unique : array
         Unique values sorted in the order in which they occur
 
-    unique_indices : array
-        Indices of the first occurance of the unique values.
+    unique_indices : array, optional
+        Indices of the first occurance of the unique values. Only returned if
+        return_indices kwarg is specified as True.
 
     unique_counts : array
-        Counts of the unique values.
+        Counts of the unique values. Only returned if return_counts kwarg is
+        specified as True.
 
+    See Also
+    --------
+    nonzero_unique
+    lex_ordered_unique
     """
     if 'return_inverse' in unique_kwargs:
         raise NotImplementedError("lex ordiring of inverse array not "
@@ -105,8 +156,6 @@ def ordered_unique(array, **unique_kwargs):
 def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
     """np.unique in a given order.
 
-        see numpy.unique for more info
-
     Parameters
     ----------
     arr : array
@@ -118,29 +167,30 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
     allow_extra : boolean, optional (default=False)
         If True, lex_order is allowed to have values not found in arr.
 
-    return_index : boolean, optional (default=False)
-        If True, first index for each unique value is returned.
-
-    return_counts : boolean, optional (default=False)
-        If True, counts of unique values is returned.
-
-    axis : int, optional (defualt=None)
-        Axis along which to operate.
+    **unique_kwargs
+        Keyword arguments to be passed to numpy.unique. See `numpy.unique
+        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
 
     Returns
     -------
     unique : array
         Unique values sorted in the order in which they occur
 
-    unique_indices : array
-        Indices of the first occurance of the unique values.
+    unique_indices : array, optional
+        Indices of the first occurance of the unique values. Only returned if
+        return_indices kwarg is specified as True.
 
     unique_counts : array
-        Counts of the unique values.
+        Counts of the unique values. Only returned if return_counts kwarg is
+        specified as True.
 
+    See Also
+    --------
+    nonzero_unique
+    ordered_unique
     """
     if 'return_inverse' in unique_kwargs:
-        raise NotImplementedError("lex ordiring of inverse array not "
+        raise NotImplementedError("lex ordering of inverse array not "
                                   "yet implemented")
 
     if len(set(lex_order)) < len(lex_order):
@@ -181,9 +231,9 @@ def padded_diagonal_fill(arrays):
         List of 2D arrays with which to fill the return array.
 
     Returns
+    -------
     padded : array
         Return array containing each of the input arrays, padded with zeros.
-
     """
     shapes = [x.shape for x in arrays]
     padded = np.zeros(tuple(map(sum, zip(*shapes))))
@@ -200,7 +250,27 @@ def padded_diagonal_fill(arrays):
 
 
 def unionize(volume, key, return_regions=False):
-    """Unionize voxel data to regional data"""
+    """Unionize voxel data to regional data.
+
+    Parameters
+    ----------
+    volume : array, shape (n, m)
+        Possibly stacked flattened volume(s) such as projection densities or
+        injection densities.
+    key : array, shape (m,)
+        1D Array with length equal to the number of columns in volume. This array
+        has integer values corresponding to the region to which each voxel belongs.
+    return_regions : boolean, optional (default: False)
+        If True, return an array of the unique values of key in addition to the
+        unionized volume array.
+
+    Returns
+    -------
+    result : array, shape (n, len(unique(key)))
+        The unionized volume.
+    regions : array, optional, shape (len(unique(key)),)
+        The unique values of key.
+    """
     volume = np.atleast_2d(volume)
     if volume.shape[1] != key.size:
         # TODO: better error
@@ -213,4 +283,5 @@ def unionize(volume, key, return_regions=False):
 
     if return_regions:
         return result, regions
+
     return result
