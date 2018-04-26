@@ -150,7 +150,8 @@ Functions
         :toctree: generated/
 
         models.homogeneous.svd_subset_selection
-        models.homogeneous.condition_with_svd_subset_selection
+        models.homogeneous.forward_subset_selection_conditioning
+        models.homogeneous.backward_subset_selection_conditioning
 
 
 .. _voxel_ref:

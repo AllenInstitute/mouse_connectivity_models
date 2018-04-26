@@ -17,37 +17,9 @@ class RegionalizedModel(object):
     """Regionalization/Parcelation of VoxelModel.
 
     Regionalizes the connectivity model in VoxelModel given a brain parcelation.
-            Metric with which to represent the regionalized connectivity.
-            Valid choices are:
-            - "connection_strength" (default)
-
-               ..math:: W = w_ij \|X\|\|Y\|
-
-               The sum of the voxel-scale connectivity between each pair
-               of source-target regions.
-
-            - "connection_density"
-
-              ..math:: W = w_ij \|X\|
-
-              The average voxel-scale connectivity between each source
-              voxel to each source region.
-
-            - "normalized_connection_strength"
-              ..math:: W = w_ij \|Y\|
-
-              The average voxel-scale connectivity between each source
-              region to each target voxel"
-
-            - "normalized_connection_density"
-              ..math:: W = w_ij
-
-              The average voxel-scale connectivity between each pair of
-              source-target regions
 
     Parameters
     ----------
-
     source_key : array-like, shape=(n_source_voxels,)
         Flattened key relating each source voxel to a given brain region.
 
@@ -56,6 +28,7 @@ class RegionalizedModel(object):
 
     Examples
     --------
+    >>> xxx
     """
     VALID_REGION_METRICS = [
         "connection_strength",
@@ -137,7 +110,11 @@ class RegionalizedModel(object):
 
     @property
     def connection_strength(self):
-        """..math:: w_ij \|X\|\|Y\|"""
+        """:math:`w_{ij}`
+
+           The sum of the voxel-scale connectivity between each pair
+           of source-target regions.
+        """
         try:
             return self._region_matrix
         except AttributeError:
@@ -146,18 +123,30 @@ class RegionalizedModel(object):
 
     @property
     def connection_density(self):
-        """..math:: w_ij \|X\|"""
+        """:math:`w_{ij} / |Y|`
+
+          The average voxel-scale connectivity between each source
+          voxel to each source region.
+        """
         return np.divide(self.connection_strength,
                          self.target_counts[np.newaxis, :])
 
     @property
     def normalized_connection_strength(self):
-        """..math:: w_ij \|Y\|"""
+        """:math:`w_{ij} / |X|`
+
+          The average voxel-scale connectivity between each source
+          region to each target voxel"
+        """
         return np.divide(self.connection_strength,
                          self.source_counts[:, np.newaxis])
 
     @property
     def normalized_connection_density(self):
-        """..math:: w_ij"""
+        """:math:`w_{ij} / (|X| |Y|)`
+
+          The average voxel-scale connectivity between each pair of
+          source-target regions
+        """
         return np.divide(self.connection_strength,
                          np.outer(self.source_counts, self.target_counts))

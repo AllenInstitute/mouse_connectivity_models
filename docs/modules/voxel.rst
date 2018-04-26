@@ -139,10 +139,11 @@ In addition to being able to index :class:`VoxelConnectivityArray` as a ``numpy.
 - :meth:`iterrows_blocked` : yields blocks of rows given the number of blocks.
 - :meth:`itercolumns_blocked` : yields blocks of columns rows given the number of blocks.
 
+
+.. currentmodule:: mcmodels.models.voxel
+
 :class:`RegionalizedModel` class
 --------------------------------
-
-.. currentmodule:: mcmodels.models.voxel.RegionalizedModel
 
 Our voxel-scale model can be regionalized as well by integrating the connectivity
 matrix over some parcellation.
