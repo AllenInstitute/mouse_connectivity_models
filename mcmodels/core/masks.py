@@ -1,5 +1,5 @@
 """"
-Module containing Mask object and supporting functions
+Module containing Mask object and supporting functions.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -8,8 +8,12 @@ Module containing Mask object and supporting functions
 from __future__ import division
 from functools import reduce
 import operator as op
+import json
 
 import numpy as np
+from allensdk.core import json_utilities
+
+from .voxel_model_cache import VoxelModelCache
 
 
 def _validate_descendant_ids(structure_ids, descendant_ids):
@@ -48,9 +52,9 @@ class Mask(object):
 
     Parameters
     ----------
-    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
-        This supplies the interface for pulling experimental data
-        from the AllenSDK.
+    voxel_model_cache : VoxelModelCache object
+        This supplies the interface for pulling cached reference space,
+        annotation, and structure tree objects.
 
     structure_ids : array-like, optional, shape (n_structure_ids,)
         AllenSDK CCF Annotation stucture ids to be included in the model
@@ -68,28 +72,53 @@ class Mask(object):
 
     Examples
     --------
-    >>> from voxel_model.masks import Mask
-    >>>
-
+    >>> xxx
     """
 
     DEFAULT_STRUCTURE_IDS = tuple([8])
 
-    def __init__(self, mcc, structure_ids=None, hemisphere_id=3):
+    @classmethod
+    def from_json(cls, file_name):
+        """Construct Mask object from json file.
+
+        Parameters
+        ----------
+        file_name : string
+            Name of json file.
+
+        Returns
+        -------
+        Mask object
+        """
+        params = json_utilities.load(file_name)
+        voxel_model_cache = VoxelModelCache(**params.pop('voxel_model_cache'))
+
+        return cls(voxel_model_cache, **params)
+
+    def __init__(self, voxel_model_cache, structure_ids=None, hemisphere_id=3):
 
         if structure_ids is None:
             structure_ids = self.DEFAULT_STRUCTURE_IDS
 
         # update reference space to include only assigned voxels
-        reference_space = mcc.get_reference_space()
+        reference_space = voxel_model_cache.get_reference_space()
         reference_space.remove_unassigned(update_self=True)
 
-        self.mcc = mcc
+        self.voxel_model_cache = voxel_model_cache
         self.structure_ids = structure_ids
         self.hemisphere_id = hemisphere_id
         self.reference_space = reference_space
         self.annotation = reference_space.annotation
         self.structure_tree = reference_space.structure_tree
+
+    def __repr__(self):
+        if len(self.structure_ids) > 3:
+            structure_ids = "{x[0]}, ..., {x[-1]}".format(x=self.structure_ids)
+        else:
+            structure_ids = ", ".join(map(str, self.structure_ids))
+
+        return "{0}(hemisphere_id={1}, structure_ids=[{2}])".format(
+            self.__class__.__name__, self.hemisphere_id, structure_ids)
 
     @staticmethod
     def _mask_to_hemisphere(mask, hemisphere_id):
@@ -330,11 +359,13 @@ class Mask(object):
 
         return y_volume
 
-    def __repr__(self):
-        if len(self.structure_ids) > 3:
-            structure_ids = "{x[0]}, ..., {x[-1]}".format(x=self.structure_ids)
-        else:
-            structure_ids = ", ".join(map(str, self.structure_ids))
+    def to_json(self, file_name=None):
+        params = dict(voxel_model_cache=json.loads(self.voxel_model_cache.to_json()),
+                      structure_ids=self.structure_ids,
+                      hemisphere_id=self.hemisphere_id)
 
-        return "{0}(hemisphere_id={1}, structure_ids=[{2}])".format(
-            self.__class__.__name__, self.hemisphere_id, structure_ids)
+        if file_name is None:
+            return json_utilities.write_string(params)
+
+        json_utilities.write(params, file_name)
+

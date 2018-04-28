@@ -5,7 +5,6 @@ Module containing Experiment object and supporting functions
 # License: Allen Institute Software License
 
 from __future__ import division
-
 from functools import partial
 
 import numpy as np
@@ -13,14 +12,13 @@ import numpy as np
 from .utils import compute_centroid, get_injection_hemisphere_id
 
 
-def _pull_grid_data(mcc, experiment_id):
-    """Pulls data volumes using MouseConnectivityCahce object.
+def _pull_grid_data(voxel_model_cache, experiment_id):
+    """Pulls data volumes using VoxelModelCache object.
 
     Parameters
     ----------
-    mcc : MouseConnectivityCache instance.
+    voxel_model_cache : VoxelModelCache instance.
         Object used to pull grid data.
-        see allensdk.core.mouse_connectivity_cache module for more info.
 
     experiment_id : int
         Experiment id of the experiment from which to pull grid data.
@@ -33,15 +31,15 @@ def _pull_grid_data(mcc, experiment_id):
 
     Notes
     -----
-    mcc.get_<data_volume> returns a tuple ( data_volume, meta_data ). We only
-    care about the data volume.
+    voxel_model_cache.get_<data_volume> returns a tuple (data_volume, meta_data).
+    We only care about the data volume.
 
     """
     return {
-        "data_mask" : mcc.get_data_mask(experiment_id)[0],
-        "injection_density" : mcc.get_injection_density(experiment_id)[0],
-        "injection_fraction" : mcc.get_injection_fraction(experiment_id)[0],
-        "projection_density" : mcc.get_projection_density(experiment_id)[0]
+        "data_mask" : voxel_model_cache.get_data_mask(experiment_id)[0],
+        "injection_density" : voxel_model_cache.get_injection_density(experiment_id)[0],
+        "injection_fraction" : voxel_model_cache.get_injection_fraction(experiment_id)[0],
+        "projection_density" : voxel_model_cache.get_projection_density(experiment_id)[0]
     }
 
 
@@ -82,8 +80,6 @@ def _compute_true_injection_density(injection_density, injection_fraction, inpla
     Takes into consideration injection fracion (proportion of pixels in the
     annotated injection site).
 
-        see allensdk.core.mouse_connectivity_cache module for more info.
-
     Parameters
     ----------
     injection_density : array, shape (x_ccf, y_ccf, z_ccf)
@@ -99,7 +95,6 @@ def _compute_true_injection_density(injection_density, injection_fraction, inpla
     -------
     array, shape (x_ccf, y_ccf, z_ccf)
         'true' injection density : injection_density * injection_fraction
-
     """
     if injection_density.shape != injection_fraction.shape:
         raise ValueError("injection_density and injection_fraction must "
@@ -116,27 +111,23 @@ class Experiment(object):
     """Class containing the data from an anterograde injection
 
     Experiment conveniently compiles the relevant information from a given
-    anterograde viral tracing experiment pulled from the AllenSDK
-    MouseConnectivityCache module.
-
-    See allensdk.core.mouse_connectivity_cache for more information.
+    anterograde viral tracing experiment data.
 
     Parameters
     ----------
-    mcc : allensdk.core.mouse_connectivity_cache.MouseConnectivityCache object
-        This supplies the interface for pulling experimental data
-        from the AllenSDK.
+    voxel_model_cache : VoxelModelCache object
+        This supplies the interface for pulling experimental data.
 
     experiment_id : int
         AllenSDK id assigned to given experiment
 
     Examples
     --------
-    >>> from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
-    >>> from voxel_model.experiment import Experiment
-    >>> mcc = MouseConnectivityCache(resolution=100)
+    >>> from voxel_model.core import Experiment
+    >>> from voxel_model import VoxelModelCache
+    >>> voxel_model_cache = VoxelModelCache(resolution=100)
     >>> eid = 100141273
-    >>> exp = Experiment(mcc, eid)
+    >>> exp = Experiment(voxel_model_cache, eid)
     >>> exp.injection_density.shape
     (132,80,114)
 
@@ -144,16 +135,14 @@ class Experiment(object):
     DEFAULT_DATA_MASK_TOLERANCE = 0.5
 
     @classmethod
-    def from_mcc(cls, mcc, experiment_id, data_mask_tolerance=None):
+    def from_voxel_model_cache(cls, voxel_model_cache, experiment_id,
+                               data_mask_tolerance=None):
         """Alternative constructor allowing for pulling grid data.
-
-        see allensdk.core.mouse_connectivity_cache module for more info.
 
         Parameters
         ----------
-        mcc : MouseConnectivityCache instance.
+        voxel_model_cache : VoxelModelCache instance.
             Object used to pull grid data.
-            see allensdk.core.mouse_connectivity_cache module for more info.
 
         experiment_id : int
             Experiment id of the experiment from which to pull grid data.
@@ -164,13 +153,12 @@ class Experiment(object):
             - 1 : left hemisphere
             - 2 : right hemisphere
             - 3 : both hemispheres
-
         """
         if data_mask_tolerance is None:
             data_mask_tolerance = cls.DEFAULT_DATA_MASK_TOLERANCE
 
         # pull data
-        data_volumes = _pull_grid_data(mcc, experiment_id)
+        data_volumes = _pull_grid_data(voxel_model_cache, experiment_id)
 
         # compute 'true' injection density (inplace)
         _compute_true_injection_density(data_volumes["injection_density"],
