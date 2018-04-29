@@ -13,8 +13,6 @@ import json
 import numpy as np
 from allensdk.core import json_utilities
 
-from .voxel_model_cache import VoxelModelCache
-
 
 def _validate_descendant_ids(structure_ids, descendant_ids):
     """Validates that descendant_ids are of the correct form."""
@@ -75,41 +73,38 @@ class Mask(object):
     >>> xxx
     """
 
-    DEFAULT_STRUCTURE_IDS = tuple([8])
+    GREY_STRUCTURE_ID = tuple([8])
+    BILATERAL_HEMISPHER_ID = 3
 
     @classmethod
-    def from_json(cls, file_name):
-        """Construct Mask object from json file.
+    def from_cache(cls, cache, **kwargs):
+        """
 
         Parameters
         ----------
-        file_name : string
-            Name of json file.
-
-        Returns
-        -------
-        Mask object
+        cache : caching object
+            MCC or RSC or VMC
         """
-        params = json_utilities.load(file_name)
-        voxel_model_cache = VoxelModelCache(**params.pop('voxel_model_cache'))
+        try:
+            reference_space = cache.get_reference_space()
+        except AttributeError:
+            raise ValueError('Must pass a MouseConnectivtyCache, '
+                             'ReferenceSpaceCache, or VoxelModelCache object')
 
-        return cls(voxel_model_cache, **params)
+        return cls(reference_space, **kwargs)
 
-    def __init__(self, voxel_model_cache, structure_ids=None, hemisphere_id=3):
-
+    def __init__(self, reference_space, structure_ids=None, hemisphere_id=None):
         if structure_ids is None:
-            structure_ids = self.DEFAULT_STRUCTURE_IDS
+            structure_ids = self.GREY_STRUCTURE_ID
+        if hemisphere_id is None:
+            hemisphere_id = self.BILATERAL_HEMISPHER_ID
 
         # update reference space to include only assigned voxels
-        reference_space = voxel_model_cache.get_reference_space()
         reference_space.remove_unassigned(update_self=True)
 
-        self.voxel_model_cache = voxel_model_cache
+        self.reference_space = reference_space
         self.structure_ids = structure_ids
         self.hemisphere_id = hemisphere_id
-        self.reference_space = reference_space
-        self.annotation = reference_space.annotation
-        self.structure_tree = reference_space.structure_tree
 
     def __repr__(self):
         if len(self.structure_ids) > 3:
@@ -153,7 +148,7 @@ class Mask(object):
 
     def _get_assigned_structures(self):
         # return flattened set of list of lists
-        descendants = self.structure_tree.descendant_ids(self.structure_ids)
+        descendants = self.reference_space.structure_tree.descendant_ids(self.structure_ids)
         return set(reduce(op.add, descendants, []))
 
     @property
@@ -166,11 +161,6 @@ class Mask(object):
             return self._assigned_structures
 
     @property
-    def annotation_shape(self):
-        """Shape of the annotation array (CCF)"""
-        return self.annotation.shape
-
-    @property
     def coordinates(self):
         """Returns coordinates inside mask."""
         return np.argwhere(self.mask)
@@ -181,7 +171,7 @@ class Mask(object):
         return (np.count_nonzero(self.mask),)
 
     def get_structure_flattened_mask(self, structure_ids=None, hemisphere_id=None):
-        #TODO:
+        #TODO: docstring
         """
         ...
         """
@@ -223,9 +213,9 @@ class Mask(object):
 
 
     def get_structure_indices(self, structure_ids=None, hemisphere_id=None):
-        """
-        """
         #TODO: docstring
+        """
+        """
         aligned = self.get_structure_flattened_mask(structure_ids, hemisphere_id)
 
         return aligned.nonzero()[0]
@@ -255,7 +245,7 @@ class Mask(object):
 
         """
         # do not want to overwrite annotation
-        annotation = self.annotation.copy()
+        annotation = self.reference_space.annotation.copy()
 
         if structure_ids is None and hemisphere_id is None:
             # return key of all resolved structures in annotation
@@ -263,7 +253,7 @@ class Mask(object):
             return self.mask_volume(annotation)
 
         # get list of descendant_ids for each structure id
-        descendant_ids = self.structure_tree.descendant_ids(structure_ids)
+        descendant_ids = self.reference_space.structure_tree.descendant_ids(structure_ids)
 
         if not _check_disjoint_structures(structure_ids, descendant_ids):
             raise ValueError("structures are not disjoint")
@@ -290,7 +280,7 @@ class Mask(object):
         ----------
         X - array, shape (x_ccf, y_ccf, z_ccf)
             Data volume to be masked. Must be same shape as
-            self.annotation_shape
+            self.reference_space.annotation.shape
 
         Returns
         -------
@@ -298,7 +288,7 @@ class Mask(object):
             Masked data volume.
 
         """
-        if X.shape != self.annotation_shape:
+        if X.shape != self.reference_space.annotation.shape:
             raise ValueError("X must be same shape as annotation")
 
         return X[self.mask.nonzero()]
@@ -323,7 +313,7 @@ class Mask(object):
             Filled array.
         """
 
-        if X.shape != self.annotation_shape:
+        if X.shape != self.reference_space.annotation.shape:
             raise ValueError("X must be same shape as annotation")
 
         _X = X.copy() if not inplace else X
@@ -354,18 +344,7 @@ class Mask(object):
             # TODO : better error statement
             raise ValueError("Must be same shape as key")
 
-        y_volume = np.zeros(self.annotation_shape)
+        y_volume = np.zeros(self.reference_space.annotation.shape)
         y_volume[idx] = y
 
         return y_volume
-
-    def to_json(self, file_name=None):
-        params = dict(voxel_model_cache=json.loads(self.voxel_model_cache.to_json()),
-                      structure_ids=self.structure_ids,
-                      hemisphere_id=self.hemisphere_id)
-
-        if file_name is None:
-            return json_utilities.write_string(params)
-
-        json_utilities.write(params, file_name)
-

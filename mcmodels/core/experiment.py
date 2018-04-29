@@ -12,12 +12,12 @@ import numpy as np
 from .utils import compute_centroid, get_injection_hemisphere_id
 
 
-def _pull_grid_data(voxel_model_cache, experiment_id):
+def _pull_grid_data(cache, experiment_id):
     """Pulls data volumes using VoxelModelCache object.
 
     Parameters
     ----------
-    voxel_model_cache : VoxelModelCache instance.
+    cache : VoxelModelCache or MouseConnectivityCache instance.
         Object used to pull grid data.
 
     experiment_id : int
@@ -36,10 +36,10 @@ def _pull_grid_data(voxel_model_cache, experiment_id):
 
     """
     return {
-        "data_mask" : voxel_model_cache.get_data_mask(experiment_id)[0],
-        "injection_density" : voxel_model_cache.get_injection_density(experiment_id)[0],
-        "injection_fraction" : voxel_model_cache.get_injection_fraction(experiment_id)[0],
-        "projection_density" : voxel_model_cache.get_projection_density(experiment_id)[0]
+        "data_mask" : cache.get_data_mask(experiment_id)[0],
+        "injection_density" : cache.get_injection_density(experiment_id)[0],
+        "injection_fraction" : cache.get_injection_fraction(experiment_id)[0],
+        "projection_density" : cache.get_projection_density(experiment_id)[0]
     }
 
 
@@ -123,8 +123,7 @@ class Experiment(object):
 
     Examples
     --------
-    >>> from voxel_model.core import Experiment
-    >>> from voxel_model import VoxelModelCache
+    >>> from voxel_model.core import Experiment, VoxelModelCache
     >>> voxel_model_cache = VoxelModelCache(resolution=100)
     >>> eid = 100141273
     >>> exp = Experiment(voxel_model_cache, eid)
@@ -135,13 +134,12 @@ class Experiment(object):
     DEFAULT_DATA_MASK_TOLERANCE = 0.5
 
     @classmethod
-    def from_voxel_model_cache(cls, voxel_model_cache, experiment_id,
-                               data_mask_tolerance=None):
+    def from_cache(cls, cache, experiment_id, data_mask_tolerance=None):
         """Alternative constructor allowing for pulling grid data.
 
         Parameters
         ----------
-        voxel_model_cache : VoxelModelCache instance.
+        cache : VoxelModelCache or MouseConnectivityCache instance.
             Object used to pull grid data.
 
         experiment_id : int
@@ -157,8 +155,12 @@ class Experiment(object):
         if data_mask_tolerance is None:
             data_mask_tolerance = cls.DEFAULT_DATA_MASK_TOLERANCE
 
-        # pull data
-        data_volumes = _pull_grid_data(voxel_model_cache, experiment_id)
+        try:
+            # pull data
+            data_volumes = _pull_grid_data(cache, experiment_id)
+        except AttributeError:
+            raise ValueError('cache must be a MouseConnectivityCache or '
+                             'VoxelModelCache object')
 
         # compute 'true' injection density (inplace)
         _compute_true_injection_density(data_volumes["injection_density"],

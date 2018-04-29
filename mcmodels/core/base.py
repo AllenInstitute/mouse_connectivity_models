@@ -69,12 +69,14 @@ class _BaseData(six.with_metaclass(ABCMeta)):
         if self.projection_structure_ids is None:
             self.projection_structure_ids = self.default_structure_ids
 
-        self.injection_mask = Mask(voxel_model_cache=self.voxel_model_cache,
-                                   structure_ids=self.injection_structure_ids,
-                                   hemisphere_id=self.injection_hemisphere_id)
-        self.projection_mask = Mask(voxel_model_cache=self.voxel_model_cache,
-                                    structure_ids=self.projection_structure_ids,
-                                    hemisphere_id=self.projection_hemisphere_id)
+        self.injection_mask = Mask.from_cache(
+            voxel_model_cache,
+            structure_ids=self.injection_structure_ids,
+            hemisphere_id=self.injection_hemisphere_id)
+        self.projection_mask = Mask.from_cache(
+            voxel_model_cache,
+            structure_ids=self.projection_structure_ids,
+            hemisphere_id=self.projection_hemisphere_id)
 
     def _experiment_generator(self, experiment_ids):
         """Generates experiment objections given their experiment ids"""
@@ -100,7 +102,7 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
 
         for eid in experiment_ids:
-            experiment = Experiment.from_voxel_model_cache(
+            experiment = Experiment.from_cache(
                 self.voxel_model_cache, eid, self.data_mask_tolerance)
 
             if valid_volume(experiment):

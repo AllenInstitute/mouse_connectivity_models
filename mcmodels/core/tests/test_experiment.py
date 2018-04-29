@@ -64,7 +64,7 @@ def test_compute_true_injection_density():
 # ============================================================================
 # Experiment Class
 # ============================================================================
-def test_from_mcc(mcc):
+def test_from_cache(mcc):
 
     # ------------------------------------------------------------------------
     # test correct data volumes pulled
@@ -77,7 +77,7 @@ def test_from_mcc(mcc):
     _compute_true_injection_density(injection_density, injection_fraction,
                                     inplace=True)
 
-    experiment = Experiment.from_mcc(mcc, experiment_id)
+    experiment = Experiment.from_cache(mcc, experiment_id)
     assert_array_equal(experiment.injection_density, injection_density)
     assert_array_equal(experiment.projection_density, projection_density)
 

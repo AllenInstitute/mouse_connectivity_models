@@ -10,6 +10,7 @@ from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 from .masks import Mask
 from .voxel_model_api import VoxelModelApi
+
 from ..models.voxel import VoxelConnectivityArray
 
 
@@ -97,19 +98,26 @@ class VoxelModelCache(MouseConnectivityCache):
     def get_source_mask(self, file_name=None):
         """Get source mask for  from cache."""
         file_name = self.get_cache_path(file_name, self.SOURCE_MASK_KEY)
-        self.api.source_mask(file_name, strategy='lazy')
+        self.api.source_mask_params(file_name, strategy='lazy')
 
-        return Mask.from_json(file_name)
+        mask_kwargs = json_utilities.read(file_name)
+
+        return Mask.from_cache(self, **mask_kwargs)
 
     def get_target_mask(self, file_name=None):
         """Get target mask for  from cache."""
         file_name = self.get_cache_path(file_name, self.TARGET_MASK_KEY)
-        self.api.target_mask(file_name, strategy='lazy')
+        self.api.target_mask_params(file_name, strategy='lazy')
 
-        return Mask.from_json(file_name)
+        mask_kwargs = json_utilities.read(file_name)
 
-    def get_voxel_model(self, weights_file_name=None, nodes_file_name=None,
-                        source_mask_file_name=None, target_mask_file_name=None):
+        return Mask.from_cache(self, **mask_kwargs)
+
+    def get_voxel_connectivty_array(self,
+                                    weights_file_name=None,
+                                    nodes_file_name=None,
+                                    source_mask_file_name=None,
+                                    target_mask_file_name=None):
         """Get  from cache, returning VoxelConnectivityArray.
 
         Parameters

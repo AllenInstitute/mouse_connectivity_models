@@ -26,15 +26,15 @@ def descendant_ids():
 
 @pytest.fixture(scope="function")
 def contra_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=1)
+    return Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=1)
 
 @pytest.fixture(scope="function")
 def ipsi_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=2)
+    return Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=2)
 
 @pytest.fixture(scope="function")
 def bi_mask(mcc, structure_ids):
-    return Mask(mcc=mcc, structure_ids=structure_ids, hemisphere_id=3)
+    return Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=3)
 
 # -----------------------------------------------------------------------------
 # tests
@@ -70,13 +70,6 @@ def test_assigned_structures(bi_mask, ipsi_mask, annotation, descendant_ids):
     ipsi_defined = np.unique(ipsi_annot[ipsi_annot.nonzero()]).astype(int)
     assert( ipsi_mask.assigned_structures == set(ipsi_defined) )
 
-
-# -----------------------------------------------------------------------------
-# tests
-def test_annotation_shape(ipsi_mask, contra_mask, annotation):
-
-    assert( contra_mask.annotation_shape == annotation.shape )
-    assert( ipsi_mask.annotation_shape == annotation.shape )
 
 # -----------------------------------------------------------------------------
 # tests
@@ -153,7 +146,7 @@ def test_mask_volume(bi_mask, annotation):
 def test_fill_volume_where_masked(bi_mask):
 
     # copy/val fill
-    volume = np.zeros(bi_mask.annotation_shape)
+    volume = np.zeros(bi_mask.reference_space.annotation.shape)
     val_filled = bi_mask.fill_volume_where_masked(volume, 9, inplace=False)
 
     assert_array_equal( np.unique(val_filled), np.array([0,9]) )

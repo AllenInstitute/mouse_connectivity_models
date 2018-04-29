@@ -21,9 +21,8 @@ def voxel_data():
 # =============================================================================
 # VoxelData class
 # =============================================================================
-def test_default_structure_ids():
-    # TODO not yet tested in sdk, assume solid for now
-    pass
+# TODO not yet tested in sdk, assume solid for now
+#def test_default_structure_ids():
 
 
 def test_experiment_generator(mcc, voxel_data):

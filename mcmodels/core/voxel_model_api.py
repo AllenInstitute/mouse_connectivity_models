@@ -14,10 +14,10 @@ class VoxelModelApi(MouseConnectivityApi):
     HTTP_MODEL_DIRECTORY = "http://download.alleninstitute.org/publications/"\
             "A_high_resolution_data-driven_model_of_the_mouse_connectome/"
 
-    WEIGHTS_FILE = "C57BL-6J_weights.npy"
     NODES_FILE = "C57BL-6J_nodes.npy"
-    SOURCE_MASK_FILE = "source_mask.json"
-    TARGET_MASK_FILE = "target_mask.json"
+    WEIGHTS_FILE = "C57BL-6J_weights.npy"
+    SOURCE_MASK_FILE = "source_mask_params.json"
+    TARGET_MASK_FILE = "target_mask_params.json"
 
     CONNECTION_DENSITY_FILE = 'connection_density.csv.gz'
     CONNECTION_STRENGTH_FILE = 'connection_strength.csv.gz'
@@ -48,12 +48,12 @@ class VoxelModelApi(MouseConnectivityApi):
 
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
-    def download_source_mask(self, file_name):
+    def download_source_mask_params(self, file_name):
         self.download_model_files(self.SOURCE_MASK_FILE, file_name)
 
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
-    def download_target_mask(self, file_name):
+    def download_target_mask_params(self, file_name):
         self.download_model_files(self.TARGET_MASK_FILE, file_name)
 
     @cacheable(strategy='create',
