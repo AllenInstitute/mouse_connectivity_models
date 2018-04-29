@@ -30,12 +30,6 @@ def voxel_array(weights, nodes):
 # constructors
 # ----------------------------------------------------------------------------
 # test
-def test_from_hdf5():
-    args = ("weights.hdf5", "nodes.hdf5")
-    assert_raises( NotImplementedError, VoxelConnectivityArray.from_hdf5, *args )
-
-# ----------------------------------------------------------------------------
-# test
 def test_from_csv(tmpdir, weights, nodes):
     f1 = tmpdir.join("weights.csv")
     f2 = tmpdir.join("nodes.csv")

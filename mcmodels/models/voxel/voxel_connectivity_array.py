@@ -32,11 +32,6 @@ class VoxelConnectivityArray(object):
     ndim = 2
 
     @classmethod
-    def from_hdf5(cls, weights_file, nodes_file, **kwargs):
-        """Loads weights, nodes from hdf5 files."""
-        raise NotImplementedError
-
-    @classmethod
     def from_csv(cls, weights_file, nodes_file, **kwargs):
         """Loads weights, nodes from csv files."""
         loader = partial(np.loadtxt, delimiter=",", ndmin=cls.ndim, **kwargs)

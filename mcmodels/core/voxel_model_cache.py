@@ -100,18 +100,18 @@ class VoxelModelCache(MouseConnectivityCache):
         file_name = self.get_cache_path(file_name, self.SOURCE_MASK_KEY)
         self.api.source_mask_params(file_name, strategy='lazy')
 
-        mask_kwargs = json_utilities.read(file_name)
+        mask_params = json_utilities.read(file_name)
 
-        return Mask.from_cache(self, **mask_kwargs)
+        return Mask.from_cache(self, **mask_params)
 
     def get_target_mask(self, file_name=None):
         """Get target mask for  from cache."""
         file_name = self.get_cache_path(file_name, self.TARGET_MASK_KEY)
         self.api.target_mask_params(file_name, strategy='lazy')
 
-        mask_kwargs = json_utilities.read(file_name)
+        mask_params = json_utilities.read(file_name)
 
-        return Mask.from_cache(self, **mask_kwargs)
+        return Mask.from_cache(self, **mask_params)
 
     def get_voxel_connectivty_array(self,
                                     weights_file_name=None,
@@ -131,7 +131,7 @@ class VoxelModelCache(MouseConnectivityCache):
         source_mask = self.get_source_mask(source_mask_file_name)
         target_mask = self.get_target_mask(target_mask_file_name)
 
-        return VoxelConnectivityArray(weights, nodes, source_mask, target_mask)
+        return VoxelConnectivityArray(weights, nodes), source_mask, target_mask
 
     def get_connection_density(self, file_name=None):
         file_name = self.get_cache_path(file_name, self.CONNECTION_DENSITY_KEY)
