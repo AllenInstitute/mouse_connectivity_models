@@ -34,29 +34,6 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
                                       injection_structure_ids=structure_ids)
     return [experiment['id'] for experiment in experiments]
 
-def get_mcc(manifest_file=None):
-    """Returns a MouseConnectivityCache instance with the default settings.
-
-    Parameters
-    ----------
-    manifest_file : string
-        Path to file with which MouseConnectivityCache will cache its manifest.
-
-    Returns
-    -------
-    MouseConnectivityCache object
-    """
-    if manifest_file is None:
-        manifest_file = os.path.join(os.getcwd(), "connectivity",
-                                     "mouse_connectivity_manifest.json")
-
-    # use 100 micron resolution and the most up to date ccf
-    return MouseConnectivityCache(
-        manifest_file=manifest_file,
-        resolution=100,
-        ccf_version=os.path.join("annotation", "ccf_2017")
-    )
-
 
 def nonzero_unique(array, **unique_kwargs):
     """np.unique returning only nonzero unique elements.
