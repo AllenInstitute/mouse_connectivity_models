@@ -8,6 +8,7 @@ import numpy as np
 from allensdk.core import json_utilities
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
+from .base import VoxelData
 from .masks import Mask
 from .voxel_model_api import VoxelModelApi
 
@@ -40,6 +41,9 @@ class VoxelModelCache(MouseConnectivityCache):
         File name of the manifest to be read.  Default is "mouse_connectivity_manifest.json".
     """
 
+    DEFAULT_STRUCTURE_SET_ID = 2
+    DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
+
     NODES_KEY = 'NODES'
     WEIGHTS_KEY = 'WEIGHTS'
     SOURCE_MASK_KEY = 'SOURCE_MASK'
@@ -53,7 +57,7 @@ class VoxelModelCache(MouseConnectivityCache):
     @classmethod
     def from_json(cls, file_name):
         """Construct object from JSON serialized parameter file.
-        
+
         Parameters
         ----------
         file_name : string
@@ -169,6 +173,83 @@ class VoxelModelCache(MouseConnectivityCache):
         self.api.download_normalized_connection_strength(file_name, strategy='lazy')
 
         return np.loadtxt(file_name, delimiter=',')
+
+    def get_experiment_data(self, cre=None, injection_structure_ids=None, **kwargs):
+        """Pulls voxel-scale grid data for experiments.
+
+        Parameters
+        ----------
+        cre: boolean or list
+            If True, return only cre-positive experiments.  If False, return only
+            cre-negative experiments.  If None, return all experients. If list, return
+            all experiments with cre line names in the supplied list. Default None.
+
+        cache - VoxelModelCache or MouseConnectivityCache object
+            Provides way to pull experiment grid-data from Allen Brain Atlas
+
+        injection_structure_ids : list, optional, default None
+            List of structure_ids to which the injection mask will be constrained.
+
+        projection_structure_ids : list, optional, default None
+            List of structure_ids to which the projection mask will be constrained.
+
+        injection_hemisphere_id : int, optional, defualt 3
+            Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
+            be constrained.
+
+        projection_hemisphere_id : int, optional, defualt 3
+            Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
+            be constrained.
+
+        normalized_injection : boolean, optional, default True
+            If True, the injection density will be normalized by the total
+            injection density for each experiment.
+
+        normalized_projection : boolean, optional, default True
+            If True, the projection density will be normalized by the total
+            injection density for each experiment.
+
+        flip_experiments : boolean, optional, default True
+            If True, experiment grid-data will be refelcted accross the midline.
+            Useful if you wish to include L hemisphere injections into a R
+            hemisphere model.
+
+        data_mask_tolerance : float, optional, default 0.0
+            Tolerance with which to include data in voxels informatically labeled
+            as having error. The data_mask for each experiment is an array with
+            values between (0, 1), where 1 indicates the voxel fully contains an
+            error, whereas 0 indicates the voxel does not contain any error. A value
+            of 0.0 thus indicates the highest threshold for data, whereas a value of
+            1.0 indicates that data will be included from all voxels.
+
+        injection_volume_bounds : float, optional, default (0.0, np.inf)
+            Includes experiments with total injection volume (mm^3) within bounds.
+
+        projection_volume_bounds : float, optional, default (0.0, np.inf)
+            Includes experiments with total projection volume (mm^3) within bounds.
+
+        min_contained_injection_ratio : float, optional, default 0.0
+            Includes experiments with total injection volume ratio within injection
+            mask.
+
+        Returns
+        -------
+        A VoxelData object with attributes centroids, injecitons, projections.
+
+        See Also
+        --------
+        VoxelData.get_experiment_data
+        """
+        if injection_structure_ids is None:
+            injection_structure_ids = self.default_structure_ids
+
+        experiment_ids = [e['id'] for e in self.get_experiments(
+            dataframe=False, cre=cre, injection_structure_ids=injection_structure_ids)]
+
+        voxel_data = VoxelData(
+            self, injection_structure_ids=injection_structure_ids, **kwargs)
+
+        return voxel_data.get_experiment_data(experiment_ids)
 
     def to_json(self, file_name=None):
         """JSON serialize object parameters to file or string.

@@ -4,6 +4,9 @@ Module containing VoxelData and RegionalData objects.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
+# TODO: implement __repr__
+# TODO: integrate into VoxelModelCache
+
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 import six
@@ -28,16 +31,18 @@ class _BaseData(six.with_metaclass(ABCMeta)):
         taken from allensdk.core.mouse_connectivity_cache.VoxelModelCache
         """
         if not hasattr(self, '_default_structure_ids'):
-            tree = self.voxel_model_cache.get_structure_tree()
+            tree = self.cache.get_structure_tree()
             default_structures = tree.get_structures_by_set_id(
                 self.DEFAULT_STRUCTURE_SET_IDS)
             self._default_structure_ids = [st['id']
-                                           for st in default_structures]
+                                           for st in default_structures
+                                           # compatibility for new ccf
+                                           if st['id'] != 934]
 
         return self._default_structure_ids
 
     def __init__(self,
-                 voxel_model_cache,
+                 cache,
                  injection_structure_ids=None,
                  projection_structure_ids=None,
                  injection_hemisphere_id=3,
@@ -50,7 +55,7 @@ class _BaseData(six.with_metaclass(ABCMeta)):
                  projection_volume_bounds=(0.0, np.inf),
                  min_contained_injection_ratio=0.0):
 
-        self.voxel_model_cache = voxel_model_cache
+        self.cache = cache
         self.injection_structure_ids = injection_structure_ids
         self.projection_structure_ids = projection_structure_ids
         self.injection_hemisphere_id = injection_hemisphere_id
@@ -70,11 +75,11 @@ class _BaseData(six.with_metaclass(ABCMeta)):
             self.projection_structure_ids = self.default_structure_ids
 
         self.injection_mask = Mask.from_cache(
-            voxel_model_cache,
+            cache,
             structure_ids=self.injection_structure_ids,
             hemisphere_id=self.injection_hemisphere_id)
         self.projection_mask = Mask.from_cache(
-            voxel_model_cache,
+            cache,
             structure_ids=self.projection_structure_ids,
             hemisphere_id=self.projection_hemisphere_id)
 
@@ -88,7 +93,7 @@ class _BaseData(six.with_metaclass(ABCMeta)):
             contained_ratio = contained_injection.sum() / experiment.injection_volume
 
             # convert to mm^3
-            resolution = self.voxel_model_cache.get_reference_space().resolution[0]
+            resolution = self.cache.get_reference_space().resolution[0]
             convert = lambda x: x * (1e-3 * resolution)**3
 
             injection_volume = convert(experiment.injection_volume)
@@ -103,7 +108,7 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
         for eid in experiment_ids:
             experiment = Experiment.from_cache(
-                self.voxel_model_cache, eid, self.data_mask_tolerance)
+                self.cache, eid, self.data_mask_tolerance)
 
             if valid_volume(experiment):
                 hemisphere_id = experiment.injection_hemisphere_id
@@ -125,7 +130,7 @@ class VoxelData(_BaseData):
 
     Parameters
     ----------
-    voxel_model_cache - VoxelModelCache object
+    cache - VoxelModelCache or MouseConnectivityCache object
         Provides way to pull experiment grid-data from Allen Brain Atlas
 
     injection_structure_ids : list, optional, default None
@@ -206,12 +211,12 @@ class VoxelData(_BaseData):
 
     Examples
     --------
-    >>> from voxel_model import VoxelData, VoxelModelCache
-    >>> voxel_model_cache = VoxelModelCache()
+    >>> from mcmodels.core import VoxelData, VoxelModelCache
+    >>> cache = VoxelModelCache()
     >>> experiment_ids = (112514202, 139520203)
-    >>> voxel_data = VoxelData()
+    >>> voxel_data = VoxelData(cache)
     >>> voxel_data.get_experiment_data(experiment_ids)
-    xx
+    <mcmodels.core.base.VoxelData object at 0x7f39c9efd519>
     """
     DEFAULT_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
@@ -219,7 +224,7 @@ class VoxelData(_BaseData):
     def get_experiment_data(self, experiment_ids):
         """Pulls voxel-scale grid data for experiments.
 
-        Uses the voxel_model_cache property to pull grid data from the Allen Brain Atlas.
+        Uses the cache property to pull grid data from the Allen Brain Atlas.
         Note that only experiments passing all defined parameters will be
         included.
 
@@ -281,7 +286,7 @@ class RegionalData(_BaseData):
 
     Parameters
     ----------
-    voxel_model_cache - VoxelModelCache object
+    cache - VoxelModelCache or MouseConnectivityCache object
         Provides way to pull experiment grid-data from Allen Brain Atlas
 
     injection_structure_ids : list, optional, default None
@@ -362,12 +367,12 @@ class RegionalData(_BaseData):
 
     Examples
     --------
-    >>> from voxel_model import RegionalData, VoxelModelCache
-    >>> voxel_model_cache = VoxelModelCache()
+    >>> from mcmodels.core import RegionalData, VoxelModelCache
+    >>> cache = VoxelModelCache()
     >>> experiment_ids = (112514202, 139520203)
-    >>> voxel_data = RegionalData()
-    >>> voxel_data.get_experiment_data(experiment_ids)
-    xx
+    >>> regional_data = RegionalData(cache)
+    >>> regional_data.get_experiment_data(experiment_ids)
+    <mcmodels.core.base.RegionalData object at 0x7f39c9efd519>
     """
 
     DEFAULT_STRUCTURE_SET_ID = 167587189
@@ -385,7 +390,7 @@ class RegionalData(_BaseData):
         -------
         RegionalData : an instatiation of the RegionalData object
         """
-        return cls(voxel_data.voxel_model_cache,
+        return cls(voxel_data.cache,
                    injection_structure_ids=voxel_data.injection_structure_ids,
                    projection_structure_ids=voxel_data.projection_structure_ids,
                    injection_hemisphere_id=voxel_data.injection_hemisphere_id,
@@ -411,7 +416,7 @@ class RegionalData(_BaseData):
     def get_experiment_data(self, experiment_ids):
         """Pulls regionalized voxel-scale grid data for experiments.
 
-        Uses the voxel_model_cache attribute to pull grid data from the Allen Brain Atlas.
+        Uses the cache attribute to pull grid data from the Allen Brain Atlas.
         Note that only experiments passing all defined parameters will be
         included.
 
