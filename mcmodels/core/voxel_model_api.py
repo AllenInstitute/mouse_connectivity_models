@@ -14,8 +14,8 @@ class VoxelModelApi(MouseConnectivityApi):
     HTTP_MODEL_DIRECTORY = "http://download.alleninstitute.org/publications/"\
             "A_high_resolution_data-driven_model_of_the_mouse_connectome/"
 
-    NODES_FILE = "C57BL-6J_nodes.npy"
-    WEIGHTS_FILE = "C57BL-6J_weights.npy"
+    NODES_FILE = "nodes.csv.gz"
+    WEIGHTS_FILE = "weights.csv.gz"
     SOURCE_MASK_FILE = "source_mask_params.json"
     TARGET_MASK_FILE = "target_mask_params.json"
 

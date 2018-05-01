@@ -23,7 +23,7 @@ def test_download_nodes(voxel_model_api):
             'download_model_files') as api_dmf:
         voxel_model_api.download_nodes('file_name')
 
-        api_dmf.assert_called_once_with("C57BL-6J_nodes.npy", 'file_name')
+        api_dmf.assert_called_once_with("nodes.csv.gz", 'file_name')
 
 
 def test_download_weights(voxel_model_api):
@@ -33,7 +33,7 @@ def test_download_weights(voxel_model_api):
             'download_model_files') as api_dmf:
         voxel_model_api.download_weights('file_name')
 
-        api_dmf.assert_called_once_with("C57BL-6J_weights.npy", 'file_name')
+        api_dmf.assert_called_once_with("weights.csv.gz", 'file_name')
 
 
 def test_download_source_mask_params(voxel_model_api):

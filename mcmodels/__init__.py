@@ -11,7 +11,7 @@ documentation.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-__version__ = '0.0.9'
+__version__ = '0.0.1'
 
 from . import core
 from . import models

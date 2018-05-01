@@ -27,6 +27,8 @@ refer to the :ref:`full user guide <user_guide>` for further details.
         core.RegionalData
         core.Experiment
         core.Mask
+        core.VoxelModelCache
+        core.VoxelModelApi
 
 Utitility fucntions
 -------------------
@@ -192,7 +194,6 @@ Functions
         :toctree: generated/
 
         utils.get_experiment_ids
-        utils.get_mcc
         utils.lex_ordered_unique
         utils.nonzero_unique
         utils.ordered_unique
