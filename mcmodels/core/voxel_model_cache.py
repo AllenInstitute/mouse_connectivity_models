@@ -47,11 +47,22 @@ class VoxelModelCache(MouseConnectivityCache):
 
     CONNECTION_DENSITY_KEY = 'CONNECTION_DENSITY'
     CONNECTION_STRENGTH_KEY = 'CONNECTION_STRENGTH'
-    NORMALIZED_CONNECTION_DENSITY_KEY = 'NORMALIZED_CONNECTION_STRENGTH'
+    NORMALIZED_CONNECTION_DENSITY_KEY = 'NORMALIZED_CONNECTION_DENSITY'
     NORMALIZED_CONNECTION_STRENGTH_KEY = 'NORMALIZED_CONNECTION_STRENGTH'
 
     @classmethod
     def from_json(cls, file_name):
+        """Construct object from JSON serialized parameter file.
+        
+        Parameters
+        ----------
+        file_name : string
+            Path to .json file containing VoxelModelCache parameters.
+
+        Returns
+        -------
+        A VoxelModelCache object
+        """
         return cls(**json_utilities.read(file_name))
 
     def __init__(self,
@@ -84,21 +95,21 @@ class VoxelModelCache(MouseConnectivityCache):
     def get_nodes(self, file_name=None):
         """Get nodes for  from cache."""
         file_name = self.get_cache_path(file_name, self.NODES_KEY)
-        self.api.nodes(file_name, strategy='lazy')
+        self.api.download_nodes(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def get_weights(self, file_name=None):
         """Get weights for  from cache."""
         file_name = self.get_cache_path(file_name, self.WEIGHTS_KEY)
-        self.api.weights(file_name, strategy='lazy')
+        self.api.download_weights(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def get_source_mask(self, file_name=None):
         """Get source mask for  from cache."""
         file_name = self.get_cache_path(file_name, self.SOURCE_MASK_KEY)
-        self.api.source_mask_params(file_name, strategy='lazy')
+        self.api.download_source_mask_params(file_name, strategy='lazy')
 
         mask_params = json_utilities.read(file_name)
 
@@ -107,7 +118,7 @@ class VoxelModelCache(MouseConnectivityCache):
     def get_target_mask(self, file_name=None):
         """Get target mask for  from cache."""
         file_name = self.get_cache_path(file_name, self.TARGET_MASK_KEY)
-        self.api.target_mask_params(file_name, strategy='lazy')
+        self.api.download_target_mask_params(file_name, strategy='lazy')
 
         mask_params = json_utilities.read(file_name)
 
@@ -135,31 +146,44 @@ class VoxelModelCache(MouseConnectivityCache):
 
     def get_connection_density(self, file_name=None):
         file_name = self.get_cache_path(file_name, self.CONNECTION_DENSITY_KEY)
-        self.api.connection_density(file_name, strategy='lazy')
+        self.api.download_connection_density(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def get_connection_strength(self, file_name=None):
         file_name = self.get_cache_path(file_name, self.CONNECTION_STRENGTH_KEY)
-        self.api.connection_strength(file_name, strategy='lazy')
+        self.api.download_connection_strength(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def get_normalized_connection_density(self, file_name=None):
         file_name = self.get_cache_path(file_name,
                                         self.NORMALIZED_CONNECTION_DENSITY_KEY)
-        self.api.normalized_connection_density(file_name, strategy='lazy')
+        self.api.download_normalized_connection_density(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def get_normalized_connection_strength(self, file_name=None):
         file_name = self.get_cache_path(file_name,
                                         self.NORMALIZED_CONNECTION_STRENGTH_KEY)
-        self.api.normalized_connection_strength(file_name, strategy='lazy')
+        self.api.download_normalized_connection_strength(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name)
+        return np.loadtxt(file_name, delimiter=',')
 
     def to_json(self, file_name=None):
+        """JSON serialize object parameters to file or string.
+
+        Parameters
+        ----------
+        file_name : string, optional (default None)
+            Path to .json file containing VoxelModelCache parameters. If None,
+            a string will be returned.
+
+        Returns
+        -------
+        string
+            If file_name == None, a string of the JSON serialization is returned.
+        """
         params = dict(resolution=self.resolution,
                       cache=self.cache,
                       manifest_file=self.manifest_file,
@@ -170,7 +194,7 @@ class VoxelModelCache(MouseConnectivityCache):
         if file_name is None:
             return json_utilities.write_string(params)
 
-        json_utilities.write(params, file_name)
+        json_utilities.write(file_name, params)
 
     def add_manifest_paths(self, manifest_builder):
         """
@@ -194,12 +218,34 @@ class VoxelModelCache(MouseConnectivityCache):
                                   parent_key='BASEDIR',
                                   typename='file')
 
-        manifest_builder.add_path(self.SOURCE_MASK_FILE,
-                                  'voxel_model/source_mask.json',
+        manifest_builder.add_path(self.SOURCE_MASK_KEY,
+                                  'voxel_model/source_mask_params.json',
                                   parent_key='BASEDIR',
                                   typename='file')
 
-        manifest_builder.add_path(self.TARGET_MASK_FILE,
-                                  'voxel_model/target_mask.json',
+        manifest_builder.add_path(self.TARGET_MASK_KEY,
+                                  'voxel_model/target_mask_params.json',
                                   parent_key='BASEDIR',
                                   typename='file')
+
+        manifest_builder.add_path(self.CONNECTION_DENSITY_KEY,
+                                  'voxel_model/connection_density.csv.gz',
+                                  parent_key='BASEDIR',
+                                  typename='file')
+
+        manifest_builder.add_path(self.CONNECTION_STRENGTH_KEY,
+                                  'voxel_model/connection_strength.csv.gz',
+                                  parent_key='BASEDIR',
+                                  typename='file')
+
+        manifest_builder.add_path(self.NORMALIZED_CONNECTION_DENSITY_KEY,
+                                  'voxel_model/normalized_connection_density.csv.gz',
+                                  parent_key='BASEDIR',
+                                  typename='file')
+
+        manifest_builder.add_path(self.NORMALIZED_CONNECTION_STRENGTH_KEY,
+                                  'voxel_model/normalized_connection_strength.csv.gz',
+                                  parent_key='BASEDIR',
+                                  typename='file')
+
+        return manifest_builder

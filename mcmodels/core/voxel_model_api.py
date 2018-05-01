@@ -21,7 +21,7 @@ class VoxelModelApi(MouseConnectivityApi):
 
     CONNECTION_DENSITY_FILE = 'connection_density.csv.gz'
     CONNECTION_STRENGTH_FILE = 'connection_strength.csv.gz'
-    NORMALIZED_CONNECTION_DENSITY_FILE = 'normalized_connection_strength.csv.gz'
+    NORMALIZED_CONNECTION_DENSITY_FILE = 'normalized_connection_density.csv.gz'
     NORMALIZED_CONNECTION_STRENGTH_FILE = 'normalized_connection_strength.csv.gz'
 
     def download_model_files(self, file_name, save_file_path=None):
@@ -59,19 +59,19 @@ class VoxelModelApi(MouseConnectivityApi):
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
     def download_connection_density(self, file_name):
-        self.download_model_files(self.CONNECTION_DENSITY, file_name)
+        self.download_model_files(self.CONNECTION_DENSITY_FILE, file_name)
 
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
     def download_connection_strength(self, file_name):
-        self.download_model_files(self.CONNECTION_STRENGTH, file_name)
+        self.download_model_files(self.CONNECTION_STRENGTH_FILE, file_name)
 
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
     def download_normalized_connection_density(self, file_name):
-        self.download_model_files(self.NORMALIZED_CONNECTION_DENSITY, file_name)
+        self.download_model_files(self.NORMALIZED_CONNECTION_DENSITY_FILE, file_name)
 
     @cacheable(strategy='create',
                pathfinder=Cache.pathfinder(file_name_position=1, path_keyword='path'))
     def download_normalized_connection_strength(self, file_name):
-        self.download_model_files(self.NORMALIZED_CONNECTION_STRENGTH, file_name)
+        self.download_model_files(self.NORMALIZED_CONNECTION_STRENGTH_FILE, file_name)
