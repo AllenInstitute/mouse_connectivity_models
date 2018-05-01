@@ -43,10 +43,10 @@ A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_.
 
 
 Contents:
-=========
+---------
 
 .. image:: images/cartoon.png
-        :width: 40%
+        :width: 50%
         :align: right
 
 .. toctree::
@@ -60,5 +60,12 @@ Contents:
    Release history <whats_new>
    contributing
    Github Profile <https://github.com/AllenInstitute/mouse_connectivity_models.git>
+
+Level of Support
+----------------
+We are not currently supporting this code, but simply releasing it to the
+community AS IS but are not able to provide any guarantees of support. The
+community is welcome to submit issues, but you should not expect an active
+response.
 
 .. include:: ../AUTHORS.rst
