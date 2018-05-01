@@ -25,18 +25,16 @@ class _BaseData(six.with_metaclass(ABCMeta)):
 
     @property
     def default_structure_ids(self):
-        """Returns default structure ids.
+        """Default structure ids."""
+        # NOTE: Necessary copy from allensdk.core.MouseConnectivityCache because
+        #       of hardcoded class and summary structure set id error due to
+        #       new anotation (ccf)
 
-        ..note:
-        taken from allensdk.core.mouse_connectivity_cache.VoxelModelCache
-        """
         if not hasattr(self, '_default_structure_ids'):
             tree = self.cache.get_structure_tree()
             default_structures = tree.get_structures_by_set_id(
                 self.DEFAULT_STRUCTURE_SET_IDS)
-            self._default_structure_ids = [st['id']
-                                           for st in default_structures
-                                           # compatibility for new ccf
+            self._default_structure_ids = [st['id'] for st in default_structures
                                            if st['id'] != 934]
 
         return self._default_structure_ids
@@ -281,7 +279,7 @@ class VoxelData(_BaseData):
         return regional_data
 
 
-class RegionalData(_BaseData):
+class RegionalData(VoxelData):
     """Container class for regionalized voxel-scale grid data.
 
     Parameters

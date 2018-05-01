@@ -54,6 +54,22 @@ class VoxelModelCache(MouseConnectivityCache):
     NORMALIZED_CONNECTION_DENSITY_KEY = 'NORMALIZED_CONNECTION_DENSITY'
     NORMALIZED_CONNECTION_STRENGTH_KEY = 'NORMALIZED_CONNECTION_STRENGTH'
 
+    @property
+    def default_structure_ids(self):
+        """Default structure ids."""
+        # NOTE: Necessary copy from allensdk.core.MouseConnectivityCache because
+        #       of hardcoded class and summary structure set id error due to
+        #       new anotation (ccf)
+
+        if not hasattr(self, '_default_structure_ids'):
+            tree = self.get_structure_tree()
+            default_structures = tree.get_structures_by_set_id(
+                self.DEFAULT_STRUCTURE_SET_IDS)
+            self._default_structure_ids = [st['id'] for st in default_structures
+                                           if st['id'] != 934]
+
+        return self._default_structure_ids
+
     @classmethod
     def from_json(cls, file_name):
         """Construct object from JSON serialized parameter file.
