@@ -39,10 +39,25 @@ class VoxelModelCache(MouseConnectivityCache):
 
     manifest_file: string
         File name of the manifest to be read.  Default is "mouse_connectivity_manifest.json".
+
+    Examples
+    --------
+    >>> from mcmodels.core import VoxelModelCache
+    >>> cache = VoxelModelCache(manifest_file='connectivity/voxel_model_manifest.json')
+    >>> # download the fitted voxel-scale model
+    >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivty_array()
+    >>> # get regionalized adjacency matrix
+    >>> regional_ncd = cache.get_normalized_connection_density()
+    >>> # get VoxelData object to use in model building
+    >>> cortex_voxel_data = cache.get_experiment_data(injection_structure_ids=[315])
+    >>> # JSON serialize input parameters so that cache can be reinstantiated later
+    >>> cache.to_json()
+    '{\n  "resolution": 100,\n  "cache": true,\n  "manifest_file": "voxel_model_manifest.json",
+    \n  "ccf_version": "annotation/ccf_2017",\n  "base_uri": null,\n  "version": 1.2\n}'
     """
 
-    DEFAULT_STRUCTURE_SET_ID = 2
-    DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
+    COARSE_STRUCTURE_SET_ID = 2
+    DEFAULT_STRUCTURE_SET_IDS = tuple([COARSE_STRUCTURE_SET_ID])
 
     NODES_KEY = 'NODES'
     WEIGHTS_KEY = 'WEIGHTS'
@@ -59,7 +74,7 @@ class VoxelModelCache(MouseConnectivityCache):
         """Default structure ids."""
         # NOTE: Necessary copy from allensdk.core.MouseConnectivityCache because
         #       of hardcoded class and summary structure set id error due to
-        #       new anotation (ccf)
+        #       new annotation (ccf)
 
         if not hasattr(self, '_default_structure_ids'):
             tree = self.get_structure_tree()
@@ -113,21 +128,21 @@ class VoxelModelCache(MouseConnectivityCache):
         self.version = version
 
     def get_nodes(self, file_name=None):
-        """Get nodes for  from cache."""
+        """Get nodes for voxel-scale model from cache."""
         file_name = self.get_cache_path(file_name, self.NODES_KEY)
         self.api.download_nodes(file_name, strategy='lazy')
 
         return np.loadtxt(file_name, delimiter=',')
 
     def get_weights(self, file_name=None):
-        """Get weights for  from cache."""
+        """Get weights for voxel-scale model from cache."""
         file_name = self.get_cache_path(file_name, self.WEIGHTS_KEY)
         self.api.download_weights(file_name, strategy='lazy')
 
         return np.loadtxt(file_name, delimiter=',')
 
     def get_source_mask(self, file_name=None):
-        """Get source mask for  from cache."""
+        """Get source mask for voxel-scale model from cache."""
         file_name = self.get_cache_path(file_name, self.SOURCE_MASK_KEY)
         self.api.download_source_mask_params(file_name, strategy='lazy')
 
@@ -136,7 +151,7 @@ class VoxelModelCache(MouseConnectivityCache):
         return Mask.from_cache(self, **mask_params)
 
     def get_target_mask(self, file_name=None):
-        """Get target mask for  from cache."""
+        """Get target mask for voxel-scale model from cache."""
         file_name = self.get_cache_path(file_name, self.TARGET_MASK_KEY)
         self.api.download_target_mask_params(file_name, strategy='lazy')
 
@@ -149,7 +164,7 @@ class VoxelModelCache(MouseConnectivityCache):
                                     nodes_file_name=None,
                                     source_mask_file_name=None,
                                     target_mask_file_name=None):
-        """Get  from cache, returning VoxelConnectivityArray.
+        """Get voxel-scale model from cache, returning VoxelConnectivityArray.
 
         Parameters
         ----------
@@ -209,11 +224,11 @@ class VoxelModelCache(MouseConnectivityCache):
         projection_structure_ids : list, optional, default None
             List of structure_ids to which the projection mask will be constrained.
 
-        injection_hemisphere_id : int, optional, defualt 3
+        injection_hemisphere_id : int, optional, default 3
             Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
             be constrained.
 
-        projection_hemisphere_id : int, optional, defualt 3
+        projection_hemisphere_id : int, optional, default 3
             Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
             be constrained.
 
@@ -226,7 +241,7 @@ class VoxelModelCache(MouseConnectivityCache):
             injection density for each experiment.
 
         flip_experiments : boolean, optional, default True
-            If True, experiment grid-data will be refelcted accross the midline.
+            If True, experiment grid-data will be reflected across the midline.
             Useful if you wish to include L hemisphere injections into a R
             hemisphere model.
 
@@ -250,7 +265,7 @@ class VoxelModelCache(MouseConnectivityCache):
 
         Returns
         -------
-        A VoxelData object with attributes centroids, injecitons, projections.
+        A VoxelData object with attributes centroids, injections, projections.
 
         See Also
         --------

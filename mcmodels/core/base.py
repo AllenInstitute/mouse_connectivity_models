@@ -28,7 +28,7 @@ class _BaseData(six.with_metaclass(ABCMeta)):
         """Default structure ids."""
         # NOTE: Necessary copy from allensdk.core.MouseConnectivityCache because
         #       of hardcoded class and summary structure set id error due to
-        #       new anotation (ccf)
+        #       new annotation (ccf)
 
         if not hasattr(self, '_default_structure_ids'):
             tree = self.cache.get_structure_tree()
@@ -137,11 +137,11 @@ class VoxelData(_BaseData):
     projection_structure_ids : list, optional, default None
         List of structure_ids to which the projection mask will be constrained.
 
-    injection_hemisphere_id : int, optional, defualt 3
+    injection_hemisphere_id : int, optional, default 3
         Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
         be constrained.
 
-    projection_hemisphere_id : int, optional, defualt 3
+    projection_hemisphere_id : int, optional, default 3
         Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
         be constrained.
 
@@ -216,8 +216,8 @@ class VoxelData(_BaseData):
     >>> voxel_data.get_experiment_data(experiment_ids)
     <mcmodels.core.base.VoxelData object at 0x7f39c9efd519>
     """
-    DEFAULT_STRUCTURE_SET_ID = 2
-    DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
+    COARSE_STRUCTURE_SET_ID = 2
+    DEFAULT_STRUCTURE_SET_IDS = tuple([COARSE_STRUCTURE_SET_ID])
 
     def get_experiment_data(self, experiment_ids):
         """Pulls voxel-scale grid data for experiments.
@@ -293,11 +293,11 @@ class RegionalData(VoxelData):
     projection_structure_ids : list, optional, default None
         List of structure_ids to which the projection mask will be constrained.
 
-    injection_hemisphere_id : int, optional, defualt 3
+    injection_hemisphere_id : int, optional, default 3
         Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
         be constrained.
 
-    projection_hemisphere_id : int, optional, defualt 3
+    projection_hemisphere_id : int, optional, default 3
         Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
         be constrained.
 
@@ -310,7 +310,7 @@ class RegionalData(VoxelData):
         injection density for each experiment.
 
     flip_experiments : boolean, optional, default True
-        If True, experiment grid-data will be refelcted accross the midline.
+        If True, experiment grid-data will be reflected across the midline.
         Useful if you wish to include L hemisphere injections into a R
         hemisphere model.
 
@@ -373,8 +373,8 @@ class RegionalData(VoxelData):
     <mcmodels.core.base.RegionalData object at 0x7f39c9efd519>
     """
 
-    DEFAULT_STRUCTURE_SET_ID = 167587189
-    DEFAULT_STRUCTURE_SET_IDS = tuple([DEFAULT_STRUCTURE_SET_ID])
+    SUMMARY_STRUCTURE_SET_ID = 167587189
+    DEFAULT_STRUCTURE_SET_IDS = tuple([SUMMARY_STRUCTURE_SET_ID])
 
     @classmethod
     def from_voxel_data(cls, voxel_data):
@@ -386,7 +386,7 @@ class RegionalData(VoxelData):
 
         Returns
         -------
-        RegionalData : an instatiation of the RegionalData object
+        RegionalData : an installation of the RegionalData object
         """
         return cls(voxel_data.cache,
                    injection_structure_ids=voxel_data.injection_structure_ids,

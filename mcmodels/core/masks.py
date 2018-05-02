@@ -4,11 +4,9 @@ Module containing Mask object and supporting functions.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-# TODO : finish Mask docstring (examples)
 from __future__ import division
 from functools import reduce
 import operator as op
-import json
 
 import numpy as np
 from allensdk.core import json_utilities
@@ -44,7 +42,7 @@ class Mask(object):
     """Object for masking the grid data from allensdk.
 
     This object is useful for masking grid data as well as reshaping/filling
-    'masked' arrays to be the shape of the annotaion (CCF) from allensdk. Also,
+    'masked' arrays to be the shape of the annotation (CCF) from allensdk. Also,
     this object is useful for determining the location or structure id of a
     given voxel from the voxel-voxel connectivity matrix.
 
@@ -55,7 +53,7 @@ class Mask(object):
         annotation, and structure tree objects.
 
     structure_ids : array-like, optional, shape (n_structure_ids,)
-        AllenSDK CCF Annotation stucture ids to be included in the model
+        AllenSDK CCF Annotation structure ids to be included in the model
 
     Hemisphere : int
         hemisphere id to be included in the projection in the model.
@@ -65,16 +63,24 @@ class Mask(object):
 
     Attributes
     ----------
-    referece_space : reference_space object
+    reference_space : reference_space object
         see allensdk.reference_space
 
     Examples
     --------
-    >>> xxx
+    >>> from mcmodels.core import Mask, VoxelModelCache
+    >>> cache = VoxelModelCache()
+    >>> mask = Mask.from_cache(cache)
+    >>> # what shape will a masked volume be
+    >>> mask.masked_shape
+    (448962,)
     """
 
-    GREY_STRUCTURE_ID = tuple([8])
-    BILATERAL_HEMISPHER_ID = 3
+    GREY_STRUCTURE_ID = 8
+    DEFAULT_STRUCTURE_IDS = tuple([GREY_STRUCTURE_ID])
+
+    BILATERAL_HEMISPHERE_ID = 3
+    DEFAULT_HEMISPHERE_ID = BILATERAL_HEMISPHERE_ID
 
     @classmethod
     def from_cache(cls, cache, **kwargs):
@@ -89,15 +95,16 @@ class Mask(object):
             reference_space = cache.get_reference_space()
         except AttributeError:
             raise ValueError('Must pass a MouseConnectivtyCache, '
-                             'ReferenceSpaceCache, or VoxelModelCache object')
+                             'ReferenceSpaceCache, or VoxelModelCache object '
+                             'not %s' % type(cache))
 
         return cls(reference_space, **kwargs)
 
     def __init__(self, reference_space, structure_ids=None, hemisphere_id=None):
         if structure_ids is None:
-            structure_ids = self.GREY_STRUCTURE_ID
+            structure_ids = self.DEFAULT_STRUCTURE_IDS
         if hemisphere_id is None:
-            hemisphere_id = self.BILATERAL_HEMISPHER_ID
+            hemisphere_id = self.DEFAULT_HEMISPHERE_ID
 
         # update reference space to include only assigned voxels
         reference_space.remove_unassigned(update_self=True)
@@ -171,8 +178,9 @@ class Mask(object):
         return (np.count_nonzero(self.mask),)
 
     def get_structure_flattened_mask(self, structure_ids=None, hemisphere_id=None):
-        #TODO: docstring
-        """
+        """Returns a masked structure mask.
+
+        Given a set of structure_ids, we mask the structure mask 
         ...
         """
         if structure_ids is None:
@@ -208,8 +216,8 @@ class Mask(object):
             return idx[0]
         except IndexError as e:
             # array is empty
-            raise ValueError("voxel index is not in mask.coordinates"
-                             "\nIndexError\n %s" % e)
+            raise ValueError("voxel index %s is not in mask.coordinates"
+                             "\nIndexError\n %s" % (voxel_idx, e))
 
 
     def get_structure_indices(self, structure_ids=None, hemisphere_id=None):
@@ -229,20 +237,19 @@ class Mask(object):
 
         Parameters
         ----------
-        structure_ids : list, optional (defalut=None)
+        structure_ids : list, optional (default=None)
             Ids of structures which to include in the key. If None, the
             structure_ids used to make the Mask object will be used.
 
-        hemisphere_id : int, optional (defalut=None)
+        hemisphere_id : int, optional (default=None)
             Hemisphere to include in the key. If None, the hemisphere used
-            to maske the Mask object will be used.
+            to mask the Mask object will be used.
 
         Returns
         -------
         key = array, shape (masked_shape,), type np.int
             Key mapping an element in a masked data volume to its structure id
             in the annotation. Each element in key is a structure_id.
-
         """
         # do not want to overwrite annotation
         annotation = self.reference_space.annotation.copy()
@@ -256,7 +263,7 @@ class Mask(object):
         descendant_ids = self.reference_space.structure_tree.descendant_ids(structure_ids)
 
         if not _check_disjoint_structures(structure_ids, descendant_ids):
-            raise ValueError("structures are not disjoint")
+            raise ValueError("structures %s are not disjoint" % structure_ids)
 
         for structure_id, descendants in zip(structure_ids, descendant_ids):
 
@@ -286,10 +293,10 @@ class Mask(object):
         -------
         array - shape (masked_shape)
             Masked data volume.
-
         """
         if X.shape != self.reference_space.annotation.shape:
-            raise ValueError("X must be same shape as annotation")
+            raise ValueError("X must be same shape as annotation: %s (not %s)"
+                             % (self.reference_space.annotation.shape, X.shape))
 
         return X[self.mask.nonzero()]
 
@@ -312,9 +319,9 @@ class Mask(object):
         array - shape (x_ccf, y_ccf, z_ccf)
             Filled array.
         """
-
         if X.shape != self.reference_space.annotation.shape:
-            raise ValueError("X must be same shape as annotation")
+            raise ValueError("X must be same shape as annotation: %s (not %s)"
+                             % (self.reference_space.annotation.shape, X.shape))
 
         _X = X.copy() if not inplace else X
 
@@ -342,7 +349,8 @@ class Mask(object):
 
         if y.shape != idx[0].shape:
             # TODO : better error statement
-            raise ValueError("Must be same shape as key")
+            raise ValueError("Must be same shape as key: %s (not %s)"
+                             % (idx[0].shape, y.shape))
 
         y_volume = np.zeros(self.reference_space.annotation.shape)
         y_volume[idx] = y
