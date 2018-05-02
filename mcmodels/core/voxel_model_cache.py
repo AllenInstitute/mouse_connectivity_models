@@ -53,8 +53,14 @@ class VoxelModelCache(MouseConnectivityCache):
     >>> cortex_voxel_data = cache.get_experiment_data(injection_structure_ids=[315])
     >>> # JSON serialize input parameters so that cache can be reinstantiated later
     >>> cache.to_json()
-    '{\n  "resolution": 100,\n  "cache": true,\n  "manifest_file": "voxel_model_manifest.json",
-    \n  "ccf_version": "annotation/ccf_2017",\n  "base_uri": null,\n  "version": 1.2\n}'
+    '{
+            "resolution": 100,
+            "cache": true,
+            "manifest_file": "voxel_model_manifest.json",
+            "ccf_version": "annotation/ccf_2017",
+            "base_uri": null,
+            "version": 1.2
+    }'
     """
 
     COARSE_STRUCTURE_SET_ID = 2
@@ -242,7 +248,7 @@ class VoxelModelCache(MouseConnectivityCache):
         return VoxelConnectivityArray(weights, nodes), source_mask, target_mask
 
     def get_connection_density(self, file_name=None, dataframe=True):
-        """Get regionalized voxel-model weights as :term:`connection_density`.
+        """Get regionalized voxel-model weights as :term:`connection density`.
 
         Parameters
         ----------
@@ -265,7 +271,7 @@ class VoxelModelCache(MouseConnectivityCache):
         return df.values
 
     def get_connection_strength(self, file_name=None, dataframe=True):
-        """Get regionalized voxel-model weights as :term:`connection_strength`.
+        """Get regionalized voxel-model weights as :term:`connection strength`.
 
         Parameters
         ----------
@@ -288,7 +294,7 @@ class VoxelModelCache(MouseConnectivityCache):
         return df.values
 
     def get_normalized_connection_density(self, file_name=None, dataframe=True):
-        """Get regionalized voxel-model weights as :term:`normalized_connection_density`.
+        """Get regionalized voxel-model weights as :term:`normalized connection density`.
 
         Parameters
         ----------
@@ -312,7 +318,7 @@ class VoxelModelCache(MouseConnectivityCache):
         return df.values
 
     def get_normalized_connection_strength(self, file_name=None, dataframe=True):
-        """Get regionalized voxel-model weights as :term:`normalized_connection_strength`.
+        """Get regionalized voxel-model weights as :term:`normalized connection strength`.
 
         Parameters
         ----------

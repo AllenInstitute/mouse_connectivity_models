@@ -81,6 +81,10 @@ class _BaseData(six.with_metaclass(ABCMeta)):
             structure_ids=self.projection_structure_ids,
             hemisphere_id=self.projection_hemisphere_id)
 
+    def __repr__(self):
+        # TODO: update to show parameters
+        return "{}()".format(self.__class__.__name__)
+
     def _experiment_generator(self, experiment_ids):
         """Generates experiment objections given their experiment ids"""
         def valid_volume(experiment):
@@ -214,7 +218,7 @@ class VoxelData(_BaseData):
     >>> experiment_ids = (112514202, 139520203)
     >>> voxel_data = VoxelData(cache)
     >>> voxel_data.get_experiment_data(experiment_ids)
-    <mcmodels.core.base.VoxelData object at 0x7f39c9efd519>
+    VoxelData()
     """
     COARSE_STRUCTURE_SET_ID = 2
     DEFAULT_STRUCTURE_SET_IDS = tuple([COARSE_STRUCTURE_SET_ID])
@@ -370,7 +374,7 @@ class RegionalData(VoxelData):
     >>> experiment_ids = (112514202, 139520203)
     >>> regional_data = RegionalData(cache)
     >>> regional_data.get_experiment_data(experiment_ids)
-    <mcmodels.core.base.RegionalData object at 0x7f39c9efd519>
+    RegionalData()
     """
 
     SUMMARY_STRUCTURE_SET_ID = 167587189

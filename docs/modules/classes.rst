@@ -56,8 +56,8 @@ Utitility fucntions
 
 .. _nonnegative_linear_ref:
 
-:mod:`mcmodels.regressors.nonnegative_linear`: Nonnegative Least squares
-============================================================================
+:mod:`mcmodels.regressors.nonnegative_linear`: Nonnegative Linear Least squares
+===============================================================================
 .. automodule:: mcmodels.regressors.nonnegative_linear
         :no-members:
         :no-inherited-members:

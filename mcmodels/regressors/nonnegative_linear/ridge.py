@@ -1,7 +1,7 @@
 """
 Nonnegative Ridge Regression.
 
-..note:: This is an experimental module.
+:note: This is an experimental module.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -45,18 +45,26 @@ def _solve_ridge_nnls(X, y, alpha):
 
 
 def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
-    """Solve the nonnegative least squares estimate regression problem.
+    r"""Solve the nonnegative least squares estimate regression problem.
 
     Solves
-    ..math:: argmin_x \| Ax - y \|_2^2 + \alpha^2\| x \|_2^2 for x > 0
 
-    using scipy.optimize.nnls. This can be simplified to:
+    .. math::
+        \underset{x}{\text{argmin}} \| Ax - y \|_2^2 + \alpha^2 \| x \|_2^2
+        \quad \text{for} \quad x \geq 0
 
-    ..math:: argmin_x \| Qx - c \|_2^2 for x > 0
+    using `scipy.optimize.nnls <https://docs.scipy.org/doc/scipy/reference/
+    generated/scipy.optimize.nnls.html>`_. This can be simplified to:
+
+    .. math::
+
+        \underset{x}{\text{argmin}} \| Qx - c \|_2^2 \quad \text{for} \quad x \geq 0
 
     where
 
-    ..math:: Q = X^TX + \alpha I and c = X^Ty
+    .. math::
+
+        Q = X^TX + \alpha I \quad \text{and} \quad c = X^Ty
 
     Parameters
     ----------
@@ -77,10 +85,10 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
         Weight vector(s).
 
     res : float
-        The residual, ``\| Qx - c \|_2``
+        The residual, :math:`\| Qx - c \|_2`
 
-    Note
-    ----
+    Notes
+    -----
     This is an experimental function.
     """
     # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
@@ -168,8 +176,8 @@ class NonnegativeRidge(NonnegativeLinear):
     >>> reg.fit(X, y)
     NonnegativeRidge(alpha=1.0)
 
-    Note
-    ----
+    Notes
+    -----
     This is an experimental class.
     """
 

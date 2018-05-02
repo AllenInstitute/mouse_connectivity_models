@@ -31,6 +31,10 @@ Technical Terms
 
 .. glossary::
 
+        connection density
+                The :term:`connection strength` between two regions divided by
+                the size of the target :term:`region`.
+
         connection strength
                 The sum of the connection weights from all voxels in a
                 source :term`region` to all voxels in a target :term:`region`.
@@ -87,6 +91,7 @@ Biological Terms
                 * Cerebellum
 
         region
+        regional
                 A :term:`structure` in the brain, usually refering to a fine scale
                 :term:`structure`.
 

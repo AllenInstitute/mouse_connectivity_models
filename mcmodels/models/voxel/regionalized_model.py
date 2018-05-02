@@ -53,7 +53,7 @@ class RegionalizedModel(object):
     >>> regional_model = RegionalizedModel.from_voxel_array(
     ...     voxel_array, source_key, target_key)
     >>> regional_model.normalized_connection_density.shape
-    (293, 584)
+    (291, 577)
     """
 
     VALID_REGION_METRICS = [

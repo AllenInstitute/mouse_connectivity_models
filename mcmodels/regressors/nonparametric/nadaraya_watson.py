@@ -42,15 +42,12 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
     kernel_params : mapping of string to any, optional
         Additional parameters for kernel function passed as callable object.
 
-    References
-    ----------
-
-    See also
-    --------
-    `sklearn.kernel_ridge <http://scikit-learn.org/stable/modules/generated/
-    sklearn.kernel_ridge.KernelRidge.html#sklearn.kernel_ridge.KernelRidge>`_:
-        Kernel Ridge Regression estimator from which the structure of
-        this estimator is based.
+    Notes
+    -----
+    See `sklearn.kernel_ridge <http://scikit-learn.org/stable/modules/
+    generated/sklearn.kernel_ridge.KernelRidge.html#sklearn.kernel_ridge.
+    KernelRidge>`_, for more info: Kernel Ridge Regression estimator from
+    which the structure of this estimator is based.
 
     Examples
     --------

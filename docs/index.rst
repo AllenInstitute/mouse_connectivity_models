@@ -35,7 +35,7 @@ Regionalized voxel-scale model
 
 Additionally, one may be interested in analysis of the model at a :term:`regional`
 resolution. We have available a set of adjacency matrices of the connectivity
-between a set of 293 :term:`summary_structures` for which we integrated our
+between a set of 293 :term:`summary structures` for which we integrated our
 voxel-scale connectivity. These can be conveniently downloaded (and subsequently
 loaded from your local machine) through the :class:`VoxelModelCache` class, or
 downloaded directly from `here <http://download.alleninstitute.org/publications/

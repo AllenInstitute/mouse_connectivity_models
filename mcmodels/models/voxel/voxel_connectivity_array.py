@@ -34,9 +34,9 @@ class VoxelConnectivityArray(object):
     >>> voxel_array[20:22, 10123]
     array([0.000145, 0.000098])
     >>> voxel_array.shape
-    (215315, 448230)
+    (226346, 448962)
     >>> voxel_array.T
-    VoxelConnectivityArray(dtype=float32, shape=(448230, 215315))
+    VoxelConnectivityArray(dtype=float32, shape=(448962, 226346))
     """
 
     ndim = 2

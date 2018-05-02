@@ -189,6 +189,10 @@ class Experiment(object):
         self.injection_density = injection_density
         self.projection_density = projection_density
 
+    def __repr__(self):
+        return '{0}(volume_shape={1})'.format(
+            self.__class__.__name__, self.injection_density.shape)
+
     @property
     def injection_hemisphere_id(self):
         """Returns injection hemisphere"""
