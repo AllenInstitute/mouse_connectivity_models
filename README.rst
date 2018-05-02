@@ -26,9 +26,11 @@ mesoscale connectivity models using data from the `Allen Institute for Brain
 Science <https://brain-map.org>`_.
 
 It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
-``estimator`` style, and has been used in several publications INSERT CITATIONS.
+``estimator`` style, and has been used in the following publications:
+- `High resolution data-driven model of the mouse connectome
+  <https://www.biorxiv.org/content/early/2018/04/01/293019>`_
 
-Website: http://AllenInstitute.github.io/mouse_connectivity_models
+**Website**: http://AllenInstitute.github.io/mouse_connectivity_models
 
 
 Installation
@@ -43,7 +45,7 @@ mouse_connectivity_models requires:
 - scikit-learn (>= 0.19)
 - allensdk (>= 0.14.4)
 
-For running the examples Matplotlib >= 1.3.1 is requried.
+For running the examples Matplotlib >= 1.3.1 is required.
 
 User installation
 ~~~~~~~~~~~~~~~~~

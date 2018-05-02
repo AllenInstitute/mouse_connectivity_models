@@ -16,7 +16,7 @@ mouse_connectivity_models requires:
 - scikit-learn (>= 0.19)
 - allensdk (>= 0.14.4)
 
-For running the examples Matplotlib >= 1.3.1 is requried.
+For running the examples Matplotlib >= 1.3.1 is required.
 
 User installation
 ~~~~~~~~~~~~~~~~~

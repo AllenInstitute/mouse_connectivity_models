@@ -1,3 +1,5 @@
+.. _index_ref:
+
 Documentation of mouse_connectivity_models |version|
 ====================================================
 mouse_connectivity_models (`mcmodels <https://github.com/AllenInstitute/
