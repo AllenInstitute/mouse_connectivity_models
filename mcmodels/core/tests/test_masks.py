@@ -36,6 +36,24 @@ def ipsi_mask(mcc, structure_ids):
 def bi_mask(mcc, structure_ids):
     return Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=3)
 
+
+def test_repr(mcc):
+    # ------------------------------------------------------------------------
+    # test structure_ids <= 3
+    structure_ids = list(range(3))
+    mask = Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=3)
+
+    s = "Mask(hemisphere_id=3, structure_ids=[0, 1, 2])"
+    assert repr(mask) == s
+
+    # ------------------------------------------------------------------------
+    # test structure_ids > 3
+    structure_ids = list(range(10))
+    mask = Mask.from_cache(mcc, structure_ids=structure_ids, hemisphere_id=3)
+
+    s = "Mask(hemisphere_id=3, structure_ids=[0, ..., 9])"
+    assert repr(mask) == s
+
 # -----------------------------------------------------------------------------
 # tests
 def test_mask_to_hemisphere(ipsi_mask, contra_mask, bi_mask):

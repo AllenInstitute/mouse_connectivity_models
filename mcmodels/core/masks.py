@@ -115,7 +115,8 @@ class Mask(object):
 
     def __repr__(self):
         if len(self.structure_ids) > 3:
-            structure_ids = "{x[0]}, ..., {x[-1]}".format(x=self.structure_ids)
+            structure_ids = "{0}, ..., {1}".format(self.structure_ids[0],
+                                                   self.structure_ids[-1])
         else:
             structure_ids = ", ".join(map(str, self.structure_ids))
 
@@ -178,10 +179,22 @@ class Mask(object):
         return (np.count_nonzero(self.mask),)
 
     def get_structure_flattened_mask(self, structure_ids=None, hemisphere_id=None):
-        """Returns a masked structure mask.
+        """Masks a structure_mask or union of structure_masks.
 
-        Given a set of structure_ids, we mask the structure mask 
-        ...
+        Parameters
+        ----------
+        structure_ids : array-like, optional (default = None)
+            A list of structure ids with which to construct a structure union
+            mask. If None, the object's structure_ids are used.
+
+        hemisphere_id : int, optional (default = None)
+            The hemisphere to which the structure union mask will be additionally
+            masked to. If None, the object's hemisphere_id is used.
+
+        Returns
+        -------
+        array - shape (masked_shape)
+            Masked structure union mask.
         """
         if structure_ids is None:
             structure_ids = self.structure_ids
@@ -208,7 +221,6 @@ class Mask(object):
         int
             idx of voxel_idx in flattened mask
         """
-
         idx = np.where((self.coordinates == voxel_idx).all(axis=1))[0]
 
         try:
@@ -221,8 +233,22 @@ class Mask(object):
 
 
     def get_structure_indices(self, structure_ids=None, hemisphere_id=None):
-        #TODO: docstring
-        """
+        """Returns the indices of a masked structure_mask or union of structure_masks.
+
+        Parameters
+        ----------
+        structure_ids : array-like, optional (default = None)
+            A list of structure ids with which to construct a structure union
+            mask. If None, the object's structure_ids are used.
+
+        hemisphere_id : int, optional (default = None)
+            The hemisphere to which the structure union mask will be additionally
+            masked to. If None, the object's hemisphere_id is used.
+
+        Returns
+        -------
+        array - shape (masked_nonzero,)
+            The indices of the masked structure union mask that are nonzero
         """
         aligned = self.get_structure_flattened_mask(structure_ids, hemisphere_id)
 
@@ -348,7 +374,6 @@ class Mask(object):
         idx = self.mask.nonzero()
 
         if y.shape != idx[0].shape:
-            # TODO : better error statement
             raise ValueError("Must be same shape as key: %s (not %s)"
                              % (idx[0].shape, y.shape))
 

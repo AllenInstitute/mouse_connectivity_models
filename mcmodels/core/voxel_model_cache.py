@@ -5,6 +5,7 @@ Module containing VoxelModelCache.
 # License: Allen Institute Software License
 
 import numpy as np
+import pandas as pd
 from allensdk.core import json_utilities
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
@@ -45,7 +46,7 @@ class VoxelModelCache(MouseConnectivityCache):
     >>> from mcmodels.core import VoxelModelCache
     >>> cache = VoxelModelCache(manifest_file='connectivity/voxel_model_manifest.json')
     >>> # download the fitted voxel-scale model
-    >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivty_array()
+    >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivity_array()
     >>> # get regionalized adjacency matrix
     >>> regional_ncd = cache.get_normalized_connection_density()
     >>> # get VoxelData object to use in model building
@@ -128,21 +129,57 @@ class VoxelModelCache(MouseConnectivityCache):
         self.version = version
 
     def get_nodes(self, file_name=None):
-        """Get nodes for voxel-scale model from cache."""
+        """Get nodes for voxel-scale model from cache.
+
+        Parameters
+        ----------
+        file_name: string, optional (default=None)
+            File name to store the voxel model nodes.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        Returns
+        -------
+        nodes (type=numpy.ndarray)
+        """
         file_name = self.get_cache_path(file_name, self.NODES_KEY)
         self.api.download_nodes(file_name, strategy='lazy')
 
         return np.loadtxt(file_name, delimiter=',')
 
     def get_weights(self, file_name=None):
-        """Get weights for voxel-scale model from cache."""
+        """Get weights for voxel-scale model from cache.
+
+        Parameters
+        ----------
+        file_name: string, optional (default=None)
+            File name to store the voxel model weights.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        Returns
+        -------
+        weights (type=numpy.ndarray)
+        """
         file_name = self.get_cache_path(file_name, self.WEIGHTS_KEY)
         self.api.download_weights(file_name, strategy='lazy')
 
         return np.loadtxt(file_name, delimiter=',')
 
     def get_source_mask(self, file_name=None):
-        """Get source mask for voxel-scale model from cache."""
+        """Get source mask for voxel-scale model from cache.
+
+        Parameters
+        ----------
+        file_name: string, optional (default=None)
+            File name to store the voxel model source_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        Returns
+        -------
+        Mask object.
+        """
         file_name = self.get_cache_path(file_name, self.SOURCE_MASK_KEY)
         self.api.download_source_mask_params(file_name, strategy='lazy')
 
@@ -151,7 +188,19 @@ class VoxelModelCache(MouseConnectivityCache):
         return Mask.from_cache(self, **mask_params)
 
     def get_target_mask(self, file_name=None):
-        """Get target mask for voxel-scale model from cache."""
+        """Get target mask for voxel-scale model from cache.
+
+        Parameters
+        ----------
+        file_name: string, optional (default=None)
+            File name to store the voxel model target_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        Returns
+        -------
+        Mask object.
+        """
         file_name = self.get_cache_path(file_name, self.TARGET_MASK_KEY)
         self.api.download_target_mask_params(file_name, strategy='lazy')
 
@@ -159,18 +208,31 @@ class VoxelModelCache(MouseConnectivityCache):
 
         return Mask.from_cache(self, **mask_params)
 
-    def get_voxel_connectivty_array(self,
-                                    weights_file_name=None,
-                                    nodes_file_name=None,
-                                    source_mask_file_name=None,
-                                    target_mask_file_name=None):
+    def get_voxel_connectivity_array(self,
+                                     nodes_file_name=None,
+                                     weights_file_name=None,
+                                     source_mask_file_name=None,
+                                     target_mask_file_name=None):
         """Get voxel-scale model from cache, returning VoxelConnectivityArray.
 
         Parameters
         ----------
-        directory_name : string, optional (default=None)
-            Directory to which one wishes to cache the  data. If
-            None, the directory_name is pulled from the manifest.
+        nodes_file_name : string, optional (default=None)
+            File name to store the voxel model nodes. See :meth:`get_nodes`
+
+        weights_file_name : string, optional (default=None)
+            File name to store the voxel model weights. See :meth:`get_weights`
+
+        source_mask_file_name : string, optional (default=None)
+            File name to store the source_mask. See :meth:`get_source_mask`
+
+        target_mask_file_name : string, optional (default=None)
+            File name to store the target_mask. See :meth:`get_target_mask`
+
+        Returns
+        -------
+        tuple : (VoxelConnectivityArray, Mask, Mask)
+            (get_voxel_connectivity_array, source_mask, target_mask)
         """
         nodes = self.get_nodes(nodes_file_name)
         weights = self.get_weights(weights_file_name)
@@ -179,31 +241,100 @@ class VoxelModelCache(MouseConnectivityCache):
 
         return VoxelConnectivityArray(weights, nodes), source_mask, target_mask
 
-    def get_connection_density(self, file_name=None):
+    def get_connection_density(self, file_name=None, dataframe=True):
+        """Get regionalized voxel-model weights as :term:`connection_density`.
+
+        Parameters
+        ----------
+        file_name: string, optional (default = None)
+            File name to store the voxel model target_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        dataframe: boolean, optional (default = True)
+            Return the regionalized weights as a Pandas DataFrame. If False,
+            return an unlabeled `numpy.ndarray`.
+        """
         file_name = self.get_cache_path(file_name, self.CONNECTION_DENSITY_KEY)
         self.api.download_connection_density(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name, delimiter=',')
+        df = pd.read_csv(file_name, header=[0, 1], index_col=[0])
 
-    def get_connection_strength(self, file_name=None):
+        if dataframe:
+            return df
+        return df.values
+
+    def get_connection_strength(self, file_name=None, dataframe=True):
+        """Get regionalized voxel-model weights as :term:`connection_strength`.
+
+        Parameters
+        ----------
+        file_name: string, optional (default = None)
+            File name to store the voxel model target_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        dataframe: boolean, optional (default = True)
+            Return the regionalized weights as a Pandas DataFrame. If False,
+            return an unlabeled `numpy.ndarray`.
+        """
         file_name = self.get_cache_path(file_name, self.CONNECTION_STRENGTH_KEY)
         self.api.download_connection_strength(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name, delimiter=',')
+        df = pd.read_csv(file_name, header=[0, 1], index_col=[0])
 
-    def get_normalized_connection_density(self, file_name=None):
+        if dataframe:
+            return df
+        return df.values
+
+    def get_normalized_connection_density(self, file_name=None, dataframe=True):
+        """Get regionalized voxel-model weights as :term:`normalized_connection_density`.
+
+        Parameters
+        ----------
+        file_name: string, optional (default = None)
+            File name to store the voxel model target_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        dataframe: boolean, optional (default = True)
+            Return the regionalized weights as a Pandas DataFrame. If False,
+            return an unlabeled `numpy.ndarray`.
+        """
         file_name = self.get_cache_path(file_name,
                                         self.NORMALIZED_CONNECTION_DENSITY_KEY)
         self.api.download_normalized_connection_density(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name, delimiter=',')
+        df = pd.read_csv(file_name, header=[0, 1], index_col=[0])
 
-    def get_normalized_connection_strength(self, file_name=None):
+        if dataframe:
+            return df
+        return df.values
+
+    def get_normalized_connection_strength(self, file_name=None, dataframe=True):
+        """Get regionalized voxel-model weights as :term:`normalized_connection_strength`.
+
+        Parameters
+        ----------
+        file_name: string, optional (default = None)
+            File name to store the voxel model target_mask.  If it already exists,
+            it will be read from this file.  If file_name is None, the
+            file_name will be pulled out of the manifest.  Default is None.
+
+        dataframe: boolean, optional (default = True)
+            Return the regionalized weights as a Pandas DataFrame. If False,
+            return an unlabeled `numpy.ndarray`.
+        """
         file_name = self.get_cache_path(file_name,
                                         self.NORMALIZED_CONNECTION_STRENGTH_KEY)
         self.api.download_normalized_connection_strength(file_name, strategy='lazy')
 
-        return np.loadtxt(file_name, delimiter=',')
+        df = pd.read_csv(file_name, header=[0, 1], index_col=[0])
+
+        if dataframe:
+            return df
+        # else return numpy.ndarray
+        return df.values
 
     def get_experiment_data(self, cre=None, injection_structure_ids=None, **kwargs):
         """Pulls voxel-scale grid data for experiments.
@@ -212,7 +343,7 @@ class VoxelModelCache(MouseConnectivityCache):
         ----------
         cre: boolean or list
             If True, return only cre-positive experiments.  If False, return only
-            cre-negative experiments.  If None, return all experients. If list, return
+            cre-negative experiments.  If None, return all experiments. If list, return
             all experiments with cre line names in the supplied list. Default None.
 
         cache - VoxelModelCache or MouseConnectivityCache object
@@ -309,14 +440,7 @@ class VoxelModelCache(MouseConnectivityCache):
         json_utilities.write(file_name, params)
 
     def add_manifest_paths(self, manifest_builder):
-        """
-        Construct a manifest for this Cache class and save it in a file.
-
-        Parameters
-        ----------
-        file_name: string
-            File location to save the manifest.
-        """
+        """Construct a manifest for this Cache class and save it in a file."""
         manifest_builder = super(VoxelModelCache, self).add_manifest_paths(
             manifest_builder)
 

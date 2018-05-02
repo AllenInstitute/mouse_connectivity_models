@@ -3,6 +3,7 @@ import os
 import mock
 import pytest
 
+import pandas as pd
 import numpy as np
 from numpy.testing import assert_allclose
 
@@ -141,18 +142,22 @@ def test_get_connection_density(voxel_model_cache, fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests file is cached and properly saved/loaded
     eye = np.eye(100)
+    df = pd.DataFrame(eye, index=np.arange(100),
+                      columns=pd.MultiIndex.from_product((np.arange(2), np.arange(50))))
     path = os.path.join(fn_temp_dir, 'voxel_model', 'connection_density.csv.gz')
 
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
-                    new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_connection_density()
+                    new=lambda a, b, c: df.to_csv(c, compression='gzip')):
+        obtained_ar = voxel_model_cache.get_connection_density(dataframe=False)
+        obtained_df = voxel_model_cache.get_connection_density()
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
     voxel_model_cache.get_connection_density()
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
-    assert_allclose(obtained, eye)
+    assert_allclose(obtained_df.values, df.values)
+    assert_allclose(obtained_ar, eye)
     assert os.path.exists(path)
 
 
@@ -160,18 +165,22 @@ def test_get_connection_strength(voxel_model_cache, fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests file is cached and properly saved/loaded
     eye = np.eye(100)
+    df = pd.DataFrame(eye, index=np.arange(100),
+                      columns=pd.MultiIndex.from_product((np.arange(2), np.arange(50))))
     path = os.path.join(fn_temp_dir, 'voxel_model', 'connection_strength.csv.gz')
 
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
-                    new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_connection_strength()
+                    new=lambda a, b, c: df.to_csv(c, compression='gzip')):
+        obtained_ar = voxel_model_cache.get_connection_strength(dataframe=False)
+        obtained_df = voxel_model_cache.get_connection_strength()
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
     voxel_model_cache.get_connection_strength()
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
-    assert_allclose(obtained, eye)
+    assert_allclose(obtained_df.values, df.values)
+    assert_allclose(obtained_ar, eye)
     assert os.path.exists(path)
 
 
@@ -179,19 +188,23 @@ def test_get_normalized_connection_density(voxel_model_cache, fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests file is cached and properly saved/loaded
     eye = np.eye(100)
+    df = pd.DataFrame(eye, index=np.arange(100),
+                      columns=pd.MultiIndex.from_product((np.arange(2), np.arange(50))))
     path = os.path.join(fn_temp_dir, 'voxel_model',
                         'normalized_connection_density.csv.gz')
 
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
-                    new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_normalized_connection_density()
+                    new=lambda a, b, c: df.to_csv(c, compression='gzip')):
+        obtained_ar = voxel_model_cache.get_normalized_connection_strength(dataframe=False)
+        obtained_df = voxel_model_cache.get_normalized_connection_density()
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
     voxel_model_cache.get_normalized_connection_density()
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
-    assert_allclose(obtained, eye)
+    assert_allclose(obtained_df.values, df.values)
+    assert_allclose(obtained_ar, eye)
     assert os.path.exists(path)
 
 
@@ -199,17 +212,21 @@ def test_get_normalized_connection_strength(voxel_model_cache, fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests file is cached and properly saved/loaded
     eye = np.eye(100)
+    df = pd.DataFrame(eye, index=np.arange(100),
+                      columns=pd.MultiIndex.from_product((np.arange(2), np.arange(50))))
     path = os.path.join(fn_temp_dir, 'voxel_model',
                         'normalized_connection_strength.csv.gz')
 
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
-                    new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_normalized_connection_strength()
+                    new=lambda a, b, c: df.to_csv(c, compression='gzip')):
+        obtained_ar = voxel_model_cache.get_normalized_connection_strength(dataframe=False)
+        obtained_df = voxel_model_cache.get_normalized_connection_strength()
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
     voxel_model_cache.get_normalized_connection_strength()
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
-    assert_allclose(obtained, eye)
+    assert_allclose(obtained_df.values, df.values)
+    assert_allclose(obtained_ar, eye)
     assert os.path.exists(path)
