@@ -15,12 +15,13 @@ import numpy as np
 class VoxelConnectivityArray(object):
     """Class for implicit construction of the voxel model.
 
-    See voxel_model.VoxelModel for weights/nodes descriptions
+    See :class:`VoxelModel` for weights/nodes descriptions
 
     Parameters
     ----------
     weights : array-like, shape (n_voxels, n_exps)
         Weights matrix from fitted VoxelModel.
+
     nodes : array-like, shape (n_exps, n_voxels)
         Nodes matrix from fitted VoxelModel.
 

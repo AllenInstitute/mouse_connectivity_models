@@ -2,7 +2,7 @@
 The :mod:`mcmodels.models` module implements models that have been developed
 here at the Allen Institute for modeling mesoscale connectivity in the mouse.
 The module contains a HomogeneousModel similar to Oh et al. 2014 as well as the
-recent VoxelModel from Knox & Harris 2018.
+recent VoxelModel from Knox et al. 2018.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License

@@ -48,7 +48,7 @@ Utitility fucntions
 .. _regressors_ref:
 
 :mod:`mcmodels.regressors`: Classes for Performing Regressions
-=====================================================================
+==============================================================
 .. automodule:: mcmodels.regressors
         :no-members:
         :no-inherited-members:
@@ -87,7 +87,7 @@ Functions
 .. _nonparametric_ref:
 
 :mod:`mcmodels.regressors.nonparametric`: Nonparametric Regression
-=====================================================================
+==================================================================
 .. automodule:: mcmodels.regressors.nonparametric
         :no-members:
         :no-inherited-members:
@@ -117,8 +117,8 @@ Kernels:
 
 .. _models_ref:
 
-:mod:`mcmodels.models`: Published* Mesoscale Connectivity Models
-=====================================================================
+:mod:`mcmodels.models`: Published Mesoscale Connectivity Models
+===============================================================
 .. automodule:: mcmodels.models
         :no-members:
         :no-inherited-members:
@@ -127,7 +127,7 @@ Kernels:
 .. _homogeneous_ref:
 
 :mod:`mcmodels.models.homogeneous`: Homogeneous Regional Model
-=====================================================================
+==============================================================
 .. automodule:: mcmodels.models.homogeneous
         :no-members:
         :no-inherited-members:
@@ -159,7 +159,7 @@ Functions
 .. _voxel_ref:
 
 :mod:`mcmodels.models.voxel`: Voxel-scale Model
-=====================================================================
+===============================================
 .. automodule:: mcmodels.models.voxel
         :no-members:
         :no-inherited-members:
@@ -183,7 +183,7 @@ Functions
 .. _utils_ref:
 
 :mod:`mcmodels.utils`: Utilities
-=====================================================================
+================================
 .. automodule:: mcmodels.utils
         :no-members:
         :no-inherited-members:

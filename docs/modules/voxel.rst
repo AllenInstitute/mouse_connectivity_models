@@ -35,21 +35,17 @@ connectivty matrix on the fly, in the area we want to perform computation.
 
 Loading the array
 ~~~~~~~~~~~~~~~~~
-:class:`VoxelConnectivityArray` has a variety of construction options, for instance
+The easiest way to load the :class:`VoxelConnectivityArray` is through the
+:class:`VoxelModelCache` object:
 
-        >>> import os
-        >>> from mcmodels.models.voxel import VoxelConnectivityArray
-        >>>
-        >>> # assuming weights, nodes live in data/
-        >>> weights_file = os.path.join(os.getcwd(), "data", "weights.npy")
-        >>> nodes_file = os.path.join(os.getcwd(), "data", "nodes.npy")
-        >>>
-        >>> # construct a VoxelArray object from .npy files
-        >>> vox_array = VoxelConnectivityArray.from_npy(weights_file, nodes_file)
-        >>> vox_array.shape
-        (xxx, xxx)
+        >>> from mcmodels.core import VoxelModelCache
+        >>> cache = VoxelModelCache(manifest_file='connectivity/voxel_model_manifest.json')
+        >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivity_array()
+        >>> voxel_array
+        VoxelConnectivityArray(dtype=float32, shape=(226346, 448962))
 
-This loads the factorization of the connectivity matrix into memory (~1G total).
+This downloads and caches the underlying data locally. Additionally,
+this loads the factorization of the connectivity matrix into memory (~1G total).
 
 Retrieving values from the array
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,14 +57,14 @@ or set of values:
         >>> source, target = 20353, 68902
         >>>
         >>> # we index the VoxelConnectivyArray object just like it is a numpy ndarray
-        >>> connection_strength = vox_array[source, target]
+        >>> connection_strength = voxel_array[source, target]
         >>>
         >>> # a row would be the bi-lateral connection strength from a given voxel
-        >>> row = vox_array[source]
+        >>> row = voxel_array[source]
         >>>
         >>> # a column would be the connection strength to a given voxel
         >>> # from each voxel in the right hemisphere
-        >>> column = vox_array[:, target]
+        >>> column = voxel_array[:, target]
         >>>
         >>> # indexing the VoxelConnectivityArray object returns numpy ndarray
         >>> type(row)
@@ -80,7 +76,7 @@ computing the full matrix is similar to loading an `hdf5` file:
         >>> import sys
         >>> full_array = vox_array[:]
         >>> sys.getsizeof(full_array)
-        xxxxxx
+        BIG!!!!!!
 
 
 
@@ -105,27 +101,8 @@ These include:
 
 and are called just like their ``numpy.ndarray`` counter parts:
 
-        >>> transposed = model.T
-        >>> transposed.shape
-        (xxx, xxx)
-
-**initialization methods**
-
-.. currentmodule:: mcmodels.models.voxel
-
-Additionally, :class:`VoxelConnectivityArray` implements several loading methods
-to support loading the array from:
-
-- :meth:`VoxelConnectivityArray.from_hdf5`
-- :meth:`VoxelConnectivityArray.from_npy`
-- :meth:`VoxelConnectivityArray.from_csv`
-
-
-Also, an :class:`VoxelConnectivityArray` instance can be constructed from a fitted
-:class:`.VoxelModel` object:
-
-- :meth:`VoxelConnectivityArray.from_fitted_voxel_model`
-
+        >>> voxel_array.T
+        VoxelConnectivityArray(dtype=float32, shape=(448962, 226346))
 
 **iterator methods**
 
@@ -159,34 +136,27 @@ by dividing the connection strength by the size of ether the target region
 connection strength`) or by both the source and target (:term:`normalized
 connection density`).
 
-Using the parcellation defined in the Allen 3D Reference Atlas and a set of
-structures, we can easily regionalize our voxel-scale connectivity:
+We can again use the :class:`VoxelModelCache` object to download and cache
+regionalized voxel models:
 
-TODO: need to make this more fool-proof, VoxelConnectivityArray should have
-source/target mask generation
+        >>> # this returns a pandas dataframe
+        >>> normalized_connection_density = cache.get_normalized_connection_density()
+
+Alternatively, we could construct the :class:`RegionalizedModel` object using
+our :class:`VoxelConnectivityArray` and our source/target :class:`Mask` objects:
 
         >>> from mcmodels.models.voxel import RegionalizedModel
-        >>> from mcmodels.core.mask import Mask
-        >>> from mcmodels.utils import get_mcc
-        >>>
-        >>> # returns a MouseConnectivityCache instance with some default settings
-        >>> mcc = get_mcc()
-        >>>
-        >>> source_mask = Mask(mcc, hemisphere=2)
-        >>> target_mask = Mask(mcc, hemisphere=3)
-        >>>
         >>> # get set of summary structures
-        >>> summary_structures = source_mask.structure_tree.get_structures_by_set_id([165787189])[0]
-        >>>
+        >>> structure_tree = cache.get_structure_tree()
+        >>> summary_structures = structure_tree.get_structures_by_set_id([165787189])[0]
+        >>> # the new ccf does not have sturcture 934 as a structure id
+        >>> structure_ids = [s['id'] for s in summary_structures if s['id'] != 934]
         >>> # get keys
         >>> source_key = source_mask.get_key(structure_ids=summary_structures)
         >>> target_key = target_mask.get_key(structure_ids=summary_structures)
-        >>>
-        >>> region_weights = RegionalizedModel.from_voxel_array(vox_array, source_key, target_key)
-        >>> region_weights.normalized_connection_density.shape
-        (292, 292)
-
-
+        >>> regionalized_model = RegionalizedModel.from_voxel_array(
+        ... voxel_array, source_key, target_key)
+        >>> normalized_connection_density = regionalized_model.normalized_connection_density
 
 .. topic:: References
 
