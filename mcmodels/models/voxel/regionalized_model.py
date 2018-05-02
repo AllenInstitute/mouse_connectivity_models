@@ -1,6 +1,6 @@
 """
 Module containing the RegionalizedModel object, used in evaluating the
-voxel-voxel model at the level of regions.
+voxel-scale model at the level of regions.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -26,10 +26,36 @@ class RegionalizedModel(object):
     target_key : array-like, shape=(n_target_voxels,)
         Flattened key relating each target voxel to a given brain region.
 
+    ordering : array-like, optional (default=None)
+        Order with which to arrange the source/target regions. If supplied, the
+        ordering must contain at least every unique structure_id associated with
+        each of the source/target regions.
+
+    dataframe : boolean, optional (default=False)
+        If True, each metric of the regionalized model will be returned as a
+        labeled pandas dataframe. Else, each metric will be returned as an
+        unlabeled numpy array.
+
     Examples
     --------
-    >>> xxx
+    >>> from mcmodels.core import VoxelModelCache
+    >>> from mcmodels.models.voxel import RegionalizedModel
+    >>> cache = VoxelModelCache()
+    >>> # pull voxel-scale model from cache
+    >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivity_array()
+    >>> # regionalize to summary structures (region 934 was removed in new ccf)
+    >>> regions = cache.get_structures_by_set_id(
+    >>> region_ids = [r['id'] for r in regions if r['id'] != 934]
+    >>> # get array keys
+    >>> source_key = source_mask.get_key(region_ids)
+    >>> target_key = source_mask.get_key(region_ids)
+    >>> # regionalize model
+    >>> regional_model = RegionalizedModel.from_voxel_array(
+    ...     voxel_array, source_key, target_key)
+    >>> regional_model.normalized_connection_density.shape
+    (293, 584)
     """
+
     VALID_REGION_METRICS = [
         "connection_strength",
         "connection_density",
@@ -39,7 +65,32 @@ class RegionalizedModel(object):
 
     @classmethod
     def from_voxel_array(cls, voxel_array, *args, **kwargs):
-        """If weights and nodes passed explicitly"""
+        """Alternative constructor.
+
+        Parameters
+        ----------
+        voxel_array : VoxelConnectivityArray object
+            The voxel-scale model in the form of a VoxelConnectivityArray object.
+        source_key : array-like, shape=(n_source_voxels,)
+            Flattened key relating each source voxel to a given brain region.
+
+        target_key : array-like, shape=(n_target_voxels,)
+            Flattened key relating each target voxel to a given brain region.
+
+        ordering : array-like, optional (default=None)
+            Order with which to arrange the source/target regions. If supplied,
+            the ordering must contain at least every unique structure_id
+            associated with each of the source/target regions.
+
+        dataframe : boolean, optional (default=False)
+            If True, each metric of the regionalized model will be returned as a
+            labeled pandas dataframe. Else, each metric will be returned as an
+            unlabeled numpy array.
+
+        Returns
+        -------
+        An instantiated RegionalizedModel object.
+        """
         return cls(voxel_array.weights, voxel_array.nodes, *args, **kwargs)
 
     def __init__(self, weights, nodes, source_key, target_key,

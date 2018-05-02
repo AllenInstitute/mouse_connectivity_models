@@ -1,5 +1,5 @@
 """
-Module containing Experiment object and supporting functions
+Module containing Experiment object and supporting functions.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -43,7 +43,7 @@ def _pull_grid_data(cache, experiment_id):
     }
 
 
-def _mask_data_volume(data_volume, data_mask, tolerance=0.):
+def _mask_data_volume(data_volume, data_mask, tolerance=0.0):
     """Masks a given data volume in place.
 
     Parameters
@@ -66,16 +66,17 @@ def _mask_data_volume(data_volume, data_mask, tolerance=0.):
 
     """
     if data_volume.shape != data_mask.shape:
-        raise ValueError("data_volume and data_mask must have same shape.")
+        raise ValueError("data_volume (%s) and data_mask (%s) must be the same "
+                         "shape!" % (data_volume.shape, data_mask.shape))
 
     # mask data volume
-    data_volume[data_mask < tolerance] = 0.
+    data_volume[data_mask < tolerance] = 0.0
 
     return data_volume
 
 
 def _compute_true_injection_density(injection_density, injection_fraction, inplace=False):
-    """Computes 'true' injecton_density.
+    """Computes 'true' injection_density.
 
     Takes into consideration injection fracion (proportion of pixels in the
     annotated injection site).
@@ -97,8 +98,9 @@ def _compute_true_injection_density(injection_density, injection_fraction, inpla
         'true' injection density : injection_density * injection_fraction
     """
     if injection_density.shape != injection_fraction.shape:
-        raise ValueError("injection_density and injection_fraction must "
-                         "have same shape.")
+        raise ValueError("injection_density (%s) and injection_fraction "
+                         "(%s) must be the same shape!"
+                         % (injection_density.shape, injection_fraction.shape))
 
     if inplace:
         np.multiply(injection_density, injection_fraction, injection_density)
@@ -123,14 +125,14 @@ class Experiment(object):
 
     Examples
     --------
-    >>> from voxel_model.core import Experiment, VoxelModelCache
-    >>> voxel_model_cache = VoxelModelCache(resolution=100)
+    >>> from mcmodels.core import Experiment, VoxelModelCache
+    >>> cache = VoxelModelCache()
     >>> eid = 100141273
     >>> exp = Experiment(voxel_model_cache, eid)
     >>> exp.injection_density.shape
     (132,80,114)
-
     """
+
     DEFAULT_DATA_MASK_TOLERANCE = 0.5
 
     @classmethod
@@ -145,12 +147,11 @@ class Experiment(object):
         experiment_id : int
             Experiment id of the experiment from which to pull grid data.
 
-        injection_hemisphere : int, optional (default=None)
-            If None, defualts to Experiment.DEFAULT_INJECTION_HEMISPHERE (2).
-            Valid arguments are:
-            - 1 : left hemisphere
-            - 2 : right hemisphere
-            - 3 : both hemispheres
+        data_mask_tolerance : float, optional (default = None)
+            Tolerance with which to mask 'bad' data. data_mask array has values
+            on the interval [0,1], where a nonzero element indicates a 'bad'
+            voxel. If None is passed, the parameter defaults to
+            DEFAULT_DATA_MASK_TOLERANCE (0.5).
         """
         if data_mask_tolerance is None:
             data_mask_tolerance = cls.DEFAULT_DATA_MASK_TOLERANCE
@@ -160,7 +161,7 @@ class Experiment(object):
             data_volumes = _pull_grid_data(cache, experiment_id)
         except AttributeError:
             raise ValueError('cache must be a MouseConnectivityCache or '
-                             'VoxelModelCache object')
+                             'VoxelModelCache object, not %s' % type(cache))
 
         # compute 'true' injection density (inplace)
         _compute_true_injection_density(data_volumes["injection_density"],
@@ -181,8 +182,9 @@ class Experiment(object):
     def __init__(self, injection_density=None, projection_density=None):
         # assume numpy array
         if injection_density.shape != projection_density.shape:
-            raise ValueError("injection_density and projection_density "
-                             "must be the same shape!")
+            raise ValueError("injection_density (%s) and projection_density "
+                             "(%s) must be the same shape!"
+                             % (injection_density.shape, projection_density.shape))
 
         self.injection_density = injection_density
         self.projection_density = projection_density

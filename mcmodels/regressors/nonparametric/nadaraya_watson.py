@@ -1,11 +1,10 @@
 """
-Nadaraya-Watson Regression
+Nadaraya-Watson Regression.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-# TODO : docs and example
-# TODO : eval overwrite of K (kernel)
+# TODO : evaluate overwrite of K (kernel)
 from __future__ import division
 
 import numpy as np
@@ -24,20 +23,14 @@ from sklearn.utils import check_X_y
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
 
-    see sklearn.kernel_ridge.KernelRidge for more info on parameters
-
     Parameters
     ----------
     kernel : string or callable, default="linear"
         Kernel mapping used to compute weights.
 
-        see the documentation for sklearn.kernel_ridge.KernelRidge.
-
     gamma : float, default=None
         Gamma parameter for the RBF, laplacian, polynomial, exponential chi2
         and sigmoid kernels. Ignored by other kernels.
-
-        see the documentation for sklearn.metrics.pairwise.
 
     degree : float, default=3
         Degree of the polynomial kernel. Ignored by other kernels.
@@ -54,17 +47,27 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
 
     See also
     --------
-    sklearn.kernel_ridge:
+    `sklearn.kernel_ridge <http://scikit-learn.org/stable/modules/generated/
+    sklearn.kernel_ridge.KernelRidge.html#sklearn.kernel_ridge.KernelRidge>`_:
         Kernel Ridge Regression estimator from which the structure of
         this estimator is based.
 
     Examples
     --------
     >>> import numpy as np
-    >>> from voxel_model.regressors import NadarayaWatson
-    >>>
-
+    >>> from mcmodels.regressors import NadarayaWatson
+    >>> # generate some fake data
+    >>> n_samples, n_features = 10, 5
+    >>> np.random.seed(0)
+    >>> y = np.random.randn(n_samples)
+    >>> X = np.random.randn(n_samples, n_features)
+    >>> # fit regressor
+    >>> reg = NadarayaWatson()
+    >>> reg.fit(X, y)
+    NadarayaWatson(coef0=1, degree=3, gamma=None, kernel='linear',
+            kernel_params=None)
     """
+
     def __init__(self, kernel="linear", degree=3,
                  coef0=1, gamma=None, kernel_params=None):
         self.kernel = kernel
@@ -189,7 +192,7 @@ class NadarayaWatson(BaseEstimator, RegressorMixin):
 class _NadarayaWatsonLOOCV(NadarayaWatson):
     """Nadaraya watson with built-in Cross-Validation
 
-    It allows efficient Leave-One-Out cross validatoin
+    It allows efficient Leave-One-Out cross validation
 
     This class is not intended to be used directly. Use NadarayaWatsonCV instead.
     """
@@ -205,10 +208,10 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         return ParameterGrid(self.param_grid)
 
     def _errors_and_values_helper(self, K):
-        """Helper funciton to avoid duplication between self._errors and
+        """Helper function to avoid duplication between self._errors and
         self._values.
 
-        fill digonal with 0, renormalize
+        fill diagonal with 0, renormalize
         """
         np.fill_diagonal(K, 0)
         S = self._normalize_kernel(K, overwrite=True)
@@ -310,7 +313,28 @@ class NadarayaWatsonCV(NadarayaWatson):
 
     n_splits_ : int
         Number of cross-validation splits (folds/iterations)
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from mcmodels.regressors import NadarayaWatson
+    >>> # generate some fake data
+    >>> n_samples, n_features = 10, 5
+    >>> np.random.seed(0)
+    >>> y = np.random.randn(n_samples)
+    >>> X = np.random.randn(n_samples, n_features)
+    >>> # fit regressor
+    >>> param_grid = [dict(kernel=['linear'], degree=np.arange(1, 4)),
+    ...               dict(kernel=['rbf'], gamma=np.logspace(-1, 1, 3))]
+    >>> reg = NadarayaWatsonCV(param_grid)
+    >>> reg.fit(X, y)
+    NadarayaWatsonCV(coef0=1, cv=None, degree=3, gamma=1.0, kernel='rbf',
+             kernel_params=None,
+             param_grid=[{'kernel': ['linear'], 'degree': array([1, 2, 3])},
+                          {'kernel': ['rbf'], 'gamma': array([ 0.1,  1. , 10. ])}],
+             scoring=None, store_cv_scores=False)
     """
+
     def __init__(self, param_grid, scoring=None, cv=None, store_cv_scores=False,
                  kernel="linear", degree=3, coef0=1, gamma=None, kernel_params=None):
         self.param_grid = param_grid

@@ -1,7 +1,10 @@
 """
-Module containing object InjectionModel. The only difference between this
-estimator and regressors.NadarayaWatson is that this one treats the full
-injection as the X, and thus must be passed as X = (centroids, injections)
+Module containing object :class:`VoxelModel`. The only difference between this
+estimator and :class:`NadarayaWatson` is that class:`VoxelModel` one treats the
+full injection volume (masked and flattened) as the input data `X` instead of
+only the centroids. Thus, :class:'VoxelModel` must be instatiated with the
+array of source_voxels, and the input data `X` must be passed as a tuple of arrays
+: (centroids, injections) or a concatenated array.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -16,45 +19,35 @@ from ...regressors import NadarayaWatson
 
 
 class VoxelModel(NadarayaWatson):
-    """Voxel scale interpolation model for mesoscale connectivity.
-
-    Model details can be found at <PAPER>.
-
-    see voxel_model.regressors.NadarayaWatson for mechanics
+    """Voxel-scale interpolation model for mesoscale connectivity.
 
     Parameters
     ----------
     source_voxels : array-like, shape=(n_voxels, 3)
         List of voxel coordinates at which to interpolate.
 
+    Examples
+    --------
+    >>> from mcmodels.core import VoxelModelCache
+    >>> from mcmodels.models import VoxelModel
+    >>> cache = VoxelModelCache
+    >>> # get cortical experiment data
+    >>> cortex_data = cache.get_experiment_data(injection_structure_ids=[315])
+    >>> source_voxels = cortex_data.source_mask.coordinates
+    >>> reg = VoxelModel(source_voxels)
+    >>> reg.fit((cortex_data.centroids, cortex_data.injections))
+    VoxelModel(source_voxels=array([[ ... ]]))
+
     References
     ----------
-    * Joseph Knox ...
-      "High Resolution Voxel ...."
+    Knox et al. 'High resolution data-driven model of the mouse connectome'.
+        bioRxiv 293019; doi: https://doi.org/10.1101/293019
 
     See also
     --------
-    sklearn.kernel_ridge:
-        Kernel Ridge Regression estimator from which this estimator is based.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from voxel_model.interpolators import VoxelModel
-    >>> n_exps = 20
-    >>> n_source_voxels, n_target_voxels = 125, 200
-    >>> source_voxels = np.argwhere( np.ones((5,5,5))) )
-    >>> injections = np.random.randn(n_exps, n_source_voxels)
-    >>> centroids = source_voxels[ np.random.choice(n_source_voxels,
-    >>>                                             n_exps,
-    >>>                                             replacement=False) ]
-    >>> X = np.hstack((centroids, injections))
-    >>> y = np.random.randn(n_exps, n_target_voxels)
-    >>> reg = VoxelModel(source_voxels, kernel="rbf", gamma=1.5)
-    >>> reg.fit(X, y)
-    >>>
-
+    NadarayaWatson
     """
+
     def __init__(self, source_voxels, **kwargs):
         super(VoxelModel, self).__init__(**kwargs)
 
@@ -134,7 +127,6 @@ class VoxelModel(NadarayaWatson):
         y = self.y_.toarray() if issparse(self.y_) else self.y_
 
         return injection.dot(self.weights_).dot(y)
-
 
     def get_weights(self):
         """Overwrite of NadarayaWatson.get_weights."""

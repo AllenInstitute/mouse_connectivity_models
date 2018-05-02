@@ -1,6 +1,6 @@
 """
-Module containing VoxelArray: object for implictly constructing the
-voxel-voxel connectivity matrix.
+Module containing :class:`VoxelConnectivityArray`: an object for implicitly
+constructing the voxel-scale connectivity matrix on demand.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -26,14 +26,44 @@ class VoxelConnectivityArray(object):
 
     Examples
     --------
-    >>> from voxel_model.implicit_construction import ImplicitModel
-    >>>
+    >>> from mcmodels.core import VoxelModelCache
+    >>> cache = VoxelModelCache()
+    >>> voxel_array, source_mask, target_mask = cache.get_voxel_connectivity_array()
+    >>> # VoxelConnectivityArray has several numpy.ndarray like methods
+    >>> # get some arbitrary model weights
+    >>> voxel_array[20:22, 10123]
+    array([0.000145, 0.000098])
+    >>> voxel_array.shape
+    (215315, 448230)
+    >>> voxel_array.T
+    VoxelConnectivityArray(dtype=float32, shape=(448230, 215315))
     """
+
     ndim = 2
 
     @classmethod
     def from_csv(cls, weights_file, nodes_file, **kwargs):
-        """Loads weights, nodes from csv files."""
+        """Alternative constructor loading weights, nodes from `.csv` files.
+
+        Parameters
+        ----------
+        weights_file : string or path
+            Path to the `.csv` file containing the model weights. This file can
+            have `.gz` or `.bz2` compression
+
+        nodes_file : string or path
+            Path to the `.csv` file containing the model nodes. This file can
+            have `.gz` or `.bz2` compression
+
+        **kwargs
+            Optional keyword arguments supplied to `numpy.loadtxt
+            <https://docs.scipy.org/doc/numpy-1.14.0/reference/generated/
+            numpy.loadtxt.html>`_
+
+        Returns
+        -------
+        An instantiated VoxelConnectivityArray object.
+        """
         loader = partial(np.loadtxt, delimiter=",", ndmin=cls.ndim, **kwargs)
 
         weights, nodes = map(loader, (weights_file, nodes_file))
@@ -41,7 +71,25 @@ class VoxelConnectivityArray(object):
 
     @classmethod
     def from_npy(cls, weights_file, nodes_file, **kwargs):
-        """Loads weights, nodes from npy or npz files"""
+        """Alternative constructor loading weights, nodes from npy, npz files.
+
+        Parameters
+        ----------
+        weights_file : string or path
+            Path to the `.npy` or `.npz` file containing the model weights.
+
+        nodes_file : string or path
+            Path to the `.npy` or `.npz` file containing the model nodes.
+
+        **kwargs
+            Optional keyword arguments supplied to `numpy.load
+            <https://docs.scipy.org/doc/numpy-1.14.0/reference/generated/
+            numpy.load.html>`_
+
+        Returns
+        -------
+        An instantiated VoxelConnectivityArray object.
+        """
         loader = partial(np.load, allow_pickle=True, **kwargs)
 
         weights, nodes = map(loader, (weights_file, nodes_file))
@@ -49,7 +97,16 @@ class VoxelConnectivityArray(object):
 
     @classmethod
     def from_fitted_voxel_model(cls, voxel_model):
-        """Constructs from fitted voxel_model."""
+        """Alternative constructor using fitted :class:`VoxelModel` object.
+
+        Parameters
+        ----------
+        voxel_model : A fitted :class:`VoxelModel` object.
+
+        Returns
+        -------
+        An instantiated VoxelConnectivityArray object.
+        """
         try:
             weights = voxel_model.weights
             nodes = voxel_model.nodes
@@ -62,14 +119,19 @@ class VoxelConnectivityArray(object):
     def __init__(self, weights, nodes):
         # assumes numpy arrays
         if weights.shape[1] != nodes.shape[0]:
-            raise ValueError("weights and nodes must have equal "
-                             "inner dimension")
+            raise ValueError("weights (%d) and nodes (%d) must have equal "
+                             "inner dimension" % (weights.shape[1], nodes.shape[0]))
 
         if weights.dtype != nodes.dtype:
-            raise ValueError("weights and nodes must be of the same dtype")
+            raise ValueError("weights (%s) and nodes (%s) must be of the same "
+                             "dtype" % (weights.dtype, nodes.dtype))
 
         self.weights = weights
         self.nodes = nodes
+
+    def __repr__(self):
+        return '{}(dtype={}, shape={})'.format(
+            self.__class__.__name__, self.dtype, self.shape)
 
     def __getitem__(self, key):
         """Allows for slice indexing similar to np.ndarray."""
@@ -89,18 +151,18 @@ class VoxelConnectivityArray(object):
 
     @property
     def dtype(self):
-        """np.dtype of full array"""
+        """numpy.dtype of full array"""
         # doesn't matter, equivilant dtypes enforced in __init__
         return self.weights.dtype
 
     @property
     def shape(self):
-        """np.shape of full array"""
+        """numpy.shape of full array"""
         return (self.weights.shape[0], self.nodes.shape[1])
 
     @property
     def size(self):
-        """np.size of full array"""
+        """numpy.size of full array"""
         return reduce(op.mul, self.shape)
 
     @property
@@ -117,7 +179,8 @@ class VoxelConnectivityArray(object):
     def astype(self, dtype, **kwargs):
         """Consistent with numpy.ndarray.astype.
 
-        see numpy.ndarray.astype for more info
+        see `numpy.ndarray.astype <https://docs.scipy.org/doc/numpy-1.14.0/
+        reference/generated/numpy.ndarray.astype.html>` for more info.
 
         Parameters
         ----------
@@ -141,7 +204,8 @@ class VoxelConnectivityArray(object):
     def sum(self, axis=None):
         """Consistent with numpy.ndarray.sum.
 
-        see numpy.ndarray.sum for more info
+        see `numpy.ndarray.sum <https://docs.scipy.org/doc/numpy-1.14.0/
+        reference/generated/numpy.ndarray.sum.html>` for more info.
 
         Parameters
         ----------
@@ -166,7 +230,8 @@ class VoxelConnectivityArray(object):
     def mean(self, axis=None):
         """Consistent with numpy.ndarray.mean.
 
-        see numpy.ndarray.mean for more info
+        see `numpy.ndarray.mean <https://docs.scipy.org/doc/numpy-1.14.0/
+        reference/generated/numpy.ndarray.mean.html>` for more info.
 
         Parameters
         ----------
@@ -185,28 +250,66 @@ class VoxelConnectivityArray(object):
         return self.sum(axis=axis) / n
 
     def iterrows(self):
-        """Generator for yielding rows of the voxel matrix"""
+        """Generator for yielding rows of the voxel matrix.
+
+        Yields
+        ------
+        array : shape = (n_columns,)
+            Single row of the voxel-scale connectivity matrix.
+        """
         for row in self.weights:
             yield row.dot(self.nodes)
 
     def itercolumns(self):
-        """Generator for yielding columns of the voxel matrix"""
+        """Generator for yielding columns of the voxel matrix.
+
+        Yields
+        ------
+        array : shape = (n_rows,)
+            Single column of the voxel-scale connectivity matrix.
+        """
         for column in self.nodes.T:
             yield self.weights.dot(column)
 
-    def iterrows_blocked(self, n_blocks=0):
-        """Generator for yielding blocked rows of the voxel matrix"""
+    def iterrows_blocked(self, n_blocks):
+        """Generator for yielding blocked rows of the voxel matrix.
+
+        Parameters
+        ----------
+        n_blocks : int
+            The number of blocks of rows that is wished to be returned. Must be
+            on the interval [1, n_rows]
+
+        Yields
+        ------
+        array : A block of rows of the full voxel-scale connectivity matrix.
+        """
         if n_blocks > self.weights.shape[0] or n_blocks < 1:
-            raise ValueError("invalid number of blocks")
+            raise ValueError("invalid number of blocks! n_blocks must be on the "
+                             "interval [1, %d], not %d" % (self.weights.shape[0],
+                                                           n_blocks))
 
         row_blocks = np.array_split(self.weights, n_blocks, axis=0)
         for block in row_blocks:
             yield block.dot(self.nodes)
 
     def itercolumns_blocked(self, n_blocks=0):
-        """Generator for yielding blocked columns of the voxel matrix"""
-        if n_blocks > self.weights.shape[0] or n_blocks < 1:
-            raise ValueError("invalid number of blocks")
+        """Generator for yielding blocked columns of the voxel matrix.
+
+        Parameters
+        ----------
+        n_blocks : int
+            The number of blocks of columns that is wished to be returned.
+            Must be on the interval [1, n_columns].
+
+        Yields
+        ------
+        array : A block of columns of the full voxel-scale connectivity matrix.
+        """
+        if n_blocks > self.nodes.shape[1] or n_blocks < 1:
+            raise ValueError("invalid number of blocks! n_blocks must be on the "
+                             "interval [1, %d], not %d" % (self.nodes.shape[1],
+                                                           n_blocks))
 
         col_blocks = np.array_split(self.nodes, n_blocks, axis=1)
         for block in col_blocks:

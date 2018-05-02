@@ -1,10 +1,9 @@
 """
-Nonnegative Linear Regression
+Nonnegative Linear Regression.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-# TODO : docs and example
 import numpy as np
 import scipy.optimize as sopt
 
@@ -39,7 +38,9 @@ def _solve_nnls(X, y):
 def nonnegative_regression(X, y, sample_weight=None):
     """Solve the nonnegative least squares estimate regression problem.
 
-    Solves ``argmin_x \| Ax - y \|_2^2`` for ``x > 0`` using scipy.optimize.nnls
+    Solves :math:`\\underset{x}{argmin} \| Ax - y \|_2^2` for :math:`x \geq 0`
+    using `scipy.optimize.nnls <https://docs.scipy.org/doc/scipy/reference/
+    generated/scipy.optimize.nnls.html>`_
 
     Parameters
     ----------
@@ -55,7 +56,7 @@ def nonnegative_regression(X, y, sample_weight=None):
         Weight vector(s).
 
     res : float
-        The residual, ``\| Ax - y \|_2``
+        The residual, :math:`\| Ax - y \|_2`.
     """
     # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
     # TODO order='F'?
@@ -110,12 +111,14 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
 
     Examples
     --------
-    >>> from voxel_model.regressors import NonnegativeLinear
     >>> import numpy as np
+    >>> from mcmodels.regressors import NonnegativeLinear
+    >>> # generate some fake data
     >>> n_samples, n_features = 10, 5
     >>> np.random.seed(0)
     >>> y = np.random.randn(n_samples)
     >>> X = np.random.randn(n_samples, n_features)
+    >>> # fit regressor
     >>> reg = NonnegativeLinear()
     >>> reg.fit(X, y)
     NonnegativeLinear()

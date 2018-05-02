@@ -4,9 +4,6 @@ Module containing utility functions
 # Authors: Joseph Knox josephk@alleninstitute.org
 # License: Allen Institute Software License
 
-from __future__ import absolute_import
-import os
-
 import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
@@ -22,7 +19,7 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
         If None, return all experiments.  Default None.
     cre: boolean or list
         If True, return only cre-positive experiments.  If False, return only
-        cre-negative experiments.  If None, return all experients. If list, return
+        cre-negative experiments.  If None, return all experiments. If list, return
         all experiments with cre line names in the supplied list. Default None.
 
     Returns
@@ -35,17 +32,29 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
     return [experiment['id'] for experiment in experiments]
 
 
-def nonzero_unique(array, **unique_kwargs):
+def nonzero_unique(ar, **unique_kwargs):
     """np.unique returning only nonzero unique elements.
 
     Parameters
     ----------
-    arr : array
-        Array of which unique values are wanted.
+    ar : array_like
+        Input array. Unless `axis` is specified, this will be flattened if it
+        is not already 1-D.
 
-    **unique_kwargs
-        Keyword arguments to be passed to numpy.unique. See `numpy.unique
-        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
+    return_index : bool, optional
+        If True, also return the indices of `ar` (along the specified axis,
+        if provided, or in the flattened array) that result in the unique array.
+
+    return_counts : bool, optional
+        If True, also return the number of times each unique item appears
+        in `ar`.
+
+    axis : int or None, optional
+        The axis to operate on. If None, `ar` will be flattened beforehand.
+        Otherwise, duplicate items will be removed along the provided axis,
+        with all the other axes belonging to the each of the unique elements.
+        Object arrays or structured arrays that contain objects are not
+        supported if the `axis` kwarg is used.
 
     Returns
     -------
@@ -65,34 +74,44 @@ def nonzero_unique(array, **unique_kwargs):
     ordered_unique
     lex_ordered_unique
     """
-    # TODO: docstring
     if 'return_inverse' in unique_kwargs:
-        raise NotImplementedError("lex ordiring of inverse array not "
-                                  "yet implemented")
+        raise NotImplementedError("returning inverse array not yet implemented")
 
-    if np.all(array):
-        return np.unique(array, **unique_kwargs)
+    if np.all(ar):
+        return np.unique(ar, **unique_kwargs)
 
-    unique = np.unique(array, **unique_kwargs)
+    unique = np.unique(ar, **unique_kwargs)
     if unique_kwargs:
         return map(lambda x: x[1:], unique)
 
     return unique[1:]
 
 
-def ordered_unique(array, **unique_kwargs):
+def ordered_unique(ar, **unique_kwargs):
     """np.unique in the order in which the unique values occur.
 
     Similar outuput to pd.unique(), although probably not as fast.
 
     Parameters
     ----------
-    arr : array
-        Array of which unique values are wanted.
+    ar : array_like
+        Input array. Unless `axis` is specified, this will be flattened if it
+        is not already 1-D.
 
-    **unique_kwargs
-        Keyword arguments to be passed to numpy.unique. See `numpy.unique
-        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
+    return_index : bool, optional
+        If True, also return the indices of `ar` (along the specified axis,
+        if provided, or in the flattened array) that result in the unique array.
+
+    return_counts : bool, optional
+        If True, also return the number of times each unique item appears
+        in `ar`.
+
+    axis : int or None, optional
+        The axis to operate on. If None, `ar` will be flattened beforehand.
+        Otherwise, duplicate items will be removed along the provided axis,
+        with all the other axes belonging to the each of the unique elements.
+        Object arrays or structured arrays that contain objects are not
+        supported if the `axis` kwarg is used.
 
     Returns
     -------
@@ -100,7 +119,7 @@ def ordered_unique(array, **unique_kwargs):
         Unique values sorted in the order in which they occur
 
     unique_indices : array, optional
-        Indices of the first occurance of the unique values. Only returned if
+        Indices of the first occurrence of the unique values. Only returned if
         return_indices kwarg is specified as True.
 
     unique_counts : array
@@ -113,11 +132,10 @@ def ordered_unique(array, **unique_kwargs):
     lex_ordered_unique
     """
     if 'return_inverse' in unique_kwargs:
-        raise NotImplementedError("lex ordiring of inverse array not "
-                                  "yet implemented")
+        raise NotImplementedError("returning inverse array not yet implemented")
 
     _return_index = unique_kwargs.pop('return_index', False)
-    unique = np.unique(array, return_index=True, **unique_kwargs)
+    unique = np.unique(ar, return_index=True, **unique_kwargs)
 
     # need indices (always @ index 1)
     unique = list(unique)
@@ -130,23 +148,29 @@ def ordered_unique(array, **unique_kwargs):
     return unique[0][permutation]
 
 
-def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
+def lex_ordered_unique(ar, lex_order, allow_extra=False, **unique_kwargs):
     """np.unique in a given order.
 
     Parameters
     ----------
-    arr : array
-        Array of which unique values are wanted.
+    ar : array_like
+        Input array. Unless `axis` is specified, this will be flattened if it
+        is not already 1-D.
 
-    lex_order : array, list
-        Array describing the order in which the unique values are wanted.
+    return_index : bool, optional
+        If True, also return the indices of `ar` (along the specified axis,
+        if provided, or in the flattened array) that result in the unique array.
 
-    allow_extra : boolean, optional (default=False)
-        If True, lex_order is allowed to have values not found in arr.
+    return_counts : bool, optional
+        If True, also return the number of times each unique item appears
+        in `ar`.
 
-    **unique_kwargs
-        Keyword arguments to be passed to numpy.unique. See `numpy.unique
-        <https://docs.scipy.org/doc/numpy/reference/generated/numpy.unique.html>`_.
+    axis : int or None, optional
+        The axis to operate on. If None, `ar` will be flattened beforehand.
+        Otherwise, duplicate items will be removed along the provided axis,
+        with all the other axes belonging to the each of the unique elements.
+        Object arrays or structured arrays that contain objects are not
+        supported if the `axis` kwarg is used.
 
     Returns
     -------
@@ -154,7 +178,7 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
         Unique values sorted in the order in which they occur
 
     unique_indices : array, optional
-        Indices of the first occurance of the unique values. Only returned if
+        Indices of the first occurrence of the unique values. Only returned if
         return_indices kwarg is specified as True.
 
     unique_counts : array
@@ -167,13 +191,12 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
     ordered_unique
     """
     if 'return_inverse' in unique_kwargs:
-        raise NotImplementedError("lex ordering of inverse array not "
-                                  "yet implemented")
+        raise NotImplementedError("returning inverse array not yet implemented")
 
     if len(set(lex_order)) < len(lex_order):
         raise ValueError("lex_order must not contain duplicates")
 
-    unique = np.unique(arr, **unique_kwargs)
+    unique = np.unique(ar, **unique_kwargs)
     if not unique_kwargs:
         unique = (unique,)
 
@@ -183,7 +206,7 @@ def lex_ordered_unique(arr, lex_order, allow_extra=False, **unique_kwargs):
             # cast to np.array in order to index with boolean array
             lex_order = np.array(lex_order)[np.isin(lex_order, unique[0])]
         else:
-            raise ValueError("lex_order contains elements not found in arr, "
+            raise ValueError("lex_order contains elements not found in ar, "
                              "call with allow_extra=True")
 
     # generate a permutation order for unique
@@ -250,8 +273,8 @@ def unionize(volume, key, return_regions=False):
     """
     volume = np.atleast_2d(volume)
     if volume.shape[1] != key.size:
-        # TODO: better error
-        raise ValueError("key is incompatible")
+        raise ValueError("volume (%s) and key (%s) shapes are incompatible"
+                         % (volume.shape[1], key.size))
 
     regions = nonzero_unique(key)
     result = np.empty((volume.shape[0], regions.size))

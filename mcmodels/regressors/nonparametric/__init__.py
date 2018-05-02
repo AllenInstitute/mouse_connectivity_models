@@ -1,7 +1,7 @@
 """
 The :mod:`mcmodels.regressors.nonparametric` module implements Nonparametric
 regression models and the polynomial family of kernels. This module includes
-NadarayaWatson regression and the Polynomial kernel.
+NadarayaWatson regression and the general Polynomial kernel.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License

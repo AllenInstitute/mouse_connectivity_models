@@ -1,10 +1,11 @@
 """
-Nonnegative Ridge Regression
+Nonnegative Ridge Regression.
+
+..note:: This is an experimental module.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-# TODO : docs and example
 import numpy as np
 from scipy import linalg
 
@@ -66,7 +67,7 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
         Target values.
 
     alpha : float or array with shape = (n_features,)
-        Regularization stength; must be a poisitve float. Improves the
+        Regularization strength; must be a positive float. Improves the
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
 
@@ -77,6 +78,10 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
 
     res : float
         The residual, ``\| Qx - c \|_2``
+
+    Note
+    ----
+    This is an experimental function.
     """
     # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
     # TODO order='F'?
@@ -137,7 +142,7 @@ class NonnegativeRidge(NonnegativeLinear):
     Parameters
     ----------
     alpha : float or array with shape = (n_features,)
-        Regularization stength; must be a poisitve float. Improves the
+        Regularization strength; must be a positive float. Improves the
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
 
@@ -151,15 +156,21 @@ class NonnegativeRidge(NonnegativeLinear):
 
     Examples
     --------
-    >>> from voxel_model.regressors import NonnegativeRidge
     >>> import numpy as np
+    >>> from mcmodels.regressors import NonnegativeRidge
+    >>> # generate some fake data
     >>> n_samples, n_features = 10, 5
     >>> np.random.seed(0)
     >>> y = np.random.randn(n_samples)
     >>> X = np.random.randn(n_samples, n_features)
+    >>> # fit regressor
     >>> reg = NonnegativeRidge(alpha=1.0)
     >>> reg.fit(X, y)
     NonnegativeRidge(alpha=1.0)
+
+    Note
+    ----
+    This is an experimental class.
     """
 
     def __init__(self, alpha=1.0):

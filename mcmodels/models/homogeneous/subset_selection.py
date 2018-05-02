@@ -12,7 +12,7 @@ from sklearn.utils import check_random_state
 
 
 def svd_subset_selection(X, n):
-    """svd subset selection to return n cols that ~less lin dependent.
+    """svd subset selection to return n cols that are less linearly dependent.
 
     Parameters
     ----------
@@ -57,8 +57,8 @@ def backward_subset_selection_conditioning(X, kappa=1000):
     Returns
     -------
     C : array, shape (n_samples, ?)
-        Array with condition number < kappa, containing the ~lesser dependent
-        columns of X.
+        Array with condition number < kappa, containing the lesser linearly
+        dependent columns of X.
     """
     n_cols = X.shape[1]
     columns = np.arange(n_cols)
@@ -91,8 +91,8 @@ def forward_subset_selection_conditioning(X, kappa=1000, random_state=None):
     Returns
     -------
     C : array, shape (n_samples, ?)
-        Array with condition number < kappa, containing the ~lesser dependent
-        columns of X.
+        Array with condition number < kappa, containing the lesser linearly
+        dependent columns of X.
     """
     n_cols = X.shape[1]
     candidates = list(range(n_cols))

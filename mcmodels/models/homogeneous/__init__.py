@@ -1,8 +1,8 @@
 """
-The :mod:`mcmodels.models.homogeneous` module implements the Homogeneous
-Model for predicting regional connectivity from Oh et al. 2014. Additionally,
-the module implements a greedy conditioning procedure based on the singular
-value decomposition and QR pivoting.
+The :mod:`mcmodels.models.homogeneous` module implements a Homogeneous
+Model for predicting regional connectivity similar to Oh et al. 2014.
+Additionally, the module implements greedy forward/backward subset selection
+algorithms to improve the conditioning of given input arrays.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License

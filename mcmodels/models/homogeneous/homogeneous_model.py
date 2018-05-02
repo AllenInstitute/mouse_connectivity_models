@@ -1,5 +1,5 @@
 """
-Homogeneous Linear Model from Oh et al. 2014.
+Homogeneous Linear Model similar to Oh et al. 2014.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
@@ -11,7 +11,7 @@ from .subset_selection import backward_subset_selection_conditioning
 
 
 class HomogeneousModel(NonnegativeLinear):
-    """Homogeneous model from Oh et al. 2014.
+    """Homogeneous model similar to Oh et al. 2014.
 
     Implements the Homogeneous model for fitting nonnegative weights at the
     regional level. There is an additional constraint on the features to
@@ -26,10 +26,23 @@ class HomogeneousModel(NonnegativeLinear):
     ----------
     columns_ : array
         The features that are included in the regression after the conditioning
-        has occured.
+        has occurred.
 
     coef_ : array, shape (n_targets, n_features)
         The model weights.
+
+    Examples
+    --------
+    >>> from mcmodels.core import VoxelModelCache, RegionalData
+    >>> from mcmodels.models import HomogeneousModel
+    >>> # get data with whcich to fit model
+    >>> cache = VoxelModelCache()
+    >>> voxel_data = cache.get_experiment_data()
+    >>> regional_data = RegionalData.from_voxel_data(voxel_data)
+    >>> # fit model
+    >>> reg = HomogeneousModel()
+    >>> reg.fit(regional_data.injections, regional_data.projections)
+    HomogeneousModel(kappa=1000)
 
     References
     ----------
@@ -58,7 +71,7 @@ class HomogeneousModel(NonnegativeLinear):
         X, columns = backward_subset_selection_conditioning(X, self.kappa)
         self.columns_ = columns
 
-        super(HomogeneousModel, self).fit(X, y, sample_weight=sample_weight)
+        return super(HomogeneousModel, self).fit(X, y, sample_weight=sample_weight)
 
     def predict(self, X):
         """Predict using the HomogeneousModel.

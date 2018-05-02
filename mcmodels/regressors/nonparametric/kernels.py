@@ -1,16 +1,18 @@
 """Kernels for Nonparametric regression.
 
-These Kernels are compatible with sklearn.gaussian_process.kernels, and allow
-for kernel-engineering.
+These Kernels are compatible with `sklearn.gaussian_process.kernels
+<https://github.com/scikit-learn/scikit-learn/blob/a24c8b46/sklearn/
+gaussian_process/kernels.py>`_, and allow for kernel-engineering.
 
-Do not (for the moment) allow (analytic) gradient-based hyperparameter optimization.
-
-See sklearn.gaussian_process.kernels for more information.
+..note::
+These classes do not (for the moment) allow (analytic) gradient-based
+hyperparameter optimization. See `sklearn.gaussian_process.kernels
+<http://scikit-learn.org/stable/modules/gaussian_process.html
+#kernels-for-gaussian-processes>`_ for more information.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-# TODO : further docs
 # TODO : eval_gradient
 from __future__ import division
 
@@ -93,7 +95,7 @@ class Polynomial(_BasePolynomial):
         ``K(x, y) = (1 + (d(x,y)/support)^2)^shape``
 
     .. note:: not to be confused with the Polynomial kernel defined in
-       sklearn.pairwise. defined as:
+       sklearn.pairwise defined as:
 
           ``K(x, y) = (gamma x^T y - c_0)^degree``
 
