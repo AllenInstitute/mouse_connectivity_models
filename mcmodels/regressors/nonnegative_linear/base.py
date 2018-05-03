@@ -36,9 +36,9 @@ def _solve_nnls(X, y):
 
 
 def nonnegative_regression(X, y, sample_weight=None):
-    """Solve the nonnegative least squares estimate regression problem.
+    r"""Solve the nonnegative least squares estimate regression problem.
 
-    Solves :math:`\\underset{x}{argmin} \| Ax - y \|_2^2` for :math:`x \geq 0`
+    Solves :math:`\underset{x}{\text{argmin}} \| Ax - b \|_2^2` subject to :math:`x \geq 0`
     using `scipy.optimize.nnls <https://docs.scipy.org/doc/scipy/reference/
     generated/scipy.optimize.nnls.html>`_
 
@@ -128,7 +128,7 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
     """
 
     # needed for compatibility with LinearModel.predict() (decision_function)
-    intercept_ = 0
+    intercept_ = 0.0
 
     def fit(self, X, y, sample_weight=None):
         """Fit nonnegative least squares linear model.

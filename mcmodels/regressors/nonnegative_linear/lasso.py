@@ -13,7 +13,7 @@ from .elastic_net import NonnegativeElasticNet, nonnegative_elastic_net_regressi
 
 
 def nonnegative_lasso_regression(X, y, rho, sample_weight=None,
-                                 solver='L-BFGS-B', **solver_kwargs):
+                                 solver='SLSQP', **solver_kwargs):
     r"""Solve the nonnegative least squares estimate lasso regression problem.
 
     Solves
@@ -50,7 +50,7 @@ def nonnegative_lasso_regression(X, y, rho, sample_weight=None,
     sample_weight : float or array-like, shape (n_samples,), optional (default = None)
         Individual weights for each sample.
 
-    solver : string
+    solver : string, optional (default = 'SLSQP')
         Solver with which to solve the QP. Must be one that supports bounds
         (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
 
@@ -97,7 +97,7 @@ class NonnegativeLasso(NonnegativeElasticNet):
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
 
-    solver : string
+    solver : string, optional (default = 'SLSQP')
         Solver with which to solve the QP. Must be one that supports bounds
         (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
 
@@ -140,7 +140,7 @@ class NonnegativeLasso(NonnegativeElasticNet):
     NonnegativeElasticNet
     """
 
-    def __init__(self, rho=1.0, solver='L-BFGS-B', **solver_kwargs):
+    def __init__(self, rho=1.0, solver='SLSQP', **solver_kwargs):
         if solver not in ('L-BFGS-B', 'TNC', 'SLSQP'):
             raise ValueError('solver must be one of L-BFGS-B, TNC, SLSQP, '
                              'not %s' % solver)

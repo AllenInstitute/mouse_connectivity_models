@@ -1,8 +1,8 @@
 """
 The :mod:`mcmodels.regressors.nonnegative_linear` module implements linear
 models subject to the nonnegativity constraint. It includes Nonnegative linear
-regression and an experimental module implementing Nonnegative linear regression
-with L2 (Ridge) regularization.
+regression and experimental modules implementing Nonnegative linear regression
+with L2 (Ridge), L1 (Lasso), and both L1 and L2 (Elastic-Net) regularization.
 """
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License

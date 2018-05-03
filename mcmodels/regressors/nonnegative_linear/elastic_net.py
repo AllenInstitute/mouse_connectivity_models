@@ -20,7 +20,7 @@ from sklearn.utils import check_consistent_length
 from .base import NonnegativeLinear, _solve_nnls
 
 
-def _solve_elastic_net_nnls(A, b, alpha=None, rho=None, solver='L-BFGS-B', **solver_kwargs):
+def _solve_elastic_net_nnls(A, b, alpha=None, rho=None, solver='SLSQP', **solver_kwargs):
     """Solves nonnegative elastic net through quadratic programming."""
     # compute R^T R is more numerically stable than A^T A
     # 'r' mode returns tuple: (R,)
@@ -68,7 +68,7 @@ def _solve_elastic_net_nnls(A, b, alpha=None, rho=None, solver='L-BFGS-B', **sol
 
 
 def nonnegative_elastic_net_regression(X, y, alpha=None, rho=None, sample_weight=None,
-                                       solver='L-BFGS-B', **solver_kwargs):
+                                       solver='SLSQP', **solver_kwargs):
     r"""Solve the nonnegative least squares estimate elastic-net regression problem.
 
     Solves
@@ -105,7 +105,7 @@ def nonnegative_elastic_net_regression(X, y, alpha=None, rho=None, sample_weight
     sample_weight : float or array-like, shape (n_samples,), optional (default = None)
         Individual weights for each sample.
 
-    solver : string
+    solver : string, optional (default = 'SLSQP')
         Solver with which to solve the QP. Must be one that supports bounds
         (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
 
@@ -216,7 +216,7 @@ class NonnegativeElasticNet(NonnegativeLinear):
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
 
-    solver : string
+    solver : string, optional (default = 'SLSQP')
         Solver with which to solve the QP. Must be one that supports bounds
         (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
 
@@ -259,7 +259,7 @@ class NonnegativeElasticNet(NonnegativeLinear):
     NonnegativeRidge
     """
 
-    def __init__(self, alpha=1.0, rho=1.0, solver='L-BFGS-B', **solver_kwargs):
+    def __init__(self, alpha=1.0, rho=1.0, solver='SLSQP', **solver_kwargs):
         if solver not in ('L-BFGS-B', 'TNC', 'SLSQP'):
             raise ValueError('solver must be one of L-BFGS-B, TNC, SLSQP, '
                              'not %s' % solver)
