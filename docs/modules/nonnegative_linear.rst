@@ -76,19 +76,36 @@ Nonnegative Lasso
 
 
 Nonnegative Elastic Net
----------------------------------
+-----------------------
 
-Elastic net is a combination of L2 and L1 regularization. We will derive the
-above results here:
+Elastic net is a combination of L2 and L1 regularization. Since :math:`x\geq0`,
+we have :math:`\|x\|_1 = \sum_i x_i = 1^T x`, which we use to derive the elastic
+net (and consequently Lasso) regularized nonnegative linear regression:
 
 .. math::
-        &\text{argmin}_x \quad \| Ax - b \|_2^2 + \lambda^2 \| x \|_2 + \alpha \| x \|_1 \\
-        &\text{argmin}_x \quad (Ax - b)^T(Ax - b) + \lambda^2 (x^T I x) + \alpha (1^T x) \\
-        &\text{argmin}_x \quad x^TA^TAx - 2b^TAx + b^Tb + x^T \lambda^2 I x + \alpha 1^T x \\
-        &\text{argmin}_x \quad x^TA^TAx + x^T \lambda^2 I x + \alpha 1^T x - 2b^TAx \\
-        &\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (\alpha 1^T - 2b^TA )x \\
-        &\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (1 \alpha^T - 2A^Tb )^Tx
+        &\underset{x}{\text{argmin}} \quad
+                \| Ax - b \|_2^2 + \lambda^2 \| x \|_2^2 + \alpha \| x \|_1
+                &\quad \text{s.t.} \quad x \geq 0\\
+        &\underset{x}{\text{argmin}} \quad
+                (Ax - b)^T(Ax - b) + \lambda^2 (x^T I x) + \alpha (1^T x)
+                &\quad \text{s.t.} \quad x \geq 0\\
+        &\underset{x}{\text{argmin}} \quad
+                x^TA^TAx - 2b^TAx + b^Tb + x^T \lambda^2 I x + \alpha 1^T x
+                &\quad  \text{s.t.} \quad  x \geq 0\\
+        &\underset{x}{\text{argmin}} \quad
+                x^TA^TAx + x^T \lambda^2 I x + \alpha 1^T x - 2b^TAx
+                &\quad  \text{s.t.} \quad  x \geq 0\\
+        &\underset{x}{\text{argmin}} \quad
+                x^T( A^TA + \lambda^2 I )x + (\alpha 1^T - 2b^TA )x
+                &\quad  \text{s.t.} \quad  x \geq 0\\
+        &\underset{x}{\text{argmin}} \quad
+                x^T( A^TA + \lambda^2 I )x + (1 \alpha^T - 2A^Tb )^Tx
+                &\quad  \text{s.t.} \quad  x \geq 0\\
 
+which we can solve using any number of quadratic programming solvers.
+
+Thus for the non-negative Lasso regularized estimate, we set :math:`\lambda=0`,
+and for the non-negative ridge regularized estimate, we set :math:`\alpha=0`.
 
 .. topic:: Examples
 

@@ -7,44 +7,13 @@ Nonnegative Ridge Regression.
 # License: Allen Institute Software License
 
 import numpy as np
-from scipy import linalg
-
-from sklearn.linear_model.base import _rescale_data
-from sklearn.utils import check_array
 from sklearn.utils import check_X_y
-from sklearn.utils import check_consistent_length
 
-from .base import NonnegativeLinear, _solve_nnls
-
-
-def _solve_ridge_nnls(X, y, alpha):
-    if X.ndim != 2 or y.ndim != 2:
-        raise ValueError("X and y must be 2d arrays! May have to reshape "
-                         "X.reshape(-1, 1) or y.reshape(-1, 1).")
-
-    if alpha.size != X.shape[1]:
-        raise ValueError("Number of targets and number of penalties "
-                         "do not correspond: %d != %d"
-                         % (alpha.size, X.shape[1]))
-
-    # we set up as alpha**2
-    sqrt_alpha = np.sqrt(alpha)
-
-    # compute R^T R is more numerically stable than X^T X
-    # 'r' mode returns tuple: (R,)
-    R = linalg.qr(X, overwrite_a=False, mode='r', check_finite=False)[0]
-
-    # rewrite as ||Ax - b||_2
-    Q = R.T.dot(R) + np.diag(sqrt_alpha)
-    c = X.T.dot(y)
-
-    # solve nnls system
-    coef, res = _solve_nnls(Q, c)
-
-    return coef, res
+from .elastic_net import NonnegativeElasticNet, nonnegative_elastic_net_regression
 
 
-def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
+def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
+                                 solver='L-BFGS-B', **solver_kwargs):
     r"""Solve the nonnegative least squares estimate regression problem.
 
     Solves
@@ -91,55 +60,15 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None):
     -----
     This is an experimental function.
     """
-    # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
-    # TODO order='F'?
-    X = check_array(X)
-    y = check_array(y, ensure_2d=False)
-    check_consistent_length(X, y)
-
-    n_samples, n_features = X.shape
-
-    ravel = False
-    if y.ndim == 1:
-        y = y.reshape(-1, 1)
-        ravel = True
-
-    n_samples_, n_targets = y.shape
-
-    if n_samples != n_samples_:
-        raise ValueError("Number of samples in X and y does not correspond:"
-                         " %d != %d" % (n_samples, n_samples_))
-
-    has_sw = sample_weight is not None
-
-    if has_sw:
-        if np.atleast_1d(sample_weight).ndim > 1:
-            raise ValueError("Sample weights must be 1D array or scalar")
-
-        X, y = _rescale_data(X, y, sample_weight)
-
-    # there should be either 1 or n_targets penalties
-    # NOTE: different from sklearn.linear_model.ridge
     alpha = np.asarray(alpha, dtype=X.dtype).ravel()
-    if alpha.size not in [1, n_features]:
-        raise ValueError("Number of targets and number of penalties "
-                         "do not correspond: %d != %d"
-                         % (alpha.size, n_features))
+    rho = np.zeros_like(alpha) # for compatibility
 
-    # NOTE: different from sklearn.linear_model.ridge
-    if alpha.size == 1 and n_features > 1:
-        alpha = np.repeat(alpha, n_features)
-
-    coef, res = _solve_ridge_nnls(X, y, alpha)
-
-    if ravel:
-        # When y was passed as 1d-array, we flatten the coefficients
-        coef = coef.ravel()
-
-    return coef, res
+    return nonnegative_elastic_net_regression(
+        X, y, alpha, rho, sample_weight=sample_weight,
+        solver=solver, **solver_kwargs)
 
 
-class NonnegativeRidge(NonnegativeLinear):
+class NonnegativeRidge(NonnegativeElasticNet):
     """Nonnegative least squares with L2 regularization.
 
     This model solves a regression model where the loss function is
@@ -181,8 +110,13 @@ class NonnegativeRidge(NonnegativeLinear):
     This is an experimental class.
     """
 
-    def __init__(self, alpha=1.0):
+    def __init__(self, alpha=1.0, solver='L-BFGS-B', **solver_kwargs):
+        if solver not in ('L-BFGS-B', 'TNC', 'SLSQP'):
+            raise ValueError('solver must be one of L-BFGS-B, TNC, SLSQP, '
+                             'not %s' % solver)
         self.alpha = alpha
+        self.solver = solver
+        self.solver_kwargs = solver_kwargs
 
     def fit(self, X, y, sample_weight=None):
         """Fit nonnegative least squares linear model with L2 regularization.
@@ -211,6 +145,7 @@ class NonnegativeRidge(NonnegativeLinear):
 
         # fit weights
         self.coef_, self.res_ = nonnegative_ridge_regression(
-            X, y, alpha=self.alpha, sample_weight=sample_weight)
+            X, y, self.alpha, sample_weight=sample_weight,
+            solver=self.solver, **self.solver_kwargs)
 
         return self

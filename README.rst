@@ -27,6 +27,7 @@ Science <https://brain-map.org>`_.
 
 It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
 ``estimator`` style, and has been used in the following publications:
+
 - `High resolution data-driven model of the mouse connectome
   <https://www.biorxiv.org/content/early/2018/04/01/293019>`_
 

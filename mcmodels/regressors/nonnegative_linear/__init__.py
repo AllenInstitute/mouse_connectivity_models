@@ -7,10 +7,24 @@ with L2 (Ridge) regularization.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-from .base import nonnegative_regression, NonnegativeLinear
-from .ridge import nonnegative_ridge_regression, NonnegativeRidge
+from .base import NonnegativeLinear
+from .base import nonnegative_regression
 
-__all__ = ['NonnegativeLinear',
+from .elastic_net import NonnegativeElasticNet
+from .elastic_net import nonnegative_elastic_net_regression
+
+from .lasso import NonnegativeLasso
+from .lasso import nonnegative_lasso_regression
+
+from .ridge import NonnegativeRidge
+from .ridge import nonnegative_ridge_regression
+
+
+__all__ = ['NonnegativeElasticNet',
+           'NonnegativeLasso',
+           'NonnegativeLinear',
            'NonnegativeRidge',
            'nonnegative_regression',
+           'nonnegative_elastic_net_regression',
+           'nonnegative_lasso_regression',
            'nonnegative_ridge_regression']
