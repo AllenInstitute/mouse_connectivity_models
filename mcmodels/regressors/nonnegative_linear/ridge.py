@@ -14,26 +14,25 @@ from .elastic_net import NonnegativeElasticNet, nonnegative_elastic_net_regressi
 
 def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
                                  solver='L-BFGS-B', **solver_kwargs):
-    r"""Solve the nonnegative least squares estimate regression problem.
+    r"""Solve the nonnegative least squares estimate ridge regression problem.
 
     Solves
 
     .. math::
-        \underset{x}{\text{argmin}} \| Ax - y \|_2^2 + \alpha^2 \| x \|_2^2
-        \quad \text{for} \quad x \geq 0
+        \underset{x}{\text{argmin}} \| Ax - b \|_2^2 + \alpha^2 \| x \|_2^2
+        \quad \text{s.t.} \quad x \geq 0
 
-    using `scipy.optimize.nnls <https://docs.scipy.org/doc/scipy/reference/
-    generated/scipy.optimize.nnls.html>`_. This can be simplified to:
+    We can write this as the quadratic programming (QP) problem:
 
     .. math::
 
-        \underset{x}{\text{argmin}} \| Qx - c \|_2^2 \quad \text{for} \quad x \geq 0
+        \underset{x}{\text{argmin}} x^TQx - c^Tx \quad \text{s.t.} \quad x \geq 0
 
     where
 
     .. math::
 
-        Q = X^TX + \alpha I \quad \text{and} \quad c = X^Ty
+        Q = A^TA + \alpha I \quad \text{and} \quad c = -2A^Ty
 
     Parameters
     ----------
@@ -48,6 +47,18 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
 
+    sample_weight : float or array-like, shape (n_samples,), optional (default = None)
+        Individual weights for each sample.
+
+    solver : string
+        Solver with which to solve the QP. Must be one that supports bounds
+        (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
+
+    **solver_kwargs
+        See `scipy.optimize.minimize <https://docs.scipy.org/doc/scipy/
+        reference/generated/scipy.optimize.minimize.html>`_
+        for valid keyword arguments
+
     Returns
     -------
     coef : array, shape = (n_features,) or (n_features, n_targets)
@@ -59,12 +70,15 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
     Notes
     -----
     This is an experimental function.
-    """
-    alpha = np.asarray(alpha, dtype=X.dtype).ravel()
-    rho = np.zeros_like(alpha) # for compatibility
 
+    See Also
+    --------
+    nonnegative_regression
+    nonnegative_lasso_regression
+    nonnegative_elastic_net_regression
+    """
     return nonnegative_elastic_net_regression(
-        X, y, alpha, rho, sample_weight=sample_weight,
+        X, y, alpha=alpha, sample_weight=sample_weight,
         solver=solver, **solver_kwargs)
 
 
@@ -82,6 +96,16 @@ class NonnegativeRidge(NonnegativeElasticNet):
         Regularization strength; must be a positive float. Improves the
         conditioning of the problem and reduces the variance of the estimates.
         Larger values specify stronger regularization.
+
+    solver : string
+        Solver with which to solve the QP. Must be one that supports bounds
+        (i.e. 'L-BFGS-B', 'TNC', 'SLSQP').
+
+    **solver_kwargs
+        See `scipy.optimize.minimize <https://docs.scipy.org/doc/scipy/
+        reference/generated/scipy.optimize.minimize.html>`_
+        for valid keyword arguments
+
 
     Attributes
     ----------
@@ -108,6 +132,12 @@ class NonnegativeRidge(NonnegativeElasticNet):
     Notes
     -----
     This is an experimental class.
+
+    See Also
+    --------
+    NonnegativeLinear
+    NonnegativeLasso
+    NonnegativeElasticNet
     """
 
     def __init__(self, alpha=1.0, solver='L-BFGS-B', **solver_kwargs):
@@ -128,6 +158,9 @@ class NonnegativeRidge(NonnegativeElasticNet):
 
         y : array, shape = (n_samples,) or (n_samples, n_targets)
             Target values.
+
+        sample_weight : float or array-like, shape (n_samples,), optional (default = None)
+            Individual weights for each sample.
 
         Returns
         -------

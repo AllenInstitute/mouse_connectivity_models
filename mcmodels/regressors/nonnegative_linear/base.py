@@ -50,6 +50,9 @@ def nonnegative_regression(X, y, sample_weight=None):
     y : array, shape = (n_samples,) or (n_samples, n_targets)
         Target values.
 
+    sample_weight : float or array-like, shape (n_samples,), optional (default = None)
+        Individual weights for each sample.
+
     Returns
     -------
     coef : array, shape = (n_features,) or (n_samples, n_features)
@@ -137,6 +140,9 @@ class NonnegativeLinear(LinearModel, RegressorMixin):
 
         y : array, shape = (n_samples,) or (n_samples, n_targets)
             Target values.
+
+        sample_weight : float or array-like, shape (n_samples,), optional (default = None)
+            Individual weights for each sample.
 
         Returns
         -------

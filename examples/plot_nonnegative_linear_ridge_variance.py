@@ -84,7 +84,7 @@ X_test = np.c_[0, 2].T
 np.random.seed(0)
 
 regressors = dict(NonnegativeLinear=NonnegativeLinear(),
-                  NonnegativeRidge=NonnegativeRidge(alpha=.1))
+                  NonnegativeRidge=NonnegativeRidge(alpha=0.1))
 
 fig, axes = plt.subplots(1, 2, figsize=(8, 3))
 
