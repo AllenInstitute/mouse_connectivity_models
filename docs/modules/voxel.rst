@@ -159,5 +159,5 @@ our :class:`VoxelConnectivityArray` and our source/target :class:`Mask` objects:
 
 .. topic:: References
 
-        .. [Knox2018] Knox et al. "High resolution data-driven model of the mouse
-        connectome." bioRxiv 293019; doi: https://doi.org/10.1101/293019
+        .. [Knox2018] Knox et al. 'High resolution data-driven model of the mouse
+           connectome.' bioRxiv 293019; doi: https://doi.org/10.1101/293019

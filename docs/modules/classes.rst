@@ -73,9 +73,7 @@ Classes
         :toctree: generated/
 
         regressors.NonnegativeLinear
-        regressors.NonnegativeLasso
         regressors.NonnegativeRidge
-        regressors.NonnegativeElasticNet
 
 Functions
 ---------
@@ -85,8 +83,6 @@ Functions
 
         regressors.nonnegative_regression
         regressors.nonnegative_ridge_regression
-        regressors.nonnegative_lasso_regression
-        regressors.nonnegative_elastic_net_regression
 
 .. _nonparametric_ref:
 

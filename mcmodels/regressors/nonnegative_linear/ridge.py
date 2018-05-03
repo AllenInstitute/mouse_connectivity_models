@@ -6,10 +6,58 @@ Nonnegative Ridge Regression.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-import numpy as np
-from sklearn.utils import check_X_y
+import warnings
 
-from .elastic_net import NonnegativeElasticNet, nonnegative_elastic_net_regression
+import numpy as np
+import scipy.linalg as linalg
+import scipy.optimize as sopt
+
+from sklearn.linear_model.base import _rescale_data
+from sklearn.utils import check_array
+from sklearn.utils import check_X_y
+from sklearn.utils import check_consistent_length
+
+from .base import NonnegativeLinear
+
+
+def _solve_ridge_nnls(A, b, alpha, solver, **solver_kwargs):
+    """Solves nonnegative ridge regressiond through quadratic programming."""
+    # compute R^T R is more numerically stable than A^T A
+    # 'r' mode returns tuple: (R,)
+    R = linalg.qr(A, overwrite_a=False, mode='r', check_finite=False)[0]
+
+    # x^T Q x + C_col x
+    Q = R.T.dot(R) + np.diag(alpha**2)
+    C = -2*A.T.dot(b)
+
+    # define loss and gradient functions
+    loss = lambda x: x.T.dot(Q).dot(x) + c.dot(x)
+    grad = lambda x: (Q.T + Q).dot(x) + c
+
+    n_features = A.shape[1]
+    n_targets = b.shape[1]
+
+    # sopt.minimize params
+    x0 = np.ones(n_features)
+    bounds = tuple(zip(n_features*[0.0], n_features*[None]))
+
+    # return arrays
+    coef = np.empty((n_targets, n_features), dtype=A.dtype)
+    res = np.empty(n_targets, dtype=A.dtype)
+
+    for i in range(n_targets):
+        c = C[:, i]
+        sol = sopt.minimize(loss, x0, jac=grad, method=solver, bounds=bounds,
+                            **solver_kwargs)
+
+        if not sol.success:
+            warnings.warn('Optimization was not a success for column %d, '
+                          'treat results accordingly' % i)
+
+        coef[i] = sol.x
+        res[i] = sol.fun + b[:, i].T.dot(b[:, i])
+
+    return coef, res
 
 
 def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
@@ -69,20 +117,71 @@ def nonnegative_ridge_regression(X, y, alpha, sample_weight=None,
 
     Notes
     -----
-    This is an experimental function.
+    - This is an experimental function.
+    - If one wishes to perform Lasso or Elastic-Net regression, see
+      `sklearn.linear_model.lasso_path <http://scikit-learn.org/stable/modules/
+      generated/sklearn.linear_model.lasso_path.html>`_ or
+      `sklearn.linear_model.enet_path <http://scikit-learn.org/stable/
+      modules/generated/sklearn.linear_model.enet_path.html>`_,
+      and pass the parameters `fit_intercept=False, positive=True`
+
 
     See Also
     --------
     nonnegative_regression
-    nonnegative_lasso_regression
-    nonnegative_elastic_net_regression
     """
-    return nonnegative_elastic_net_regression(
-        X, y, alpha=alpha, sample_weight=sample_weight,
-        solver=solver, **solver_kwargs)
+    if solver not in ('L-BFGS-B', 'TNC', 'SLSQP'):
+        raise ValueError('solver must be one of L-BFGS-B, TNC, SLSQP, '
+                         'not %s' % solver)
+
+    # TODO accept_sparse=['csr', 'csc', 'coo']? check sopt.nnls
+    # TODO order='F'?
+    X = check_array(X)
+    y = check_array(y, ensure_2d=False)
+    check_consistent_length(X, y)
+
+    n_samples, n_features = X.shape
+
+    ravel = False
+    if y.ndim == 1:
+        y = y.reshape(-1, 1)
+        ravel = True
+
+    n_samples_, n_targets = y.shape
+
+    if n_samples != n_samples_:
+        raise ValueError("Number of samples in X and y does not correspond:"
+                         " %d != %d" % (n_samples, n_samples_))
+
+    has_sw = sample_weight is not None
+
+    if has_sw:
+        if np.atleast_1d(sample_weight).ndim > 1:
+            raise ValueError("Sample weights must be 1D array or scalar")
+
+        X, y = _rescale_data(X, y, sample_weight)
+
+    # there should be either 1 or n_targets penalties
+    alpha = np.asarray(alpha, dtype=X.dtype).ravel()
+    if alpha.size not in [1, n_features]:
+        raise ValueError("Number of targets and number of L2 penalties "
+                         "do not correspond: %d != %d"
+                         % (alpha.size, n_features))
+
+    # NOTE: different from sklearn.linear_model.ridge
+    if alpha.size == 1 and n_features > 1:
+        alpha = np.repeat(alpha, n_features)
+
+    coef, res = _solve_ridge_nnls(X, y, alpha, solver, **solver_kwargs)
+
+    if ravel:
+        # When y was passed as 1d-array, we flatten the coefficients
+        coef = coef.ravel()
+
+    return coef, res
 
 
-class NonnegativeRidge(NonnegativeElasticNet):
+class NonnegativeRidge(NonnegativeLinear):
     """Nonnegative least squares with L2 regularization.
 
     This model solves a regression model where the loss function is
@@ -131,13 +230,17 @@ class NonnegativeRidge(NonnegativeElasticNet):
 
     Notes
     -----
-    This is an experimental class.
+    - This is an experimental class.
+    - If one wishes to perform Lasso or Elastic-Net regression, see
+      `sklearn.linear_model.Lasso <http://scikit-learn.org/stable/modules/
+      generated/sklearn.linear_model.Lasso.html>`_ or
+      `sklearn.linear_model.ElasticNet <http://scikit-learn.org/stable/
+      modules/generated/sklearn.linear_model.ElasticNet.html>`_,
+      and pass the parameters `fit_intercept=False, positive=True`
 
     See Also
     --------
     NonnegativeLinear
-    NonnegativeLasso
-    NonnegativeElasticNet
     """
 
     def __init__(self, alpha=1.0, solver='SLSQP', **solver_kwargs):

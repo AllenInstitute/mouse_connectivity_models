@@ -83,6 +83,13 @@ def test_fit():
     sample_weight = np.ones((10, 1))
     assert_raises(ValueError, reg.fit, X, y, sample_weight)
 
+    # ------------------------------------------------------------------------
+    # test multivariate works
+    X = np.eye(10)
+    y = np.eye(10)
+    reg.fit(X, y)
+
+    assert_allclose(reg.coef_, np.eye(10))
 
 def test_predict():
     # ------------------------------------------------------------------------

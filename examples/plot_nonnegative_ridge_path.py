@@ -85,8 +85,8 @@ y = np.ones(n)
 # #############################################################################
 # Compute paths
 
-n_alphas = 81
-alphas = np.logspace(-4, 4, n_alphas)
+n_alphas = 41
+alphas = np.logspace(-2, 2, n_alphas)
 
 coefs = []
 for a in alphas:
@@ -106,8 +106,8 @@ for ax in axes:
     ax.set_ylabel('weights')
 
 # trim subplots
-axes[0].set_xlim(1e-4, 1e4)
-axes[1].set_xlim(1e-1, 1e2)
+axes[0].set_xlim(1e-2, 1e2)
+axes[1].set_xlim(1e-1, 1e1)
 
 axes[0].set_ylim(0, 8)
 axes[1].set_ylim(0, 1)
