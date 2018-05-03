@@ -1,0 +1,30 @@
+mcmodels\.core\.Mask
+====================
+
+.. currentmodule:: mcmodels.core
+
+.. autoclass:: Mask
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Mask.__init__
+      ~Mask.fill_volume_where_masked
+      ~Mask.from_cache
+      ~Mask.get_flattened_voxel_index
+      ~Mask.get_key
+      ~Mask.get_structure_flattened_mask
+      ~Mask.get_structure_indices
+      ~Mask.map_masked_to_annotation
+      ~Mask.mask_volume
+   
+   
+
+   
+   
+   

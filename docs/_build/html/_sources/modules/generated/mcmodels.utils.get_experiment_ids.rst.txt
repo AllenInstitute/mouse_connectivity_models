@@ -1,0 +1,6 @@
+mcmodels\.utils\.get\_experiment\_ids
+=====================================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: get_experiment_ids

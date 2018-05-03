@@ -1,0 +1,26 @@
+mcmodels\.regressors\.NonnegativeLinear
+=======================================
+
+.. currentmodule:: mcmodels.regressors
+
+.. autoclass:: NonnegativeLinear
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NonnegativeLinear.fit
+      ~NonnegativeLinear.get_params
+      ~NonnegativeLinear.predict
+      ~NonnegativeLinear.score
+      ~NonnegativeLinear.set_params
+   
+   
+
+   
+   
+   

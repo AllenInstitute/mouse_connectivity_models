@@ -1,0 +1,273 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.regressors.NadarayaWatsonCV &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="mcmodels.regressors.nonparametric.kernels.Polynomial" href="mcmodels.regressors.nonparametric.kernels.Polynomial.html" />
+    <link rel="prev" title="mcmodels.regressors.NadarayaWatson" href="mcmodels.regressors.NadarayaWatson.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mcmodels-regressors-nadarayawatsoncv">
+<h1>mcmodels.regressors.NadarayaWatsonCV<a class="headerlink" href="#mcmodels-regressors-nadarayawatsoncv" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mcmodels.regressors.NadarayaWatsonCV">
+<em class="property">class </em><code class="descclassname">mcmodels.regressors.</code><code class="descname">NadarayaWatsonCV</code><span class="sig-paren">(</span><em>param_grid</em>, <em>scoring=None</em>, <em>cv=None</em>, <em>store_cv_scores=False</em>, <em>kernel='linear'</em>, <em>degree=3</em>, <em>coef0=1</em>, <em>gamma=None</em>, <em>kernel_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/regressors/nonparametric/nadaraya_watson.html#NadarayaWatsonCV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.regressors.NadarayaWatsonCV" title="Permalink to this definition">¶</a></dt>
+<dd><p>NadarayaWatson Estimator with built in Leave-one-out cross validation.</p>
+<p>By default, it performs Leave-one-out cross validation efficiently, but
+can accept cv argument to perform arbitrary cross validation splits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>param_grid</strong> <span class="classifier-delimiter">:</span> <span class="classifier">dict or list of dictionaries</span></dt>
+<dd><p class="first last">Dictionary with parameters names (string) as keys and lists of
+parameter settings to try as values or a list of such dictionaries,
+in which case the grids spanned by each dictionary in the list are
+explored. This enables searching over any sequence of parameter settings.</p>
+</dd>
+<dt><strong>scoring</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, callable or None, optional, default: None</span></dt>
+<dd><p class="first last">A string (see sklearn.model_evaluation documentation) or a scorer
+callable object / function with signature
+<code class="docutils literal"><span class="pre">scorer(estimator,</span> <span class="pre">X,</span> <span class="pre">y)</span></code></p>
+</dd>
+<dt><strong>cv</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, cross-validation generator or an iterable, optional, default: None</span></dt>
+<dd><p class="first last">Determines the cross-validation splitting strategy. If None, perform
+efficient leave-one-out cross validation, else use
+sklearn.model_selection.GridSearchCV.</p>
+</dd>
+<dt><strong>store_cv_scores</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional, default=False</span></dt>
+<dd><p class="first last">Flag indicating if the cross-validation values should be stored in
+<cite>cv_scores_</cite> attribute. This flag is only compatible with <cite>cv=None</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.regressors</span> <span class="k">import</span> <span class="n">NadarayaWatson</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># generate some fake data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># fit regressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">],</span> <span class="n">degree</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span>
+<span class="gp">... </span>              <span class="nb">dict</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span> <span class="n">gamma</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">NadarayaWatsonCV</span><span class="p">(</span><span class="n">param_grid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">NadarayaWatsonCV(coef0=1, cv=None, degree=3, gamma=1.0, kernel=&#39;rbf&#39;,</span>
+<span class="go">         kernel_params=None,</span>
+<span class="go">         param_grid=[{&#39;kernel&#39;: [&#39;linear&#39;], &#39;degree&#39;: array([1, 2, 3])},</span>
+<span class="go">                      {&#39;kernel&#39;: [&#39;rbf&#39;], &#39;gamma&#39;: array([ 0.1,  1. , 10. ])}],</span>
+<span class="go">         scoring=None, store_cv_scores=False)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cv_scores_</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, shape = (n_samples, ~len(param_grid))</span></dt>
+<dd><p class="first last">Cross-validation scores for each candidate parameter (if
+<cite>store_cv_scores=True</cite> and <cite>cv=None</cite>)</p>
+</dd>
+<dt><strong>best_score_</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd><p class="first last">Mean cross-validated score of the best performing estimator.</p>
+</dd>
+<dt><strong>n_splits_</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Number of cross-validation splits (folds/iterations)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.regressors.NadarayaWatsonCV.fit" title="mcmodels.regressors.NadarayaWatsonCV.fit"><code class="xref py py-obj docutils literal"><span class="pre">fit</span></code></a>(X,&nbsp;y[,&nbsp;sample_weight])</td>
+<td>Fit Nadaraya Watson estimator.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_params</span></code>([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_weights</span></code>(X)</td>
+<td>Return model weights.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code>(X)</td>
+<td>Predict using the Nadaraya Watson model.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">score</span></code>(X,&nbsp;y[,&nbsp;sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">set_params</span></code>(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.regressors.NadarayaWatsonCV.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>param_grid</em>, <em>scoring=None</em>, <em>cv=None</em>, <em>store_cv_scores=False</em>, <em>kernel='linear'</em>, <em>degree=3</em>, <em>coef0=1</em>, <em>gamma=None</em>, <em>kernel_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/regressors/nonparametric/nadaraya_watson.html#NadarayaWatsonCV.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.regressors.NadarayaWatsonCV.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.regressors.NadarayaWatsonCV.__init__" title="mcmodels.regressors.NadarayaWatsonCV.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(param_grid[,&nbsp;scoring,&nbsp;cv,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.regressors.NadarayaWatsonCV.fit" title="mcmodels.regressors.NadarayaWatsonCV.fit"><code class="xref py py-obj docutils literal"><span class="pre">fit</span></code></a>(X,&nbsp;y[,&nbsp;sample_weight])</td>
+<td>Fit Nadaraya Watson estimator.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_params</span></code>([deep])</td>
+<td>Get parameters for this estimator.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_weights</span></code>(X)</td>
+<td>Return model weights.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code>(X)</td>
+<td>Predict using the Nadaraya Watson model.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">score</span></code>(X,&nbsp;y[,&nbsp;sample_weight])</td>
+<td>Returns the coefficient of determination R^2 of the prediction.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">set_params</span></code>(**params)</td>
+<td>Set the parameters of this estimator.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.regressors.NadarayaWatsonCV.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>sample_weight=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/regressors/nonparametric/nadaraya_watson.html#NadarayaWatsonCV.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.regressors.NadarayaWatsonCV.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit Nadaraya Watson estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">Training data.</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, shape (n_samples, n_features)</span></dt>
+<dd><p class="first last">Target values.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>self</strong> <span class="classifier-delimiter">:</span> <span class="classifier">returns an instance of self</span></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

@@ -1,0 +1,313 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.core.Experiment &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="mcmodels.core.Mask" href="mcmodels.core.Mask.html" />
+    <link rel="prev" title="mcmodels.core.RegionalData" href="mcmodels.core.RegionalData.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mcmodels-core-experiment">
+<h1>mcmodels.core.Experiment<a class="headerlink" href="#mcmodels-core-experiment" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mcmodels.core.Experiment">
+<em class="property">class </em><code class="descclassname">mcmodels.core.</code><code class="descname">Experiment</code><span class="sig-paren">(</span><em>injection_density=None</em>, <em>projection_density=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/experiment.html#Experiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class containing the data from an anterograde injection</p>
+<p>Experiment conveniently compiles the relevant information from a given
+anterograde viral tracing experiment data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>voxel_model_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">VoxelModelCache object</span></dt>
+<dd><p class="first last">This supplies the interface for pulling experimental data.</p>
+</dd>
+<dt><strong>experiment_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">AllenSDK id assigned to given experiment</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.core</span> <span class="k">import</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">VoxelModelCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">VoxelModelCache</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eid</span> <span class="o">=</span> <span class="mi">100141273</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span> <span class="o">=</span> <span class="n">Experiment</span><span class="p">(</span><span class="n">voxel_model_cache</span><span class="p">,</span> <span class="n">eid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp</span><span class="o">.</span><span class="n">injection_density</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(132,80,114)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.bilateral_injection" title="mcmodels.core.Experiment.bilateral_injection"><code class="xref py py-obj docutils literal"><span class="pre">bilateral_injection</span></code></a></dt>
+<dd><p class="first last">Returns injection hemisphere</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.centroid" title="mcmodels.core.Experiment.centroid"><code class="xref py py-obj docutils literal"><span class="pre">centroid</span></code></a></dt>
+<dd><p class="first last">Returns centroid of the injection density.</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.injection_hemisphere_id" title="mcmodels.core.Experiment.injection_hemisphere_id"><code class="xref py py-obj docutils literal"><span class="pre">injection_hemisphere_id</span></code></a></dt>
+<dd><p class="first last">Returns injection hemisphere</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.injection_volume" title="mcmodels.core.Experiment.injection_volume"><code class="xref py py-obj docutils literal"><span class="pre">injection_volume</span></code></a></dt>
+<dd><p class="first last">Returns total injection volume = sum(injection_density)</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.normalized_injection_density" title="mcmodels.core.Experiment.normalized_injection_density"><code class="xref py py-obj docutils literal"><span class="pre">normalized_injection_density</span></code></a></dt>
+<dd><p class="first last">Returns injection density normalized to have unit sum.</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.normalized_projection_density" title="mcmodels.core.Experiment.normalized_projection_density"><code class="xref py py-obj docutils literal"><span class="pre">normalized_projection_density</span></code></a></dt>
+<dd><p class="first last">Returns projection_density normalized by the total injection_density</p>
+</dd>
+<dt><a class="reference internal" href="#mcmodels.core.Experiment.projection_volume" title="mcmodels.core.Experiment.projection_volume"><code class="xref py py-obj docutils literal"><span class="pre">projection_volume</span></code></a></dt>
+<dd><p class="first last">Returns total projection volume = sum(projection_density)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Experiment.flip" title="mcmodels.core.Experiment.flip"><code class="xref py py-obj docutils literal"><span class="pre">flip</span></code></a>()</td>
+<td>Reflects experiment along midline.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Experiment.from_cache" title="mcmodels.core.Experiment.from_cache"><code class="xref py py-obj docutils literal"><span class="pre">from_cache</span></code></a>(cache,&nbsp;experiment_id[,&nbsp;…])</td>
+<td>Alternative constructor allowing for pulling grid data.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="36%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>get_injection</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>get_projection</strong></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.Experiment.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>injection_density=None</em>, <em>projection_density=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/experiment.html#Experiment.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Experiment.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Experiment.__init__" title="mcmodels.core.Experiment.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>([injection_density,&nbsp;projection_density])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Experiment.flip" title="mcmodels.core.Experiment.flip"><code class="xref py py-obj docutils literal"><span class="pre">flip</span></code></a>()</td>
+<td>Reflects experiment along midline.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Experiment.from_cache" title="mcmodels.core.Experiment.from_cache"><code class="xref py py-obj docutils literal"><span class="pre">from_cache</span></code></a>(cache,&nbsp;experiment_id[,&nbsp;…])</td>
+<td>Alternative constructor allowing for pulling grid data.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_injection</span></code>([normalized])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection</span></code>([normalized])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.bilateral_injection">
+<code class="descname">bilateral_injection</code><a class="headerlink" href="#mcmodels.core.Experiment.bilateral_injection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns injection hemisphere</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.centroid">
+<code class="descname">centroid</code><a class="headerlink" href="#mcmodels.core.Experiment.centroid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns centroid of the injection density.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Experiment.flip">
+<code class="descname">flip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/experiment.html#Experiment.flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Experiment.flip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reflects experiment along midline.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>self - flipped experiment</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mcmodels.core.Experiment.from_cache">
+<em class="property">classmethod </em><code class="descname">from_cache</code><span class="sig-paren">(</span><em>cache</em>, <em>experiment_id</em>, <em>data_mask_tolerance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/experiment.html#Experiment.from_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Experiment.from_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative constructor allowing for pulling grid data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">VoxelModelCache or MouseConnectivityCache instance.</span></dt>
+<dd><p class="first last">Object used to pull grid data.</p>
+</dd>
+<dt><strong>experiment_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">Experiment id of the experiment from which to pull grid data.</p>
+</dd>
+<dt><strong>data_mask_tolerance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional (default = None)</span></dt>
+<dd><p class="first last">Tolerance with which to mask ‘bad’ data. data_mask array has values
+on the interval [0,1], where a nonzero element indicates a ‘bad’
+voxel. If None is passed, the parameter defaults to
+DEFAULT_DATA_MASK_TOLERANCE (0.5).</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.injection_hemisphere_id">
+<code class="descname">injection_hemisphere_id</code><a class="headerlink" href="#mcmodels.core.Experiment.injection_hemisphere_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns injection hemisphere</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.injection_volume">
+<code class="descname">injection_volume</code><a class="headerlink" href="#mcmodels.core.Experiment.injection_volume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.normalized_injection_density">
+<code class="descname">normalized_injection_density</code><a class="headerlink" href="#mcmodels.core.Experiment.normalized_injection_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns injection density normalized to have unit sum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.normalized_projection_density">
+<code class="descname">normalized_projection_density</code><a class="headerlink" href="#mcmodels.core.Experiment.normalized_projection_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns projection_density normalized by the total injection_density</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Experiment.projection_volume">
+<code class="descname">projection_volume</code><a class="headerlink" href="#mcmodels.core.Experiment.projection_volume" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

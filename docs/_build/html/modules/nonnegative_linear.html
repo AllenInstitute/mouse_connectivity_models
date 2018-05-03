@@ -1,0 +1,176 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>2.1. Nonnegative Least Squares Regression &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2.2. Nonnparametric Regression" href="nonparametric.html" />
+    <link rel="prev" title="2. Regressors" href="../regressors.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="nonnegative-least-squares-regression">
+<span id="nonnegative-linear"></span><h1>2.1. Nonnegative Least Squares Regression<a class="headerlink" href="#nonnegative-least-squares-regression" title="Permalink to this headline">¶</a></h1>
+<p>Nonnegative Least Squares Regression solves the equation <span class="math">\(Ax=b\)</span> subject
+to the constraint that the coefficients <span class="math">\(x\)</span> be nonnegative:</p>
+<div class="math">
+\[\underset{x}{\text{argmin}} \| Ax - b \|_2^2, \text{subject to } x \geq 0\]</div>
+<p><a class="reference internal" href="generated/mcmodels.regressors.NonnegativeLinear.html#mcmodels.regressors.NonnegativeLinear" title="mcmodels.regressors.NonnegativeLinear"><code class="xref py py-class docutils literal"><span class="pre">NonnegativeLinear</span></code></a> will take in its <a class="reference internal" href="generated/mcmodels.regressors.NonnegativeLinear.html#mcmodels.regressors.NonnegativeLinear.fit" title="mcmodels.regressors.NonnegativeLinear.fit"><code class="xref py py-meth docutils literal"><span class="pre">fit</span></code></a> method
+arrays X, y and will store the coefficients <span class="math">\(w\)</span> in its
+<code class="xref py py-attr docutils literal"><span class="pre">coef_</span></code> member:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.regressors</span> <span class="k">import</span> <span class="n">NonnegativeLinear</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">NonnegativeLinear</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">fit</span> <span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">NonnegativeLinear()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">coef_</span>
+<span class="go">array([0.5, 0.5]</span>
+</pre></div>
+</div>
+<p>However, CONDITIONING</p>
+<p>satisfied the above constraint. We enforce the coefficients to be positive as
+a weight between brain regions must be positive.</p>
+<div class="section" id="nonnegative-ridge-regression">
+<h2>2.1.1. Nonnegative Ridge Regression<a class="headerlink" href="#nonnegative-ridge-regression" title="Permalink to this headline">¶</a></h2>
+<p>The equation <span class="math">\(Ax=b\)</span> is said to be ill-conditioned if the columns of <cite>A</cite>
+are nearly linearly dependent. Ill-conditioned least squares problems are highly
+sensitive to random errors and produce estimations with high variance as a result.</p>
+<p>We can improve the conditioning of <span class="math">\(Ax=b\)</span> by imposing a penalty on the
+size of the coefficients <span class="math">\(x\)</span>. Using the L2 norm as a measure of size, we
+arrive at Tikhonov Reglarization, also known as ridge regression:</p>
+<div class="math">
+\[\text{argmin}_x \| Ax - b \|_2^2 + \alpha^2 \| x \|_2^2\]</div>
+<p>where <span class="math">\(\alpha\)</span> is the penalty vector. We can rewrite this with a
+nonnegativity constraint as:</p>
+<div class="math">
+\[\text{argmin}_x \| Qx - c \|_2^2, \text{subject to } x \geq 0\]</div>
+<p>where</p>
+<div class="math">
+\[Q = A^T A + \alpha I \quad \text{and} \quad c = A^T b\]</div>
+<div class="figure align-center">
+<a class="reference external image-reference" href="../auto_examples/plot_nonnegative_ridge_path.html"><img alt="../_images/sphx_glr_plot_nonnegative_ridge_path_0011.png" src="../_images/sphx_glr_plot_nonnegative_ridge_path_0011.png" /></a>
+</div>
+<p>As with <a class="reference internal" href="generated/mcmodels.regressors.NonnegativeLinear.html#mcmodels.regressors.NonnegativeLinear" title="mcmodels.regressors.NonnegativeLinear"><code class="xref py py-class docutils literal"><span class="pre">NonnegativeLinear</span></code></a>, <a class="reference internal" href="generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge" title="mcmodels.regressors.NonnegativeRidge"><code class="xref py py-class docutils literal"><span class="pre">NonnegativeRidge</span></code></a>  will take in its
+<a class="reference internal" href="generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge.fit" title="mcmodels.regressors.NonnegativeRidge.fit"><code class="xref py py-meth docutils literal"><span class="pre">fit</span></code></a> method arrays X, y and will store the coefficients
+<span class="math">\(w\)</span> in its <code class="xref py py-attr docutils literal"><span class="pre">coef_</span></code> member:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.regressors</span> <span class="k">import</span> <span class="n">NonnegativeRidge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">NonnegativeRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">fit</span> <span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">NonnegativeRidge(alpha=1.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">coef_</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nonnegative-lasso">
+<h2>2.1.2. Nonnegative Lasso<a class="headerlink" href="#nonnegative-lasso" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="nonnegative-elastic-net">
+<h2>2.1.3. Nonnegative Elastic Net<a class="headerlink" href="#nonnegative-elastic-net" title="Permalink to this headline">¶</a></h2>
+<p>Elastic net is a combination of L2 and L1 regularization. We will derive the
+above results here:</p>
+<div class="math">
+\[\begin{split}&amp;\text{argmin}_x \quad \| Ax - b \|_2^2 + \lambda^2 \| x \|_2 + \alpha \| x \|_1 \\
+&amp;\text{argmin}_x \quad (Ax - b)^T(Ax - b) + \lambda^2 (x^T I x) + \alpha (1^T x) \\
+&amp;\text{argmin}_x \quad x^TA^TAx - 2b^TAx + b^Tb + x^T \lambda^2 I x + \alpha 1^T x \\
+&amp;\text{argmin}_x \quad x^TA^TAx + x^T \lambda^2 I x + \alpha 1^T x - 2b^TAx \\
+&amp;\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (\alpha 1^T - 2b^TA )x \\
+&amp;\text{argmin}_x \quad x^T( A^TA + \lambda^2 I )x + (1 \alpha^T - 2A^Tb )^Tx\end{split}\]</div>
+<div class="topic">
+<p class="topic-title first">Examples</p>
+<ul class="simple">
+<li><a class="reference internal" href="../auto_examples/plot_nonnegative_ridge_path.html#sphx-glr-auto-examples-plot-nonnegative-ridge-path-py"><span class="std std-ref">Plot NonnegativeRidge coefficients as a function of regularization</span></a></li>
+<li><a class="reference internal" href="../auto_examples/plot_nonnegative_linear_ridge_variance.html#sphx-glr-auto-examples-plot-nonnegative-linear-ridge-variance-py"><span class="std std-ref">NonnegativeLinear Least Squares and NonnegativeRidge Regression Variance</span></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

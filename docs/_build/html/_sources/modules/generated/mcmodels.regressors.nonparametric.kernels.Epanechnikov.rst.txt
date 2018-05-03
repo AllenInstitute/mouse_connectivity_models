@@ -1,0 +1,27 @@
+mcmodels\.regressors\.nonparametric\.kernels\.Epanechnikov
+==========================================================
+
+.. currentmodule:: mcmodels.regressors.nonparametric.kernels
+
+.. autoclass:: Epanechnikov
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Epanechnikov.__init__
+      ~Epanechnikov.clone_with_theta
+      ~Epanechnikov.diag
+      ~Epanechnikov.get_params
+      ~Epanechnikov.is_stationary
+      ~Epanechnikov.set_params
+   
+   
+
+   
+   
+   

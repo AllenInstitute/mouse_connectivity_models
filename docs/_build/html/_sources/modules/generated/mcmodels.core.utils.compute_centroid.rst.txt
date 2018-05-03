@@ -1,0 +1,6 @@
+mcmodels\.core\.utils\.compute\_centroid
+========================================
+
+.. currentmodule:: mcmodels.core.utils
+
+.. autofunction:: compute_centroid

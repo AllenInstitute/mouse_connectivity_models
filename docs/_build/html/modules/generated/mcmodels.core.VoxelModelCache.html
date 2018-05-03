@@ -1,0 +1,913 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.core.VoxelModelCache &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="mcmodels.core.VoxelModelApi" href="mcmodels.core.VoxelModelApi.html" />
+    <link rel="prev" title="mcmodels.core.Mask" href="mcmodels.core.Mask.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mcmodels-core-voxelmodelcache">
+<h1>mcmodels.core.VoxelModelCache<a class="headerlink" href="#mcmodels-core-voxelmodelcache" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mcmodels.core.VoxelModelCache">
+<em class="property">class </em><code class="descclassname">mcmodels.core.</code><code class="descname">VoxelModelCache</code><span class="sig-paren">(</span><em>resolution=100</em>, <em>cache=True</em>, <em>manifest_file='voxel_model_manifest.json'</em>, <em>ccf_version=None</em>, <em>base_uri=None</em>, <em>version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache class extending MouseConnectivityCache to cache voxel model data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>resolution: int</strong></dt>
+<dd><p class="first last">Resolution of grid data to be downloaded when accessing projection volume,
+the annotation volume, and the annotation volume.  Must be one of (10, 25,
+50, 100).  Default is 25.</p>
+</dd>
+<dt><strong>ccf_version: string</strong></dt>
+<dd><p class="first last">Desired version of the Common Coordinate Framework.  This affects the annotation
+volume (get_annotation_volume) and structure masks (get_structure_mask).
+Must be one of (MouseConnectivityApi.CCF_2015, MouseConnectivityApi.CCF_2016).
+Default: MouseConnectivityApi.CCF_2016</p>
+</dd>
+<dt><strong>cache: boolean</strong></dt>
+<dd><p class="first last">Whether the class should save results of API queries to locations specified
+in the manifest file.  Queries for files (as opposed to metadata) must have a
+file location.  If caching is disabled, those locations must be specified
+in the function call (e.g. get_projection_density(file_name=’file.nrrd’)).</p>
+</dd>
+<dt><strong>manifest_file: string</strong></dt>
+<dd><p class="first last">File name of the manifest to be read.  Default is “mouse_connectivity_manifest.json”.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.core</span> <span class="k">import</span> <span class="n">VoxelModelCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">VoxelModelCache</span><span class="p">(</span><span class="n">manifest_file</span><span class="o">=</span><span class="s1">&#39;connectivity/voxel_model_manifest.json&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># download the fitted voxel-scale model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">voxel_array</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">,</span> <span class="n">target_mask</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_voxel_connectivity_array</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get regionalized adjacency matrix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regional_ncd</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_normalized_connection_density</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get VoxelData object to use in model building</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cortex_voxel_data</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_experiment_data</span><span class="p">(</span><span class="n">injection_structure_ids</span><span class="o">=</span><span class="p">[</span><span class="mi">315</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># JSON serialize input parameters so that cache can be reinstantiated later</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="go">&#39;{</span>
+<span class="go">        &quot;resolution&quot;: 100,</span>
+<span class="go">        &quot;cache&quot;: true,</span>
+<span class="go">        &quot;manifest_file&quot;: &quot;voxel_model_manifest.json&quot;,</span>
+<span class="go">        &quot;ccf_version&quot;: &quot;annotation/ccf_2017&quot;,</span>
+<span class="go">        &quot;base_uri&quot;: null,</span>
+<span class="go">        &quot;version&quot;: 1.2</span>
+<span class="go">}&#39;</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><a class="reference internal" href="#mcmodels.core.VoxelModelCache.default_structure_ids" title="mcmodels.core.VoxelModelCache.default_structure_ids"><code class="xref py py-obj docutils literal"><span class="pre">default_structure_ids</span></code></a></dt>
+<dd><p class="first last">Default structure ids.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.add_manifest_paths" title="mcmodels.core.VoxelModelCache.add_manifest_paths"><code class="xref py py-obj docutils literal"><span class="pre">add_manifest_paths</span></code></a>(manifest_builder)</td>
+<td>Construct a manifest for this Cache class and save it in a file.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">build_manifest</span></code>(file_name)</td>
+<td>Creation of default path specifications.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">cacher</span></code>(fn,&nbsp;*args,&nbsp;**kwargs)</td>
+<td>make an rma query, save it and return the dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">filter_experiments</span></code>(experiments[,&nbsp;cre,&nbsp;…])</td>
+<td>Take a list of experiments and filter them by cre status and injection structure.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">filter_structure_unionizes</span></code>(unionizes[,&nbsp;…])</td>
+<td>Take a list of unionzes and return a subset of records filtered by injection status, structure, and hemisphere.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.from_json" title="mcmodels.core.VoxelModelCache.from_json"><code class="xref py py-obj docutils literal"><span class="pre">from_json</span></code></a>(file_name)</td>
+<td>Construct object from JSON serialized parameter file.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_annotation_volume</span></code>([file_name])</td>
+<td>Read the annotation volume.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_cache_path</span></code>(file_name,&nbsp;manifest_key,&nbsp;*args)</td>
+<td>Helper method for accessing path specs from manifest keys.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_connection_density" title="mcmodels.core.VoxelModelCache.get_connection_density"><code class="xref py py-obj docutils literal"><span class="pre">get_connection_density</span></code></a>([file_name,&nbsp;dataframe])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-density"><span class="xref std std-term">connection density</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_connection_strength" title="mcmodels.core.VoxelModelCache.get_connection_strength"><code class="xref py py-obj docutils literal"><span class="pre">get_connection_strength</span></code></a>([file_name,&nbsp;dataframe])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-strength"><span class="xref std std-term">connection strength</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_data_mask</span></code>(experiment_id[,&nbsp;file_name])</td>
+<td>Read a data mask volume for a single experiment.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_experiment_data" title="mcmodels.core.VoxelModelCache.get_experiment_data"><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_data</span></code></a>([cre,&nbsp;…])</td>
+<td>Pulls voxel-scale grid data for experiments.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_structure_unionizes</span></code>(experiment_id)</td>
+<td>Retrieve the structure unionize data for a specific experiment.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiments</span></code>([dataframe,&nbsp;file_name,&nbsp;cre,&nbsp;…])</td>
+<td>Read a list of experiments that match certain criteria.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_injection_density</span></code>(experiment_id[,&nbsp;file_name])</td>
+<td>Read an injection density volume for a single experiment.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_injection_fraction</span></code>(experiment_id[,&nbsp;…])</td>
+<td>Read an injection fraction volume for a single experiment.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_nodes" title="mcmodels.core.VoxelModelCache.get_nodes"><code class="xref py py-obj docutils literal"><span class="pre">get_nodes</span></code></a>([file_name])</td>
+<td>Get nodes for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_density" title="mcmodels.core.VoxelModelCache.get_normalized_connection_density"><code class="xref py py-obj docutils literal"><span class="pre">get_normalized_connection_density</span></code></a>([…])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-density"><span class="xref std std-term">normalized connection density</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_strength" title="mcmodels.core.VoxelModelCache.get_normalized_connection_strength"><code class="xref py py-obj docutils literal"><span class="pre">get_normalized_connection_strength</span></code></a>([…])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-strength"><span class="xref std std-term">normalized connection strength</span></a>.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection_density</span></code>(experiment_id[,&nbsp;…])</td>
+<td>Read a projection density volume for a single experiment.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_reference_space</span></code>([structure_file_name,&nbsp;…])</td>
+<td>Build a ReferenceSpace from this cache’s annotation volume and  structure tree.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_source_mask" title="mcmodels.core.VoxelModelCache.get_source_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_source_mask</span></code></a>([file_name])</td>
+<td>Get source mask for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_mask</span></code>(structure_id[,&nbsp;…])</td>
+<td>Read a 3D numpy array shaped like the annotation volume that has non-zero values where voxels belong to a particular structure.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_mesh</span></code>(structure_id[,&nbsp;file_name])</td>
+<td>Obtain a 3D mesh specifying the surface of an annotated structure.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_tree</span></code>([file_name,&nbsp;…])</td>
+<td>Read the list of adult mouse structures and return an StructureTree  instance.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_unionizes</span></code>(experiment_ids[,&nbsp;…])</td>
+<td>Get structure unionizes for a set of experiment IDs.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_target_mask" title="mcmodels.core.VoxelModelCache.get_target_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_target_mask</span></code></a>([file_name])</td>
+<td>Get target mask for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_template_volume</span></code>([file_name])</td>
+<td>Read the template volume.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_voxel_connectivity_array" title="mcmodels.core.VoxelModelCache.get_voxel_connectivity_array"><code class="xref py py-obj docutils literal"><span class="pre">get_voxel_connectivity_array</span></code></a>([…])</td>
+<td>Get voxel-scale model from cache, returning VoxelConnectivityArray.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_weights" title="mcmodels.core.VoxelModelCache.get_weights"><code class="xref py py-obj docutils literal"><span class="pre">get_weights</span></code></a>([file_name])</td>
+<td>Get weights for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">json_rename_columns</span></code>(data[,&nbsp;new_old_name_tuples])</td>
+<td>Convenience method to rename columns in a pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">load_csv</span></code>(path[,&nbsp;rename,&nbsp;index])</td>
+<td>Read a csv file as a pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">load_json</span></code>(path[,&nbsp;rename,&nbsp;index])</td>
+<td>Read a json file as a pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">load_manifest</span></code>(file_name[,&nbsp;version])</td>
+<td>Read a keyed collection of path specifications.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">manifest_dataframe</span></code>()</td>
+<td>Convenience method to view manifest as a pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">pathfinder</span></code>(file_name_position[,&nbsp;…])</td>
+<td>helper method to find path argument in legacy methods written</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">rank_structures</span></code>(experiment_ids,&nbsp;is_injection)</td>
+<td>Produces one or more (per experiment) ranked lists of brain structures, using a specified data field.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">remove_keys</span></code>(data[,&nbsp;keys])</td>
+<td>DataFrame version</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">rename_columns</span></code>(data[,&nbsp;new_old_name_tuples])</td>
+<td>Convenience method to rename columns in a pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.to_json" title="mcmodels.core.VoxelModelCache.to_json"><code class="xref py py-obj docutils literal"><span class="pre">to_json</span></code></a>([file_name])</td>
+<td>JSON serialize object parameters to file or string.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">wrap</span></code>(fn,&nbsp;path,&nbsp;cache[,&nbsp;save_as_json,&nbsp;…])</td>
+<td>make an rma query, save it and return the dataframe.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="72%" />
+<col width="28%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>cache_csv</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>cache_csv_dataframe</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>cache_csv_json</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>cache_json</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>cache_json_dataframe</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>csv_writer</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>get_projection_matrix</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>json_remove_keys</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>nocache_dataframe</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>nocache_json</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>validate_structure_id</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>validate_structure_ids</strong></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>resolution=100</em>, <em>cache=True</em>, <em>manifest_file='voxel_model_manifest.json'</em>, <em>ccf_version=None</em>, <em>base_uri=None</em>, <em>version=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.__init__" title="mcmodels.core.VoxelModelCache.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>([resolution,&nbsp;cache,&nbsp;manifest_file,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.add_manifest_paths" title="mcmodels.core.VoxelModelCache.add_manifest_paths"><code class="xref py py-obj docutils literal"><span class="pre">add_manifest_paths</span></code></a>(manifest_builder)</td>
+<td>Construct a manifest for this Cache class and save it in a file.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">build_manifest</span></code>(file_name)</td>
+<td>Creation of default path specifications.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">cache_csv</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">cache_csv_dataframe</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">cache_csv_json</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">cache_json</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">cache_json_dataframe</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">cacher</span></code>(fn,&nbsp;*args,&nbsp;**kwargs)</td>
+<td>make an rma query, save it and return the dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">csv_writer</span></code>(pth,&nbsp;gen)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">filter_experiments</span></code>(experiments[,&nbsp;cre,&nbsp;…])</td>
+<td>Take a list of experiments and filter them by cre status and injection structure.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">filter_structure_unionizes</span></code>(unionizes[,&nbsp;…])</td>
+<td>Take a list of unionzes and return a subset of records filtered by injection status, structure, and hemisphere.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.from_json" title="mcmodels.core.VoxelModelCache.from_json"><code class="xref py py-obj docutils literal"><span class="pre">from_json</span></code></a>(file_name)</td>
+<td>Construct object from JSON serialized parameter file.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_annotation_volume</span></code>([file_name])</td>
+<td>Read the annotation volume.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_cache_path</span></code>(file_name,&nbsp;manifest_key,&nbsp;*args)</td>
+<td>Helper method for accessing path specs from manifest keys.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_connection_density" title="mcmodels.core.VoxelModelCache.get_connection_density"><code class="xref py py-obj docutils literal"><span class="pre">get_connection_density</span></code></a>([file_name,&nbsp;dataframe])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-density"><span class="xref std std-term">connection density</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_connection_strength" title="mcmodels.core.VoxelModelCache.get_connection_strength"><code class="xref py py-obj docutils literal"><span class="pre">get_connection_strength</span></code></a>([file_name,&nbsp;dataframe])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-strength"><span class="xref std std-term">connection strength</span></a>.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_data_mask</span></code>(experiment_id[,&nbsp;file_name])</td>
+<td>Read a data mask volume for a single experiment.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_experiment_data" title="mcmodels.core.VoxelModelCache.get_experiment_data"><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_data</span></code></a>([cre,&nbsp;…])</td>
+<td>Pulls voxel-scale grid data for experiments.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_structure_unionizes</span></code>(experiment_id)</td>
+<td>Retrieve the structure unionize data for a specific experiment.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiments</span></code>([dataframe,&nbsp;file_name,&nbsp;cre,&nbsp;…])</td>
+<td>Read a list of experiments that match certain criteria.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_injection_density</span></code>(experiment_id[,&nbsp;file_name])</td>
+<td>Read an injection density volume for a single experiment.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_injection_fraction</span></code>(experiment_id[,&nbsp;…])</td>
+<td>Read an injection fraction volume for a single experiment.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_nodes" title="mcmodels.core.VoxelModelCache.get_nodes"><code class="xref py py-obj docutils literal"><span class="pre">get_nodes</span></code></a>([file_name])</td>
+<td>Get nodes for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_density" title="mcmodels.core.VoxelModelCache.get_normalized_connection_density"><code class="xref py py-obj docutils literal"><span class="pre">get_normalized_connection_density</span></code></a>([…])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-density"><span class="xref std std-term">normalized connection density</span></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_strength" title="mcmodels.core.VoxelModelCache.get_normalized_connection_strength"><code class="xref py py-obj docutils literal"><span class="pre">get_normalized_connection_strength</span></code></a>([…])</td>
+<td>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-strength"><span class="xref std std-term">normalized connection strength</span></a>.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection_density</span></code>(experiment_id[,&nbsp;…])</td>
+<td>Read a projection density volume for a single experiment.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection_matrix</span></code>(experiment_ids[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_reference_space</span></code>([structure_file_name,&nbsp;…])</td>
+<td>Build a ReferenceSpace from this cache’s annotation volume and  structure tree.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_source_mask" title="mcmodels.core.VoxelModelCache.get_source_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_source_mask</span></code></a>([file_name])</td>
+<td>Get source mask for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_mask</span></code>(structure_id[,&nbsp;…])</td>
+<td>Read a 3D numpy array shaped like the annotation volume that has non-zero values where voxels belong to a particular structure.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_mesh</span></code>(structure_id[,&nbsp;file_name])</td>
+<td>Obtain a 3D mesh specifying the surface of an annotated structure.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_tree</span></code>([file_name,&nbsp;…])</td>
+<td>Read the list of adult mouse structures and return an StructureTree  instance.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_unionizes</span></code>(experiment_ids[,&nbsp;…])</td>
+<td>Get structure unionizes for a set of experiment IDs.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_target_mask" title="mcmodels.core.VoxelModelCache.get_target_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_target_mask</span></code></a>([file_name])</td>
+<td>Get target mask for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_template_volume</span></code>([file_name])</td>
+<td>Read the template volume.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_voxel_connectivity_array" title="mcmodels.core.VoxelModelCache.get_voxel_connectivity_array"><code class="xref py py-obj docutils literal"><span class="pre">get_voxel_connectivity_array</span></code></a>([…])</td>
+<td>Get voxel-scale model from cache, returning VoxelConnectivityArray.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_weights" title="mcmodels.core.VoxelModelCache.get_weights"><code class="xref py py-obj docutils literal"><span class="pre">get_weights</span></code></a>([file_name])</td>
+<td>Get weights for voxel-scale model from cache.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">json_remove_keys</span></code>(data,&nbsp;keys)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">json_rename_columns</span></code>(data[,&nbsp;new_old_name_tuples])</td>
+<td>Convenience method to rename columns in a pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">load_csv</span></code>(path[,&nbsp;rename,&nbsp;index])</td>
+<td>Read a csv file as a pandas dataframe.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">load_json</span></code>(path[,&nbsp;rename,&nbsp;index])</td>
+<td>Read a json file as a pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">load_manifest</span></code>(file_name[,&nbsp;version])</td>
+<td>Read a keyed collection of path specifications.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">manifest_dataframe</span></code>()</td>
+<td>Convenience method to view manifest as a pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">nocache_dataframe</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">nocache_json</span></code>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pathfinder</span></code>(file_name_position[,&nbsp;…])</td>
+<td>helper method to find path argument in legacy methods written</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">rank_structures</span></code>(experiment_ids,&nbsp;is_injection)</td>
+<td>Produces one or more (per experiment) ranked lists of brain structures, using a specified data field.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">remove_keys</span></code>(data[,&nbsp;keys])</td>
+<td>DataFrame version</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">rename_columns</span></code>(data[,&nbsp;new_old_name_tuples])</td>
+<td>Convenience method to rename columns in a pandas dataframe.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelCache.to_json" title="mcmodels.core.VoxelModelCache.to_json"><code class="xref py py-obj docutils literal"><span class="pre">to_json</span></code></a>([file_name])</td>
+<td>JSON serialize object parameters to file or string.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">validate_structure_id</span></code>(structure_id)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">validate_structure_ids</span></code>(structure_ids)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">wrap</span></code>(fn,&nbsp;path,&nbsp;cache[,&nbsp;save_as_json,&nbsp;…])</td>
+<td>make an rma query, save it and return the dataframe.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.add_manifest_paths">
+<code class="descname">add_manifest_paths</code><span class="sig-paren">(</span><em>manifest_builder</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.add_manifest_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.add_manifest_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a manifest for this Cache class and save it in a file.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.VoxelModelCache.default_structure_ids">
+<code class="descname">default_structure_ids</code><a class="headerlink" href="#mcmodels.core.VoxelModelCache.default_structure_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default structure ids.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mcmodels.core.VoxelModelCache.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct object from JSON serialized parameter file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Path to .json file containing VoxelModelCache parameters.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>A VoxelModelCache object</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_connection_density">
+<code class="descname">get_connection_density</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>dataframe=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_connection_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_connection_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-density"><span class="xref std std-term">connection density</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file_name: string, optional (default = None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model target_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+<dt><strong>dataframe: boolean, optional (default = True)</strong></dt>
+<dd><p class="first last">Return the regionalized weights as a Pandas DataFrame. If False,
+return an unlabeled <cite>numpy.ndarray</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_connection_strength">
+<code class="descname">get_connection_strength</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>dataframe=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_connection_strength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_connection_strength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-connection-strength"><span class="xref std std-term">connection strength</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file_name: string, optional (default = None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model target_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+<dt><strong>dataframe: boolean, optional (default = True)</strong></dt>
+<dd><p class="first last">Return the regionalized weights as a Pandas DataFrame. If False,
+return an unlabeled <cite>numpy.ndarray</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_experiment_data">
+<code class="descname">get_experiment_data</code><span class="sig-paren">(</span><em>cre=None</em>, <em>injection_structure_ids=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_experiment_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_experiment_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pulls voxel-scale grid data for experiments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>cre: boolean or list</strong></dt>
+<dd><p class="first last">If True, return only cre-positive experiments.  If False, return only
+cre-negative experiments.  If None, return all experiments. If list, return
+all experiments with cre line names in the supplied list. Default None.</p>
+</dd>
+<dt><strong>cache - VoxelModelCache or MouseConnectivityCache object</strong></dt>
+<dd><p class="first last">Provides way to pull experiment grid-data from Allen Brain Atlas</p>
+</dd>
+<dt><strong>injection_structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional, default None</span></dt>
+<dd><p class="first last">List of structure_ids to which the injection mask will be constrained.</p>
+</dd>
+<dt><strong>projection_structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional, default None</span></dt>
+<dd><p class="first last">List of structure_ids to which the projection mask will be constrained.</p>
+</dd>
+<dt><strong>injection_hemisphere_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional, default 3</span></dt>
+<dd><p class="first last">Hemisphere (1:left, 2:right, 3:both) to which the injection mask will
+be constrained.</p>
+</dd>
+<dt><strong>projection_hemisphere_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional, default 3</span></dt>
+<dd><p class="first last">Hemisphere (1:left, 2:right, 3:both) to which the projection mask will
+be constrained.</p>
+</dd>
+<dt><strong>normalized_injection</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional, default True</span></dt>
+<dd><p class="first last">If True, the injection density will be normalized by the total
+injection density for each experiment.</p>
+</dd>
+<dt><strong>normalized_projection</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional, default True</span></dt>
+<dd><p class="first last">If True, the projection density will be normalized by the total
+injection density for each experiment.</p>
+</dd>
+<dt><strong>flip_experiments</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean, optional, default True</span></dt>
+<dd><p class="first last">If True, experiment grid-data will be reflected across the midline.
+Useful if you wish to include L hemisphere injections into a R
+hemisphere model.</p>
+</dd>
+<dt><strong>data_mask_tolerance</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional, default 0.0</span></dt>
+<dd><p class="first last">Tolerance with which to include data in voxels informatically labeled
+as having error. The data_mask for each experiment is an array with
+values between (0, 1), where 1 indicates the voxel fully contains an
+error, whereas 0 indicates the voxel does not contain any error. A value
+of 0.0 thus indicates the highest threshold for data, whereas a value of
+1.0 indicates that data will be included from all voxels.</p>
+</dd>
+<dt><strong>injection_volume_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional, default (0.0, np.inf)</span></dt>
+<dd><p class="first last">Includes experiments with total injection volume (mm^3) within bounds.</p>
+</dd>
+<dt><strong>projection_volume_bounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional, default (0.0, np.inf)</span></dt>
+<dd><p class="first last">Includes experiments with total projection volume (mm^3) within bounds.</p>
+</dd>
+<dt><strong>min_contained_injection_ratio</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional, default 0.0</span></dt>
+<dd><p class="first last">Includes experiments with total injection volume ratio within injection
+mask.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>A VoxelData object with attributes centroids, injections, projections.</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="mcmodels.core.VoxelData.html#mcmodels.core.VoxelData.get_experiment_data" title="mcmodels.core.VoxelData.get_experiment_data"><code class="xref py py-obj docutils literal"><span class="pre">VoxelData.get_experiment_data</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_nodes">
+<code class="descname">get_nodes</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nodes for voxel-scale model from cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name: string, optional (default=None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model nodes.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>nodes (type=numpy.ndarray)</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_normalized_connection_density">
+<code class="descname">get_normalized_connection_density</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>dataframe=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_normalized_connection_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-density"><span class="xref std std-term">normalized connection density</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file_name: string, optional (default = None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model target_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+<dt><strong>dataframe: boolean, optional (default = True)</strong></dt>
+<dd><p class="first last">Return the regionalized weights as a Pandas DataFrame. If False,
+return an unlabeled <cite>numpy.ndarray</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_normalized_connection_strength">
+<code class="descname">get_normalized_connection_strength</code><span class="sig-paren">(</span><em>file_name=None</em>, <em>dataframe=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_normalized_connection_strength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_normalized_connection_strength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get regionalized voxel-model weights as <a class="reference internal" href="../../glossary.html#term-normalized-connection-strength"><span class="xref std std-term">normalized connection strength</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file_name: string, optional (default = None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model target_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+<dt><strong>dataframe: boolean, optional (default = True)</strong></dt>
+<dd><p class="first last">Return the regionalized weights as a Pandas DataFrame. If False,
+return an unlabeled <cite>numpy.ndarray</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_source_mask">
+<code class="descname">get_source_mask</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_source_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_source_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get source mask for voxel-scale model from cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name: string, optional (default=None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model source_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>Mask object.</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_target_mask">
+<code class="descname">get_target_mask</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_target_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_target_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get target mask for voxel-scale model from cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name: string, optional (default=None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model target_mask.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>Mask object.</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_voxel_connectivity_array">
+<code class="descname">get_voxel_connectivity_array</code><span class="sig-paren">(</span><em>nodes_file_name=None</em>, <em>weights_file_name=None</em>, <em>source_mask_file_name=None</em>, <em>target_mask_file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_voxel_connectivity_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_voxel_connectivity_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get voxel-scale model from cache, returning VoxelConnectivityArray.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>nodes_file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional (default=None)</span></dt>
+<dd><p class="first last">File name to store the voxel model nodes. See <a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_nodes" title="mcmodels.core.VoxelModelCache.get_nodes"><code class="xref py py-meth docutils literal"><span class="pre">get_nodes</span></code></a></p>
+</dd>
+<dt><strong>weights_file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional (default=None)</span></dt>
+<dd><p class="first last">File name to store the voxel model weights. See <a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_weights" title="mcmodels.core.VoxelModelCache.get_weights"><code class="xref py py-meth docutils literal"><span class="pre">get_weights</span></code></a></p>
+</dd>
+<dt><strong>source_mask_file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional (default=None)</span></dt>
+<dd><p class="first last">File name to store the source_mask. See <a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_source_mask" title="mcmodels.core.VoxelModelCache.get_source_mask"><code class="xref py py-meth docutils literal"><span class="pre">get_source_mask</span></code></a></p>
+</dd>
+<dt><strong>target_mask_file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional (default=None)</span></dt>
+<dd><p class="first last">File name to store the target_mask. See <a class="reference internal" href="#mcmodels.core.VoxelModelCache.get_target_mask" title="mcmodels.core.VoxelModelCache.get_target_mask"><code class="xref py py-meth docutils literal"><span class="pre">get_target_mask</span></code></a></p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>tuple</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(VoxelConnectivityArray, Mask, Mask)</span></dt>
+<dd><p class="first last">(get_voxel_connectivity_array, source_mask, target_mask)</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.get_weights">
+<code class="descname">get_weights</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.get_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.get_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get weights for voxel-scale model from cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name: string, optional (default=None)</strong></dt>
+<dd><p class="first last">File name to store the voxel model weights.  If it already exists,
+it will be read from this file.  If file_name is None, the
+file_name will be pulled out of the manifest.  Default is None.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>weights (type=numpy.ndarray)</strong></dt>
+<dd></dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelCache.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><em>file_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_cache.html#VoxelModelCache.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelCache.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON serialize object parameters to file or string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional (default None)</span></dt>
+<dd><p class="first last">Path to .json file containing VoxelModelCache parameters. If None,
+a string will be returned.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>string</strong></dt>
+<dd><p class="first last">If file_name == None, a string of the JSON serialization is returned.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

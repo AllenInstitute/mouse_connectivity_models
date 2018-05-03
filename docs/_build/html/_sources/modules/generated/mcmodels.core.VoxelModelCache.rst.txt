@@ -1,0 +1,75 @@
+mcmodels\.core\.VoxelModelCache
+===============================
+
+.. currentmodule:: mcmodels.core
+
+.. autoclass:: VoxelModelCache
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VoxelModelCache.__init__
+      ~VoxelModelCache.add_manifest_paths
+      ~VoxelModelCache.build_manifest
+      ~VoxelModelCache.cache_csv
+      ~VoxelModelCache.cache_csv_dataframe
+      ~VoxelModelCache.cache_csv_json
+      ~VoxelModelCache.cache_json
+      ~VoxelModelCache.cache_json_dataframe
+      ~VoxelModelCache.cacher
+      ~VoxelModelCache.csv_writer
+      ~VoxelModelCache.filter_experiments
+      ~VoxelModelCache.filter_structure_unionizes
+      ~VoxelModelCache.from_json
+      ~VoxelModelCache.get_annotation_volume
+      ~VoxelModelCache.get_cache_path
+      ~VoxelModelCache.get_connection_density
+      ~VoxelModelCache.get_connection_strength
+      ~VoxelModelCache.get_data_mask
+      ~VoxelModelCache.get_experiment_data
+      ~VoxelModelCache.get_experiment_structure_unionizes
+      ~VoxelModelCache.get_experiments
+      ~VoxelModelCache.get_injection_density
+      ~VoxelModelCache.get_injection_fraction
+      ~VoxelModelCache.get_nodes
+      ~VoxelModelCache.get_normalized_connection_density
+      ~VoxelModelCache.get_normalized_connection_strength
+      ~VoxelModelCache.get_projection_density
+      ~VoxelModelCache.get_projection_matrix
+      ~VoxelModelCache.get_reference_space
+      ~VoxelModelCache.get_source_mask
+      ~VoxelModelCache.get_structure_mask
+      ~VoxelModelCache.get_structure_mesh
+      ~VoxelModelCache.get_structure_tree
+      ~VoxelModelCache.get_structure_unionizes
+      ~VoxelModelCache.get_target_mask
+      ~VoxelModelCache.get_template_volume
+      ~VoxelModelCache.get_voxel_connectivity_array
+      ~VoxelModelCache.get_weights
+      ~VoxelModelCache.json_remove_keys
+      ~VoxelModelCache.json_rename_columns
+      ~VoxelModelCache.load_csv
+      ~VoxelModelCache.load_json
+      ~VoxelModelCache.load_manifest
+      ~VoxelModelCache.manifest_dataframe
+      ~VoxelModelCache.nocache_dataframe
+      ~VoxelModelCache.nocache_json
+      ~VoxelModelCache.pathfinder
+      ~VoxelModelCache.rank_structures
+      ~VoxelModelCache.remove_keys
+      ~VoxelModelCache.rename_columns
+      ~VoxelModelCache.to_json
+      ~VoxelModelCache.validate_structure_id
+      ~VoxelModelCache.validate_structure_ids
+      ~VoxelModelCache.wrap
+   
+   
+
+   
+   
+   

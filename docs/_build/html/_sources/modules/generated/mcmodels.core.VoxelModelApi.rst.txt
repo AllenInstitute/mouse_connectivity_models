@@ -1,0 +1,82 @@
+mcmodels\.core\.VoxelModelApi
+=============================
+
+.. currentmodule:: mcmodels.core
+
+.. autoclass:: VoxelModelApi
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VoxelModelApi.__init__
+      ~VoxelModelApi.build_query_url
+      ~VoxelModelApi.build_reference_aligned_image_channel_volumes_url
+      ~VoxelModelApi.build_schema_query
+      ~VoxelModelApi.build_volumetric_data_download_url
+      ~VoxelModelApi.calculate_injection_centroid
+      ~VoxelModelApi.cleanup_truncated_file
+      ~VoxelModelApi.construct_well_known_file_download_url
+      ~VoxelModelApi.debug_clause
+      ~VoxelModelApi.do_query
+      ~VoxelModelApi.do_rma_query
+      ~VoxelModelApi.download_annotation_volume
+      ~VoxelModelApi.download_connection_density
+      ~VoxelModelApi.download_connection_strength
+      ~VoxelModelApi.download_data_mask
+      ~VoxelModelApi.download_injection_density
+      ~VoxelModelApi.download_injection_fraction
+      ~VoxelModelApi.download_model_files
+      ~VoxelModelApi.download_nodes
+      ~VoxelModelApi.download_normalized_connection_density
+      ~VoxelModelApi.download_normalized_connection_strength
+      ~VoxelModelApi.download_projection_density
+      ~VoxelModelApi.download_reference_aligned_image_channel_volumes
+      ~VoxelModelApi.download_source_mask_params
+      ~VoxelModelApi.download_structure_mask
+      ~VoxelModelApi.download_structure_mesh
+      ~VoxelModelApi.download_target_mask_params
+      ~VoxelModelApi.download_template_volume
+      ~VoxelModelApi.download_volumetric_data
+      ~VoxelModelApi.download_weights
+      ~VoxelModelApi.experiment_correlation_search
+      ~VoxelModelApi.experiment_injection_coordinate_search
+      ~VoxelModelApi.experiment_source_search
+      ~VoxelModelApi.experiment_spatial_search
+      ~VoxelModelApi.filter
+      ~VoxelModelApi.filters
+      ~VoxelModelApi.get_experiment_detail
+      ~VoxelModelApi.get_experiments
+      ~VoxelModelApi.get_manual_injection_summary
+      ~VoxelModelApi.get_projection_image_info
+      ~VoxelModelApi.get_reference_aligned_image_channel_volumes_url
+      ~VoxelModelApi.get_schema
+      ~VoxelModelApi.get_structure_unionizes
+      ~VoxelModelApi.json_msg_query
+      ~VoxelModelApi.load_api_schema
+      ~VoxelModelApi.model_query
+      ~VoxelModelApi.model_stage
+      ~VoxelModelApi.only_except_tabular_clause
+      ~VoxelModelApi.options_clause
+      ~VoxelModelApi.order_clause
+      ~VoxelModelApi.pipe_stage
+      ~VoxelModelApi.quote_string
+      ~VoxelModelApi.read_data
+      ~VoxelModelApi.retrieve_file_over_http
+      ~VoxelModelApi.retrieve_parsed_json_over_http
+      ~VoxelModelApi.retrieve_xml_over_http
+      ~VoxelModelApi.service_query
+      ~VoxelModelApi.service_stage
+      ~VoxelModelApi.set_api_urls
+      ~VoxelModelApi.set_default_working_directory
+      ~VoxelModelApi.tuple_filters
+   
+   
+
+   
+   
+   

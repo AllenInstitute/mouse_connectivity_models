@@ -1,0 +1,27 @@
+mcmodels\.models\.HomogeneousModel
+==================================
+
+.. currentmodule:: mcmodels.models
+
+.. autoclass:: HomogeneousModel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~HomogeneousModel.__init__
+      ~HomogeneousModel.fit
+      ~HomogeneousModel.get_params
+      ~HomogeneousModel.predict
+      ~HomogeneousModel.score
+      ~HomogeneousModel.set_params
+   
+   
+
+   
+   
+   

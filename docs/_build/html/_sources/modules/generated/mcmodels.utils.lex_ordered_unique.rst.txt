@@ -1,0 +1,6 @@
+mcmodels\.utils\.lex\_ordered\_unique
+=====================================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: lex_ordered_unique

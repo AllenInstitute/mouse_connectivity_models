@@ -1,0 +1,365 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API Reference &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="mcmodels.core.VoxelData" href="generated/mcmodels.core.VoxelData.html" />
+    <link rel="prev" title="3.2. New Voxel-scale Connectivity Model [Knox2018]" href="voxel.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-reference">
+<span id="api-ref"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p>This is the class and function reference for mouse_connectivity_models. Please
+refer to the <a class="reference internal" href="../user_guide.html#user-guide"><span class="std std-ref">full user guide</span></a> for further details.</p>
+<div class="section" id="module-mcmodels.core">
+<span id="mcmodels-core-core-data-related-classes-and-utility-functions"></span><span id="core-ref"></span><h2><a class="reference internal" href="#module-mcmodels.core" title="mcmodels.core"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.core</span></code></a>: Core data related classes and utility functions<a class="headerlink" href="#module-mcmodels.core" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.core" title="mcmodels.core"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.core</span></code></a> module implements objects useful in data manipulation.</p>
+<p><strong>User Guide</strong> See the <a class="reference internal" href="data_wrangling.html#allen-data"><span class="std std-ref">Working with data from the AllenSDK</span></a> section for further details.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.core.VoxelData.html#mcmodels.core.VoxelData" title="mcmodels.core.VoxelData"><code class="xref py py-obj docutils literal"><span class="pre">core.VoxelData</span></code></a>(cache[,&nbsp;…])</td>
+<td>Container class for voxel-scale grid data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.core.RegionalData.html#mcmodels.core.RegionalData" title="mcmodels.core.RegionalData"><code class="xref py py-obj docutils literal"><span class="pre">core.RegionalData</span></code></a>(cache[,&nbsp;…])</td>
+<td>Container class for regionalized voxel-scale grid data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.core.Experiment.html#mcmodels.core.Experiment" title="mcmodels.core.Experiment"><code class="xref py py-obj docutils literal"><span class="pre">core.Experiment</span></code></a>([injection_density,&nbsp;…])</td>
+<td>Class containing the data from an anterograde injection</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.core.Mask.html#mcmodels.core.Mask" title="mcmodels.core.Mask"><code class="xref py py-obj docutils literal"><span class="pre">core.Mask</span></code></a>(reference_space[,&nbsp;structure_ids,&nbsp;…])</td>
+<td>Object for masking the grid data from allensdk.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.core.VoxelModelCache.html#mcmodels.core.VoxelModelCache" title="mcmodels.core.VoxelModelCache"><code class="xref py py-obj docutils literal"><span class="pre">core.VoxelModelCache</span></code></a>([resolution,&nbsp;cache,&nbsp;…])</td>
+<td>Cache class extending MouseConnectivityCache to cache voxel model data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.core.VoxelModelApi.html#mcmodels.core.VoxelModelApi" title="mcmodels.core.VoxelModelApi"><code class="xref py py-obj docutils literal"><span class="pre">core.VoxelModelApi</span></code></a>([base_uri])</td>
+<td>HTTP Client extending MouseConnectivityApi to download model data.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="module-mcmodels.core.utils">
+<span id="utitility-fucntions"></span><h3>Utitility fucntions<a class="headerlink" href="#module-mcmodels.core.utils" title="Permalink to this headline">¶</a></h3>
+<p>Module containing utility functions for the <a class="reference internal" href="#module-mcmodels.core" title="mcmodels.core"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.core</span></code></a> module.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.core.utils.compute_centroid.html#mcmodels.core.utils.compute_centroid" title="mcmodels.core.utils.compute_centroid"><code class="xref py py-obj docutils literal"><span class="pre">core.utils.compute_centroid</span></code></a>(injection_density)</td>
+<td>Computes centroid in index coordinates.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.core.utils.get_injection_hemisphere_id.html#mcmodels.core.utils.get_injection_hemisphere_id" title="mcmodels.core.utils.get_injection_hemisphere_id"><code class="xref py py-obj docutils literal"><span class="pre">core.utils.get_injection_hemisphere_id</span></code></a>(…)</td>
+<td>Gets injection hemisphere based on injection density.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-mcmodels.regressors">
+<span id="mcmodels-regressors-classes-for-performing-regressions"></span><span id="regressors-ref"></span><h2><a class="reference internal" href="#module-mcmodels.regressors" title="mcmodels.regressors"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors</span></code></a>: Classes for Performing Regressions<a class="headerlink" href="#module-mcmodels.regressors" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.regressors" title="mcmodels.regressors"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors</span></code></a> module implements scikit-learn style estimators
+for solving various regression problems. It implements the NadarayaWatson
+regressor, and both regularized and non-regularized non-negative least squares
+linear models.</p>
+</div>
+<div class="section" id="module-mcmodels.regressors.nonnegative_linear">
+<span id="mcmodels-regressors-nonnegative-linear-nonnegative-linear-least-squares"></span><span id="nonnegative-linear-ref"></span><h2><a class="reference internal" href="#module-mcmodels.regressors.nonnegative_linear" title="mcmodels.regressors.nonnegative_linear"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors.nonnegative_linear</span></code></a>: Nonnegative Linear Least squares<a class="headerlink" href="#module-mcmodels.regressors.nonnegative_linear" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.regressors.nonnegative_linear" title="mcmodels.regressors.nonnegative_linear"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors.nonnegative_linear</span></code></a> module implements linear
+models subject to the nonnegativity constraint. It includes Nonnegative linear
+regression and an experimental module implementing Nonnegative linear regression
+with L2 (Ridge) regularization.</p>
+<p><strong>User Guide</strong> See the <a class="reference internal" href="nonnegative_linear.html#nonnegative-linear"><span class="std std-ref">Nonnegative Least Squares Regression</span></a> section for further details.</p>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.NonnegativeLinear.html#mcmodels.regressors.NonnegativeLinear" title="mcmodels.regressors.NonnegativeLinear"><code class="xref py py-obj docutils literal"><span class="pre">regressors.NonnegativeLinear</span></code></a></td>
+<td>Nonnegative least squares linear model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge" title="mcmodels.regressors.NonnegativeRidge"><code class="xref py py-obj docutils literal"><span class="pre">regressors.NonnegativeRidge</span></code></a>([alpha])</td>
+<td>Nonnegative least squares with L2 regularization.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.nonnegative_regression.html#mcmodels.regressors.nonnegative_regression" title="mcmodels.regressors.nonnegative_regression"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonnegative_regression</span></code></a>(X,&nbsp;y[,&nbsp;…])</td>
+<td>Solve the nonnegative least squares estimate regression problem.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.regressors.nonnegative_ridge_regression.html#mcmodels.regressors.nonnegative_ridge_regression" title="mcmodels.regressors.nonnegative_ridge_regression"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonnegative_ridge_regression</span></code></a>(X,&nbsp;…)</td>
+<td>Solve the nonnegative least squares estimate regression problem.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-mcmodels.regressors.nonparametric">
+<span id="mcmodels-regressors-nonparametric-nonparametric-regression"></span><span id="nonparametric-ref"></span><h2><a class="reference internal" href="#module-mcmodels.regressors.nonparametric" title="mcmodels.regressors.nonparametric"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors.nonparametric</span></code></a>: Nonparametric Regression<a class="headerlink" href="#module-mcmodels.regressors.nonparametric" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.regressors.nonparametric" title="mcmodels.regressors.nonparametric"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.regressors.nonparametric</span></code></a> module implements Nonparametric
+regression models and the polynomial family of kernels. This module includes
+NadarayaWatson regression and the general Polynomial kernel.</p>
+<p><strong>User Guide</strong> See the <a class="reference internal" href="nonparametric.html#nonparametric"><span class="std std-ref">Nonnparametric Regression</span></a> section for further details.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson" title="mcmodels.regressors.NadarayaWatson"><code class="xref py py-obj docutils literal"><span class="pre">regressors.NadarayaWatson</span></code></a>([kernel,&nbsp;degree,&nbsp;…])</td>
+<td>NadarayaWatson Estimator.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.regressors.NadarayaWatsonCV.html#mcmodels.regressors.NadarayaWatsonCV" title="mcmodels.regressors.NadarayaWatsonCV"><code class="xref py py-obj docutils literal"><span class="pre">regressors.NadarayaWatsonCV</span></code></a>(param_grid[,&nbsp;…])</td>
+<td>NadarayaWatson Estimator with built in Leave-one-out cross validation.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="kernels">
+<h3>Kernels:<a class="headerlink" href="#kernels" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.nonparametric.kernels.Polynomial.html#mcmodels.regressors.nonparametric.kernels.Polynomial" title="mcmodels.regressors.nonparametric.kernels.Polynomial"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonparametric.kernels.Polynomial</span></code></a>([…])</td>
+<td>Polynomial kernel.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.regressors.nonparametric.kernels.Uniform.html#mcmodels.regressors.nonparametric.kernels.Uniform" title="mcmodels.regressors.nonparametric.kernels.Uniform"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonparametric.kernels.Uniform</span></code></a>([…])</td>
+<td>Uniform kernel.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.nonparametric.kernels.Epanechnikov.html#mcmodels.regressors.nonparametric.kernels.Epanechnikov" title="mcmodels.regressors.nonparametric.kernels.Epanechnikov"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonparametric.kernels.Epanechnikov</span></code></a>([…])</td>
+<td>Epanechnikov kernel.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.regressors.nonparametric.kernels.Biweight.html#mcmodels.regressors.nonparametric.kernels.Biweight" title="mcmodels.regressors.nonparametric.kernels.Biweight"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonparametric.kernels.Biweight</span></code></a>([…])</td>
+<td>Biweight kernel.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.regressors.nonparametric.kernels.Triweight.html#mcmodels.regressors.nonparametric.kernels.Triweight" title="mcmodels.regressors.nonparametric.kernels.Triweight"><code class="xref py py-obj docutils literal"><span class="pre">regressors.nonparametric.kernels.Triweight</span></code></a>([…])</td>
+<td>Triweight kernel.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-mcmodels.models">
+<span id="mcmodels-models-published-mesoscale-connectivity-models"></span><span id="models-ref"></span><h2><a class="reference internal" href="#module-mcmodels.models" title="mcmodels.models"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models</span></code></a>: Published Mesoscale Connectivity Models<a class="headerlink" href="#module-mcmodels.models" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.models" title="mcmodels.models"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models</span></code></a> module implements models that have been developed
+here at the Allen Institute for modeling mesoscale connectivity in the mouse.
+The module contains a HomogeneousModel similar to Oh et al. 2014 as well as the
+recent VoxelModel from Knox et al. 2018.</p>
+</div>
+<div class="section" id="module-mcmodels.models.homogeneous">
+<span id="mcmodels-models-homogeneous-homogeneous-regional-model"></span><span id="homogeneous-ref"></span><h2><a class="reference internal" href="#module-mcmodels.models.homogeneous" title="mcmodels.models.homogeneous"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models.homogeneous</span></code></a>: Homogeneous Regional Model<a class="headerlink" href="#module-mcmodels.models.homogeneous" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.models.homogeneous" title="mcmodels.models.homogeneous"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models.homogeneous</span></code></a> module implements a Homogeneous
+Model for predicting regional connectivity similar to Oh et al. 2014.
+Additionally, the module implements greedy forward/backward subset selection
+algorithms to improve the conditioning of given input arrays.</p>
+<p><strong>User Guide</strong> See the <a class="reference internal" href="homogeneous.html#homogeneous"><span class="std std-ref">HomogeneousModel similar to [Oh2014]</span></a> section for further details.</p>
+<div class="section" id="id1">
+<h3>Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.models.HomogeneousModel.html#mcmodels.models.HomogeneousModel" title="mcmodels.models.HomogeneousModel"><code class="xref py py-obj docutils literal"><span class="pre">models.HomogeneousModel</span></code></a>([kappa])</td>
+<td>Homogeneous model similar to Oh et al.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h3>Functions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.models.homogeneous.svd_subset_selection.html#mcmodels.models.homogeneous.svd_subset_selection" title="mcmodels.models.homogeneous.svd_subset_selection"><code class="xref py py-obj docutils literal"><span class="pre">models.homogeneous.svd_subset_selection</span></code></a>(X,&nbsp;n)</td>
+<td>svd subset selection to return n cols that are less linearly dependent.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.models.homogeneous.forward_subset_selection_conditioning.html#mcmodels.models.homogeneous.forward_subset_selection_conditioning" title="mcmodels.models.homogeneous.forward_subset_selection_conditioning"><code class="xref py py-obj docutils literal"><span class="pre">models.homogeneous.forward_subset_selection_conditioning</span></code></a>(X)</td>
+<td>Conditioning through subselecting columns of X.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.models.homogeneous.backward_subset_selection_conditioning.html#mcmodels.models.homogeneous.backward_subset_selection_conditioning" title="mcmodels.models.homogeneous.backward_subset_selection_conditioning"><code class="xref py py-obj docutils literal"><span class="pre">models.homogeneous.backward_subset_selection_conditioning</span></code></a>(X)</td>
+<td>Conditioning through subselecting columns of X.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="module-mcmodels.models.voxel">
+<span id="mcmodels-models-voxel-voxel-scale-model"></span><span id="voxel-ref"></span><h2><a class="reference internal" href="#module-mcmodels.models.voxel" title="mcmodels.models.voxel"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models.voxel</span></code></a>: Voxel-scale Model<a class="headerlink" href="#module-mcmodels.models.voxel" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-mcmodels.models.voxel" title="mcmodels.models.voxel"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.models.voxel</span></code></a> module implements the voxel scale model
+or predicting voxel-scale connectivity from Knox et al. 2018.
+The module also contains a VoxelConnectivityArray class to work with the model
+in memory (implicitly computing its weights) and a RegionalizedModel class to
+integrate the model weights to the regional level.</p>
+<p><strong>User Guide</strong> See the <a class="reference internal" href="voxel.html#voxel"><span class="std std-ref">New Voxel-scale Connectivity Model [Knox2018]</span></a> section for further details.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel" title="mcmodels.models.VoxelModel"><code class="xref py py-obj docutils literal"><span class="pre">models.VoxelModel</span></code></a>(source_voxels,&nbsp;**kwargs)</td>
+<td>Voxel-scale interpolation model for mesoscale connectivity.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel" title="mcmodels.models.voxel.RegionalizedModel"><code class="xref py py-obj docutils literal"><span class="pre">models.voxel.RegionalizedModel</span></code></a>(weights,&nbsp;…)</td>
+<td>Regionalization/Parcelation of VoxelModel.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-obj docutils literal"><span class="pre">models.voxel.VoxelConnectivityArray</span></code></a>(weights,&nbsp;…)</td>
+<td>Class for implicit construction of the voxel model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-mcmodels.utils">
+<span id="mcmodels-utils-utilities"></span><span id="utils-ref"></span><h2><a class="reference internal" href="#module-mcmodels.utils" title="mcmodels.utils"><code class="xref py py-mod docutils literal"><span class="pre">mcmodels.utils</span></code></a>: Utilities<a class="headerlink" href="#module-mcmodels.utils" title="Permalink to this headline">¶</a></h2>
+<p>Module containing utility functions</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.utils.get_experiment_ids.html#mcmodels.utils.get_experiment_ids" title="mcmodels.utils.get_experiment_ids"><code class="xref py py-obj docutils literal"><span class="pre">utils.get_experiment_ids</span></code></a>(mcc,&nbsp;structure_ids)</td>
+<td>Returns all experiment ids with injection in structure_ids.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.utils.lex_ordered_unique.html#mcmodels.utils.lex_ordered_unique" title="mcmodels.utils.lex_ordered_unique"><code class="xref py py-obj docutils literal"><span class="pre">utils.lex_ordered_unique</span></code></a>(ar,&nbsp;lex_order[,&nbsp;…])</td>
+<td>np.unique in a given order.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.utils.nonzero_unique.html#mcmodels.utils.nonzero_unique" title="mcmodels.utils.nonzero_unique"><code class="xref py py-obj docutils literal"><span class="pre">utils.nonzero_unique</span></code></a>(ar,&nbsp;**unique_kwargs)</td>
+<td>np.unique returning only nonzero unique elements.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.utils.ordered_unique.html#mcmodels.utils.ordered_unique" title="mcmodels.utils.ordered_unique"><code class="xref py py-obj docutils literal"><span class="pre">utils.ordered_unique</span></code></a>(ar,&nbsp;**unique_kwargs)</td>
+<td>np.unique in the order in which the unique values occur.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/mcmodels.utils.padded_diagonal_fill.html#mcmodels.utils.padded_diagonal_fill" title="mcmodels.utils.padded_diagonal_fill"><code class="xref py py-obj docutils literal"><span class="pre">utils.padded_diagonal_fill</span></code></a>(arrays)</td>
+<td>Returns array filled with uneven arrays padding with zeros.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/mcmodels.utils.unionize.html#mcmodels.utils.unionize" title="mcmodels.utils.unionize"><code class="xref py py-obj docutils literal"><span class="pre">utils.unionize</span></code></a>(volume,&nbsp;key[,&nbsp;return_regions])</td>
+<td>Unionize voxel data to regional data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

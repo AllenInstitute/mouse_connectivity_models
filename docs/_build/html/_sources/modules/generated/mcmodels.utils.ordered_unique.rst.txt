@@ -1,0 +1,6 @@
+mcmodels\.utils\.ordered\_unique
+================================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: ordered_unique

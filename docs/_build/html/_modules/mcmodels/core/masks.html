@@ -1,0 +1,484 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.core.masks &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.core.masks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;&quot;</span>
+<span class="sd">Module containing Mask object and supporting functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox &lt;josephk@alleninstitute.org&gt;</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
+<span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">op</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">allensdk.core</span> <span class="k">import</span> <span class="n">json_utilities</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_descendant_ids</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validates that descendant_ids are of the correct form.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">descendant_ids</span><span class="p">):</span>
+        <span class="c1"># descendant_ids are not generated from structure_ids</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">dids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sid</span> <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="n">dids</span>
+                <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">)])</span>
+
+
+<span class="k">def</span> <span class="nf">_check_disjoint_structures</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validates that structures are disjoint.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_validate_descendant_ids</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">):</span>
+        <span class="c1"># first elem in descendant_ids is structure id from which they descend</span>
+        <span class="n">only_descendants</span> <span class="o">=</span> <span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">descendant_ids</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">only_descendants</span><span class="p">,</span> <span class="p">[])):</span>
+            <span class="c1"># a structure_id is a descendant of another</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># else: descendant_ids == structure_ids, assume @ bottom of annotation</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="Mask"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask">[docs]</a><span class="k">class</span> <span class="nc">Mask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Object for masking the grid data from allensdk.</span>
+
+<span class="sd">    This object is useful for masking grid data as well as reshaping/filling</span>
+<span class="sd">    &#39;masked&#39; arrays to be the shape of the annotation (CCF) from allensdk. Also,</span>
+<span class="sd">    this object is useful for determining the location or structure id of a</span>
+<span class="sd">    given voxel from the voxel-voxel connectivity matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    voxel_model_cache : VoxelModelCache object</span>
+<span class="sd">        This supplies the interface for pulling cached reference space,</span>
+<span class="sd">        annotation, and structure tree objects.</span>
+
+<span class="sd">    structure_ids : array-like, optional, shape (n_structure_ids,)</span>
+<span class="sd">        AllenSDK CCF Annotation structure ids to be included in the model</span>
+
+<span class="sd">    Hemisphere : int</span>
+<span class="sd">        hemisphere id to be included in the projection in the model.</span>
+<span class="sd">            * 1, left hemisphere</span>
+<span class="sd">            * 2, right hemisphere</span>
+<span class="sd">            * 3, both hemispheres</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference_space : reference_space object</span>
+<span class="sd">        see allensdk.reference_space</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.core import Mask, VoxelModelCache</span>
+<span class="sd">    &gt;&gt;&gt; cache = VoxelModelCache()</span>
+<span class="sd">    &gt;&gt;&gt; mask = Mask.from_cache(cache)</span>
+<span class="sd">    &gt;&gt;&gt; # what shape will a masked volume be</span>
+<span class="sd">    &gt;&gt;&gt; mask.masked_shape</span>
+<span class="sd">    (448962,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">GREY_STRUCTURE_ID</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">DEFAULT_STRUCTURE_IDS</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">GREY_STRUCTURE_ID</span><span class="p">])</span>
+
+    <span class="n">BILATERAL_HEMISPHERE_ID</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">DEFAULT_HEMISPHERE_ID</span> <span class="o">=</span> <span class="n">BILATERAL_HEMISPHERE_ID</span>
+
+<div class="viewcode-block" id="Mask.from_cache"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.from_cache">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cache : caching object</span>
+<span class="sd">            MCC or RSC or VMC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reference_space</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_reference_space</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must pass a MouseConnectivtyCache, &#39;</span>
+                             <span class="s1">&#39;ReferenceSpaceCache, or VoxelModelCache object &#39;</span>
+                             <span class="s1">&#39;not </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">cache</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">reference_space</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mask.__init__"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference_space</span><span class="p">,</span> <span class="n">structure_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">structure_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">structure_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_STRUCTURE_IDS</span>
+        <span class="k">if</span> <span class="n">hemisphere_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hemisphere_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_HEMISPHERE_ID</span>
+
+        <span class="c1"># update reference space to include only assigned voxels</span>
+        <span class="n">reference_space</span><span class="o">.</span><span class="n">remove_unassigned</span><span class="p">(</span><span class="n">update_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span> <span class="o">=</span> <span class="n">reference_space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span> <span class="o">=</span> <span class="n">structure_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hemisphere_id</span> <span class="o">=</span> <span class="n">hemisphere_id</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">structure_ids</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">, ..., </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">structure_ids</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">(hemisphere_id=</span><span class="si">{1}</span><span class="s2">, structure_ids=[</span><span class="si">{2}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hemisphere_id</span><span class="p">,</span> <span class="n">structure_ids</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_mask_to_hemisphere</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Masks a given data volume to a hemisphere.&quot;&quot;&quot;</span>
+        <span class="c1"># mask to hemisphere</span>
+        <span class="n">midline</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">//</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">hemisphere_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">midline</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">elif</span> <span class="n">hemisphere_id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">mask</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="n">midline</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">mask</span>
+
+    <span class="k">def</span> <span class="nf">_get_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_ids</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets mask property (boolean array)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hemisphere_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hemisphere_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hemisphere_id</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">make_structure_mask</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span>
+                                                        <span class="n">direct_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Mask</span><span class="o">.</span><span class="n">_mask_to_hemisphere</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Boolean mask defining &#39;interesting&#39; voxels.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span>
+
+    <span class="k">def</span> <span class="nf">_get_assigned_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return flattened set of list of lists</span>
+        <span class="n">descendants</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">structure_tree</span><span class="o">.</span><span class="n">descendant_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">descendants</span><span class="p">,</span> <span class="p">[]))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">assigned_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of resolved structures in annotation&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_structures</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_structures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_assigned_structures</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assigned_structures</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns coordinates inside mask.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">masked_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shape a data volume would become after masking.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">),)</span>
+
+<div class="viewcode-block" id="Mask.get_structure_flattened_mask"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.get_structure_flattened_mask">[docs]</a>    <span class="k">def</span> <span class="nf">get_structure_flattened_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Masks a structure_mask or union of structure_masks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        structure_ids : array-like, optional (default = None)</span>
+<span class="sd">            A list of structure ids with which to construct a structure union</span>
+<span class="sd">            mask. If None, the object&#39;s structure_ids are used.</span>
+
+<span class="sd">        hemisphere_id : int, optional (default = None)</span>
+<span class="sd">            The hemisphere to which the structure union mask will be additionally</span>
+<span class="sd">            masked to. If None, the object&#39;s hemisphere_id is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array - shape (masked_shape)</span>
+<span class="sd">            Masked structure union mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">structure_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">structure_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span>
+
+        <span class="k">if</span> <span class="n">structure_ids</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure_ids</span> <span class="ow">and</span> <span class="n">hemisphere_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># saves time if already computed</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mask</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="n">hemisphere_id</span><span class="p">)</span>
+
+        <span class="c1"># mask this mask to self.mask</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_volume</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mask.get_flattened_voxel_index"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.get_flattened_voxel_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_flattened_voxel_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voxel_idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the index of a givel voxel in the flattened mask.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        voxel_idx : array</span>
+<span class="sd">            coordinates of voxel of which the flattened index position is wanted</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            idx of voxel_idx in flattened mask</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">==</span> <span class="n">voxel_idx</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># return int from array</span>
+            <span class="k">return</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># array is empty</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;voxel index </span><span class="si">%s</span><span class="s2"> is not in mask.coordinates&quot;</span>
+                             <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">IndexError</span><span class="se">\n</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">voxel_idx</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Mask.get_structure_indices"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.get_structure_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_structure_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the indices of a masked structure_mask or union of structure_masks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        structure_ids : array-like, optional (default = None)</span>
+<span class="sd">            A list of structure ids with which to construct a structure union</span>
+<span class="sd">            mask. If None, the object&#39;s structure_ids are used.</span>
+
+<span class="sd">        hemisphere_id : int, optional (default = None)</span>
+<span class="sd">            The hemisphere to which the structure union mask will be additionally</span>
+<span class="sd">            masked to. If None, the object&#39;s hemisphere_id is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array - shape (masked_nonzero,)</span>
+<span class="sd">            The indices of the masked structure union mask that are nonzero</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">aligned</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_structure_flattened_mask</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">aligned</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Mask.get_key"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.get_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># TODO: look into cleaning up check for disjoint</span>
+        <span class="sd">&quot;&quot;&quot;Returns flattened annotation key.</span>
+
+<span class="sd">        Useful in performing structure specific computations on the voxel-voxel</span>
+<span class="sd">        array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        structure_ids : list, optional (default=None)</span>
+<span class="sd">            Ids of structures which to include in the key. If None, the</span>
+<span class="sd">            structure_ids used to make the Mask object will be used.</span>
+
+<span class="sd">        hemisphere_id : int, optional (default=None)</span>
+<span class="sd">            Hemisphere to include in the key. If None, the hemisphere used</span>
+<span class="sd">            to mask the Mask object will be used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        key = array, shape (masked_shape,), type np.int</span>
+<span class="sd">            Key mapping an element in a masked data volume to its structure id</span>
+<span class="sd">            in the annotation. Each element in key is a structure_id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># do not want to overwrite annotation</span>
+        <span class="n">annotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">structure_ids</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hemisphere_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># return key of all resolved structures in annotation</span>
+            <span class="n">annotation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_volume</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+
+        <span class="c1"># get list of descendant_ids for each structure id</span>
+        <span class="n">descendant_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">structure_tree</span><span class="o">.</span><span class="n">descendant_ids</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_disjoint_structures</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;structures </span><span class="si">%s</span><span class="s2"> are not disjoint&quot;</span> <span class="o">%</span> <span class="n">structure_ids</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">structure_id</span><span class="p">,</span> <span class="n">descendants</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">descendant_ids</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">descendants</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># set annotation equal to structure where it has descendants</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">annotation</span><span class="p">,</span> <span class="n">descendants</span><span class="p">)</span>
+                <span class="n">annotation</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure_id</span>
+
+        <span class="c1"># get mask according to args</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mask</span><span class="p">(</span><span class="n">structure_ids</span><span class="p">,</span> <span class="n">hemisphere_id</span><span class="o">=</span><span class="n">hemisphere_id</span><span class="p">)</span>
+
+        <span class="c1"># mask to structure_ids</span>
+        <span class="n">annotation</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_volume</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Mask.mask_volume"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.mask_volume">[docs]</a>    <span class="k">def</span> <span class="nf">mask_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Masks a given volume.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X - array, shape (x_ccf, y_ccf, z_ccf)</span>
+<span class="sd">            Data volume to be masked. Must be same shape as</span>
+<span class="sd">            self.reference_space.annotation.shape</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array - shape (masked_shape)</span>
+<span class="sd">            Masked data volume.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X must be same shape as annotation: </span><span class="si">%s</span><span class="s2"> (not </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="Mask.fill_volume_where_masked"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.fill_volume_where_masked">[docs]</a>    <span class="k">def</span> <span class="nf">fill_volume_where_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fills a data volume where mask is valid.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape (x_ccf, y_ccf, z_ccf)</span>
+<span class="sd">            Array to be filled where mask is valid.</span>
+
+<span class="sd">        fill : int or array, shape=(masked_shape)</span>
+<span class="sd">            Fill value or array.</span>
+
+<span class="sd">        inplace : boolean</span>
+<span class="sd">            If True, X is filled in place, else a copy is returned.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array - shape (x_ccf, y_ccf, z_ccf)</span>
+<span class="sd">            Filled array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X must be same shape as annotation: </span><span class="si">%s</span><span class="s2"> (not </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="n">_X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="c1"># numpy throws value error if type(fill)=array &amp;&amp; fill.shape != idx</span>
+        <span class="n">_X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()]</span> <span class="o">=</span> <span class="n">fill</span>
+        <span class="k">return</span> <span class="n">_X</span></div>
+
+<div class="viewcode-block" id="Mask.map_masked_to_annotation"><a class="viewcode-back" href="../../../modules/generated/mcmodels.core.Mask.html#mcmodels.core.Mask.map_masked_to_annotation">[docs]</a>    <span class="k">def</span> <span class="nf">map_masked_to_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Maps a masked vector y back to annotation volume.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y : array, shape (masked_shape)</span>
+<span class="sd">            Array to be mapped into where mask is valid.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_volume : shape (x_ccf, y_ccf, z_ccf)</span>
+<span class="sd">            Array same shape as annotation, filled with input parameter y where</span>
+<span class="sd">            mask is valid</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># indices where y</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be same shape as key: </span><span class="si">%s</span><span class="s2"> (not </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                             <span class="o">%</span> <span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="n">y_volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_space</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">y_volume</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">return</span> <span class="n">y_volume</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

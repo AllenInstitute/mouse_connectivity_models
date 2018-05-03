@@ -1,0 +1,388 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.utils &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing utility functions</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox josephk@alleninstitute.org</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">allensdk.core.mouse_connectivity_cache</span> <span class="k">import</span> <span class="n">MouseConnectivityCache</span>
+
+
+<div class="viewcode-block" id="get_experiment_ids"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.get_experiment_ids.html#mcmodels.utils.get_experiment_ids">[docs]</a><span class="k">def</span> <span class="nf">get_experiment_ids</span><span class="p">(</span><span class="n">mcc</span><span class="p">,</span> <span class="n">structure_ids</span><span class="p">,</span> <span class="n">cre</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns all experiment ids with injection in structure_ids.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mcc : MouseConnectivityCache object</span>
+<span class="sd">    structure_ids: list</span>
+<span class="sd">        Only return experiments that were injected in the structures provided here.</span>
+<span class="sd">        If None, return all experiments.  Default None.</span>
+<span class="sd">    cre: boolean or list</span>
+<span class="sd">        If True, return only cre-positive experiments.  If False, return only</span>
+<span class="sd">        cre-negative experiments.  If None, return all experiments. If list, return</span>
+<span class="sd">        all experiments with cre line names in the supplied list. Default None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    List of experiment ids satisfying the parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#filters injections by structure id or Decendent</span>
+    <span class="n">experiments</span> <span class="o">=</span> <span class="n">mcc</span><span class="o">.</span><span class="n">get_experiments</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cre</span><span class="o">=</span><span class="n">cre</span><span class="p">,</span>
+                                      <span class="n">injection_structure_ids</span><span class="o">=</span><span class="n">structure_ids</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">experiment</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">experiment</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="nonzero_unique"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.nonzero_unique.html#mcmodels.utils.nonzero_unique">[docs]</a><span class="k">def</span> <span class="nf">nonzero_unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;np.unique returning only nonzero unique elements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ar : array_like</span>
+<span class="sd">        Input array. Unless `axis` is specified, this will be flattened if it</span>
+<span class="sd">        is not already 1-D.</span>
+
+<span class="sd">    return_index : bool, optional</span>
+<span class="sd">        If True, also return the indices of `ar` (along the specified axis,</span>
+<span class="sd">        if provided, or in the flattened array) that result in the unique array.</span>
+
+<span class="sd">    return_counts : bool, optional</span>
+<span class="sd">        If True, also return the number of times each unique item appears</span>
+<span class="sd">        in `ar`.</span>
+
+<span class="sd">    axis : int or None, optional</span>
+<span class="sd">        The axis to operate on. If None, `ar` will be flattened beforehand.</span>
+<span class="sd">        Otherwise, duplicate items will be removed along the provided axis,</span>
+<span class="sd">        with all the other axes belonging to the each of the unique elements.</span>
+<span class="sd">        Object arrays or structured arrays that contain objects are not</span>
+<span class="sd">        supported if the `axis` kwarg is used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    unique : array</span>
+<span class="sd">        Unique values sorted in the order in which they occur</span>
+
+<span class="sd">    unique_indices : array, optional</span>
+<span class="sd">        Indices of the first occurance of the unique values. Only returned if</span>
+<span class="sd">        return_indices kwarg is specified as True.</span>
+
+<span class="sd">    unique_counts : array</span>
+<span class="sd">        Counts of the unique values. Only returned if return_counts kwarg is</span>
+<span class="sd">        specified as True.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ordered_unique</span>
+<span class="sd">    lex_ordered_unique</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;return_inverse&#39;</span> <span class="ow">in</span> <span class="n">unique_kwargs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;returning inverse array not yet implemented&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ar</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">)</span>
+
+    <span class="n">unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unique_kwargs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">unique</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">unique</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="ordered_unique"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.ordered_unique.html#mcmodels.utils.ordered_unique">[docs]</a><span class="k">def</span> <span class="nf">ordered_unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;np.unique in the order in which the unique values occur.</span>
+
+<span class="sd">    Similar outuput to pd.unique(), although probably not as fast.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ar : array_like</span>
+<span class="sd">        Input array. Unless `axis` is specified, this will be flattened if it</span>
+<span class="sd">        is not already 1-D.</span>
+
+<span class="sd">    return_index : bool, optional</span>
+<span class="sd">        If True, also return the indices of `ar` (along the specified axis,</span>
+<span class="sd">        if provided, or in the flattened array) that result in the unique array.</span>
+
+<span class="sd">    return_counts : bool, optional</span>
+<span class="sd">        If True, also return the number of times each unique item appears</span>
+<span class="sd">        in `ar`.</span>
+
+<span class="sd">    axis : int or None, optional</span>
+<span class="sd">        The axis to operate on. If None, `ar` will be flattened beforehand.</span>
+<span class="sd">        Otherwise, duplicate items will be removed along the provided axis,</span>
+<span class="sd">        with all the other axes belonging to the each of the unique elements.</span>
+<span class="sd">        Object arrays or structured arrays that contain objects are not</span>
+<span class="sd">        supported if the `axis` kwarg is used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    unique : array</span>
+<span class="sd">        Unique values sorted in the order in which they occur</span>
+
+<span class="sd">    unique_indices : array, optional</span>
+<span class="sd">        Indices of the first occurrence of the unique values. Only returned if</span>
+<span class="sd">        return_indices kwarg is specified as True.</span>
+
+<span class="sd">    unique_counts : array</span>
+<span class="sd">        Counts of the unique values. Only returned if return_counts kwarg is</span>
+<span class="sd">        specified as True.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    nonzero_unique</span>
+<span class="sd">    lex_ordered_unique</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;return_inverse&#39;</span> <span class="ow">in</span> <span class="n">unique_kwargs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;returning inverse array not yet implemented&quot;</span><span class="p">)</span>
+
+    <span class="n">_return_index</span> <span class="o">=</span> <span class="n">unique_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_index&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">)</span>
+
+    <span class="c1"># need indices (always @ index 1)</span>
+    <span class="n">unique</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">unique</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">unique</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">_return_index</span> <span class="k">else</span> <span class="n">unique</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">unique_kwargs</span> <span class="ow">or</span> <span class="n">_return_index</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">permutation</span><span class="p">],</span> <span class="n">unique</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">unique</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">permutation</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="lex_ordered_unique"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.lex_ordered_unique.html#mcmodels.utils.lex_ordered_unique">[docs]</a><span class="k">def</span> <span class="nf">lex_ordered_unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="n">lex_order</span><span class="p">,</span> <span class="n">allow_extra</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;np.unique in a given order.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ar : array_like</span>
+<span class="sd">        Input array. Unless `axis` is specified, this will be flattened if it</span>
+<span class="sd">        is not already 1-D.</span>
+
+<span class="sd">    return_index : bool, optional</span>
+<span class="sd">        If True, also return the indices of `ar` (along the specified axis,</span>
+<span class="sd">        if provided, or in the flattened array) that result in the unique array.</span>
+
+<span class="sd">    return_counts : bool, optional</span>
+<span class="sd">        If True, also return the number of times each unique item appears</span>
+<span class="sd">        in `ar`.</span>
+
+<span class="sd">    axis : int or None, optional</span>
+<span class="sd">        The axis to operate on. If None, `ar` will be flattened beforehand.</span>
+<span class="sd">        Otherwise, duplicate items will be removed along the provided axis,</span>
+<span class="sd">        with all the other axes belonging to the each of the unique elements.</span>
+<span class="sd">        Object arrays or structured arrays that contain objects are not</span>
+<span class="sd">        supported if the `axis` kwarg is used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    unique : array</span>
+<span class="sd">        Unique values sorted in the order in which they occur</span>
+
+<span class="sd">    unique_indices : array, optional</span>
+<span class="sd">        Indices of the first occurrence of the unique values. Only returned if</span>
+<span class="sd">        return_indices kwarg is specified as True.</span>
+
+<span class="sd">    unique_counts : array</span>
+<span class="sd">        Counts of the unique values. Only returned if return_counts kwarg is</span>
+<span class="sd">        specified as True.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    nonzero_unique</span>
+<span class="sd">    ordered_unique</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;return_inverse&#39;</span> <span class="ow">in</span> <span class="n">unique_kwargs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;returning inverse array not yet implemented&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">lex_order</span><span class="p">))</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lex_order</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lex_order must not contain duplicates&quot;</span><span class="p">)</span>
+
+    <span class="n">unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="o">**</span><span class="n">unique_kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_kwargs</span><span class="p">:</span>
+        <span class="n">unique</span> <span class="o">=</span> <span class="p">(</span><span class="n">unique</span><span class="p">,)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lex_order</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">allow_extra</span><span class="p">:</span>
+            <span class="c1"># view, does not write to array lex_order</span>
+            <span class="c1"># cast to np.array in order to index with boolean array</span>
+            <span class="n">lex_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lex_order</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">lex_order</span><span class="p">,</span> <span class="n">unique</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lex_order contains elements not found in ar, &quot;</span>
+                             <span class="s2">&quot;call with allow_extra=True&quot;</span><span class="p">)</span>
+
+    <span class="c1"># generate a permutation order for unique</span>
+    <span class="n">permutation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">lex_order</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">permutation</span><span class="p">],</span> <span class="n">unique</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">unique</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">permutation</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="padded_diagonal_fill"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.padded_diagonal_fill.html#mcmodels.utils.padded_diagonal_fill">[docs]</a><span class="k">def</span> <span class="nf">padded_diagonal_fill</span><span class="p">(</span><span class="n">arrays</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns array filled with uneven arrays padding with zeros.</span>
+
+<span class="sd">    Arrays are placed in the return array such that each row/column only</span>
+<span class="sd">    contains the elements of a single array. Can be thought of as representing</span>
+<span class="sd">    disconnected subgraphs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arrays : list</span>
+<span class="sd">        List of 2D arrays with which to fill the return array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    padded : array</span>
+<span class="sd">        Return array containing each of the input arrays, padded with zeros.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">sum</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">shapes</span><span class="p">))))</span>
+
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">),</span> <span class="n">arr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">shapes</span><span class="p">,</span> <span class="n">arrays</span><span class="p">):</span>
+        <span class="c1"># fill padded with arr</span>
+        <span class="n">padded</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">j</span><span class="o">+</span><span class="n">n_cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="n">n_rows</span>
+        <span class="n">j</span> <span class="o">+=</span> <span class="n">n_cols</span>
+
+    <span class="k">return</span> <span class="n">padded</span></div>
+
+
+<div class="viewcode-block" id="unionize"><a class="viewcode-back" href="../../modules/generated/mcmodels.utils.unionize.html#mcmodels.utils.unionize">[docs]</a><span class="k">def</span> <span class="nf">unionize</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">return_regions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unionize voxel data to regional data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    volume : array, shape (n, m)</span>
+<span class="sd">        Possibly stacked flattened volume(s) such as projection densities or</span>
+<span class="sd">        injection densities.</span>
+<span class="sd">    key : array, shape (m,)</span>
+<span class="sd">        1D Array with length equal to the number of columns in volume. This array</span>
+<span class="sd">        has integer values corresponding to the region to which each voxel belongs.</span>
+<span class="sd">    return_regions : boolean, optional (default: False)</span>
+<span class="sd">        If True, return an array of the unique values of key in addition to the</span>
+<span class="sd">        unionized volume array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : array, shape (n, len(unique(key)))</span>
+<span class="sd">        The unionized volume.</span>
+<span class="sd">    regions : array, optional, shape (len(unique(key)),)</span>
+<span class="sd">        The unique values of key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">key</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;volume (</span><span class="si">%s</span><span class="s2">) and key (</span><span class="si">%s</span><span class="s2">) shapes are incompatible&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+
+    <span class="n">regions</span> <span class="o">=</span> <span class="n">nonzero_unique</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">volume</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">regions</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">regions</span><span class="p">):</span>
+        <span class="n">result</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">volume</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_regions</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">regions</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

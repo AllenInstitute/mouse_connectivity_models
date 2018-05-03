@@ -1,0 +1,304 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.models.voxel.regionalized_model &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.models.voxel.regionalized_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing the RegionalizedModel object, used in evaluating the</span>
+<span class="sd">voxel-scale model at the level of regions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox &lt;josephk@alleninstitute.org&gt;</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">nonzero_unique</span><span class="p">,</span> <span class="n">unionize</span>
+
+
+<div class="viewcode-block" id="RegionalizedModel"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel">[docs]</a><span class="k">class</span> <span class="nc">RegionalizedModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Regionalization/Parcelation of VoxelModel.</span>
+
+<span class="sd">    Regionalizes the connectivity model in VoxelModel given a brain parcelation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source_key : array-like, shape=(n_source_voxels,)</span>
+<span class="sd">        Flattened key relating each source voxel to a given brain region.</span>
+
+<span class="sd">    target_key : array-like, shape=(n_target_voxels,)</span>
+<span class="sd">        Flattened key relating each target voxel to a given brain region.</span>
+
+<span class="sd">    ordering : array-like, optional (default=None)</span>
+<span class="sd">        Order with which to arrange the source/target regions. If supplied, the</span>
+<span class="sd">        ordering must contain at least every unique structure_id associated with</span>
+<span class="sd">        each of the source/target regions.</span>
+
+<span class="sd">    dataframe : boolean, optional (default=False)</span>
+<span class="sd">        If True, each metric of the regionalized model will be returned as a</span>
+<span class="sd">        labeled pandas dataframe. Else, each metric will be returned as an</span>
+<span class="sd">        unlabeled numpy array.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.core import VoxelModelCache</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.models.voxel import RegionalizedModel</span>
+<span class="sd">    &gt;&gt;&gt; cache = VoxelModelCache()</span>
+<span class="sd">    &gt;&gt;&gt; # pull voxel-scale model from cache</span>
+<span class="sd">    &gt;&gt;&gt; voxel_array, source_mask, target_mask = cache.get_voxel_connectivity_array()</span>
+<span class="sd">    &gt;&gt;&gt; # regionalize to summary structures (region 934 was removed in new ccf)</span>
+<span class="sd">    &gt;&gt;&gt; regions = cache.get_structures_by_set_id(</span>
+<span class="sd">    &gt;&gt;&gt; region_ids = [r[&#39;id&#39;] for r in regions if r[&#39;id&#39;] != 934]</span>
+<span class="sd">    &gt;&gt;&gt; # get array keys</span>
+<span class="sd">    &gt;&gt;&gt; source_key = source_mask.get_key(region_ids)</span>
+<span class="sd">    &gt;&gt;&gt; target_key = source_mask.get_key(region_ids)</span>
+<span class="sd">    &gt;&gt;&gt; # regionalize model</span>
+<span class="sd">    &gt;&gt;&gt; regional_model = RegionalizedModel.from_voxel_array(</span>
+<span class="sd">    ...     voxel_array, source_key, target_key)</span>
+<span class="sd">    &gt;&gt;&gt; regional_model.normalized_connection_density.shape</span>
+<span class="sd">    (291, 577)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">VALID_REGION_METRICS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;connection_strength&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;connection_density&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;normalized_connection_strength&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;normalized_connection_density&quot;</span>
+    <span class="p">]</span>
+
+<div class="viewcode-block" id="RegionalizedModel.from_voxel_array"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel.from_voxel_array">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_voxel_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">voxel_array</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alternative constructor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        voxel_array : VoxelConnectivityArray object</span>
+<span class="sd">            The voxel-scale model in the form of a VoxelConnectivityArray object.</span>
+<span class="sd">        source_key : array-like, shape=(n_source_voxels,)</span>
+<span class="sd">            Flattened key relating each source voxel to a given brain region.</span>
+
+<span class="sd">        target_key : array-like, shape=(n_target_voxels,)</span>
+<span class="sd">            Flattened key relating each target voxel to a given brain region.</span>
+
+<span class="sd">        ordering : array-like, optional (default=None)</span>
+<span class="sd">            Order with which to arrange the source/target regions. If supplied,</span>
+<span class="sd">            the ordering must contain at least every unique structure_id</span>
+<span class="sd">            associated with each of the source/target regions.</span>
+
+<span class="sd">        dataframe : boolean, optional (default=False)</span>
+<span class="sd">            If True, each metric of the regionalized model will be returned as a</span>
+<span class="sd">            labeled pandas dataframe. Else, each metric will be returned as an</span>
+<span class="sd">            unlabeled numpy array.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        An instantiated RegionalizedModel object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">voxel_array</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">voxel_array</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RegionalizedModel.__init__"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">source_key</span><span class="p">,</span> <span class="n">target_key</span><span class="p">,</span>
+                 <span class="n">ordering</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">source_key</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rows of weights and elements in source_key &quot;</span>
+                             <span class="s2">&quot;must be equal size&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target_key</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;columns of nodes and elements in target_key &quot;</span>
+                             <span class="s2">&quot;must be of equal size&quot;</span><span class="p">)</span>
+
+        <span class="c1"># metrics return dataframe?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_key</span> <span class="o">=</span> <span class="n">source_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_key</span> <span class="o">=</span> <span class="n">target_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordering</span> <span class="o">=</span> <span class="n">ordering</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span></div>
+
+<div class="viewcode-block" id="RegionalizedModel.predict"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict regional projection.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO : implement</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_regionalize_voxel_connectivity_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces the full regionalized connectivity&quot;&quot;&quot;</span>
+        <span class="c1"># get counts for metrics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_regions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_counts</span> <span class="o">=</span> <span class="n">nonzero_unique</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_key</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_counts</span> <span class="o">=</span> <span class="n">nonzero_unique</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_key</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># integrate over target regions (array is 2x as wide)</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span><span class="p">):</span>
+
+            <span class="c1"># same as voxel_array[:,cols].sum(axis=1), but more space efficient</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_key</span> <span class="o">==</span> <span class="n">region</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[:,</span> <span class="n">columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># integrate over source regions</span>
+        <span class="k">return</span> <span class="n">unionize</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_key</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">_get_region_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">region_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regionalize_voxel_connectivity_array</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordering</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ordering</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ordering</span><span class="p">,</span> <span class="n">x</span><span class="p">)]</span>
+            <span class="n">permutation</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">order</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+            <span class="n">source_perm</span> <span class="o">=</span> <span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_regions</span><span class="p">)</span>
+            <span class="n">target_perm</span> <span class="o">=</span> <span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_regions</span><span class="p">[</span><span class="n">source_perm</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span><span class="p">[</span><span class="n">target_perm</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">source_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_counts</span><span class="p">[</span><span class="n">source_perm</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_counts</span><span class="p">[</span><span class="n">target_perm</span><span class="p">]</span>
+
+            <span class="n">region_matrix</span> <span class="o">=</span> <span class="n">region_matrix</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ix_</span><span class="p">(</span><span class="n">source_perm</span><span class="p">,</span> <span class="n">target_perm</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">:</span>
+            <span class="n">region_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">region_matrix</span><span class="p">)</span>
+            <span class="n">region_matrix</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_regions</span>
+            <span class="n">region_matrix</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_regions</span>
+
+        <span class="k">return</span> <span class="n">region_matrix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">connection_strength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:math:`w_{ij}`</span>
+
+<span class="sd">           The sum of the voxel-scale connectivity between each pair</span>
+<span class="sd">           of source-target regions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region_matrix</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_region_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_region_matrix</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region_matrix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">connection_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:math:`w_{ij} / |Y|`</span>
+
+<span class="sd">          The average voxel-scale connectivity between each source</span>
+<span class="sd">          voxel to each source region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_strength</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">target_counts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normalized_connection_strength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:math:`w_{ij} / |X|`</span>
+
+<span class="sd">          The average voxel-scale connectivity between each source</span>
+<span class="sd">          region to each target voxel&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_strength</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">source_counts</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">normalized_connection_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:math:`w_{ij} / (|X| |Y|)`</span>
+
+<span class="sd">          The average voxel-scale connectivity between each pair of</span>
+<span class="sd">          source-target regions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection_strength</span><span class="p">,</span>
+                         <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_counts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_counts</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

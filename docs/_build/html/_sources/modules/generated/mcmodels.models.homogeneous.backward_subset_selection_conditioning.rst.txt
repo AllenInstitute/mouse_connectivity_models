@@ -1,0 +1,6 @@
+mcmodels\.models\.homogeneous\.backward\_subset\_selection\_conditioning
+========================================================================
+
+.. currentmodule:: mcmodels.models.homogeneous
+
+.. autofunction:: backward_subset_selection_conditioning

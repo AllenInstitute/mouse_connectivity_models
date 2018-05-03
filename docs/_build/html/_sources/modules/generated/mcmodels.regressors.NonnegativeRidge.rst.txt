@@ -1,0 +1,27 @@
+mcmodels\.regressors\.NonnegativeRidge
+======================================
+
+.. currentmodule:: mcmodels.regressors
+
+.. autoclass:: NonnegativeRidge
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NonnegativeRidge.__init__
+      ~NonnegativeRidge.fit
+      ~NonnegativeRidge.get_params
+      ~NonnegativeRidge.predict
+      ~NonnegativeRidge.score
+      ~NonnegativeRidge.set_params
+   
+   
+
+   
+   
+   

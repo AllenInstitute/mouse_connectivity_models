@@ -1,0 +1,6 @@
+mcmodels\.models\.homogeneous\.svd\_subset\_selection
+=====================================================
+
+.. currentmodule:: mcmodels.models.homogeneous
+
+.. autofunction:: svd_subset_selection

@@ -1,0 +1,189 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Glossary of Technical Terms and API Elements &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release History" href="whats_new.html" />
+    <link rel="prev" title="Nadaraya-Watson Regression" href="auto_examples/plot_nadaraya_watson.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/animation.css" /> 
+<script src="_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="glossary-of-technical-terms-and-api-elements">
+<span id="glossary-ref"></span><h1>Glossary of Technical Terms and API Elements<a class="headerlink" href="#glossary-of-technical-terms-and-api-elements" title="Permalink to this headline">¶</a></h1>
+<dl class="glossary docutils">
+<dt id="term-additivity">additivity</dt>
+<dd>The property which states that a given response can be explained
+by a linear sum of the inputs.</dd>
+<dt id="term-connection-density">connection density</dt>
+<dd>The <a class="reference internal" href="#term-connection-strength"><span class="xref std std-term">connection strength</span></a> between two regions divided by
+the size of the target <a class="reference internal" href="#term-region"><span class="xref std std-term">region</span></a>.</dd>
+<dt id="term-connection-strength">connection strength</dt>
+<dd>The sum of the connection weights from all voxels in a
+source :term`region` to all voxels in a target <a class="reference internal" href="#term-region"><span class="xref std std-term">region</span></a>.</dd>
+<dt id="term-coarse-structures">coarse structures<dt id="term-major-brain-divisions">major brain divisions</dt>
+<dd><p class="first">The set of 12 major brain divisions from the 3D Allen Mouse
+Brain Reference Atlas. These include:</p>
+<ul class="last simple">
+<li>Isocortex</li>
+<li>Olfactory Areas</li>
+<li>Hippocampus</li>
+<li>Cortical Subplate</li>
+<li>Striatum</li>
+<li>Pallidum</li>
+<li>Thalamus</li>
+<li>Hypothalamus</li>
+<li>Midbrain</li>
+<li>Pons</li>
+<li>Medulla</li>
+<li>Cerebellum</li>
+</ul>
+</dd>
+<dt id="term-edge-density">edge density</dt>
+<dd>The total number of edges in a graph over the total possible
+number of edges in a graph.</dd>
+<dt id="term-frobeneous-norm">frobeneous norm</dt>
+<dd>The 2-norm of a matrix viewed as a vector.</dd>
+<dt id="term-homogeneous-model">homogeneous model</dt>
+<dd>The connectivity model at the level of <a class="reference internal" href="#term-regions"><span class="xref std std-term">regions</span></a> that
+assumes that intra-regional connectivity is homogeneous and that
+inter-regional connectivity satisfies an <a class="reference internal" href="#term-additivity"><span class="xref std std-term">additivity</span></a>
+property. This model is based on non-negative <a class="reference internal" href="#term-linear-least-squares"><span class="xref std std-term">linear least
+squares</span></a>.</dd>
+<dt id="term-linear-least-squares">linear least squares</dt>
+<dd>Method of approximately solving a system of linear equations by
+minimizing the sum of squared difference between the prediction
+and the data.</dd>
+<dt id="term-mesoscale">mesoscale</dt>
+<dd>A coarser scale than that of single neurons or cortical columns,
+but finer than the set of <a class="reference internal" href="#term-coarse-structures"><span class="xref std std-term">coarse structures</span></a>. Can refer
+to the level of <a class="reference internal" href="#term-regions"><span class="xref std std-term">regions</span></a> (especially <a class="reference internal" href="#term-summary-structures"><span class="xref std std-term">summary structures</span></a>)
+or to the level of <a class="reference internal" href="#term-voxels"><span class="xref std std-term">voxels</span></a>.</dd>
+<dt id="term-nonparametric-regression">nonparametric regression</dt>
+<dd><a class="reference internal" href="#term-regression"><span class="xref std std-term">regression</span></a> which does not assume the form of the
+estimator.</dd>
+<dt id="term-normalized-connection-density">normalized connection density</dt>
+<dd>The <a class="reference internal" href="#term-connection-strength"><span class="xref std std-term">connection strength</span></a> between two regions divided by
+the product of their sizes.</dd>
+<dt id="term-normalized-connection-strength">normalized connection strength</dt>
+<dd>The <a class="reference internal" href="#term-connection-strength"><span class="xref std std-term">connection strength</span></a> between two regions divided by
+the size of the source <a class="reference internal" href="#term-region"><span class="xref std std-term">region</span></a>.</dd>
+<dt id="term-radial-basis-function">radial basis function</dt>
+<dd>A real-valued function whose value only depends on the distance
+from the origin.</dd>
+<dt id="term-region">region<dt id="term-regions">regions<dt id="term-regional">regional</dt>
+<dd>A <a class="reference internal" href="#term-structure"><span class="xref std std-term">structure</span></a> in the brain, usually refering to a fine scale
+<a class="reference internal" href="#term-structure"><span class="xref std std-term">structure</span></a>.</dd>
+<dt id="term-regionalized-model">regionalized model</dt>
+<dd>The connectivity model at the level of <a class="reference internal" href="#term-regions"><span class="xref std std-term">regions</span></a> constructed
+by integrating the <a class="reference internal" href="#term-voxel-model"><span class="xref std std-term">voxel model</span></a>.</dd>
+<dt id="term-regressor">regressor<dt id="term-regressors">regressors<dt id="term-regression">regression</dt>
+<dd>Predictive modeling technique that attempts to determine the
+strength of relation between inputs and responses.</dd>
+<dt id="term-structure">structure<dt id="term-structures">structures</dt>
+<dd>See <a class="reference internal" href="#term-region"><span class="xref std std-term">region</span></a></dd>
+<dt id="term-summary-structures">summary structures</dt>
+<dd>The set of 293 brain structures representing a summary level
+ontology for the mouse brain.</dd>
+<dt id="term-voxel-model">voxel model</dt>
+<dd>The connectivity model based on <a class="reference internal" href="#term-nonparametric-regression"><span class="xref std std-term">nonparametric regression</span></a>
+at the resolution at the <a class="reference internal" href="#term-voxel"><span class="xref std std-term">voxel</span></a> scale.</dd>
+<dt id="term-voxel">voxel<dt id="term-voxels">voxels</dt>
+<dd>A 3-D cubic volume element; the generalization of a pixel.</dd>
+<dt id="term-white-matter">white matter<dt id="term-fiber-tracts">fiber tracts</dt>
+<dd>Tissue that surrounds and insulates neurons.</dd>
+<dt id="term-wildtype">wildtype<dt id="term-c57bl-6j">C57BL/6J</dt>
+<dd>Mice of strain C57BL/6J which have not been genetically altered.</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

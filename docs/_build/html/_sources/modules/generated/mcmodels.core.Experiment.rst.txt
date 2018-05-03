@@ -1,0 +1,26 @@
+mcmodels\.core\.Experiment
+==========================
+
+.. currentmodule:: mcmodels.core
+
+.. autoclass:: Experiment
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Experiment.__init__
+      ~Experiment.flip
+      ~Experiment.from_cache
+      ~Experiment.get_injection
+      ~Experiment.get_projection
+   
+   
+
+   
+   
+   

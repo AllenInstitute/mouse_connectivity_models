@@ -1,0 +1,505 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.core.Mask &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="mcmodels.core.VoxelModelCache" href="mcmodels.core.VoxelModelCache.html" />
+    <link rel="prev" title="mcmodels.core.Experiment" href="mcmodels.core.Experiment.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mcmodels-core-mask">
+<h1>mcmodels.core.Mask<a class="headerlink" href="#mcmodels-core-mask" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mcmodels.core.Mask">
+<em class="property">class </em><code class="descclassname">mcmodels.core.</code><code class="descname">Mask</code><span class="sig-paren">(</span><em>reference_space</em>, <em>structure_ids=None</em>, <em>hemisphere_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object for masking the grid data from allensdk.</p>
+<p>This object is useful for masking grid data as well as reshaping/filling
+‘masked’ arrays to be the shape of the annotation (CCF) from allensdk. Also,
+this object is useful for determining the location or structure id of a
+given voxel from the voxel-voxel connectivity matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>voxel_model_cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">VoxelModelCache object</span></dt>
+<dd><p class="first last">This supplies the interface for pulling cached reference space,
+annotation, and structure tree objects.</p>
+</dd>
+<dt><strong>structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like, optional, shape (n_structure_ids,)</span></dt>
+<dd><p class="first last">AllenSDK CCF Annotation structure ids to be included in the model</p>
+</dd>
+<dt><strong>Hemisphere</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><dl class="first last docutils">
+<dt>hemisphere id to be included in the projection in the model.</dt>
+<dd><ul class="first last simple">
+<li>1, left hemisphere</li>
+<li>2, right hemisphere</li>
+<li>3, both hemispheres</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.core</span> <span class="k">import</span> <span class="n">Mask</span><span class="p">,</span> <span class="n">VoxelModelCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">VoxelModelCache</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">Mask</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># what shape will a masked volume be</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span><span class="o">.</span><span class="n">masked_shape</span>
+<span class="go">(448962,)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>reference_space</strong> <span class="classifier-delimiter">:</span> <span class="classifier">reference_space object</span></dt>
+<dd><p class="first last">see allensdk.reference_space</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.fill_volume_where_masked" title="mcmodels.core.Mask.fill_volume_where_masked"><code class="xref py py-obj docutils literal"><span class="pre">fill_volume_where_masked</span></code></a>(X,&nbsp;fill[,&nbsp;inplace])</td>
+<td>Fills a data volume where mask is valid.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.from_cache" title="mcmodels.core.Mask.from_cache"><code class="xref py py-obj docutils literal"><span class="pre">from_cache</span></code></a>(cache,&nbsp;**kwargs)</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.get_flattened_voxel_index" title="mcmodels.core.Mask.get_flattened_voxel_index"><code class="xref py py-obj docutils literal"><span class="pre">get_flattened_voxel_index</span></code></a>(voxel_idx)</td>
+<td>Return the index of a givel voxel in the flattened mask.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.get_key" title="mcmodels.core.Mask.get_key"><code class="xref py py-obj docutils literal"><span class="pre">get_key</span></code></a>([structure_ids,&nbsp;hemisphere_id])</td>
+<td>Returns flattened annotation key.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.get_structure_flattened_mask" title="mcmodels.core.Mask.get_structure_flattened_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_structure_flattened_mask</span></code></a>([…])</td>
+<td>Masks a structure_mask or union of structure_masks.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.get_structure_indices" title="mcmodels.core.Mask.get_structure_indices"><code class="xref py py-obj docutils literal"><span class="pre">get_structure_indices</span></code></a>([structure_ids,&nbsp;…])</td>
+<td>Returns the indices of a masked structure_mask or union of structure_masks.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.map_masked_to_annotation" title="mcmodels.core.Mask.map_masked_to_annotation"><code class="xref py py-obj docutils literal"><span class="pre">map_masked_to_annotation</span></code></a>(y)</td>
+<td>Maps a masked vector y back to annotation volume.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.mask_volume" title="mcmodels.core.Mask.mask_volume"><code class="xref py py-obj docutils literal"><span class="pre">mask_volume</span></code></a>(X)</td>
+<td>Masks a given volume.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.Mask.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>reference_space</em>, <em>structure_ids=None</em>, <em>hemisphere_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.__init__" title="mcmodels.core.Mask.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>(reference_space[,&nbsp;structure_ids,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.fill_volume_where_masked" title="mcmodels.core.Mask.fill_volume_where_masked"><code class="xref py py-obj docutils literal"><span class="pre">fill_volume_where_masked</span></code></a>(X,&nbsp;fill[,&nbsp;inplace])</td>
+<td>Fills a data volume where mask is valid.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.from_cache" title="mcmodels.core.Mask.from_cache"><code class="xref py py-obj docutils literal"><span class="pre">from_cache</span></code></a>(cache,&nbsp;**kwargs)</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.get_flattened_voxel_index" title="mcmodels.core.Mask.get_flattened_voxel_index"><code class="xref py py-obj docutils literal"><span class="pre">get_flattened_voxel_index</span></code></a>(voxel_idx)</td>
+<td>Return the index of a givel voxel in the flattened mask.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.get_key" title="mcmodels.core.Mask.get_key"><code class="xref py py-obj docutils literal"><span class="pre">get_key</span></code></a>([structure_ids,&nbsp;hemisphere_id])</td>
+<td>Returns flattened annotation key.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.get_structure_flattened_mask" title="mcmodels.core.Mask.get_structure_flattened_mask"><code class="xref py py-obj docutils literal"><span class="pre">get_structure_flattened_mask</span></code></a>([…])</td>
+<td>Masks a structure_mask or union of structure_masks.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.get_structure_indices" title="mcmodels.core.Mask.get_structure_indices"><code class="xref py py-obj docutils literal"><span class="pre">get_structure_indices</span></code></a>([structure_ids,&nbsp;…])</td>
+<td>Returns the indices of a masked structure_mask or union of structure_masks.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.Mask.map_masked_to_annotation" title="mcmodels.core.Mask.map_masked_to_annotation"><code class="xref py py-obj docutils literal"><span class="pre">map_masked_to_annotation</span></code></a>(y)</td>
+<td>Maps a masked vector y back to annotation volume.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.Mask.mask_volume" title="mcmodels.core.Mask.mask_volume"><code class="xref py py-obj docutils literal"><span class="pre">mask_volume</span></code></a>(X)</td>
+<td>Masks a given volume.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="mcmodels.core.Mask.assigned_structures">
+<code class="descname">assigned_structures</code><a class="headerlink" href="#mcmodels.core.Mask.assigned_structures" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of resolved structures in annotation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Mask.coordinates">
+<code class="descname">coordinates</code><a class="headerlink" href="#mcmodels.core.Mask.coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns coordinates inside mask.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.fill_volume_where_masked">
+<code class="descname">fill_volume_where_masked</code><span class="sig-paren">(</span><em>X</em>, <em>fill</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.fill_volume_where_masked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.fill_volume_where_masked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills a data volume where mask is valid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, shape (x_ccf, y_ccf, z_ccf)</span></dt>
+<dd><p class="first last">Array to be filled where mask is valid.</p>
+</dd>
+<dt><strong>fill</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int or array, shape=(masked_shape)</span></dt>
+<dd><p class="first last">Fill value or array.</p>
+</dd>
+<dt><strong>inplace</strong> <span class="classifier-delimiter">:</span> <span class="classifier">boolean</span></dt>
+<dd><p class="first last">If True, X is filled in place, else a copy is returned.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>array - shape (x_ccf, y_ccf, z_ccf)</strong></dt>
+<dd><p class="first last">Filled array.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mcmodels.core.Mask.from_cache">
+<em class="property">classmethod </em><code class="descname">from_cache</code><span class="sig-paren">(</span><em>cache</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.from_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.from_cache" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>cache</strong> <span class="classifier-delimiter">:</span> <span class="classifier">caching object</span></dt>
+<dd><p class="first last">MCC or RSC or VMC</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.get_flattened_voxel_index">
+<code class="descname">get_flattened_voxel_index</code><span class="sig-paren">(</span><em>voxel_idx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.get_flattened_voxel_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.get_flattened_voxel_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of a givel voxel in the flattened mask.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>voxel_idx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array</span></dt>
+<dd><p class="first last">coordinates of voxel of which the flattened index position is wanted</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>int</strong></dt>
+<dd><p class="first last">idx of voxel_idx in flattened mask</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.get_key">
+<code class="descname">get_key</code><span class="sig-paren">(</span><em>structure_ids=None</em>, <em>hemisphere_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.get_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.get_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns flattened annotation key.</p>
+<p>Useful in performing structure specific computations on the voxel-voxel
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list, optional (default=None)</span></dt>
+<dd><p class="first last">Ids of structures which to include in the key. If None, the
+structure_ids used to make the Mask object will be used.</p>
+</dd>
+<dt><strong>hemisphere_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional (default=None)</span></dt>
+<dd><p class="first last">Hemisphere to include in the key. If None, the hemisphere used
+to mask the Mask object will be used.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>key = array, shape (masked_shape,), type np.int</strong></dt>
+<dd><p class="first last">Key mapping an element in a masked data volume to its structure id
+in the annotation. Each element in key is a structure_id.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.get_structure_flattened_mask">
+<code class="descname">get_structure_flattened_mask</code><span class="sig-paren">(</span><em>structure_ids=None</em>, <em>hemisphere_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.get_structure_flattened_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.get_structure_flattened_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masks a structure_mask or union of structure_masks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like, optional (default = None)</span></dt>
+<dd><p class="first last">A list of structure ids with which to construct a structure union
+mask. If None, the object’s structure_ids are used.</p>
+</dd>
+<dt><strong>hemisphere_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional (default = None)</span></dt>
+<dd><p class="first last">The hemisphere to which the structure union mask will be additionally
+masked to. If None, the object’s hemisphere_id is used.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>array - shape (masked_shape)</strong></dt>
+<dd><p class="first last">Masked structure union mask.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.get_structure_indices">
+<code class="descname">get_structure_indices</code><span class="sig-paren">(</span><em>structure_ids=None</em>, <em>hemisphere_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.get_structure_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.get_structure_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indices of a masked structure_mask or union of structure_masks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>structure_ids</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array-like, optional (default = None)</span></dt>
+<dd><p class="first last">A list of structure ids with which to construct a structure union
+mask. If None, the object’s structure_ids are used.</p>
+</dd>
+<dt><strong>hemisphere_id</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional (default = None)</span></dt>
+<dd><p class="first last">The hemisphere to which the structure union mask will be additionally
+masked to. If None, the object’s hemisphere_id is used.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>array - shape (masked_nonzero,)</strong></dt>
+<dd><p class="first last">The indices of the masked structure union mask that are nonzero</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.map_masked_to_annotation">
+<code class="descname">map_masked_to_annotation</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.map_masked_to_annotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.map_masked_to_annotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps a masked vector y back to annotation volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array, shape (masked_shape)</span></dt>
+<dd><p class="first last">Array to be mapped into where mask is valid.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>y_volume</strong> <span class="classifier-delimiter">:</span> <span class="classifier">shape (x_ccf, y_ccf, z_ccf)</span></dt>
+<dd><p class="first last">Array same shape as annotation, filled with input parameter y where
+mask is valid</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Mask.mask">
+<code class="descname">mask</code><a class="headerlink" href="#mcmodels.core.Mask.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean mask defining ‘interesting’ voxels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mcmodels.core.Mask.mask_volume">
+<code class="descname">mask_volume</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/masks.html#Mask.mask_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.Mask.mask_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masks a given volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>X - array, shape (x_ccf, y_ccf, z_ccf)</strong></dt>
+<dd><p class="first last">Data volume to be masked. Must be same shape as
+self.reference_space.annotation.shape</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>array - shape (masked_shape)</strong></dt>
+<dd><p class="first last">Masked data volume.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mcmodels.core.Mask.masked_shape">
+<code class="descname">masked_shape</code><a class="headerlink" href="#mcmodels.core.Mask.masked_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape a data volume would become after masking.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

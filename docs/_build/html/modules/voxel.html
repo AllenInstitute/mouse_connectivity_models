@@ -1,0 +1,249 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>3.2. New Voxel-scale Connectivity Model [Knox2018] &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="classes.html" />
+    <link rel="prev" title="3.1. HomogeneousModel similar to [Oh2014]" href="homogeneous.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="new-voxel-scale-connectivity-model-knox2018">
+<span id="voxel"></span><h1>3.2. New Voxel-scale Connectivity Model <a class="reference internal" href="#knox2018" id="id1">[Knox2018]</a><a class="headerlink" href="#new-voxel-scale-connectivity-model-knox2018" title="Permalink to this headline">¶</a></h1>
+<p>The voxel-scale model from <a class="reference internal" href="#knox2018" id="id2">[Knox2018]</a> is the first full brain voxel-scale of the
+mouse connectome. The model performs <a class="reference internal" href="nonparametric.html#nadaraya-watson"><span class="std std-ref">Nadaraya-Watson regression</span></a> to infer the connectivity between each of the voxels in
+the brain into 12 <a class="reference internal" href="../glossary.html#term-major-brain-divisions"><span class="xref std std-term">major brain divisions</span></a> to each of the voxels in the
+whole brain. The source space is split between these major brain divisions as to
+prevent influence from injections performed into adjacent brain divisions.</p>
+<p><code class="xref py py-class docutils literal"><span class="pre">VoxelModel</span></code> implements MORE</p>
+<div class="section" id="assumptions">
+<h2>3.2.1. Assumptions<a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Spatial smoothness within divisoins: the connectivity is assumed to vary smoothly
+as a function of distance within each of the major brain divisions.</li>
+<li>No influence between divisions: the connectivity is allowed to be discontinuous
+at divison boundaries. These major brain divisions are in fact physically
+separated by <a class="reference internal" href="../glossary.html#term-white-matter"><span class="xref std std-term">white matter</span></a>, supporting this assumption.</li>
+</ul>
+</div>
+<div class="section" id="voxelconnectivityarray-class">
+<h2>3.2.2. <a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code></a> Class<a class="headerlink" href="#voxelconnectivityarray-class" title="Permalink to this headline">¶</a></h2>
+<p>Since the full voxel x voxel connectivity matrix is ~200,000 x ~400,000 elements,
+it will mostlikely not fit in your memory. Luckily, the connectivity matrix has
+low rank structure, and we can take advantage of this by only computing the
+connectivty matrix on the fly, in the area we want to perform computation.</p>
+<div class="section" id="loading-the-array">
+<h3>3.2.2.1. Loading the array<a class="headerlink" href="#loading-the-array" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to load the <a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code></a> is through the
+<code class="xref py py-class docutils literal"><span class="pre">VoxelModelCache</span></code> object:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.core</span> <span class="k">import</span> <span class="n">VoxelModelCache</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cache</span> <span class="o">=</span> <span class="n">VoxelModelCache</span><span class="p">(</span><span class="n">manifest_file</span><span class="o">=</span><span class="s1">&#39;connectivity/voxel_model_manifest.json&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">voxel_array</span><span class="p">,</span> <span class="n">source_mask</span><span class="p">,</span> <span class="n">target_mask</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_voxel_connectivity_array</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">voxel_array</span>
+<span class="go">VoxelConnectivityArray(dtype=float32, shape=(226346, 448962))</span>
+</pre></div>
+</div>
+<p>This downloads and caches the underlying data locally. Additionally,
+this loads the factorization of the connectivity matrix into memory (~1G total).</p>
+</div>
+<div class="section" id="retrieving-values-from-the-array">
+<h3>3.2.2.2. Retrieving values from the array<a class="headerlink" href="#retrieving-values-from-the-array" title="Permalink to this headline">¶</a></h3>
+<p>No part of the connectivity matrix is computed until the user asks for a value
+or set of values:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># some given source/target voxels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="mi">20353</span><span class="p">,</span> <span class="mi">68902</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># we index the VoxelConnectivyArray object just like it is a numpy ndarray</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">connection_strength</span> <span class="o">=</span> <span class="n">voxel_array</span><span class="p">[</span><span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># a row would be the bi-lateral connection strength from a given voxel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">voxel_array</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># a column would be the connection strength to a given voxel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># from each voxel in the right hemisphere</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">column</span> <span class="o">=</span> <span class="n">voxel_array</span><span class="p">[:,</span> <span class="n">target</span><span class="p">]</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># indexing the VoxelConnectivityArray object returns numpy ndarray</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="go">np.ndarray</span>
+</pre></div>
+</div>
+<p>If one wishes to operate on the full matrix (not recommended unless you have &gt;1TB RAM!),
+computing the full matrix is similar to loading an <cite>hdf5</cite> file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">full_array</span> <span class="o">=</span> <span class="n">vox_array</span><span class="p">[:]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">full_array</span><span class="p">)</span>
+<span class="go">BIG!!!!!!</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="voxelconnectivityarray-methods">
+<h3>3.2.2.3. VoxelConnectivityArray methods<a class="headerlink" href="#voxelconnectivityarray-methods" title="Permalink to this headline">¶</a></h3>
+<p><strong>numpy.ndarray like methods</strong></p>
+<p><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code></a> also has a few methods implemented from <code class="docutils literal"><span class="pre">numpy.ndarray</span></code>.
+These include:</p>
+<ul class="simple">
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.dtype" title="mcmodels.models.voxel.VoxelConnectivityArray.dtype"><code class="xref py py-attr docutils literal"><span class="pre">dtype</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.shape" title="mcmodels.models.voxel.VoxelConnectivityArray.shape"><code class="xref py py-attr docutils literal"><span class="pre">shape</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.size" title="mcmodels.models.voxel.VoxelConnectivityArray.size"><code class="xref py py-attr docutils literal"><span class="pre">size</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.T" title="mcmodels.models.voxel.VoxelConnectivityArray.T"><code class="xref py py-attr docutils literal"><span class="pre">T</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.transpose" title="mcmodels.models.voxel.VoxelConnectivityArray.transpose"><code class="xref py py-meth docutils literal"><span class="pre">transpose</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.astype" title="mcmodels.models.voxel.VoxelConnectivityArray.astype"><code class="xref py py-meth docutils literal"><span class="pre">astype</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.sum" title="mcmodels.models.voxel.VoxelConnectivityArray.sum"><code class="xref py py-meth docutils literal"><span class="pre">sum</span></code></a></li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.mean" title="mcmodels.models.voxel.VoxelConnectivityArray.mean"><code class="xref py py-meth docutils literal"><span class="pre">mean</span></code></a></li>
+</ul>
+<p>and are called just like their <code class="docutils literal"><span class="pre">numpy.ndarray</span></code> counter parts:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">voxel_array</span><span class="o">.</span><span class="n">T</span>
+<span class="go">VoxelConnectivityArray(dtype=float32, shape=(448962, 226346))</span>
+</pre></div>
+</div>
+<p><strong>iterator methods</strong></p>
+<p>In addition to being able to index <code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code> as a <code class="docutils literal"><span class="pre">numpy.ndarray</span></code>,
+<code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code> implements several iterating methods:</p>
+<ul class="simple">
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.iterrows" title="mcmodels.models.voxel.VoxelConnectivityArray.iterrows"><code class="xref py py-meth docutils literal"><span class="pre">iterrows</span></code></a> : yields single rows</li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.itercolumns" title="mcmodels.models.voxel.VoxelConnectivityArray.itercolumns"><code class="xref py py-meth docutils literal"><span class="pre">itercolumns</span></code></a> : yields single columns</li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.iterrows_blocked" title="mcmodels.models.voxel.VoxelConnectivityArray.iterrows_blocked"><code class="xref py py-meth docutils literal"><span class="pre">iterrows_blocked</span></code></a> : yields blocks of rows given the number of blocks.</li>
+<li><a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray.itercolumns_blocked" title="mcmodels.models.voxel.VoxelConnectivityArray.itercolumns_blocked"><code class="xref py py-meth docutils literal"><span class="pre">itercolumns_blocked</span></code></a> : yields blocks of columns rows given the number of blocks.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="regionalizedmodel-class">
+<h2>3.2.3. <a class="reference internal" href="generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel" title="mcmodels.models.voxel.RegionalizedModel"><code class="xref py py-class docutils literal"><span class="pre">RegionalizedModel</span></code></a> class<a class="headerlink" href="#regionalizedmodel-class" title="Permalink to this headline">¶</a></h2>
+<p>Our voxel-scale model can be regionalized as well by integrating the connectivity
+matrix over some parcellation.</p>
+<div class="section" id="metrics">
+<h3>3.2.3.1. Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h3>
+<p>Given a parcellation, integrating the connectivity
+over source and target regions gives us <a class="reference internal" href="../glossary.html#term-connection-strength"><span class="xref std std-term">connection strength</span></a>. Since the
+relative sizes of the regions may be vastly different, we can normalize this metric
+by dividing the connection strength by the size of ether the target region
+(<a class="reference internal" href="../glossary.html#term-connection-density"><span class="xref std std-term">connection density</span></a>), the size of the source region (<a class="reference internal" href="../glossary.html#term-normalized-connection-strength"><span class="xref std std-term">normalized
+connection strength</span></a>) or by both the source and target (<a class="reference internal" href="../glossary.html#term-normalized-connection-density"><span class="xref std std-term">normalized
+connection density</span></a>).</p>
+<p>We can again use the <code class="xref py py-class docutils literal"><span class="pre">VoxelModelCache</span></code> object to download and cache
+regionalized voxel models:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># this returns a pandas dataframe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalized_connection_density</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_normalized_connection_density</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Alternatively, we could construct the <a class="reference internal" href="generated/mcmodels.models.voxel.RegionalizedModel.html#mcmodels.models.voxel.RegionalizedModel" title="mcmodels.models.voxel.RegionalizedModel"><code class="xref py py-class docutils literal"><span class="pre">RegionalizedModel</span></code></a> object using
+our <a class="reference internal" href="generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code></a> and our source/target <code class="xref py py-class docutils literal"><span class="pre">Mask</span></code> objects:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">mcmodels.models.voxel</span> <span class="k">import</span> <span class="n">RegionalizedModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get set of summary structures</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">structure_tree</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get_structure_tree</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary_structures</span> <span class="o">=</span> <span class="n">structure_tree</span><span class="o">.</span><span class="n">get_structures_by_set_id</span><span class="p">([</span><span class="mi">165787189</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># the new ccf does not have sturcture 934 as a structure id</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">structure_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">summary_structures</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">934</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get keys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source_key</span> <span class="o">=</span> <span class="n">source_mask</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">structure_ids</span><span class="o">=</span><span class="n">summary_structures</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">target_key</span> <span class="o">=</span> <span class="n">target_mask</span><span class="o">.</span><span class="n">get_key</span><span class="p">(</span><span class="n">structure_ids</span><span class="o">=</span><span class="n">summary_structures</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">regionalized_model</span> <span class="o">=</span> <span class="n">RegionalizedModel</span><span class="o">.</span><span class="n">from_voxel_array</span><span class="p">(</span>
+<span class="gp">... </span><span class="n">voxel_array</span><span class="p">,</span> <span class="n">source_key</span><span class="p">,</span> <span class="n">target_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalized_connection_density</span> <span class="o">=</span> <span class="n">regionalized_model</span><span class="o">.</span><span class="n">normalized_connection_density</span>
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">References</p>
+<table class="docutils citation" frame="void" id="knox2018" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Knox2018]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> “A high resolution data-driven model of the mouse connectome”</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

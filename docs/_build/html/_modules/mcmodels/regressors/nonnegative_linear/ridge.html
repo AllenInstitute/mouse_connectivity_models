@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.regressors.nonnegative_linear.ridge &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.regressors.nonnegative_linear.ridge</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Nonnegative Ridge Regression.</span>
+
+<span class="sd">:note: This is an experimental module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox &lt;josephk@alleninstitute.org&gt;</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">linalg</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.linear_model.base</span> <span class="k">import</span> <span class="n">_rescale_data</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_X_y</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_consistent_length</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">NonnegativeLinear</span><span class="p">,</span> <span class="n">_solve_nnls</span>
+
+
+<span class="k">def</span> <span class="nf">_solve_ridge_nnls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;X and y must be 2d arrays! May have to reshape &quot;</span>
+                         <span class="s2">&quot;X.reshape(-1, 1) or y.reshape(-1, 1).&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">alpha</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of targets and number of penalties &quot;</span>
+                         <span class="s2">&quot;do not correspond: </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># we set up as alpha**2</span>
+    <span class="n">sqrt_alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+    <span class="c1"># compute R^T R is more numerically stable than X^T X</span>
+    <span class="c1"># &#39;r&#39; mode returns tuple: (R,)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># rewrite as ||Ax - b||_2</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sqrt_alpha</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># solve nnls system</span>
+    <span class="n">coef</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">_solve_nnls</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coef</span><span class="p">,</span> <span class="n">res</span>
+
+
+<div class="viewcode-block" id="nonnegative_ridge_regression"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.nonnegative_ridge_regression.html#mcmodels.regressors.nonnegative_ridge_regression">[docs]</a><span class="k">def</span> <span class="nf">nonnegative_ridge_regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Solve the nonnegative least squares estimate regression problem.</span>
+
+<span class="sd">    Solves</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \underset{x}{\text{argmin}} \| Ax - y \|_2^2 + \alpha^2 \| x \|_2^2</span>
+<span class="sd">        \quad \text{for} \quad x \geq 0</span>
+
+<span class="sd">    using `scipy.optimize.nnls &lt;https://docs.scipy.org/doc/scipy/reference/</span>
+<span class="sd">    generated/scipy.optimize.nnls.html&gt;`_. This can be simplified to:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \underset{x}{\text{argmin}} \| Qx - c \|_2^2 \quad \text{for} \quad x \geq 0</span>
+
+<span class="sd">    where</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        Q = X^TX + \alpha I \quad \text{and} \quad c = X^Ty</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : array, shape = (n_samples, n_features)</span>
+<span class="sd">        Training data.</span>
+
+<span class="sd">    y : array, shape = (n_samples,) or (n_samples, n_targets)</span>
+<span class="sd">        Target values.</span>
+
+<span class="sd">    alpha : float or array with shape = (n_features,)</span>
+<span class="sd">        Regularization strength; must be a positive float. Improves the</span>
+<span class="sd">        conditioning of the problem and reduces the variance of the estimates.</span>
+<span class="sd">        Larger values specify stronger regularization.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coef : array, shape = (n_features,) or (n_features, n_targets)</span>
+<span class="sd">        Weight vector(s).</span>
+
+<span class="sd">    res : float</span>
+<span class="sd">        The residual, :math:`\| Qx - c \|_2`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is an experimental function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO accept_sparse=[&#39;csr&#39;, &#39;csc&#39;, &#39;coo&#39;]? check sopt.nnls</span>
+    <span class="c1"># TODO order=&#39;F&#39;?</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">check_consistent_length</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">ravel</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ravel</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">n_samples_</span><span class="p">,</span> <span class="n">n_targets</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">if</span> <span class="n">n_samples</span> <span class="o">!=</span> <span class="n">n_samples_</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of samples in X and y does not correspond:&quot;</span>
+                         <span class="s2">&quot; </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_samples_</span><span class="p">))</span>
+
+    <span class="n">has_sw</span> <span class="o">=</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">has_sw</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sample weights must be 1D array or scalar&quot;</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_rescale_data</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span>
+
+    <span class="c1"># there should be either 1 or n_targets penalties</span>
+    <span class="c1"># NOTE: different from sklearn.linear_model.ridge</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">alpha</span><span class="o">.</span><span class="n">size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of targets and number of penalties &quot;</span>
+                         <span class="s2">&quot;do not correspond: </span><span class="si">%d</span><span class="s2"> != </span><span class="si">%d</span><span class="s2">&quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="n">alpha</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+
+    <span class="c1"># NOTE: different from sklearn.linear_model.ridge</span>
+    <span class="k">if</span> <span class="n">alpha</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n_features</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
+
+    <span class="n">coef</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">_solve_ridge_nnls</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ravel</span><span class="p">:</span>
+        <span class="c1"># When y was passed as 1d-array, we flatten the coefficients</span>
+        <span class="n">coef</span> <span class="o">=</span> <span class="n">coef</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">coef</span><span class="p">,</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="NonnegativeRidge"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge">[docs]</a><span class="k">class</span> <span class="nc">NonnegativeRidge</span><span class="p">(</span><span class="n">NonnegativeLinear</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Nonnegative least squares with L2 regularization.</span>
+
+<span class="sd">    This model solves a regression model where the loss function is</span>
+<span class="sd">    the nonnegative linear least squares function and regularization is</span>
+<span class="sd">    given by the l2-norm. This estimator has built-in support for</span>
+<span class="sd">    mulitvariate regression.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alpha : float or array with shape = (n_features,)</span>
+<span class="sd">        Regularization strength; must be a positive float. Improves the</span>
+<span class="sd">        conditioning of the problem and reduces the variance of the estimates.</span>
+<span class="sd">        Larger values specify stronger regularization.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coef_ : array, shape = (n_features,) or (n_features, n_targets)</span>
+<span class="sd">        Weight vector(s).</span>
+
+<span class="sd">    res_ : float</span>
+<span class="sd">        The residual, of the nonnegative least squares fitting.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.regressors import NonnegativeRidge</span>
+<span class="sd">    &gt;&gt;&gt; # generate some fake data</span>
+<span class="sd">    &gt;&gt;&gt; n_samples, n_features = 10, 5</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.randn(n_samples)</span>
+<span class="sd">    &gt;&gt;&gt; X = np.random.randn(n_samples, n_features)</span>
+<span class="sd">    &gt;&gt;&gt; # fit regressor</span>
+<span class="sd">    &gt;&gt;&gt; reg = NonnegativeRidge(alpha=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; reg.fit(X, y)</span>
+<span class="sd">    NonnegativeRidge(alpha=1.0)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is an experimental class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NonnegativeRidge.__init__"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span></div>
+
+<div class="viewcode-block" id="NonnegativeRidge.fit"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NonnegativeRidge.html#mcmodels.regressors.NonnegativeRidge.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit nonnegative least squares linear model with L2 regularization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape = (n_samples, n_features)</span>
+<span class="sd">            Training data.</span>
+
+<span class="sd">        y : array, shape = (n_samples,) or (n_samples, n_targets)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: add support for sparse</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">multi_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sample weights must be 1D array or scalar&quot;</span><span class="p">)</span>
+
+        <span class="c1"># fit weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_</span> <span class="o">=</span> <span class="n">nonnegative_ridge_regression</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

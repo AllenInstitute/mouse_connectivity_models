@@ -1,0 +1,6 @@
+mcmodels\.utils\.padded\_diagonal\_fill
+=======================================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: padded_diagonal_fill

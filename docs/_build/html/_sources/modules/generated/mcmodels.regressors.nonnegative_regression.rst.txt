@@ -1,0 +1,6 @@
+mcmodels\.regressors\.nonnegative\_regression
+=============================================
+
+.. currentmodule:: mcmodels.regressors
+
+.. autofunction:: nonnegative_regression

@@ -1,0 +1,28 @@
+mcmodels\.regressors\.NadarayaWatson
+====================================
+
+.. currentmodule:: mcmodels.regressors
+
+.. autoclass:: NadarayaWatson
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NadarayaWatson.__init__
+      ~NadarayaWatson.fit
+      ~NadarayaWatson.get_params
+      ~NadarayaWatson.get_weights
+      ~NadarayaWatson.predict
+      ~NadarayaWatson.score
+      ~NadarayaWatson.set_params
+   
+   
+
+   
+   
+   

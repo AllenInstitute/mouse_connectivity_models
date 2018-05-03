@@ -1,0 +1,6 @@
+mcmodels\.core\.utils\.get\_injection\_hemisphere\_id
+=====================================================
+
+.. currentmodule:: mcmodels.core.utils
+
+.. autofunction:: get_injection_hemisphere_id

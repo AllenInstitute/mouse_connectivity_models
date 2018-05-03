@@ -1,0 +1,6 @@
+mcmodels\.regressors\.nonnegative\_ridge\_regression
+====================================================
+
+.. currentmodule:: mcmodels.regressors
+
+.. autofunction:: nonnegative_ridge_regression

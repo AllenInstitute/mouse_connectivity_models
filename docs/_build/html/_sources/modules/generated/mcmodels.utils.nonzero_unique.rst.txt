@@ -1,0 +1,6 @@
+mcmodels\.utils\.nonzero\_unique
+================================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: nonzero_unique

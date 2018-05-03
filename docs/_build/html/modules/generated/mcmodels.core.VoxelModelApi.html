@@ -1,0 +1,542 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.core.VoxelModelApi &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="mcmodels.core.utils.compute_centroid" href="mcmodels.core.utils.compute_centroid.html" />
+    <link rel="prev" title="mcmodels.core.VoxelModelCache" href="mcmodels.core.VoxelModelCache.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mcmodels-core-voxelmodelapi">
+<h1>mcmodels.core.VoxelModelApi<a class="headerlink" href="#mcmodels-core-voxelmodelapi" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mcmodels.core.VoxelModelApi">
+<em class="property">class </em><code class="descclassname">mcmodels.core.</code><code class="descname">VoxelModelApi</code><span class="sig-paren">(</span><em>base_uri=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_api.html#VoxelModelApi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelApi" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP Client extending MouseConnectivityApi to download model data.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">build_query_url</span></code>(stage_clauses[,&nbsp;fmt])</td>
+<td>Combine one or more RMA query stages into a single RMA query.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">build_reference_aligned_image_channel_volumes_url</span></code>(…)</td>
+<td>Construct url to download the red, green, and blue channels aligned to the 25um adult mouse brain reference space volume.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">build_schema_query</span></code>([clazz,&nbsp;fmt])</td>
+<td>Build the URL that will fetch the data schema.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">build_volumetric_data_download_url</span></code>(…[,&nbsp;…])</td>
+<td>Construct url to download 3D reference model in NRRD format.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">calculate_injection_centroid</span></code>(…[,&nbsp;resolution])</td>
+<td>Compute the centroid of an injection site.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">cleanup_truncated_file</span></code>(file_path)</td>
+<td>Helper for removing files.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">construct_well_known_file_download_url</span></code>(…)</td>
+<td>Join data api endpoint and id.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">debug_clause</span></code>([debug_value])</td>
+<td>Construct a debug clause for use in an rma::options clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">do_query</span></code>(url_builder_fn,&nbsp;json_traversal_fn,&nbsp;…)</td>
+<td>Bundle an query url construction function with a corresponding response json traversal function.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">do_rma_query</span></code>(rma_builder_fn,&nbsp;…)</td>
+<td>Bundle an RMA query url construction function with a corresponding response json traversal function.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_annotation_volume</span></code>(ccf_version,&nbsp;…)</td>
+<td>Download the annotation volume at a particular resolution.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelApi.download_model_files" title="mcmodels.core.VoxelModelApi.download_model_files"><code class="xref py py-obj docutils literal"><span class="pre">download_model_files</span></code></a>(file_name[,&nbsp;save_file_path])</td>
+<td>Download  data.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_reference_aligned_image_channel_volumes</span></code>(…)</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_structure_mask</span></code>(structure_id,&nbsp;…)</td>
+<td>Download an indicator mask for a specific structure.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_structure_mesh</span></code>(structure_id,&nbsp;…)</td>
+<td>Download a Wavefront obj file containing a triangulated 3d mesh built  from an annotated structure.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_template_volume</span></code>(resolution,&nbsp;file_name)</td>
+<td>Download the registration template volume at a particular resolution.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_volumetric_data</span></code>(data_path,&nbsp;file_name)</td>
+<td>Download 3D reference model in NRRD format.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_correlation_search</span></code>(**kwargs)</td>
+<td>Select a seed experiment and a domain over which the similarity comparison is to be made.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_injection_coordinate_search</span></code>(**kwargs)</td>
+<td>User specifies a seed location within the 3D reference space.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_source_search</span></code>(**kwargs)</td>
+<td>Search over the whole projection signal statistics dataset to find experiments with specific projection profiles.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_spatial_search</span></code>(**kwargs)</td>
+<td>Displays all SectionDataSets with projection signal density &gt;= 0.1 at the seed point.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">filter</span></code>(key,&nbsp;value)</td>
+<td>serialize a single RMA query filter clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">filters</span></code>(filters)</td>
+<td>serialize RMA query filter clauses.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_detail</span></code>(experiment_id)</td>
+<td>Retrieve the experiments data.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiments</span></code>(structure_ids,&nbsp;**kwargs)</td>
+<td>Fetch experiment metadata from the Mouse Brain Connectivity Atlas.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_manual_injection_summary</span></code>(experiment_id)</td>
+<td>Retrieve manual injection summary.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection_image_info</span></code>(experiment_id,&nbsp;…)</td>
+<td>Fetch meta-information of one projection image.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_reference_aligned_image_channel_volumes_url</span></code>(…)</td>
+<td>Retrieve the download link for a specific data set.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_schema</span></code>([clazz])</td>
+<td>Retrieve schema information.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">json_msg_query</span></code>(url[,&nbsp;dataframe])</td>
+<td>Common case where the url is fully constructed     and the response data is stored in the ‘msg’ field.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">load_api_schema</span></code>()</td>
+<td>Download the RMA schema from the current RMA endpoint</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">model_query</span></code>(*args,&nbsp;**kwargs)</td>
+<td>Construct and execute a model stage of an RMA query string.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">model_stage</span></code>(model,&nbsp;**kwargs)</td>
+<td>Construct a model stage of an RMA query string.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">only_except_tabular_clause</span></code>(filter_type,&nbsp;…)</td>
+<td>Construct a clause to filter which attributes are returned for use in an rma::options clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">options_clause</span></code>(**kwargs)</td>
+<td>build rma:: options clause.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">order_clause</span></code>([order_list])</td>
+<td>Construct a debug clause for use in an rma::options clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pipe_stage</span></code>(pipe_name,&nbsp;parameters)</td>
+<td>Connect model and service stages via their JSON responses.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">quote_string</span></code>(the_string)</td>
+<td>Wrap a clause in single quotes.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">read_data</span></code>(parsed_json)</td>
+<td>Return the message data from the parsed query.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_file_over_http</span></code>(url,&nbsp;file_path)</td>
+<td>Get a file from the data api and save it.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_parsed_json_over_http</span></code>(url[,&nbsp;post])</td>
+<td>Get the document and put it in a Python data structure</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_xml_over_http</span></code>(url)</td>
+<td>Get the document and put it in a Python data structure</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">service_query</span></code>(*args,&nbsp;**kwargs)</td>
+<td>Construct and Execute a single-stage RMA query to send a request to a connected service.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">service_stage</span></code>(service_name[,&nbsp;parameters])</td>
+<td>Construct an RMA query fragment to send a request to a connected service.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">set_api_urls</span></code>(api_base_url_string)</td>
+<td>Set the internal RMA and well known file download endpoint urls based on a api server endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">set_default_working_directory</span></code>(working_directory)</td>
+<td>Set the working directory where files will be saved.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">tuple_filters</span></code>(filters)</td>
+<td>Construct an RMA filter clause.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="81%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>download_connection_density</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_connection_strength</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>download_data_mask</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_injection_density</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>download_injection_fraction</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_nodes</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>download_normalized_connection_density</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_normalized_connection_strength</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>download_projection_density</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_source_mask_params</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>download_target_mask_params</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>download_weights</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>get_structure_unionizes</strong></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelApi.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>base_uri=None</em><span class="sig-paren">)</span><a class="headerlink" href="#mcmodels.core.VoxelModelApi.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#mcmodels.core.VoxelModelApi.__init__" title="mcmodels.core.VoxelModelApi.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>([base_uri])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">build_query_url</span></code>(stage_clauses[,&nbsp;fmt])</td>
+<td>Combine one or more RMA query stages into a single RMA query.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">build_reference_aligned_image_channel_volumes_url</span></code>(…)</td>
+<td>Construct url to download the red, green, and blue channels aligned to the 25um adult mouse brain reference space volume.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">build_schema_query</span></code>([clazz,&nbsp;fmt])</td>
+<td>Build the URL that will fetch the data schema.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">build_volumetric_data_download_url</span></code>(…[,&nbsp;…])</td>
+<td>Construct url to download 3D reference model in NRRD format.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">calculate_injection_centroid</span></code>(…[,&nbsp;resolution])</td>
+<td>Compute the centroid of an injection site.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">cleanup_truncated_file</span></code>(file_path)</td>
+<td>Helper for removing files.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">construct_well_known_file_download_url</span></code>(…)</td>
+<td>Join data api endpoint and id.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">debug_clause</span></code>([debug_value])</td>
+<td>Construct a debug clause for use in an rma::options clause.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">do_query</span></code>(url_builder_fn,&nbsp;json_traversal_fn,&nbsp;…)</td>
+<td>Bundle an query url construction function with a corresponding response json traversal function.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">do_rma_query</span></code>(rma_builder_fn,&nbsp;…)</td>
+<td>Bundle an RMA query url construction function with a corresponding response json traversal function.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_annotation_volume</span></code>(ccf_version,&nbsp;…)</td>
+<td>Download the annotation volume at a particular resolution.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_connection_density</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_connection_strength</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_data_mask</span></code>(path,&nbsp;experiment_id,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_injection_density</span></code>(path,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_injection_fraction</span></code>(path,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#mcmodels.core.VoxelModelApi.download_model_files" title="mcmodels.core.VoxelModelApi.download_model_files"><code class="xref py py-obj docutils literal"><span class="pre">download_model_files</span></code></a>(file_name[,&nbsp;save_file_path])</td>
+<td>Download  data.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_nodes</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_normalized_connection_density</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_normalized_connection_strength</span></code>(…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_projection_density</span></code>(path,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_reference_aligned_image_channel_volumes</span></code>(…)</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_source_mask_params</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_structure_mask</span></code>(structure_id,&nbsp;…)</td>
+<td>Download an indicator mask for a specific structure.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_structure_mesh</span></code>(structure_id,&nbsp;…)</td>
+<td>Download a Wavefront obj file containing a triangulated 3d mesh built  from an annotated structure.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_target_mask_params</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_template_volume</span></code>(resolution,&nbsp;file_name)</td>
+<td>Download the registration template volume at a particular resolution.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">download_volumetric_data</span></code>(data_path,&nbsp;file_name)</td>
+<td>Download 3D reference model in NRRD format.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">download_weights</span></code>(file_name)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_correlation_search</span></code>(**kwargs)</td>
+<td>Select a seed experiment and a domain over which the similarity comparison is to be made.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_injection_coordinate_search</span></code>(**kwargs)</td>
+<td>User specifies a seed location within the 3D reference space.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_source_search</span></code>(**kwargs)</td>
+<td>Search over the whole projection signal statistics dataset to find experiments with specific projection profiles.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">experiment_spatial_search</span></code>(**kwargs)</td>
+<td>Displays all SectionDataSets with projection signal density &gt;= 0.1 at the seed point.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">filter</span></code>(key,&nbsp;value)</td>
+<td>serialize a single RMA query filter clause.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">filters</span></code>(filters)</td>
+<td>serialize RMA query filter clauses.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiment_detail</span></code>(experiment_id)</td>
+<td>Retrieve the experiments data.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_experiments</span></code>(structure_ids,&nbsp;**kwargs)</td>
+<td>Fetch experiment metadata from the Mouse Brain Connectivity Atlas.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_manual_injection_summary</span></code>(experiment_id)</td>
+<td>Retrieve manual injection summary.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_projection_image_info</span></code>(experiment_id,&nbsp;…)</td>
+<td>Fetch meta-information of one projection image.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_reference_aligned_image_channel_volumes_url</span></code>(…)</td>
+<td>Retrieve the download link for a specific data set.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_schema</span></code>([clazz])</td>
+<td>Retrieve schema information.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">get_structure_unionizes</span></code>(experiment_ids[,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">json_msg_query</span></code>(url[,&nbsp;dataframe])</td>
+<td>Common case where the url is fully constructed     and the response data is stored in the ‘msg’ field.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">load_api_schema</span></code>()</td>
+<td>Download the RMA schema from the current RMA endpoint</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">model_query</span></code>(*args,&nbsp;**kwargs)</td>
+<td>Construct and execute a model stage of an RMA query string.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">model_stage</span></code>(model,&nbsp;**kwargs)</td>
+<td>Construct a model stage of an RMA query string.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">only_except_tabular_clause</span></code>(filter_type,&nbsp;…)</td>
+<td>Construct a clause to filter which attributes are returned for use in an rma::options clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">options_clause</span></code>(**kwargs)</td>
+<td>build rma:: options clause.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">order_clause</span></code>([order_list])</td>
+<td>Construct a debug clause for use in an rma::options clause.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pipe_stage</span></code>(pipe_name,&nbsp;parameters)</td>
+<td>Connect model and service stages via their JSON responses.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">quote_string</span></code>(the_string)</td>
+<td>Wrap a clause in single quotes.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">read_data</span></code>(parsed_json)</td>
+<td>Return the message data from the parsed query.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_file_over_http</span></code>(url,&nbsp;file_path)</td>
+<td>Get a file from the data api and save it.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_parsed_json_over_http</span></code>(url[,&nbsp;post])</td>
+<td>Get the document and put it in a Python data structure</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">retrieve_xml_over_http</span></code>(url)</td>
+<td>Get the document and put it in a Python data structure</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">service_query</span></code>(*args,&nbsp;**kwargs)</td>
+<td>Construct and Execute a single-stage RMA query to send a request to a connected service.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">service_stage</span></code>(service_name[,&nbsp;parameters])</td>
+<td>Construct an RMA query fragment to send a request to a connected service.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">set_api_urls</span></code>(api_base_url_string)</td>
+<td>Set the internal RMA and well known file download endpoint urls based on a api server endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">set_default_working_directory</span></code>(working_directory)</td>
+<td>Set the working directory where files will be saved.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">tuple_filters</span></code>(filters)</td>
+<td>Construct an RMA filter clause.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="mcmodels.core.VoxelModelApi.download_model_files">
+<code class="descname">download_model_files</code><span class="sig-paren">(</span><em>file_name</em>, <em>save_file_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mcmodels/core/voxel_model_api.html#VoxelModelApi.download_model_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mcmodels.core.VoxelModelApi.download_model_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download  data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>file_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd></dd>
+<dt><strong>save_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">File name to save as.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

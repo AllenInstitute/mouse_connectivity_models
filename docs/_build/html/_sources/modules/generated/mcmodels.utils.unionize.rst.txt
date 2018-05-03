@@ -1,0 +1,6 @@
+mcmodels\.utils\.unionize
+=========================
+
+.. currentmodule:: mcmodels.utils
+
+.. autofunction:: unionize

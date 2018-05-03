@@ -1,0 +1,247 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.models.voxel.voxel_model &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.models.voxel.voxel_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module containing object :class:`VoxelModel`. The only difference between this</span>
+<span class="sd">estimator and :class:`NadarayaWatson` is that class:`VoxelModel` one treats the</span>
+<span class="sd">full injection volume (masked and flattened) as the input data `X` instead of</span>
+<span class="sd">only the centroids. Thus, :class:&#39;VoxelModel` must be instatiated with the</span>
+<span class="sd">array of source_voxels, and the input data `X` must be passed as a tuple of arrays</span>
+<span class="sd">: (centroids, injections) or a concatenated array.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox &lt;josephk@alleninstitute.org&gt;</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">issparse</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+
+<span class="kn">from</span> <span class="nn">...regressors</span> <span class="k">import</span> <span class="n">NadarayaWatson</span>
+
+
+<div class="viewcode-block" id="VoxelModel"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel">[docs]</a><span class="k">class</span> <span class="nc">VoxelModel</span><span class="p">(</span><span class="n">NadarayaWatson</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Voxel-scale interpolation model for mesoscale connectivity.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    source_voxels : array-like, shape=(n_voxels, 3)</span>
+<span class="sd">        List of voxel coordinates at which to interpolate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.core import VoxelModelCache</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.models import VoxelModel</span>
+<span class="sd">    &gt;&gt;&gt; cache = VoxelModelCache</span>
+<span class="sd">    &gt;&gt;&gt; # get cortical experiment data</span>
+<span class="sd">    &gt;&gt;&gt; cortex_data = cache.get_experiment_data(injection_structure_ids=[315])</span>
+<span class="sd">    &gt;&gt;&gt; source_voxels = cortex_data.source_mask.coordinates</span>
+<span class="sd">    &gt;&gt;&gt; reg = VoxelModel(source_voxels)</span>
+<span class="sd">    &gt;&gt;&gt; reg.fit((cortex_data.centroids, cortex_data.injections))</span>
+<span class="sd">    VoxelModel(source_voxels=array([[ ... ]]))</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Knox et al. &#39;High resolution data-driven model of the mouse connectome&#39;.</span>
+<span class="sd">        bioRxiv 293019; doi: https://doi.org/10.1101/293019</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    NadarayaWatson</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="VoxelModel.__init__"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_voxels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">VoxelModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_voxels</span> <span class="o">=</span> <span class="n">source_voxels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_voxels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_compute_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_kernel</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VoxelModel.fit"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit Voxel Model.</span>
+
+<span class="sd">        NOTE : X is a concatenation (column wise) of the injection centroid</span>
+<span class="sd">            coordinates and the injection volumes. This choice was made to</span>
+<span class="sd">            be consistent with the sklearn.core.BaseEstimator fit and predict</span>
+<span class="sd">            schema</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)</span>
+<span class="sd">            Centroid coordinates concatenated with the injection density for</span>
+<span class="sd">            each training experiment.</span>
+
+<span class="sd">        y : {array-like, sparse matrix}, shape=(n_exps, n_target_voxels)</span>
+<span class="sd">            Normalized projection density for each training experiment</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">centroids</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># assume array</span>
+            <span class="n">centroids</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">]</span>
+
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_fit_arrays</span><span class="p">(</span><span class="n">centroids</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_voxels</span><span class="p">,</span> <span class="n">centroids</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="VoxelModel.predict"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict projection volumes given injection volumes.</span>
+
+<span class="sd">        NOTE : X is a concatenation (column wise) of the injection centroid</span>
+<span class="sd">            coordinates and the injection volumes. This choice was made to</span>
+<span class="sd">            be consistent with the sklearn.core.BaseEstimator fit and predict</span>
+<span class="sd">            schema</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : {array-like, sparse matrix}, shape=(n_exps, 3+n_source_voxels)</span>
+<span class="sd">            Centroid coordinates concatenated with the injection density for</span>
+<span class="sd">            each test experiment.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        C : array, shape=(X.shape[0], y.shape[1])</span>
+<span class="sd">            Predicted normalized projection densities.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;weights_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">injection</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#assume array</span>
+            <span class="n">injection</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">injection</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">injection</span> <span class="o">=</span> <span class="n">injection</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># has to be of form sparse.dot(dense)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span>
+
+        <span class="k">return</span> <span class="n">injection</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VoxelModel.get_weights"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.models.VoxelModel.html#mcmodels.models.VoxelModel.get_weights">[docs]</a>    <span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overwrite of NadarayaWatson.get_weights.&quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;weights_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return model weights.&quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;weights_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return model nodes (data).&quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;weights_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

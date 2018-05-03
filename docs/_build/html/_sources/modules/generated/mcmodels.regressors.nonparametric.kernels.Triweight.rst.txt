@@ -1,0 +1,27 @@
+mcmodels\.regressors\.nonparametric\.kernels\.Triweight
+=======================================================
+
+.. currentmodule:: mcmodels.regressors.nonparametric.kernels
+
+.. autoclass:: Triweight
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Triweight.__init__
+      ~Triweight.clone_with_theta
+      ~Triweight.diag
+      ~Triweight.get_params
+      ~Triweight.is_stationary
+      ~Triweight.set_params
+   
+   
+
+   
+   
+   

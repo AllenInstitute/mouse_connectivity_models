@@ -1,0 +1,27 @@
+mcmodels\.regressors\.nonparametric\.kernels\.Polynomial
+========================================================
+
+.. currentmodule:: mcmodels.regressors.nonparametric.kernels
+
+.. autoclass:: Polynomial
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Polynomial.__init__
+      ~Polynomial.clone_with_theta
+      ~Polynomial.diag
+      ~Polynomial.get_params
+      ~Polynomial.is_stationary
+      ~Polynomial.set_params
+   
+   
+
+   
+   
+   

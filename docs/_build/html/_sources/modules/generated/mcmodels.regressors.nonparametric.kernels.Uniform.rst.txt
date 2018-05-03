@@ -1,0 +1,27 @@
+mcmodels\.regressors\.nonparametric\.kernels\.Uniform
+=====================================================
+
+.. currentmodule:: mcmodels.regressors.nonparametric.kernels
+
+.. autoclass:: Uniform
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Uniform.__init__
+      ~Uniform.clone_with_theta
+      ~Uniform.diag
+      ~Uniform.get_params
+      ~Uniform.is_stationary
+      ~Uniform.set_params
+   
+   
+
+   
+   
+   

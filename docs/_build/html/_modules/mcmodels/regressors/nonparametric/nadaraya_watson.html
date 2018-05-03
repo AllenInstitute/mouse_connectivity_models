@@ -1,0 +1,500 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>mcmodels.regressors.nonparametric.nadaraya_watson &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="../../../../_static/external_assets/stylesheets/animation.css" /> 
+<script src="../../../../_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for mcmodels.regressors.nonparametric.nadaraya_watson</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Nadaraya-Watson Regression.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Authors: Joseph Knox &lt;josephk@alleninstitute.org&gt;</span>
+<span class="c1"># License: Allen Institute Software License</span>
+
+<span class="c1"># TODO : evaluate overwrite of K (kernel)</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">issparse</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="k">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">RegressorMixin</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics.scorer</span> <span class="k">import</span> <span class="n">check_scoring</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics.pairwise</span> <span class="k">import</span> <span class="n">pairwise_kernels</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">ParameterGrid</span><span class="p">,</span> <span class="n">check_cv</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection._search</span> <span class="k">import</span> <span class="n">_check_param_grid</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_X_y</span>
+
+
+<div class="viewcode-block" id="NadarayaWatson"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson">[docs]</a><span class="k">class</span> <span class="nc">NadarayaWatson</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;NadarayaWatson Estimator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kernel : string or callable, default=&quot;linear&quot;</span>
+<span class="sd">        Kernel mapping used to compute weights.</span>
+
+<span class="sd">    gamma : float, default=None</span>
+<span class="sd">        Gamma parameter for the RBF, laplacian, polynomial, exponential chi2</span>
+<span class="sd">        and sigmoid kernels. Ignored by other kernels.</span>
+
+<span class="sd">    degree : float, default=3</span>
+<span class="sd">        Degree of the polynomial kernel. Ignored by other kernels.</span>
+
+<span class="sd">    coef0 : float, default=1</span>
+<span class="sd">        Zero coefficient for polynomial and sigmoid kernels.</span>
+<span class="sd">        Ignored by other kernels.</span>
+
+<span class="sd">    kernel_params : mapping of string to any, optional</span>
+<span class="sd">        Additional parameters for kernel function passed as callable object.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    See `sklearn.kernel_ridge &lt;http://scikit-learn.org/stable/modules/</span>
+<span class="sd">    generated/sklearn.kernel_ridge.KernelRidge.html#sklearn.kernel_ridge.</span>
+<span class="sd">    KernelRidge&gt;`_, for more info: Kernel Ridge Regression estimator from</span>
+<span class="sd">    which the structure of this estimator is based.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.regressors import NadarayaWatson</span>
+<span class="sd">    &gt;&gt;&gt; # generate some fake data</span>
+<span class="sd">    &gt;&gt;&gt; n_samples, n_features = 10, 5</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.randn(n_samples)</span>
+<span class="sd">    &gt;&gt;&gt; X = np.random.randn(n_samples, n_features)</span>
+<span class="sd">    &gt;&gt;&gt; # fit regressor</span>
+<span class="sd">    &gt;&gt;&gt; reg = NadarayaWatson()</span>
+<span class="sd">    &gt;&gt;&gt; reg.fit(X, y)</span>
+<span class="sd">    NadarayaWatson(coef0=1, degree=3, gamma=None, kernel=&#39;linear&#39;,</span>
+<span class="sd">            kernel_params=None)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NadarayaWatson.__init__"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                 <span class="n">coef0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef0</span> <span class="o">=</span> <span class="n">coef0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel_params</span> <span class="o">=</span> <span class="n">kernel_params</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets kernel matrix.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">):</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel_params</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+                      <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+                      <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef0</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">pairwise_kernels</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span>
+                                <span class="n">filter_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_pairwise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">==</span> <span class="s2">&quot;precomputed&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_check_fit_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks fit arrays and scales y if sample_weight is not None.&quot;&quot;&quot;</span>
+        <span class="c1"># Convert data</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">check_X_y</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">accept_sparse</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="s2">&quot;csc&quot;</span><span class="p">),</span>
+                         <span class="n">multi_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">y_numeric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="c1"># TODO: break up?</span>
+            <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="n">ensure_2d</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># do not want to rescale X!!!!</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+
+<div class="viewcode-block" id="NadarayaWatson.fit"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit Nadaraya Watson estimator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape (n_samples, n_features)</span>
+<span class="sd">            Training data.</span>
+
+<span class="sd">        y : array, shape (n_samples, n_features)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_fit_arrays</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_normalize_kernel</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Normalizes kernel to have row sum == 1 if sum != 0&quot;&quot;&quot;</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># if kernel has finite support, do not divide by zero</span>
+        <span class="n">factor</span><span class="p">[</span><span class="n">factor</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># divide in place</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">factor</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">K</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">K</span><span class="o">/</span><span class="n">factor</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="NadarayaWatson.get_weights"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson.get_weights">[docs]</a>    <span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return model weights.&quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_kernel</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NadarayaWatson.predict"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatson.html#mcmodels.regressors.NadarayaWatson.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict using the Nadaraya Watson model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape (n_samples, n_features)</span>
+<span class="sd">            Training data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        C : array, shape (n_samples,) or (n_samples, n_targets)</span>
+<span class="sd">            Returns predicted values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># TODO: evaluate sklearn.utils.extmath.safe_sparse_dot()</span>
+        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">):</span>
+            <span class="c1"># has to be of form sparse.dot(dense)</span>
+            <span class="c1"># more efficient than w.dot( y_.toarray() )</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Nodes (data)&quot;&quot;&quot;</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;X_&quot;</span><span class="p">,</span> <span class="s2">&quot;y_&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span></div>
+
+
+<span class="k">class</span> <span class="nc">_NadarayaWatsonLOOCV</span><span class="p">(</span><span class="n">NadarayaWatson</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Nadaraya watson with built-in Cross-Validation</span>
+
+<span class="sd">    It allows efficient Leave-One-Out cross validation</span>
+
+<span class="sd">    This class is not intended to be used directly. Use NadarayaWatsonCV instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">store_cv_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1">#TODO: check _check_param_grid in proper spot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span> <span class="o">=</span> <span class="n">param_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span> <span class="o">=</span> <span class="n">store_cv_scores</span>
+        <span class="n">_check_param_grid</span><span class="p">(</span><span class="n">param_grid</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_param_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ParameterGrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_errors_and_values_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to avoid duplication between self._errors and</span>
+<span class="sd">        self._values.</span>
+
+<span class="sd">        fill diagonal with 0, renormalize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_kernel</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">S</span>
+
+    <span class="k">def</span> <span class="nf">_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; mean((y - Sy)**2) = mean( ((I-S)y)**2 )&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors_and_values_helper</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+
+        <span class="c1"># I - S (S has 0 on diagonal)</span>
+        <span class="n">S</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="c1">#linalg.norm(S.dot(y))</span>
+
+    <span class="k">def</span> <span class="nf">_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; prediction &quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors_and_values_helper</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the model using efficient leave-one-out cross validation&quot;&quot;&quot;</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_fit_arrays</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">)</span>
+
+        <span class="n">candidate_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_iterator</span><span class="p">)</span>
+
+        <span class="n">scorer</span> <span class="o">=</span> <span class="n">check_scoring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># error = scorer is None</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="ow">is</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">error</span><span class="p">:</span>
+            <span class="c1"># scorer wants an object to make predictions</span>
+            <span class="c1"># but are already computed efficiently by _NadarayaWatsonCV.</span>
+            <span class="c1"># This identity_estimator will just return them</span>
+            <span class="k">def</span> <span class="nf">identity_estimator</span><span class="p">():</span>
+                <span class="k">pass</span>
+            <span class="n">identity_estimator</span><span class="o">.</span><span class="n">predict</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">y_pred</span>
+
+        <span class="n">cv_scores</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidate_params</span><span class="p">:</span>
+            <span class="c1"># NOTE: a bit hacky, find better way</span>
+            <span class="n">K</span> <span class="o">=</span> <span class="n">NadarayaWatson</span><span class="p">(</span><span class="o">**</span><span class="n">candidate</span><span class="p">)</span><span class="o">.</span><span class="n">_get_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+                <span class="c1"># NOTE: score not error!</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_values</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="n">scorer</span><span class="p">(</span><span class="n">identity_estimator</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+            <span class="n">cv_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_splits_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_index_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">cv_scores</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_score_</span> <span class="o">=</span> <span class="n">cv_scores</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">best_index_</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_params_</span> <span class="o">=</span> <span class="n">candidate_params</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">best_index_</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cv_scores_</span> <span class="o">=</span> <span class="n">cv_scores</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+
+<div class="viewcode-block" id="NadarayaWatsonCV"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatsonCV.html#mcmodels.regressors.NadarayaWatsonCV">[docs]</a><span class="k">class</span> <span class="nc">NadarayaWatsonCV</span><span class="p">(</span><span class="n">NadarayaWatson</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;NadarayaWatson Estimator with built in Leave-one-out cross validation.</span>
+
+<span class="sd">    By default, it performs Leave-one-out cross validation efficiently, but</span>
+<span class="sd">    can accept cv argument to perform arbitrary cross validation splits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    param_grid : dict or list of dictionaries</span>
+<span class="sd">        Dictionary with parameters names (string) as keys and lists of</span>
+<span class="sd">        parameter settings to try as values or a list of such dictionaries,</span>
+<span class="sd">        in which case the grids spanned by each dictionary in the list are</span>
+<span class="sd">        explored. This enables searching over any sequence of parameter settings.</span>
+
+<span class="sd">    scoring : string, callable or None, optional, default: None</span>
+<span class="sd">        A string (see sklearn.model_evaluation documentation) or a scorer</span>
+<span class="sd">        callable object / function with signature</span>
+<span class="sd">        ``scorer(estimator, X, y)``</span>
+
+<span class="sd">    cv : int, cross-validation generator or an iterable, optional, default: None</span>
+<span class="sd">        Determines the cross-validation splitting strategy. If None, perform</span>
+<span class="sd">        efficient leave-one-out cross validation, else use</span>
+<span class="sd">        sklearn.model_selection.GridSearchCV.</span>
+
+<span class="sd">    store_cv_scores : boolean, optional, default=False</span>
+<span class="sd">        Flag indicating if the cross-validation values should be stored in</span>
+<span class="sd">        `cv_scores_` attribute. This flag is only compatible with `cv=None`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cv_scores_ : array, shape = (n_samples, ~len(param_grid))</span>
+<span class="sd">        Cross-validation scores for each candidate parameter (if</span>
+<span class="sd">        `store_cv_scores=True` and `cv=None`)</span>
+
+<span class="sd">    best_score_ : float</span>
+<span class="sd">        Mean cross-validated score of the best performing estimator.</span>
+
+<span class="sd">    n_splits_ : int</span>
+<span class="sd">        Number of cross-validation splits (folds/iterations)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from mcmodels.regressors import NadarayaWatson</span>
+<span class="sd">    &gt;&gt;&gt; # generate some fake data</span>
+<span class="sd">    &gt;&gt;&gt; n_samples, n_features = 10, 5</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.random.randn(n_samples)</span>
+<span class="sd">    &gt;&gt;&gt; X = np.random.randn(n_samples, n_features)</span>
+<span class="sd">    &gt;&gt;&gt; # fit regressor</span>
+<span class="sd">    &gt;&gt;&gt; param_grid = [dict(kernel=[&#39;linear&#39;], degree=np.arange(1, 4)),</span>
+<span class="sd">    ...               dict(kernel=[&#39;rbf&#39;], gamma=np.logspace(-1, 1, 3))]</span>
+<span class="sd">    &gt;&gt;&gt; reg = NadarayaWatsonCV(param_grid)</span>
+<span class="sd">    &gt;&gt;&gt; reg.fit(X, y)</span>
+<span class="sd">    NadarayaWatsonCV(coef0=1, cv=None, degree=3, gamma=1.0, kernel=&#39;rbf&#39;,</span>
+<span class="sd">             kernel_params=None,</span>
+<span class="sd">             param_grid=[{&#39;kernel&#39;: [&#39;linear&#39;], &#39;degree&#39;: array([1, 2, 3])},</span>
+<span class="sd">                          {&#39;kernel&#39;: [&#39;rbf&#39;], &#39;gamma&#39;: array([ 0.1,  1. , 10. ])}],</span>
+<span class="sd">             scoring=None, store_cv_scores=False)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NadarayaWatsonCV.__init__"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatsonCV.html#mcmodels.regressors.NadarayaWatsonCV.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">store_cv_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">coef0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span> <span class="o">=</span> <span class="n">param_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span> <span class="o">=</span> <span class="n">store_cv_scores</span>
+
+        <span class="c1"># NadarayaWatson kwargs :: for compatibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef0</span> <span class="o">=</span> <span class="n">coef0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NadarayaWatsonCV.fit"><a class="viewcode-back" href="../../../../modules/generated/mcmodels.regressors.NadarayaWatsonCV.html#mcmodels.regressors.NadarayaWatsonCV.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit Nadaraya Watson estimator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array, shape (n_samples, n_features)</span>
+<span class="sd">            Training data.</span>
+
+<span class="sd">        y : array, shape (n_samples, n_features)</span>
+<span class="sd">            Target values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self : returns an instance of self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">estimator</span> <span class="o">=</span> <span class="n">_NadarayaWatsonLOOCV</span><span class="p">(</span><span class="n">param_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span><span class="p">,</span>
+                                             <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span>
+                                             <span class="n">store_cv_scores</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span><span class="p">)</span>
+            <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">best_score_</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">best_score_</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_splits_</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">n_splits_</span>
+            <span class="n">best_params_</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">best_params_</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">best_index_</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">best_index_</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cv_scores_</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">cv_scores_</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_cv_scores</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cv!=None and store_cv_score=True &quot;</span>
+                                 <span class="s2">&quot;are incompatible&quot;</span><span class="p">)</span>
+            <span class="n">gs</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">NadarayaWatson</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_grid</span><span class="p">,</span>
+                              <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span> <span class="n">refit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">gs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span>
+            <span class="n">estimator</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">best_estimator_</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_splits_</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">n_splits_</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">best_score_</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">best_score_</span>
+            <span class="n">best_params_</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">best_params_</span>
+
+        <span class="c1"># set params for predict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_params</span><span class="p">(</span><span class="n">best_params_</span><span class="p">)</span>
+
+        <span class="c1"># store data for predict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../../index.html">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

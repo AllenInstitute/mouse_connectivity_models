@@ -1,0 +1,25 @@
+mcmodels\.core\.RegionalData
+============================
+
+.. currentmodule:: mcmodels.core
+
+.. autoclass:: RegionalData
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RegionalData.__init__
+      ~RegionalData.from_voxel_data
+      ~RegionalData.get_experiment_data
+      ~RegionalData.get_regional_data
+   
+   
+
+   
+   
+   

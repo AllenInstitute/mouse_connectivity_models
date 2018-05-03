@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Documentation of mouse_connectivity_models 0.0.1 &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/animation.css" /> 
+<script src="_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documentation-of-mouse-connectivity-models-version">
+<span id="index-ref"></span><h1>Documentation of mouse_connectivity_models 0.0.1<a class="headerlink" href="#documentation-of-mouse-connectivity-models-version" title="Permalink to this headline">¶</a></h1>
+<p>mouse_connectivity_models (<a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">mcmodels</a>) is a Python package providing mesoscale
+connectivity models for mouse using data from <a class="reference external" href="http://connectivity.brain-map.org/">anterograde viral tracing
+experiments</a>. This package was initially
+written when developing the latest voxel-scale connectivity model for the
+publication <a class="reference external" href="https://www.biorxiv.org/content/early/2018/04/01/293019">‘High resolution data-driven model of the mouse connectome’</a>, and has since
+become a repository for the various connectivity models we are researching.</p>
+<div class="section" id="information-for-researchers-interested-in-the-latest-voxel-scale-model">
+<h2>Information for Researchers interested in the latest voxel-scale model<a class="headerlink" href="#information-for-researchers-interested-in-the-latest-voxel-scale-model" title="Permalink to this headline">¶</a></h2>
+<p>The latest voxel-scale model is a weighted, directed graph represented as an
+adjacency matrix in which:</p>
+<ul class="simple">
+<li>rows : set of source voxels at 100 micron</li>
+<li>columns : set of target voxels at 100 micron</li>
+<li>elements : the nonnegative connection weight from a given source voxel to a
+given target voxel</li>
+</ul>
+<p>This matrix has on the order of ~ 200,000 by 400,000 elements and most likely
+will not in memory. However, our model learns a low-rank representation of this
+adjacency matrix that we utilize to construct the full matrix in pieces on demand
+through the <a class="reference internal" href="modules/generated/mcmodels.models.voxel.VoxelConnectivityArray.html#mcmodels.models.voxel.VoxelConnectivityArray" title="mcmodels.models.voxel.VoxelConnectivityArray"><code class="xref py py-class docutils literal"><span class="pre">VoxelConnectivityArray</span></code></a> class. For more
+information see the <a class="reference internal" href="modules/data_wrangling.html#data-wrangling"><span class="std std-ref">Data wrangling</span></a> section of the <a class="reference internal" href="user_guide.html#user-guide"><span class="std std-ref">User Guide</span></a>.</p>
+<div class="section" id="regionalized-voxel-scale-model">
+<h3>Regionalized voxel-scale model<a class="headerlink" href="#regionalized-voxel-scale-model" title="Permalink to this headline">¶</a></h3>
+<p>Additionally, one may be interested in analysis of the model at a <a class="reference internal" href="glossary.html#term-regional"><span class="xref std std-term">regional</span></a>
+resolution. We have available a set of adjacency matrices of the connectivity
+between a set of 293 <a class="reference internal" href="glossary.html#term-summary-structures"><span class="xref std std-term">summary structures</span></a> for which we integrated our
+voxel-scale connectivity. These can be conveniently downloaded (and subsequently
+loaded from your local machine) through the <a class="reference internal" href="modules/generated/mcmodels.core.VoxelModelCache.html#mcmodels.core.VoxelModelCache" title="mcmodels.core.VoxelModelCache"><code class="xref py py-class docutils literal"><span class="pre">VoxelModelCache</span></code></a> class, or
+downloaded directly from <a class="reference external" href="http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/">here</a>.</p>
+</div>
+</div>
+<div class="section" id="contents">
+<h2>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/cartoon.png"><img alt="_images/cartoon.png" class="align-right" src="_images/cartoon.png" style="width: 50%;" /></a>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="level-of-support">
+<h2>Level of Support<a class="headerlink" href="#level-of-support" title="Permalink to this headline">¶</a></h2>
+<p>We are not currently supporting this code, but simply releasing it to the
+community AS IS but are not able to provide any guarantees of support. The
+community is welcome to submit issues, but you should not expect an active
+response.</p>
+</div>
+<div class="section" id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="development-lead">
+<h3>Development Lead<a class="headerlink" href="#development-lead" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Joseph Knox &lt;<a class="reference external" href="mailto:josephk&#37;&#52;&#48;alleninstitute&#46;org">josephk<span>&#64;</span>alleninstitute<span>&#46;</span>org</a>&gt;</li>
+</ul>
+</div>
+<div class="section" id="contributors">
+<h3>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h3>
+<p>None yet. Why not be the first?</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="#">Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

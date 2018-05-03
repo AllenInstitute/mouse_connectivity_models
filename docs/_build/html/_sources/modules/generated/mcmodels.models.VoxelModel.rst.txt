@@ -1,0 +1,28 @@
+mcmodels\.models\.VoxelModel
+============================
+
+.. currentmodule:: mcmodels.models
+
+.. autoclass:: VoxelModel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VoxelModel.__init__
+      ~VoxelModel.fit
+      ~VoxelModel.get_params
+      ~VoxelModel.get_weights
+      ~VoxelModel.predict
+      ~VoxelModel.score
+      ~VoxelModel.set_params
+   
+   
+
+   
+   
+   

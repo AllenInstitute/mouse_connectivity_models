@@ -1,0 +1,199 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Contrubuting &#8212; mcmodels 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/aibs_sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Version 0.0.1" href="whats_new/v0.0.1.html" /> 
+  </head>
+  <body>
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/common_layout.css" />
+<link rel="stylesheet" type="text/css" href="_static/external_assets/stylesheets/animation.css" /> 
+<script src="_static/external_assets/bundled.js" type="text/javascript"></script> 
+
+<script type="text/javascript"> 
+    document.addEventListener("DOMContentLoaded", function() { 
+        if(typeof PortalAssets !== 'undefined')
+            PortalAssets.initializePortal({
+                tabId: 'Data'
+            });
+    });
+</script>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contrubuting">
+<h1>Contrubuting<a class="headerlink" href="#contrubuting" title="Permalink to this headline">¶</a></h1>
+<p>We encourage the community to contribute! Please first review the <a class="reference internal" href="#contributing-agreement"><span class="std std-ref">Allen
+Institute Contributing Agreement</span></a> then follow the
+<a class="reference internal" href="#contributing-how-to"><span class="std std-ref">how to</span></a>.</p>
+<div class="section" id="allen-institute-contributing-agreement">
+<span id="contributing-agreement"></span><h2>Allen Institute Contributing Agreement<a class="headerlink" href="#allen-institute-contributing-agreement" title="Permalink to this headline">¶</a></h2>
+<p>Allen Institute Contribution Agreement</p>
+<p>This document describes the terms under which you may make “Contributions” — which
+may include without limitation, software additions, revisions, bug fixes,
+configuration changes, documentation, or any other materials — to any of the
+projects owned or managed by the Allen Institute. If you have questions about
+these terms, please contact us at <a class="reference external" href="mailto:terms&#37;&#52;&#48;alleninstitute&#46;org">terms<span>&#64;</span>alleninstitute<span>&#46;</span>org</a>.</p>
+<p>You certify that:</p>
+<ul>
+<li><p class="first">Your Contributions are either:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Created in whole or in part by you and you have the right to submit them
+under the designated license (described below); or</li>
+<li>Based upon previous work that, to the best of your knowledge, is covered
+under an appropriate open source license and you have the right under
+that license to submit that work with modifications, whether created
+in whole or in part by you, under the designated license; or</li>
+<li>Provided directly to you by some other person who certified (1) or (2)
+and you have not modified them.</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">You are granting your Contributions to the Allen Institute under the terms of
+the <a class="reference external" href="https://opensource.org/licenses/BSD-2-Clause">2-Clause BSD license</a>
+(the “designated license”).</p>
+</li>
+<li><p class="first">You understand and agree that the Allen Institute projects and your
+Contributions are public and that a record of the Contributions (including
+all metadata and personal information you submit with them) is maintained
+indefinitely and may be redistributed consistent with the Allen Institute’s
+mission and the 2-Clause BSD license.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-contribute">
+<span id="contributing-how-to"></span><h2>How to contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Fork the <a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models">main repository</a> on Github by following <a class="reference external" href="https://help.github.com/articles/fork-a-repo">this guide</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="https://git-scm.com/docs/git-clone">Clone</a> your fork to your local
+machine</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ git clone git@github.com:&lt;github_username&gt;/mouse_connectivity_models.git
+$ <span class="nb">cd</span> mouse_connectivity_models
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a feature branch to hold your development changes</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ git checkout -b new-feature
+</pre></div>
+</div>
+</li>
+<li><p class="first">Use <a class="reference external" href="https://github.com/pypa/pipenv">pipenv</a> to install the <code class="docutils literal"><span class="pre">dev</span></code>
+dependencies. If you do not have <code class="docutils literal"><span class="pre">pipenv</span></code> currently installed</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ pip install pipenv
+</pre></div>
+</div>
+<p>Then install <code class="docutils literal"><span class="pre">dev</span></code> dependencies</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ pipenv install --dev
+</pre></div>
+</div>
+<p>This will create a virtual environment on your machine for this project. To
+activate the virtual environment (to develop)</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ pipenv shell
+</pre></div>
+</div>
+</li>
+<li><p class="first">All contributions must pass tests to be merged with the main repository. Any
+new features must have test scripts written. We use <a class="reference external" href="https://pytest.org/">pytest</a> for all testing. <em>From outside</em> the source directory
+(<code class="docutils literal"><span class="pre">mcmodels</span></code>)</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ pytest mcmodels
+</pre></div>
+</div>
+</li>
+</ol>
+<ol class="arabic" start="4">
+<li><p class="first">After your new feature passes all tests, <a class="reference external" href="https://git-scm.com/docs/git-add">add</a> and <a class="reference external" href="https://git-scm.com/docs/git-commit">commit</a> your changes</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ git add modified_files
+$ git commit
+</pre></div>
+</div>
+<p>Please leave an informative, specific commit message. Push your changes to your
+remote branch</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ git push -u origin my-feature
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a pull request from your fork following these <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request-from-a-fork">instructions</a></p>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/classes.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whats_new.html">Release history</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contrubuting</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AllenInstitute/mouse_connectivity_models.git">Github Profile</a></li>
+</ul>
+
+<h3> Questions </h3>
+<p class="questions">
+  Send any questions using the <a href="http://alleninstitute.org/contact_us/index.html">Send Us a Message</a> link below, 
+  or submit your question to <a href="http://stackoverflow.com/">StackOverflow</a> using with the 'allen-sdk' tag.
+</p>
+
+<p class="questions">
+  If you encounter any problems using the AllenSDK, please create an issue on <a href="http://github.com/alleninstitute/allensdk/issues/">Github's issue tracker</a>.
+</p>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018. Allen Institute..
+    </div> 
+
+  </body>
+</html>

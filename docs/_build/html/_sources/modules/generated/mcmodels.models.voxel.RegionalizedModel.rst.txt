@@ -1,0 +1,24 @@
+mcmodels\.models\.voxel\.RegionalizedModel
+==========================================
+
+.. currentmodule:: mcmodels.models.voxel
+
+.. autoclass:: RegionalizedModel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RegionalizedModel.__init__
+      ~RegionalizedModel.from_voxel_array
+      ~RegionalizedModel.predict
+   
+   
+
+   
+   
+   

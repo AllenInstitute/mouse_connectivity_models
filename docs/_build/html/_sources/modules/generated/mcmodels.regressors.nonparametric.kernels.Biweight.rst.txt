@@ -1,0 +1,27 @@
+mcmodels\.regressors\.nonparametric\.kernels\.Biweight
+======================================================
+
+.. currentmodule:: mcmodels.regressors.nonparametric.kernels
+
+.. autoclass:: Biweight
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Biweight.__init__
+      ~Biweight.clone_with_theta
+      ~Biweight.diag
+      ~Biweight.get_params
+      ~Biweight.is_stationary
+      ~Biweight.set_params
+   
+   
+
+   
+   
+   
