@@ -1,0 +1,11 @@
+allensdk
+sklearn
+coverage
+matplotlib
+nose
+mock
+numpydoc
+pillow
+pytest
+sphinx<1.7
+sphinx-gallery
