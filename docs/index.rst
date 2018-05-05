@@ -2,6 +2,10 @@
 
 Documentation of mouse_connectivity_models |version|
 ====================================================
+
+.. note:: This package is currently in its early Beta stages and is under active
+        development.
+
 mouse_connectivity_models (`mcmodels <https://github.com/AllenInstitute/
 mouse_connectivity_models.git>`_) is a Python package providing mesoscale
 connectivity models for mouse using data from `anterograde viral tracing

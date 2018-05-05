@@ -24,28 +24,23 @@ arrays X, y and will store the coefficients :math:`w` in its
         >>> reg.coef_
         array([1.0, 0.0]
 
-However, CONDITIONING
-
-satisfied the above constraint. We enforce the coefficients to be positive as
-a weight between brain regions must be positive.
-
 
 Nonnegative Ridge Regression
 ----------------------------
 
-The equation :math:`Ax=b` is said to be ill-conditioned if the columns of `A`
+The equation :math:`Ax=b` is said to be :term:`ill-conditioned` if the columns of `A`
 are nearly linearly dependent. Ill-conditioned least squares problems are highly
 sensitive to random errors and produce estimations with high variance as a result.
 
-We can improve the conditioning of :math:`Ax=b` by imposing a penalty on the
+We can improve the :term:`conditioning` of :math:`Ax=b` by imposing a penalty on the
 size of the coefficients :math:`x`. Using the L2 norm as a measure of size, we
-arrive at Tikhonov Reglarization, also known as ridge regression:
+arrive at :term:`Tikhonov Regularization`, also known as :term:`ridge regression`:
 
 .. math::
         \underset{x}{\text{argmin}} \| Ax - b \|_2^2 + \alpha^2 \| x \|_2^2
 
-We can incoporate a nonnegativity contraint and rewrite
-the formula above as a :term:`quadratic programing` (:term:`QP`) problem:
+We can incorporate a nonnegativity constraint and rewrite
+the formula above as a :term:`quadratic programming` (:term:`QP`) problem:
 
 
 .. math::
@@ -75,7 +70,7 @@ where
 
         Q = X^TX + \alpha^2 I \quad \text{and} \quad c = - 2A^Ty
 
-which we can solve using any number of quadratic programming solvers.
+which we can solve using any number of :term:`quadratic programming` solvers.
 
 
 .. math::
@@ -109,13 +104,13 @@ linear_model.html#lasso>`_ and the non-negative `Elastic Net
 regressors are currently implemented in the
 `scikit-learn <http://scikit-learn.org/stable/index.html>`_ package:
 
-- If one wishes to perform non-negative Lasso regression, see
+- If one wishes to perform non-negative :term:`Lasso` regression, see
   `sklearn.linear_model.Lasso <http://scikit-learn.org/stable/modules/
   generated/sklearn.linear_model.Lasso.html>`_ or
   `sklearn.linear_model.lasso_path <http://scikit-learn.org/stable/modules/
   generated/sklearn.linear_model.lasso_path.html>`_
   and pass the parameters `fit_intercept=False, positive=True`
-- If one wishes to perform non-negative Elastic-Net regression, see
+- If one wishes to perform non-negative :term:`Elastic-Net` regression, see
   `sklearn.linear_model.ElasticNet <http://scikit-learn.org/stable/
   modules/generated/sklearn.linear_model.ElasticNet.html>`_, or
   `sklearn.linear_model.enet_path <http://scikit-learn.org/stable/

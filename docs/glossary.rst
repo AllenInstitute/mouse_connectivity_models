@@ -12,6 +12,16 @@ Glossary of Technical Terms and API Elements
                 The property which states that a given response can be explained
                 by a linear sum of the inputs.
 
+        condition number
+                A measure of the sensitivity of a function. In terms of linear
+                equations, the condition number gives a bound on the inaccuracy
+                of the solution and is a property of the matrix of the linear
+                coefficients, not of the input.
+
+        conditioning
+                The process of decreasing the :term:`condition number` of a
+                function.
+
         connection density
                 The :term:`connection strength` between two regions divided by
                 the size of the target :term:`region`.
@@ -22,8 +32,8 @@ Glossary of Technical Terms and API Elements
 
         coarse structures
         major brain divisions
-                The set of 12 major brain divisions from the 3D Allen Mouse
-                Brain Reference Atlas. These include:
+                The set of 12 major brain divisions from the `3D Allen Mouse
+                Brain Reference Atlas <http://atlas.brain-map.org/>`_. These include:
 
                 * Isocortex
                 * Olfactory Areas
@@ -38,19 +48,56 @@ Glossary of Technical Terms and API Elements
                 * Medulla
                 * Cerebellum
 
+        cross validation
+                A model validation technique used in estimating the predictive
+                accuracy of a model. Typically, the data are partitioned into
+                two sets:
+
+                - a training set with which the model is fit
+                - a testing set with which the prediction error of the fitted
+                  model is determined.
+
+                Often, this partitioning is repeated `K` times (typically 5 or 10)
+                using unique samples for the testing set accross each of the `K`
+                folds.
+
+                See https://en.wikipedia.org/wiki/Cross-validation_(statistics)
+                for more information.
+
         edge density
                 The total number of edges in a graph over the total possible
                 number of edges in a graph.
 
+        elastic-net
+                A regularization that combines the :term:`lasso` with
+                :term:`ridge regression`
+
         frobeneous norm
                 The 2-norm of a matrix viewed as a vector.
 
+        homogeneous
+        homogeneity
+                Generally: of the same kind.
+
         homogeneous model
                 The connectivity model at the level of :term:`regions` that
-                assumes that intra-regional connectivity is homogeneous and that
+                assumes that intra-regional connectivity is :term:`homogeneous` and that
                 inter-regional connectivity satisfies an :term:`additivity`
                 property. This model is based on non-negative :term:`linear least
                 squares`.
+
+        ill-conditioned
+                A function with a high :term:`condition number`.
+
+        kernel
+                In nonparametric statistics, a kernel is a window function that
+                describes the weighting method with which to combine sample
+                information.
+
+        lasso
+                A regrularization technique that utilizes the :term:`L1` norm
+                to promote sparsity in terms of the model parameters. See
+                https://en.wikipedia.org/wiki/Lasso_(statistics)
 
         linear least squares
                 Method of approximately solving a system of linear equations by
@@ -75,6 +122,11 @@ Glossary of Technical Terms and API Elements
                 The :term:`connection strength` between two regions divided by
                 the size of the source :term:`region`.
 
+        quadratic program
+        quadratic programming
+        qp
+                See https://en.wikipedia.org/wiki/Quadratic_programming
+
         radial basis function
                 A real-valued function whose value only depends on the distance
                 from the origin.
@@ -95,6 +147,15 @@ Glossary of Technical Terms and API Elements
                 Predictive modeling technique that attempts to determine the
                 strength of relation between inputs and responses.
 
+        ridge regression
+        tikhonov regularization
+                A regularization technique that shrinks the model parameter
+                coefficients by utilizing an :term:`L2` penalty.
+                See https://en.wikipedia.org/wiki/Tikhonov_regularization
+
+        singular value decomposition
+                See https://en.wikipedia.org/wiki/Singular-value_decomposition
+
         structure
         structures
                 See :term:`region`
@@ -110,6 +171,9 @@ Glossary of Technical Terms and API Elements
         voxel
         voxels
                 A 3-D cubic volume element; the generalization of a pixel.
+
+        well-conditioned
+                A function with a low :term:`condition number`.
 
         white matter
         fiber tracts

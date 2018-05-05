@@ -22,17 +22,17 @@ regression problem <nonnegative_linear>`:
         \underset{x}{\text{argmin}} \| Ax - b \|_2^2, \quad \text{subject to} \quad x \geq 0
 
 This model seeks set of positive linear weight coefficients :math:`w_{x,y}` that
-minimize the L2 prediction error. Because many injections overlap several regions,
-the model attempls to assign credit to each of the source regions by relying on
+minimize the :term:`L2` prediction error. Because many injections overlap several regions,
+the model attempts to assign credit to each of the source regions by relying on
 multiple non-overlapping injections.
 
 
 Assumptions
 -----------
-- Homogeneity: two injections of identical volume into region X result in the
-  same flourescence in a target region, irrespective of the exact posistion of
+- :term:`Homogeneity`: two injections of identical volume into region X result in the
+  same fluorescence in a target region, irrespective of the exact position of
   the injection within the source area
-- Additivity: the flourescence observed in a target region can be explained by
+- :term:`Additivity`: the fluorescence observed in a target region can be explained by
   a linear sum of appropriately weighted sources.
 
 
@@ -51,8 +51,8 @@ Conditioning
 
 .. currentmodule:: mcmodels
 
-The conditioning algorithm is implemented in
-:func:`models.homogeneous.backward.subset_selection_conditioning`,
+The :term:`conditioning` algorithm is implemented in
+:func:`models.homogeneous.backward_subset_selection_conditioning`,
 and utilizes a :term:`singular value decomposition`
 based technique to remove a set of columns that heuristically decreases the
 :term:`condition number`.
