@@ -1,25 +1,22 @@
 .. -*- mode: rst -*-
 
-|Travis|_ |Codecov|_ |Python27|_ |Python35|_ |Python36|_
+|Travis|_ |Codecov|_ |Readthedocs|_
 
 .. |Travis| image:: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
-.. _Travis: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models
+.. _Travis: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models?branch=master
+
+.. |Codecov| image:: https://codecov.io/github/AllenInstitute/mouse_connectivity_models/badge.svg?branch=master&svg=true
+.. _Codecov: https://codecov.io/github/AllenInstitute/mouse_connectivity_models?branch=master?branch=master
 
 .. |Codecov| image:: https://codecov.io/github/AllenInstitute/mouse_connectivity_models/badge.svg?branch=master&svg=true
 .. _Codecov: https://codecov.io/github/AllenInstitute/mouse_connectivity_models?branch=master
 
-.. |Python27| image:: https://img.shields.io/badge/python-2.7-blue.svg
-.. _Python27: https://badge.fury.io/py/mouse_connectivity_models
-
-.. |Python35| image:: https://img.shields.io/badge/python-3.5-blue.svg
-.. _Python35: https://badge.fury.io/py/mouse_connectivity_models
-
-.. |Python36| image:: https://img.shields.io/badge/python-3.6-blue.svg
-.. _Python36: https://badge.fury.io/py/mouse_connectivity_models
+.. |Readthedocs| image:: https://readthedocs.org/projects/mouse-connectivity-models/badge/?version=latest
+.. _Readthedocs: http://mouse-connectivity-models.readthedocs.io/en/latest/?badge=latest
 
 
 mouse_connectivity_models
-===============================
+=========================
 
 mouse_connectivity_models is a Python module for constructing and testing
 mesoscale connectivity models using data from the `Allen Institute for Brain
@@ -31,8 +28,7 @@ It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
 - `High resolution data-driven model of the mouse connectome
   <https://www.biorxiv.org/content/early/2018/04/01/293019>`_
 
-**Website**: http://AllenInstitute.github.io/mouse_connectivity_models
-
+**Website**: http://mouse-connectivity-models.readthedocs.io/en/latest/
 
 Installation
 ------------
@@ -110,4 +106,4 @@ Help and Support
 Documentation
 ~~~~~~~~~~~~~
 The documentation that supports mouse_connectivity_models can be found at the
-`Website <http://AllenInstitute.github.io/mouse_connectivity_models>`_.
+`Website <http://mouse-connectivity-models.readthedocs.io/en/latest/>`_.

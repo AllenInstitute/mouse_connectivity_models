@@ -24,7 +24,7 @@ env:
 
 install:
   - "pip install --upgrade pip"
-  - "pip install pipenv"
+  - "pip install pipenv=11.10.0" # temporary while bug #2120 fix
   - "pipenv install --dev"
   - "pip install --no-deps --force --upgrade ."
 

@@ -15,7 +15,15 @@ import numpy as np
 class VoxelConnectivityArray(object):
     """Class for implicit construction of the voxel model.
 
-    See :class:`VoxelModel` for weights/nodes descriptions
+    VoxelConnectivityArray is used to perfom analysis on the large (~200,000 by
+    400,000 element) voxel-scale connectivity matrix on normal* machines (loading
+    the entire matrix would take hundreds of GB of working memory). You can
+    access elements of the VoxelConnectivityArray object just like a list or
+    numpy array, where each call to __getitem__ will implicitly construct the
+    given slice of the array. Additionally, several numpy.ndarray methods have
+    been implemented.
+
+    See :class:`VoxelModel` for weights/nodes descriptions.
 
     Parameters
     ----------
@@ -181,7 +189,7 @@ class VoxelConnectivityArray(object):
         """Consistent with numpy.ndarray.astype.
 
         see `numpy.ndarray.astype <https://docs.scipy.org/doc/numpy-1.14.0/
-        reference/generated/numpy.ndarray.astype.html>` for more info.
+        reference/generated/numpy.ndarray.astype.html>`_ for more info.
 
         Parameters
         ----------
@@ -206,7 +214,7 @@ class VoxelConnectivityArray(object):
         """Consistent with numpy.ndarray.sum.
 
         see `numpy.ndarray.sum <https://docs.scipy.org/doc/numpy-1.14.0/
-        reference/generated/numpy.ndarray.sum.html>` for more info.
+        reference/generated/numpy.ndarray.sum.html>`_ for more info.
 
         Parameters
         ----------
@@ -232,7 +240,7 @@ class VoxelConnectivityArray(object):
         """Consistent with numpy.ndarray.mean.
 
         see `numpy.ndarray.mean <https://docs.scipy.org/doc/numpy-1.14.0/
-        reference/generated/numpy.ndarray.mean.html>` for more info.
+        reference/generated/numpy.ndarray.mean.html>`_ for more info.
 
         Parameters
         ----------
