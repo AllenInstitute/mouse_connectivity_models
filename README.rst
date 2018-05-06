@@ -2,11 +2,8 @@
 
 |Travis|_ |Codecov|_ |Readthedocs|_
 
-.. |Travis| image:: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
-.. _Travis: https://api.travis-ci.org/AllenInstitute/mouse_connectivity_models?branch=master
-
-.. |Codecov| image:: https://codecov.io/github/AllenInstitute/mouse_connectivity_models/badge.svg?branch=master&svg=true
-.. _Codecov: https://codecov.io/github/AllenInstitute/mouse_connectivity_models?branch=master?branch=master
+.. |Travis| image:: https://travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
+.. _Travis: https://travis-ci.org/AllenInstitute/mouse_connectivity_models
 
 .. |Codecov| image:: https://codecov.io/github/AllenInstitute/mouse_connectivity_models/badge.svg?branch=master&svg=true
 .. _Codecov: https://codecov.io/github/AllenInstitute/mouse_connectivity_models?branch=master
