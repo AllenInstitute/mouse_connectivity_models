@@ -2,10 +2,8 @@
 *.swp
 
 # virtualenvs
-*.venv*
-
-# force gen new lock file
-Pipfile.lock
+venv*
+.venv*
 
 # Pytest compiled
 .pytest_cache/
