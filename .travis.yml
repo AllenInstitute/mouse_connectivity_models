@@ -17,16 +17,16 @@ env:
         - libatlas-dev
         - libatlas3gf-base
 
-  matrix:
-    - TEST_SUITE='not install'
-    - TEST_SUITE='install'
-      PYTEST_ADDOPTS='--cache-clear'
-
 install:
-  - "pip install --upgrade pip"
-  - "pip install pipenv==11.10.0" # temporary while bug #2120 fix
-  - "pipenv install --dev"
-  - "pip install --no-deps --force --upgrade ."
+  - pip install --upgrade pip
+  - pip install pipenv==11.10.0 # temporary while pipenv bug #2120 fix
+  - pipenv install --dev
+  - pip install pytest pytest-cov codecov
+
+before_script:
+  - pip install .
 
 script:
-   - "pytest mcmodels"
+  - pytest --cov=mcmodels
+    # do not fail build if upload to codecov fails
+  - codecov || echo "codecov upload failed"

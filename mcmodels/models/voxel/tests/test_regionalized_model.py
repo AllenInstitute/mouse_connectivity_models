@@ -34,8 +34,9 @@ def test_predict():
     # ------------------------------------------------------------------------
     # tests notimplemented error
     X = np.ones((5, 10))
+    rm = RegionalizedModel(np.ones((5,5)), np.ones((5,5)), np.ones(5), np.ones(5))
 
-    assert_raises(NotImplementedError, RegionalizedModel.predict, None, X)
+    assert_raises(NotImplementedError, rm.predict, None, X)
 
 
 def test_regionalize_voxel_connectivity_array():

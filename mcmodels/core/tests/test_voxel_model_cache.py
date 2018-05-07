@@ -65,10 +65,10 @@ def test_get_nodes(voxel_model_cache, fn_temp_dir):
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
                     new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_nodes()
+        obtained = voxel_model_cache.get_nodes(path)
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
-    voxel_model_cache.get_nodes()
+    voxel_model_cache.get_nodes(path)
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
     assert_allclose(obtained, eye)
@@ -84,10 +84,10 @@ def test_get_weights(voxel_model_cache, fn_temp_dir):
     with mock.patch('mcmodels.core.voxel_model_api.VoxelModelApi.'
                     'retrieve_file_over_http',
                     new=lambda a, b, c: np.savetxt(c, eye, delimiter=',')):
-        obtained = voxel_model_cache.get_weights()
+        obtained = voxel_model_cache.get_weights(path)
 
     voxel_model_cache.api.retrieve_file_over_http = mock.MagicMock()
-    voxel_model_cache.get_weights()
+    voxel_model_cache.get_weights(path)
 
     voxel_model_cache.api.retrieve_file_over_http.assert_not_called()
     assert_allclose(obtained, eye)
