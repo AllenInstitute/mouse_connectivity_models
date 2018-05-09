@@ -4,7 +4,7 @@
 .. highlight:: shell
 
 ============
-Contrubuting
+Contributing
 ============
 
 We encourage the community to contribute! Please first review the :ref:`Allen
