@@ -89,7 +89,6 @@ def test_get_regional_model(voxel_data, mcc, mask):
     data.get_experiment_data(experiment_ids)
     regional_data = data.get_regional_data()
 
-    assert hasattr(regional_data, 'centroids')
     assert hasattr(regional_data, 'injections')
     assert hasattr(regional_data, 'projections')
 

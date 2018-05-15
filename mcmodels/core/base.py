@@ -269,21 +269,10 @@ class VoxelData(_BaseData):
 
     def get_regional_data(self):
         """Returns RegionalData object with same parameters."""
-        regional_data = RegionalData.from_voxel_data(self)
-
-        if hasattr(self, 'centroids'):
-            # unionize pulled data
-            regional_data.centroids = self.centroids.copy()
-            regional_data.injections = self.injections.copy()
-            regional_data.projections = self.projections.copy()
-
-            # NOTE: a little hacky :: accessing private method outside class
-            regional_data._unionize_experiment_data()
-
-        return regional_data
+        return RegionalData.from_voxel_data(self)
 
 
-class RegionalData(VoxelData):
+class RegionalData(_BaseData):
     """Container class for regionalized voxel-scale grid data.
 
     Parameters
@@ -363,6 +352,16 @@ class RegionalData(VoxelData):
         Stacked array of constrained, flattened projection densities for each
         experiment.
 
+    Notes
+    -----
+    - :meth:`RegionalData.from_voxel_data` will not return a :class:`RegionalData`
+    object having identical ``injections`` or ``projections`` attributes to those
+    generated from :meth:`get_experiment_data` since the latter unionizes are
+    computed at a finer resolution. Still, the results should be very similar.
+    - :meth:`get_experiment_data` is prefered if only concerned with unionized
+    data, because it loads the unionizes cached by the ``cache`` parameter
+    instead of computing the unionizations from cached grid data volumes.
+
     See also
     --------
     VoxelData
@@ -377,6 +376,7 @@ class RegionalData(VoxelData):
     RegionalData()
     """
 
+    ROOT_STRUCTURE_ID = 997
     SUMMARY_STRUCTURE_SET_ID = 167587189
     DEFAULT_STRUCTURE_SET_IDS = tuple([SUMMARY_STRUCTURE_SET_ID])
 
@@ -392,30 +392,93 @@ class RegionalData(VoxelData):
         -------
         RegionalData : an installation of the RegionalData object
         """
-        return cls(voxel_data.cache,
-                   injection_structure_ids=voxel_data.injection_structure_ids,
-                   projection_structure_ids=voxel_data.projection_structure_ids,
-                   injection_hemisphere_id=voxel_data.injection_hemisphere_id,
-                   projection_hemisphere_id=voxel_data.projection_hemisphere_id,
-                   normalized_injection=voxel_data.normalized_injection,
-                   normalized_projection=voxel_data.normalized_projection,
-                   flip_experiments=voxel_data.flip_experiments,
-                   data_mask_tolerance=voxel_data.data_mask_tolerance,
-                   injection_volume_bounds=voxel_data.injection_volume_bounds,
-                   projection_volume_bounds=voxel_data.projection_volume_bounds,
-                   min_contained_injection_ratio=voxel_data.min_contained_injection_ratio)
+        regional = cls(voxel_data.cache,
+                       injection_structure_ids=voxel_data.injection_structure_ids,
+                       projection_structure_ids=voxel_data.projection_structure_ids,
+                       injection_hemisphere_id=voxel_data.injection_hemisphere_id,
+                       projection_hemisphere_id=voxel_data.projection_hemisphere_id,
+                       normalized_injection=voxel_data.normalized_injection,
+                       normalized_projection=voxel_data.normalized_projection,
+                       flip_experiments=voxel_data.flip_experiments,
+                       data_mask_tolerance=voxel_data.data_mask_tolerance,
+                       injection_volume_bounds=voxel_data.injection_volume_bounds,
+                       projection_volume_bounds=voxel_data.projection_volume_bounds,
+                       min_contained_injection_ratio=voxel_data.min_contained_injection_ratio)
 
-    def _unionize_experiment_data(self):
-        """Private helper method to unionize voxel scale data to regions."""
-        injection_key = self.injection_mask.get_key()
-        projection_key = self.projection_mask.get_key()
+        if hasattr(voxel_data, 'injections'):
+            injection_key = voxel_data.injection_mask.get_key()
+            projection_key = voxel_data.projection_mask.get_key()
 
-        self.injections = unionize(self.injections, injection_key)
-        self.projections = unionize(self.projections, projection_key)
+            regional.injections = unionize(voxel_data.injections, injection_key)
+            regional.projections = unionize(voxel_data.projections, projection_key)
 
-        return self
+        return regional
 
-    def get_experiment_data(self, experiment_ids):
+    def _subset_experiments_by_injection_hemisphere(self, unionizes):
+        def _get_hemisphere_injection_map():
+            hemisphere_injections = {1 : [], 2 : []}
+            for eid in unionizes.experiment_id.unique():
+                eid_inj = (unionizes.is_injection) & (unionizes.experiment_id == eid)
+                l_sum = unionizes[
+                    eid_inj & (unionizes.hemisphere_id == 1)].projection_density.sum()
+                r_sum = unionizes[
+                    eid_inj & (unionizes.hemisphere_id == 2)].projection_density.sum()
+
+                inj_hemi = 1 if l_sum > r_sum else 2
+                hemisphere_injections[inj_hemi].append(eid)
+
+            return hemisphere_injections
+
+        hemi_injection_map = _get_hemisphere_injection_map()
+
+        if self.injection_hemisphere_id in [1, 2]:
+            if self.flip_experiments:
+                # map 2 -> 1 and map 1 -> 2
+                other_hemisphere_id = 3 - self.injection_hemisphere_id
+                to_flip = hemi_injection_map[other_hemisphere_id]
+                rows = unionizes.experiment_id.isin(to_flip)
+
+                l_rows = rows & (unionizes.hemisphere_id == 1)
+                r_rows = rows & (unionizes.hemisphere_id == 2)
+
+                unionizes.loc[l_rows, 'hemisphere_id'] = 2
+                unionizes.loc[r_rows, 'hemisphere_id'] = 1
+            else:
+                valid_eids = hemi_injection_map[self.injection_hemisphere_id]
+                unionizes = unionizes[unionizes.experiment_id.isin(valid_eids)]
+
+        return unionizes
+
+
+    def _subset_experiments_by_volume_parameters(self, unionizes, experiment_ids):
+        def valid_experiment(eid):
+            exp_unionizes = unionizes[unionizes.experiment_id == eid]
+            root = (exp_unionizes.structure_id == self.ROOT_STRUCTURE_ID) &\
+                   (exp_unionizes.hemisphere_id == 3)
+
+            injection_volume = exp_unionizes[
+                root & exp_unionizes.is_injection].projection_volume.values
+            projection_volume = exp_unionizes[
+                root & (~exp_unionizes.is_injection)].projection_volume.values
+
+            contained_injection = exp_unionizes[
+                exp_unionizes.structure_id.isin(self.injection_structure_ids) &
+                (exp_unionizes.hemisphere_id == 3) &
+                exp_unionizes.is_injection].projection_volume
+            contained_ratio = contained_injection.sum() / injection_volume
+
+            return all((injection_volume > self.injection_volume_bounds[0],
+                        injection_volume < self.injection_volume_bounds[1],
+                        projection_volume > self.projection_volume_bounds[0],
+                        projection_volume < self.projection_volume_bounds[1],
+                        contained_ratio > self.min_contained_injection_ratio))
+
+        valid_eids = [eid for eid in experiment_ids if valid_experiment(eid)]
+
+        return unionizes[unionizes.experiment_id.isin(valid_eids)]
+
+
+    def get_experiment_data(self, experiment_ids, use_dataframes=False):
         """Pulls regionalized voxel-scale grid data for experiments.
 
         Uses the cache attribute to pull grid data from the Allen Brain Atlas.
@@ -432,6 +495,42 @@ class RegionalData(VoxelData):
         -------
         self : returns an instance of self.
         """
-        super(RegionalData, self).get_experiment_data(experiment_ids)
+        def _get_data_array(unionizes, is_injection, normalized, hemisphere_id):
+            index = 'experiment_id'
+            columns = 'structure_id'
+            values = 'normalized_projection_volume' if normalized else 'projection_density'
 
-        return self._unionize_experiment_data()
+            valid_rows = (unionizes.is_injection == is_injection) &\
+                         (unionizes.hemisphere_id == hemisphere_id)
+
+            # better imo than using pd.pivot_table for safety's sake
+            return unionizes[valid_rows].pivot(index=index, columns=columns, values=values)
+
+        all_structure_ids = list(set([self.ROOT_STRUCTURE_ID]) |
+                                 set(self.injection_structure_ids) |
+                                 set(self.projection_structure_ids))
+        unionizes = self.cache.get_structure_unionizes(
+            experiment_ids, structure_ids=all_structure_ids)
+
+        # subset unionize rows
+        unionizes = self._subset_experiments_by_injection_hemisphere(unionizes)
+        unionizes = self._subset_experiments_by_volume_parameters(unionizes, experiment_ids)
+
+        injections = _get_data_array(
+            unionizes, True, self.normalized_injection, self.injection_hemisphere_id)
+
+        projections = _get_data_array(
+            unionizes, False, self.normalized_projection, self.projection_hemisphere_id)
+
+        # projections is found using is_injection=False, add back injection
+        injections = injections.fillna(value=0.0)
+        projections = projections.add(injections).fillna(value=0.0)
+
+        if use_dataframes:
+            self.injections = injections
+            self.projections = projections
+        else:
+            self.injections = injections.values
+            self.projections = projections.values
+
+        return self
