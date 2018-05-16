@@ -6,14 +6,14 @@ with open('README.rst') as f:
     LONG_DESCRIPTION = f.read()
 AUTHOR = 'Joseph Knox'
 AUTHOR_EMAIL = 'josephk@alleninstitute.org'
-URL = 'https://alleninstitute.github.io/mouse_connectivity_models'
+URL = 'http://mouse-connectivity-models.readthedocs.io/en/latest/'
 DOWNLOAD_URL = 'https://github.com/AllenInstitute/mouse_connectivity_models'
 LICENSE = 'Allen Institute Software License'
 
 import mcmodels
 VERSION = mcmodels.__version__
 
-EXTRA_SETUPTOOLS_ARGS = dict(include_package_data=True,
+extra_setuptools_args = dict(include_package_data=True,
                              setup_requires=['pytest-runner'])
 
 
@@ -41,7 +41,7 @@ def setup_package():
                                  'Programming Language :: Python :: 3.5',
                                  'Programming Language :: Python :: 3.6',
                                  'Topic :: Scientific/Engineering :: Bio-Informatics'],
-                    **EXTRA_SETUPTOOLS_ARGS)
+                    **extra_setuptools_args)
 
     metadata['packages'] = find_packages()
 
