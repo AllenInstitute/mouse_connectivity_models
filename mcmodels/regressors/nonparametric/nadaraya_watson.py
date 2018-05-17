@@ -344,8 +344,7 @@ class NadarayaWatsonCV(NadarayaWatson):
         self.gamma = gamma
         self.degree = degree
         self.coef0 = coef0
-
-        self.kernel=kernel
+        self.kernel_params = kernel_params
 
     def _update_params(self, param_dict):
         for k, v in param_dict.items():
