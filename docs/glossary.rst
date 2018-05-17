@@ -72,7 +72,7 @@ Glossary of Technical Terms and API Elements
                 A regularization that combines the :term:`lasso` with
                 :term:`ridge regression`
 
-        frobeneous norm
+        frobenius norm
                 The 2-norm of a matrix viewed as a vector.
 
         homogeneous
