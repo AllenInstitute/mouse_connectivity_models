@@ -522,6 +522,10 @@ class RegionalData(_BaseData):
         projections = _get_data_array(
             unionizes, False, self.normalized_projection, self.projection_hemisphere_id)
 
+        # fill empty injection structures
+        missing = set(self.injection_structure_ids) - set(injections.columns.values)
+        injections[missing] = 0.
+
         # subset to structure ids
         injections = injections[self.injection_structure_ids]
         projections = projections[self.projection_structure_ids]
