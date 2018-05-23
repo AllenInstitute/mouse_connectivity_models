@@ -524,7 +524,7 @@ class RegionalData(_BaseData):
 
         # fill empty injection structures
         missing = set(self.injection_structure_ids) - set(injections.columns.values)
-        injections[missing] = 0.
+        injections[list(missing)] = 0.
 
         # subset to structure ids
         injections = injections[self.injection_structure_ids]
