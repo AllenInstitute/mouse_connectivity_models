@@ -48,8 +48,10 @@ class VoxelModel(NadarayaWatson):
     NadarayaWatson
     """
 
-    def __init__(self, source_voxels, **kwargs):
-        super(VoxelModel, self).__init__(**kwargs)
+    def __init__(self, source_voxels, kernel="linear", degree=3, coef0=1,
+                 gamma=None, kernel_params=None):
+        super(VoxelModel, self).__init__(kernel=kernel, degree=degree, coef0=coef0,
+                                         gamma=gamma, kernel_params=kernel_params)
 
         self.source_voxels = source_voxels
         self.dimension = self.source_voxels.shape[1]
