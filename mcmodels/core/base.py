@@ -406,8 +406,12 @@ class RegionalData(_BaseData):
                        min_contained_injection_ratio=voxel_data.min_contained_injection_ratio)
 
         if hasattr(voxel_data, 'injections'):
-            injection_key = voxel_data.injection_mask.get_key()
-            projection_key = voxel_data.projection_mask.get_key()
+            injection_key = voxel_data.injection_mask.get_key(
+                structure_ids=voxel_data.injection_structure_ids,
+                hemisphere_id=voxel_data.injection_hemisphere_id)
+            projection_key = voxel_data.projection_mask.get_key(
+                structure_ids=voxel_data.projection_structure_ids,
+                hemisphere_id=voxel_data.projection_hemisphere_id)
 
             regional.injections = unionize(voxel_data.injections, injection_key)
             regional.projections = unionize(voxel_data.projections, projection_key)

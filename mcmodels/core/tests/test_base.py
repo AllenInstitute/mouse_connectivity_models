@@ -14,7 +14,7 @@ from mcmodels.core.tests.conftest import mcc
 @pytest.fixture(scope="function")
 def voxel_data():
     data = VoxelData
-    data.default_structure_ids = [5, 6]
+    data.default_structure_ids = [4, 5]
     return data
 
 
