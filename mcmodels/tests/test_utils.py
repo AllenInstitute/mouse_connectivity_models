@@ -3,10 +3,11 @@ import operator as op
 import pytest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_raises, assert_allclose
+from scipy import linalg
 
 from mcmodels.utils \
     import (nonzero_unique, unionize, ordered_unique, lex_ordered_unique,
-            padded_diagonal_fill)
+            padded_diagonal_fill, squared_norm)
 
 
 # ============================================================================
@@ -118,6 +119,16 @@ def test_padded_diagonal_fill():
     assert_array_equal(filled[2:3, 5:9], b)
     assert_array_equal(filled[3:6, 9:10], c)
     assert_array_equal(filled[6:7, 10:11], d)
+
+
+def test_squared_norm():
+    # ------------------------------------------------------------------------
+    # test consistent with scipy.linalg.norm
+    a = np.random.rand(10000)
+    b = np.random.rand(100, 100)
+
+    assert_allclose(squared_norm(a), linalg.norm(a)**2)
+    assert_allclose(squared_norm(b), linalg.norm(b)**2)
 
 
 def test_unionize():

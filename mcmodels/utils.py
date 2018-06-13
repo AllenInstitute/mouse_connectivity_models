@@ -249,6 +249,22 @@ def padded_diagonal_fill(arrays):
     return padded
 
 
+def squared_norm(arr):
+    """Compute the square frobenius/vector norm.
+
+    Parameters
+    ----------
+    arr : np.ndarray
+        Array of which we compute the norm.
+
+    Returns
+    -------
+    norm: float
+    """
+    arr = arr.ravel(order='K')
+    return np.dot(arr, arr)
+
+
 def unionize(volume, key, return_regions=False):
     """Unionize voxel data to regional data.
 
