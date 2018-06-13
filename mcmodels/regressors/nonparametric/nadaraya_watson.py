@@ -19,6 +19,8 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 
+from ...utils import squared_norm
+
 
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
@@ -223,7 +225,8 @@ class _NadarayaWatsonLOOCV(NadarayaWatson):
         S *= -1
         np.fill_diagonal(S, 1.0)
 
-        return np.mean((S.dot(y))**2)#linalg.norm(S.dot(y))
+        mse = lambda x: squared_norm(x) / x.size
+        return mse(S.dot(y))
 
     def _values(self, K, y):
         """ prediction """
