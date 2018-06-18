@@ -12,32 +12,6 @@ import numpy as np
 from allensdk.core import json_utilities
 
 
-def _validate_descendant_ids(structure_ids, descendant_ids):
-    """Validates that descendant_ids are of the correct form."""
-    if len(structure_ids) != len(descendant_ids):
-        # descendant_ids are not generated from structure_ids
-        return False
-
-    return all([dids[0] == sid for sid, dids
-                in zip(structure_ids, descendant_ids)])
-
-
-def _check_disjoint_structures(structure_ids, descendant_ids):
-    """Validates that structures are disjoint."""
-    if _validate_descendant_ids(structure_ids, descendant_ids):
-        # first elem in descendant_ids is structure id from which they descend
-        only_descendants = [ids[1:] for ids in descendant_ids if len(ids) > 1]
-
-        if set(structure_ids) & set(reduce(op.add, only_descendants, [])):
-            # a structure_id is a descendant of another
-            return False
-
-        # else: descendant_ids == structure_ids, assume @ bottom of annotation
-        return True
-
-    return False
-
-
 class Mask(object):
     """Object for masking the grid data from allensdk.
 
@@ -285,11 +259,17 @@ class Mask(object):
             annotation[np.logical_not(self.mask)] = 0
             return self.mask_volume(annotation)
 
+        if structure_ids is None:
+            structure_ids = self.structure_ids
+
+        if hemisphere_id is None:
+            hemisphere_id = self.hemisphere_id
+
+        if self.reference_space.structure_tree.has_overlaps(structure_ids):
+            raise ValueError("structures %s are not disjoint" % structure_ids)
+
         # get list of descendant_ids for each structure id
         descendant_ids = self.reference_space.structure_tree.descendant_ids(structure_ids)
-
-        if not _check_disjoint_structures(structure_ids, descendant_ids):
-            raise ValueError("structures %s are not disjoint" % structure_ids)
 
         for structure_id, descendants in zip(structure_ids, descendant_ids):
 
