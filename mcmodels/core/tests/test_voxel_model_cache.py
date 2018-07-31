@@ -5,7 +5,7 @@ import pytest
 
 import pandas as pd
 import numpy as np
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_raises
 
 from allensdk.core import json_utilities
 from allensdk.test_utilities.temp_dir import fn_temp_dir
@@ -28,7 +28,7 @@ def test_from_json(fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests alternative constructor
     manifest_file = 'manifest.json'
-    resolution = 10
+    resolution = 100
     path = os.path.join(fn_temp_dir, 'input.json')
 
     input_data = dict(manifest_file=manifest_file, resolution=resolution)
@@ -40,11 +40,17 @@ def test_from_json(fn_temp_dir):
     assert cache.resolution == resolution
 
 
+def test_resolution_error():
+    # ------------------------------------------------------------------------
+    # tests raises error for resolution != 100
+    assert_raises(NotImplementedError, VoxelModelCache, resolution=10)
+
+
 def test_to_json(fn_temp_dir):
     # ------------------------------------------------------------------------
     # tests JSON serialization
     manifest_file = 'manifest.json'
-    resolution = 10
+    resolution = 100
     path = os.path.join(fn_temp_dir, 'output.json')
 
     cache = VoxelModelCache(manifest_file=manifest_file, resolution=resolution)

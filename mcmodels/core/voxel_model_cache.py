@@ -114,6 +114,12 @@ class VoxelModelCache(MouseConnectivityCache):
                  ccf_version=None,
                  base_uri=None,
                  version=None):
+        if resolution != 100:
+            raise NotImplementedError(
+                'voxel-scale model is only currently available at 100 micron '
+                'resolution. Please pass resolution=100 (instead of '
+                'resolution=%s)' % resolution)
+
         super(VoxelModelCache, self).__init__(resolution=resolution,
                                               cache=cache,
                                               manifest_file=manifest_file,
