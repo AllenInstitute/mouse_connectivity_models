@@ -1,3 +1,4 @@
+include *.h5
 include *.rst
 recursive-include tests *
 recursive-include docs *
