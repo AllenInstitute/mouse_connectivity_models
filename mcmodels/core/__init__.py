@@ -6,13 +6,15 @@ The :mod:`mcmodels.core` module implements objects useful in data manipulation.
 
 
 from .base import VoxelData, RegionalData
+from .cortical_map import CorticalMap
 from .masks import Mask
 from .experiment import Experiment
 from .voxel_model_api import VoxelModelApi
 from .voxel_model_cache import VoxelModelCache
 from . import utils
 
-__all__ = ['Experiment',
+__all__ = ['CorticalMap',
+           'Experiment',
            'Mask',
            'RegionalData',
            'VoxelData',
