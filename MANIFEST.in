@@ -5,4 +5,4 @@ recursive-include examples *
 include LICENSE
 include AUTHORS.rst
 include README.rst
-include mcmodels/cortical_coordinates/*.h5
+include mcmodels/core/cortical_coordinates *.h5
