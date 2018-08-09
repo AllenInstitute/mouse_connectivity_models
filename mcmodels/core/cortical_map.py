@@ -29,7 +29,8 @@ class CorticalMap(object):
     REFERENCE_SHAPE = (132, 80, 114)
     VALID_PROJECTIONS = ('top_view', 'dorsal_flatmap')
 
-    def _load_paths(self, projection):
+    @staticmethod
+    def _load_paths(projection):
         module_name = os.path.dirname(__file__)
         paths_dir = os.path.join(module_name, 'cortical_coordinates')
         path = os.path.join(paths_dir, '%s_paths_100.h5' % projection)
@@ -37,13 +38,15 @@ class CorticalMap(object):
             view_lookup = f['view lookup'][:]
             paths = f['paths'][:]
 
+        return view_lookup, paths
+
     def __init__(self, projection='top_view'):
         if projection not in self.VALID_PROJECTIONS:
             raise ValueError('projection must be one of %s,  not %s'
                              % (self.VALID_PROJECTIONS, projection))
 
-        self.projection = projection
         self.view_lookup, self.paths = self._load_paths(projection)
+        self.projection = projection
 
     def transform(self, volume, agg_func=np.mean, fill_value=0):
         '''Transforms image volume values to 2D cortical surface.
