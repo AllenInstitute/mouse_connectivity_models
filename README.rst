@@ -12,6 +12,8 @@
 .. _Readthedocs: http://mouse-connectivity-models.readthedocs.io/en/latest/?badge=latest
 
 
+.. image:: cortical_projection.gif
+
 mouse_connectivity_models
 =========================
 
