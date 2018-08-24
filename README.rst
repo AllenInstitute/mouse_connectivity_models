@@ -1,5 +1,9 @@
 .. -*- mode: rst -*-
 
+
+mouse_connectivity_models
+=========================
+
 |Travis|_ |Codecov|_ |Readthedocs|_
 
 .. |Travis| image:: https://travis-ci.org/AllenInstitute/mouse_connectivity_models.svg?branch=master
@@ -12,8 +16,7 @@
 .. _Readthedocs: http://mouse-connectivity-models.readthedocs.io/en/latest/?badge=latest
 
 
-mouse_connectivity_models
-=========================
+.. image:: cortical_projection.gif
 
 mouse_connectivity_models is a Python module for constructing and testing
 mesoscale connectivity models using data from the `Allen Institute for Brain
