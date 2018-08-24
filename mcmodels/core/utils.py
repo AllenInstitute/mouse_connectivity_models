@@ -21,10 +21,10 @@ def compute_centroid(injection_density):
     -------
         centroid of injection_density in index coordinates.
     """
-    nonzero = injection_density[injection_density.nonzero()]
-    voxels = np.argwhere(injection_density)
+    nnz = injection_density.nonzero()
+    coords = np.vstack(nnz)
 
-    return np.dot(nonzero, voxels) / injection_density.sum()
+    return np.dot(coords, injection_density[nnz]) / injection_density.sum()
 
 
 def get_injection_hemisphere_id(injection_density, majority=False):
