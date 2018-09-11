@@ -39,6 +39,16 @@ def test_backward_subset_selection_conditioning():
     assert X_condioned is not X
     assert_array_equal(X, X_condioned)
 
+    # ------------------------------------------------------------------------
+    # test removal of 1 column
+    X = np.eye(10)
+    X = np.c_[X, X[:,1]]
+    kappa = 1.2
+
+    X_condioned, columns = backward_subset_selection_conditioning(X, kappa)
+
+    assert X_condioned.shape[1] == X.shape[1] - 1
+
 
 def test_forward_subset_selection_conditioning():
     # ------------------------------------------------------------------------
@@ -47,9 +57,16 @@ def test_forward_subset_selection_conditioning():
     kappa = np.inf
 
     X_condioned, columns = forward_subset_selection_conditioning(X, kappa)
-    print(columns)
 
     assert X_condioned is not X
     assert_array_equal(X, X_condioned)
 
+    # ------------------------------------------------------------------------
+    # test removal of 1 column
+    X = np.eye(10)
+    X = np.c_[X, X[:,1]]
+    kappa = 1.2
 
+    X_condioned, columns = forward_subset_selection_conditioning(X, kappa)
+
+    assert X_condioned.shape[1] == X.shape[1] - 1

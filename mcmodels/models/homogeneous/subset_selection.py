@@ -103,10 +103,13 @@ def forward_subset_selection_conditioning(X, kappa=1000, random_state=None):
     columns = [initial]
     candidates.remove(initial)
 
-    while LA.cond(np.atleast_2d(X[:, columns])) < kappa and len(columns) < n_cols:
+    while len(columns) < n_cols:
         # greedily subset columns of X using svd subset selection
         condition = [LA.cond(X[:, columns + [c]]) for c in candidates]
         best = candidates[np.argmin(condition)]
+
+        if LA.cond(np.atleast_2d(X[:, columns + [best]])) > kappa:
+            break
 
         # update
         columns.append(best)
