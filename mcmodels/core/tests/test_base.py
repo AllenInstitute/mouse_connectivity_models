@@ -108,3 +108,9 @@ def test_unionize_experiment_data(voxel_data, mcc):
     # 2 regions in mask
     assert regional_data.injections.shape[1] == 2
     assert regional_data.projections.shape[1] == 2
+
+
+def test_structure_ids_match():
+    # ------------------------------------------------------------------------
+    # tests injection/projection structure ids are columns of injections/projections
+    pass
