@@ -471,11 +471,11 @@ class RegionalData(_BaseData):
                 exp_unionizes.is_injection].projection_volume
             contained_ratio = contained_injection.sum() / injection_volume
 
-            return all((injection_volume > self.injection_volume_bounds[0],
-                        injection_volume < self.injection_volume_bounds[1],
-                        projection_volume > self.projection_volume_bounds[0],
-                        projection_volume < self.projection_volume_bounds[1],
-                        contained_ratio > self.min_contained_injection_ratio))
+            return all((injection_volume >= self.injection_volume_bounds[0],
+                        injection_volume <= self.injection_volume_bounds[1],
+                        projection_volume >= self.projection_volume_bounds[0],
+                        projection_volume <= self.projection_volume_bounds[1],
+                        contained_ratio >= self.min_contained_injection_ratio))
 
         valid_eids = [eid for eid in experiment_ids if valid_experiment(eid)]
 
@@ -517,8 +517,9 @@ class RegionalData(_BaseData):
             experiment_ids, structure_ids=all_structure_ids)
 
         # subset unionize rows
-        unionizes = self._subset_experiments_by_injection_hemisphere(unionizes)
         unionizes = self._subset_experiments_by_volume_parameters(unionizes, experiment_ids)
+        unionizes = self._subset_experiments_by_injection_hemisphere(unionizes)
+
 
         injections = _get_data_array(
             unionizes, True, self.normalized_injection, self.injection_hemisphere_id)
@@ -531,13 +532,13 @@ class RegionalData(_BaseData):
         for sid in missing:
             injections[sid] = 0.
 
-        # subset to structure ids
-        injections = injections[self.injection_structure_ids]
-        projections = projections[self.projection_structure_ids]
-
         # projections is found using is_injection=False, add back injection
         injections = injections.fillna(value=0.0)
         projections = projections.add(injections).fillna(value=0.0)
+
+        # subset to structure ids
+        injections = injections[self.injection_structure_ids]
+        projections = projections[self.projection_structure_ids]
 
         if use_dataframes:
             self.injections = injections
