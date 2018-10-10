@@ -145,7 +145,7 @@ our :class:`VoxelConnectivityArray` and our source/target :class:`Mask` objects:
         >>> from mcmodels.models.voxel import RegionalizedModel
         >>> # get set of summary structures
         >>> structure_tree = cache.get_structure_tree()
-        >>> summary_structures = structure_tree.get_structures_by_set_id([165787189])[0]
+        >>> summary_structures = structure_tree.get_structures_by_set_id([167587189])[0]
         >>> # the new ccf does not have sturcture 934 as a structure id
         >>> structure_ids = [s['id'] for s in summary_structures if s['id'] != 934]
         >>> # get keys
