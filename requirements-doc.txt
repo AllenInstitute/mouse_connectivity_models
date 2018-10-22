@@ -9,3 +9,4 @@ pillow
 pytest
 sphinx<1.7
 sphinx-gallery
+sphinx_rtd_theme
