@@ -1,7 +1,7 @@
 allensdk
 sklearn
 coverage
-matplotlib
+matplotlib==2.2.2
 nose
 mock
 numpydoc
