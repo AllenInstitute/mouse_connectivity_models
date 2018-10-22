@@ -64,7 +64,7 @@ primary_domain = 'py'
 autodoc_default_flags = ['members', 'inherited_members']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['aibs_sphinx/templates']#, 'templates']
+templates_path = ['templates']
 
 # generate autosummary even if no references
 autosummary_generate = True
@@ -108,7 +108,7 @@ release = mcmodels.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', 'aibs_sphinx']#, 'templates']#, '**tests**']
+exclude_patterns = ['_build', 'templates']#, '**tests**']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -140,17 +140,19 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'aibs_sphinx'
+# html_theme = "classic"
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "sidebarwidth": "300"
-}
+# html_theme_options = {
+#     "sidebarwidth": "300"
+# }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ['.']
+# html_theme_path = ['.']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -173,7 +175,7 @@ html_theme_path = ['.']
 # here, relative to this directory. They are copied after the builtin
 # static files, so a file named "default.css" will overwrite the builtin
 # "default.css".
-html_static_path = ['aibs_sphinx/static', 'images']
+html_static_path = ['images']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
@@ -184,7 +186,7 @@ html_static_path = ['aibs_sphinx/static', 'images']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = { '**': [ 'globaltoc.html', 'searchbox.html' ]}
+# html_sidebars = { '**': [ 'globaltoc.html', 'searchbox.html' ]}
 
 # Additional templates that should be rendered to pages, maps page names
 # to template names.
