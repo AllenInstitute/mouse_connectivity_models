@@ -28,6 +28,8 @@ It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
 - `High resolution data-driven model of the mouse connectome
   <https://www.biorxiv.org/content/early/2018/04/01/293019>`_
 
+**Download**: http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/
+
 **Website**: http://mouse-connectivity-models.readthedocs.io/en/latest/
 
 Installation
