@@ -78,6 +78,7 @@ target/
 .idea/
 .history/
 .vscode/
+*.DS_Store
 
 # docs
 docs/modules/generated
