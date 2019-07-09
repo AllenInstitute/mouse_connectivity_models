@@ -11,7 +11,6 @@ mouse_connectivity_models
 
 .. |Codecov| image:: https://codecov.io/gh/AllenInstitute/mouse_connectivity_models/branch/master/graph/badge.svg
 .. _Codecov: https://codecov.io/gh/AllenInstitute/mouse_connectivity_models
-
 .. |Readthedocs| image:: https://readthedocs.org/projects/mouse-connectivity-models/badge/?version=latest
 .. _Readthedocs: http://mouse-connectivity-models.readthedocs.io/en/latest/?badge=latest
 
@@ -26,7 +25,7 @@ It provides models written in `Scikit-Learn <http://scikit-learn.org>`_
 ``estimator`` style, and has been used in the following publications:
 
 - `High resolution data-driven model of the mouse connectome
-  <https://www.biorxiv.org/content/early/2018/04/01/293019>`_
+  <https://www.mitpressjournals.org/doi/full/10.1162/netn_a_00066>`_
 
 **Download**: http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/
 
