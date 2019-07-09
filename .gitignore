@@ -85,3 +85,6 @@ docs/modules/generated
 
 # data
 connectivity
+
+# OS files
+*.DS_Store
