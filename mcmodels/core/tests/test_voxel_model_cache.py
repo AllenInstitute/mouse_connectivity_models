@@ -8,10 +8,13 @@ import numpy as np
 from numpy.testing import assert_allclose, assert_raises
 
 from allensdk.core import json_utilities
-from allensdk.test_utilities.temp_dir import fn_temp_dir
+from allensdk.test_utilities.temp_dir import temp_dir
 
 from mcmodels.core import VoxelModelCache
 
+@pytest.fixture(scope="function")
+def fn_temp_dir(request):
+    return temp_dir(request)
 
 @pytest.fixture(scope='function')
 def voxel_model_cache(fn_temp_dir, mcc):

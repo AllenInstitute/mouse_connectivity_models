@@ -6,10 +6,13 @@ import pytest
 import numpy as np
 from numpy.testing import assert_allclose
 
-from allensdk.test_utilities.temp_dir import fn_temp_dir
+from allensdk.test_utilities.temp_dir import temp_dir
 
 from mcmodels.core import VoxelModelApi
 
+@pytest.fixture(scope="function")
+def fn_temp_dir(request):
+    return temp_dir(request)
 
 @pytest.fixture(scope='function')
 def voxel_model_api():
