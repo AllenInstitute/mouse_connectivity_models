@@ -49,7 +49,7 @@ voxel-scale connectivity. These can be conveniently downloaded (and subsequently
 loaded from your local machine) through the :class:`VoxelModelCache` class.
 
 Download the
-`regional models <http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_ here.
+`regional models <http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_ here (CSV files).
 
 
 Contents:

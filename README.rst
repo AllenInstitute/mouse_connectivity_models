@@ -45,6 +45,8 @@ mouse_connectivity_models requires:
 
 For running the examples Matplotlib >= 1.3.1 is required.
 
+We have only tested and used this package on Linux.
+
 User installation
 ~~~~~~~~~~~~~~~~~
 

@@ -1,10 +1,13 @@
 Credits
 -------
 
-Development Lead
-~~~~~~~~~~~~~~~~
+Developers
+~~~~~~~~~~
 
-* Joseph Knox <josephk@alleninstitute.org>
+* Joseph Knox
+* Kameron Decker Harris
+* Jennifer Whitesell
+* Nile Graddis
 
 Contributors
 ~~~~~~~~~~~~
