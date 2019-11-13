@@ -45,8 +45,9 @@ between a set of 293 :term:`summary structures` for which we integrated our
 voxel-scale connectivity. These can be conveniently downloaded (and subsequently
 loaded from your local machine) through the :class:`VoxelModelCache` class.
 
-
-`DOWNLOAD <http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_the fit connectome.
+`Download <http://download.alleninstitute.org/publications/
+A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_the connectome
+data for use without refitting.
 
 
 Contents:
