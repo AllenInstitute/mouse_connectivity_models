@@ -34,6 +34,9 @@ adjacency matrix that we utilize to construct the full matrix in pieces on deman
 through the :class:`VoxelConnectivityArray` class. For more
 information see the :ref:`data_wrangling` section of the :ref:`user_guide`.
 
+To access the voxel model without refitting, visit this
+`download page <http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_.
+
 Regionalized voxel-scale model
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -46,7 +49,7 @@ voxel-scale connectivity. These can be conveniently downloaded (and subsequently
 loaded from your local machine) through the :class:`VoxelModelCache` class.
 
 `Download <http://download.alleninstitute.org/publications/A_high_resolution_data-driven_model_of_the_mouse_connectome/>`_
-the connectome data for use without refitting.
+the regional models here.
 
 
 Contents:
