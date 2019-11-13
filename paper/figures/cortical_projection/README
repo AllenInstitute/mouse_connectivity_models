@@ -1,0 +1,8 @@
+This directory contains the code to reproduce the cortical projections as shown in figure 1.
+
+**note**
+Running this script will take on the order of ~20GB
+
+Unfortunately, we will not be making the full code available due to the internal dependencies:
+- create_top_views.py
+- top_view_projection.py

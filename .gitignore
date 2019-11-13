@@ -26,6 +26,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+*.DS_Store
 eggs/
 .eggs/
 lib/
@@ -84,3 +85,6 @@ docs/modules/generated
 
 # data
 connectivity
+
+# OS files
+*.DS_Store
