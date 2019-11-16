@@ -63,6 +63,7 @@ Contents:
    :maxdepth: 1
 
    installation
+   quickstart
    user_guide
    modules/classes
    auto_examples/index

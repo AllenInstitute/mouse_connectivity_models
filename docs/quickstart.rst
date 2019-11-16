@@ -1,6 +1,6 @@
 .. _quickstart:
 
-Quick start guide
+Quick-start Guide
 =================
 
 Most people would like to access the voxel matrix as described in the paper.
