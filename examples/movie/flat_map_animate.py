@@ -35,6 +35,7 @@ def main():
     vmax = 1.2 * np.percentile(voxel_array.nodes, 99)
 
     # 2D Cortical Surface Mapper
+    # projection: can change to "flatmap" if desired
     mapper = CorticalMap(projection='top_view')
     # quick hack to fix bug
     mapper.view_lookup[51, 69] = mapper.view_lookup[51, 68]
