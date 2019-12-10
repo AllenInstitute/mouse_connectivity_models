@@ -64,7 +64,7 @@ class CorticalMap(object):
 
         Returns
         -------
-        result : np.ndarray, shape (132, 114)
+        result : np.ndarray, shape (132, 114) 'top_view' or (136, 272) 'dorsal_flatmap'
             Projection of the image volume onto the surface of the cortex.
         '''
         def apply_along_path(i):
