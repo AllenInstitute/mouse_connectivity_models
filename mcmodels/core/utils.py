@@ -9,6 +9,81 @@ from __future__ import division
 import numpy as np
 
 
+
+def get_matrices(experiments):
+    get_data = lambda x: (get_centroid(x),
+                          get_injection(x,True),
+                          get_projection(x, True))
+    arrays = map(get_data, yield_experiments(experiments))
+    centroids, injections, projections = map(np.array, zip(*arrays))
+    return(centroids, injections, projections)
+
+def get_centroid(experiment):
+    """Returns experiment centroid"""
+    return experiment.centroid
+
+def get_injection(experiment, normalized_injection):
+    # print('ts',experiment.normalized_injection)
+    """Returns experiment injection masked & flattened"""
+    injection = experiment.get_injection(normalized_injection)
+    return experiment.injection_mask.mask_volume(injection)
+
+def get_projection(experiment, normalized_projection):
+    """Returns experiment projection masked & flattened"""
+    projection = experiment.get_projection(normalized_projection)
+    return experiment.projection_mask.mask_volume(projection)
+
+def yield_experiments(experiments):
+    ev = experiments.values()
+    keys = np.asarray(list(experiments.keys()))
+    for i in range(len(keys)):
+        yield (experiments[keys[i]])
+
+def get_loss_paper(y,yhat):
+    loss = 2* np.linalg.norm(y - yhat)**2 / (np.linalg.norm(y)**2 + np.linalg.norm(yhat)**2)
+    return(loss)
+
+
+def get_structure_id(cache, acronym):
+    try:
+        return cache.get_structure_tree().get_structures_by_acronym([acronym])[0]['id']
+    except KeyError:
+        raise ValueError("structure acronym (%s) is not valid" % acronym)
+
+
+
+
+def get_ordered_summary_structures(mcc):
+    # TODO : replace with json of wanted structures
+
+    """Returns structure ids of summary structures - fiber tracts (and 934)"""
+    ss_regions = mcc.get_structure_tree().get_structures_by_set_id([687527945])
+
+    # 934 not in 100 micron!!!!! (dont want fiber tracts)
+    ids, orders = [], []
+    for region in ss_regions:
+        if region["id"] not in [934, 1009]:
+            ids.append(region["id"])
+            orders.append(region["graph_order"])
+
+    # return ids sorted by graph order
+    ids = np.asarray(ids)
+    return ids[np.argsort(orders)]
+
+
+def get_minorstructures(eids, data_info):
+    #eids = np.asarray(list(msvd.experiments.keys()))
+    experiments_minors = np.zeros(len(eids), dtype=object)
+
+    for i in range(len(eids)):
+        experiment_id = eids[i]
+        experiments_minors[i] = data_info['primary-injection-structure'].loc[experiment_id]
+
+    return (experiments_minors)
+
+
+####old
+
 def compute_centroid(injection_density):
     """Computes centroid in index coordinates.
 

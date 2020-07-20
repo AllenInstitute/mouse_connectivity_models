@@ -11,6 +11,7 @@ from .masks import Mask
 from .experiment import Experiment
 from .voxel_model_api import VoxelModelApi
 from .voxel_model_cache import VoxelModelCache
+from .model_data import ModelData
 from . import utils
 
 __all__ = ['CorticalMap',
@@ -20,4 +21,5 @@ __all__ = ['CorticalMap',
            'VoxelData',
            'VoxelModelApi',
            'VoxelModelCache',
+           'ModelData',
            'utils']

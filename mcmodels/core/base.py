@@ -12,10 +12,9 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 import six
 import numpy as np
 
-from .experiment import Experiment
+#from .experiment import Experiment
 from .masks import Mask
 from ..utils import unionize
-
 
 class _BaseData(six.with_metaclass(ABCMeta)):
 

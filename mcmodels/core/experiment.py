@@ -11,6 +11,74 @@ import numpy as np
 
 from .utils import compute_centroid, get_injection_hemisphere_id
 
+from .model_data import ModelData#.model_data import ModelData
+from .masks import Mask
+from .utils import compute_centroid, get_injection_hemisphere_id
+from .utils import get_matrices
+
+
+class VoxelDataset:
+    """
+
+    Parameters
+    ----------
+    sid: structure id
+
+    Notes
+    _____
+    This class holds a collection of experiments in a particular structure
+    """
+    def __init__(self):#, sid):
+        pass
+        #self.sid = sid
+
+
+def get_experiment(cache, eid,sid,default_structure_ids):
+    experiment = Experiment.from_cache(cache, eid)
+    hemisphere_id = experiment.injection_hemisphere_id
+    if hemisphere_id == 1:
+        experiment = experiment.flip()
+#     if (experiment.injection_hemisphere_id == 3 or hemisphere_id == experiment.injection_hemisphere_id):
+#        experiment = experiment
+#     elif experiment.flip_experiments:
+#        experiment = experiment.flip()
+
+    experiment.injection_structure_ids = [sid]
+    experiment.major_structure = sid
+    experiment.projection_structure_ids = default_structure_ids
+    experiment.projection_hemisphere_id = 3
+    experiment.normalized_injection = True
+    experiment.normalized_projection = True
+    return (experiment)
+
+def get_voxeldata_msvd(cache, sid,experiments_exclude,default_structure_ids,cre):
+    voxel_data = ModelData(cache, sid)
+    experiment_ids = voxel_data.get_experiment_ids(experiments_exclude=experiments_exclude, cre=cre)
+    experiment_ids = np.asarray(list(experiment_ids))
+    experiments = {}
+    # print('h')
+
+    # experiment
+    injection_mask = Mask.from_cache(
+        cache,
+        structure_ids=[sid],
+        hemisphere_id=2)
+    projection_mask = Mask.from_cache(
+        cache,
+        structure_ids=default_structure_ids,
+        hemisphere_id=3)
+
+    for eid in experiment_ids:
+        # print(eid)
+        experiments[eid] = get_experiment(cache, eid, sid,default_structure_ids)
+        experiments[eid].projection_mask = projection_mask
+        experiments[eid].injection_mask = injection_mask
+
+    VDs = VoxelDataset()
+    VDs.sid = sid
+    VDs.experiments = experiments
+    VDs.centroids, VDs.injections, VDs.projections = get_matrices(experiments)
+    return (VDs)
 
 def _pull_grid_data(cache, experiment_id):
     """Pulls data volumes using VoxelModelCache object.

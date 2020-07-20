@@ -22,6 +22,10 @@ from sklearn.utils import check_X_y
 from ...utils import squared_norm
 
 
+def get_weights(centroids, gamma):
+    weights = pairwise_kernels(X=centroids, Y=centroids, metric='rbf', gamma=gamma, filter_params=True)
+    return (weights)
+
 class NadarayaWatson(BaseEstimator, RegressorMixin):
     """NadarayaWatson Estimator.
 
