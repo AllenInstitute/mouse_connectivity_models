@@ -88,3 +88,6 @@ connectivity
 
 # OS files
 *.DS_Store
+
+*.npy
+*.pkl

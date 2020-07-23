@@ -7,7 +7,230 @@ Module containing utility functions for the :mod:`mcmodels.core` module.
 from __future__ import division
 
 import numpy as np
+import pandas as pd
 
+from sklearn.metrics.pairwise import pairwise_kernels
+from mcmodels.utils import nonzero_unique, unionize
+from mcmodels.core import Mask
+
+#order = ontological_order
+def get_regionalized_normalized_data(msvds, cache, order, ipsi_key, contra_key, experiments_minor_structures):
+    major_structure_ids = np.asarray(list(msvds.keys()))
+    for sid in major_structure_ids:
+        # print()
+        msvd = msvds[sid]
+        nexp = msvd.projections.shape[0]
+
+        minor_structures = np.unique(experiments_minor_structures[sid])
+        nmins = len(minor_structures)
+
+        projections = msvd.projections
+        ipsi_proj = unionize(projections, ipsi_key)
+        contra_proj = unionize(projections, contra_key)
+        reg_proj = np.hstack([ipsi_proj, contra_proj])
+        msvd.reg_proj = reg_proj
+
+        ipsi_target_regions, ipsi_target_counts = nonzero_unique(ipsi_key, return_counts=True)
+        contra_target_regions, contra_target_counts = nonzero_unique(contra_key, return_counts=True)
+        target_counts = np.concatenate([ipsi_target_counts, contra_target_counts])
+        reg_proj_vcount_norm = np.divide(reg_proj, target_counts[np.newaxis, :])
+        msvd.reg_proj_vcount_norm = reg_proj_vcount_norm
+
+        projections = msvds[sid].reg_proj_vcount_norm
+        projections = projections / np.expand_dims(np.linalg.norm(projections, axis=1), 1)
+        msvd.reg_proj_vcount_norm_renorm = projections
+
+        source_mask = Mask.from_cache(cache, structure_ids=[sid], hemisphere_id=2)
+        source_key = source_mask.get_key(structure_ids=order)
+        source_target_counts, source_target_counts = nonzero_unique(source_key, return_counts=True)
+
+        injections = msvd.injections
+        reg_ipsi_inj = unionize(injections, source_key)
+        msvd.reg_inj = reg_ipsi_inj
+        reg_inj_vcount_norm = np.divide(reg_ipsi_inj, source_target_counts[np.newaxis, :])
+        msvd.reg_inj_vcount_norm = reg_inj_vcount_norm
+    return (msvds)
+
+
+def get_ontological_order_leaf(leafs, ontological_order, st):
+    major_structure_ids = np.asarray(list(leafs.keys()))
+    leaf_present = np.concatenate([leafs[sid] for sid in major_structure_ids])
+    ontological_order_leaf = np.asarray([])
+    for i in range(len(ontological_order)):
+        # which of these are in leafs
+        stos = np.asarray(st.child_ids([ontological_order[i]]))
+        which_stos = np.asarray(np.where(np.isin(stos, leaf_present)[0])[0], dtype=int)
+        if len(which_stos) > 0:
+            print(i)
+            ontological_order_leaf = np.append(ontological_order_leaf, stos[0][which_stos])
+        if np.isin(ontological_order[i], leaf_present):
+            print(i)
+            ontological_order_leaf = np.append(ontological_order_leaf, ontological_order[i])
+    ontological_order_leaf = np.asarray(ontological_order_leaf, dtype=int)
+    return (ontological_order_leaf)
+
+def get_connectivity(msvds, cache, ia_map, hyperparameters, source_ordering, target_ordering, leafs, creline,
+                     experiments_minor_structures, ipsi_key, contra_key):
+
+    source_exp_countvec, source_exp_countvec_wt = get_countvec(source_ordering, ia_map, creline,
+                                                               experiments_minor_structures)
+
+    major_structure_ids = np.asarray(list(msvds.keys()))
+    nms = len(major_structure_ids)
+    prediction_union_norms = {}
+    source_region_save = np.asarray([])
+
+    for m in range(nms):
+        sid = major_structure_ids[m]
+        gamma = hyperparameters[m]
+        minor_structures = source_ordering[np.where(np.isin(source_ordering, np.unique(leafs[sid])))]
+        # ontological_order_leaf np.unique(leafs[sid]) # this should be in ontological order # np.unique(leafs[sid])#source_ordering[sid]#
+        prediction_union_norms[m] = {}
+        for n in range(len(minor_structures)):
+            print(n)
+            minor_structure_inds = np.where(leafs[sid] == minor_structures[n])[0]
+            # meezy = minor_structures[n]
+            im = Mask.from_cache(
+                cache,
+                structure_ids=[minor_structures[n]],
+                hemisphere_id=2)
+            weights = pairwise_kernels(X=msvds[sid].centroids[minor_structure_inds], Y=im.coordinates, metric='rbf',
+                                       gamma=gamma, filter_params=True)
+            weights = weights / weights.sum(axis=0)
+            weights[np.where(np.isnan(weights))] = 0.
+            predictions = np.dot(weights.transpose(), msvds[sid].reg_proj_vcount_norm_renorm[minor_structure_inds])
+
+            # average over source region voxels
+            union_key = im.get_key(structure_ids=source_ordering, hemisphere_id=2)
+            source_regions, source_counts = nonzero_unique(union_key, return_counts=True)
+            prediction_union = unionize(predictions.transpose(), union_key)
+            prediction_union_norms[m][n] = prediction_union.transpose() / np.expand_dims(source_counts, 1)
+            source_region_save = np.append(source_region_save, source_regions)
+
+    prediction_union_norms_ms = {}
+    for m in range(nms):
+        prediction_union_norms_ms[m] = np.vstack(
+            [prediction_union_norms[m][n] for n in range(len(prediction_union_norms[m].keys()))])
+
+    cd = np.vstack([prediction_union_norms_ms[m] for m in range(len(prediction_union_norms_ms.keys()))])
+
+    # get row names
+    rownames = [ia_map[source_ordering[i]] for i in range(len(source_ordering))]
+    # rownames = np.asarray(rownames)[np.where(source_exp_countvec !=0)[0]]
+
+    # get column names
+    ipsi_target_regions, ipsi_target_counts = nonzero_unique(ipsi_key, return_counts=True)
+    contra_target_regions, contra_target_counts = nonzero_unique(contra_key, return_counts=True)
+    target_order = lambda x: np.array(target_ordering)[np.isin(target_ordering, x)]
+    permutation = lambda x: np.argsort(np.argsort(target_order(x)))
+    targ_ids = np.concatenate([ipsi_target_regions[permutation(ipsi_target_regions)],
+                               contra_target_regions[permutation(contra_target_regions)]])
+    colnames = np.asarray([ia_map[targ_ids[i]] for i in range(len(targ_ids))])
+
+    # reorder rows and columns
+    targ_ords = np.concatenate(
+        [permutation(ipsi_target_regions), len(ipsi_target_regions) + permutation(contra_target_regions)])
+    row_reorder = np.asarray([])
+    source_region_save = np.asarray(source_region_save, dtype=int)
+    for i in range(len(source_ordering)):
+        inx = np.where(source_region_save == int(source_ordering[i]))[0]
+        if len(inx) > 0:
+            row_reorder = np.append(row_reorder, inx)
+    row_reorder = np.asarray(row_reorder, dtype=int)
+
+    df = pd.DataFrame(cd[row_reorder][:, targ_ords], index=rownames, columns=np.asarray(colnames))
+    return (df)
+
+def get_wt_inds(creline):
+    major_structure_ids = np.asarray(list(creline.keys()))
+    wt_2ormore = {}
+    for sid in major_structure_ids:
+        wt_inds = np.where(creline[sid] == 'C57BL/6J')[0]
+        wt_2ormore[sid] = np.asarray([])
+        if len(wt_inds) > 1:
+            wt_2ormore[sid] = np.append(wt_2ormore[sid], wt_inds)
+        wt_2ormore[sid] = np.asarray(wt_2ormore[sid], dtype=int)
+    return (wt_2ormore)
+
+
+def get_nw_loocv(msvd, indices, loocv, hyperparameters):
+
+    if len(indices) > 1:
+        projections = msvd.reg_proj_vcount_norm_renorm
+        centroids = msvd.centroids
+        nreg = projections.shape[1]
+        nexp = projections.shape[0]
+        nhyp = hyperparameters.shape[0]
+        loocv_predictions = np.zeros((nhyp, nexp, nreg))
+        for g in range(nhyp):
+            loocv_predictions[g, indices] = loocv(projections[indices], centroids[indices], hyperparameters[g])
+        return (loocv_predictions)
+    else:
+        return (np.asarray([]))
+
+
+def get_countvec(ontological_order, ia_map, creline, experiments_minor_structures):
+    major_structure_ids = np.asarray(list(creline.keys()))
+    sourcenames = np.asarray([ia_map[ontological_order[i]] for i in range(len(ontological_order))])
+    source_exp_counts = {}
+    source_exp_counts_wt = {}
+    for i in range(len(sourcenames)):
+        source_exp_counts[sourcenames[i]] = 0
+        source_exp_counts_wt[sourcenames[i]] = 0
+        for sid in major_structure_ids:
+            source_exp_counts[sourcenames[i]] += len(np.where(experiments_minor_structures[sid] == sourcenames[i])[0])
+            source_exp_counts_wt[sourcenames[i]] += len(
+                np.intersect1d(np.where(experiments_minor_structures[sid] == sourcenames[i])[0],
+                               np.where(creline[sid] == 'C57BL/6J')))
+    source_exp_countvec = np.asarray(list(source_exp_counts.values()))
+    source_exp_countvec_wt = np.asarray(list(source_exp_counts_wt.values()))
+    return (source_exp_countvec, source_exp_countvec_wt)
+
+def get_leaves_ontologicalorder(msvd, ontological_order):
+    '''
+
+    :param msvd:
+    :param ontological_order:
+    :return: The leaf order associated with the 'ontological_order' of summary structures
+    '''
+    levs = msvd.experiments[list(msvd.experiments.keys())[0]].projection_mask.reference_space.structure_tree.child_ids(
+        ontological_order)
+    flat_list = np.asarray([item for sublist in levs for item in sublist])
+
+    nss = len(levs)
+    leavves = np.asarray([])
+    for i in range(nss):
+        if len(levs[i]) > 0:
+            leavves = np.append(leavves, levs[i])
+        else:
+            leavves = np.append(leavves, ontological_order[i])
+    return (leavves)
+
+
+
+def get_minorstructure_dictionary(msvds, data_info):
+    experiments_minor_structures = {}
+    major_structure_ids = np.asarray(list(msvds.keys()))
+    for sid in major_structure_ids:
+        eids = np.asarray(list(msvds[sid].experiments.keys()))
+        experiments_minor_structures[sid] = get_minorstructures(eids, data_info)
+    return (experiments_minor_structures)
+
+
+
+def get_cre_status(data_info, msvds):
+    major_structure_ids = np.asarray(list(msvds.keys()))
+    exps = np.asarray(data_info.index.values , dtype = np.int)
+    creline = {}
+    for sid in major_structure_ids:
+        msvd = msvds[sid]
+        experiment_ids = np.asarray(list(msvd.experiments.keys()))
+        nexp = len(experiment_ids)
+        creline[sid] = np.zeros(nexp, dtype = object)
+        for i in range(len(experiment_ids)):
+            index = np.where(exps == experiment_ids[i])[0][0]
+            creline[sid][i] = data_info['transgenic-line'].iloc[index]
+    return(creline)
 
 
 def get_matrices(experiments):
@@ -49,6 +272,19 @@ def get_structure_id(cache, acronym):
         return cache.get_structure_tree().get_structures_by_acronym([acronym])[0]['id']
     except KeyError:
         raise ValueError("structure acronym (%s) is not valid" % acronym)
+
+
+
+# get columns with number values exceeding thresh
+def get_reduced_matrix_ninj(X, thresh, number):
+    X_thresh = X.copy()
+    X_thresh[np.where(X > thresh)] = 1.
+    X_thresh[np.where(X <= thresh)] = 0.
+    n_inj = X_thresh.sum(axis=0)
+    inds = np.where(n_inj >= number)[0]
+
+    return (X[:, inds], inds)
+
 
 
 

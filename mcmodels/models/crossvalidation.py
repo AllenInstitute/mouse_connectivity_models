@@ -1,6 +1,7 @@
 import numpy as np
 from mcmodels.models.homogeneous import svd_subset_selection, HomogeneousModel
 from mcmodels.regressors.nonparametric.nadaraya_watson import get_weights
+from mcmodels.core.utils import get_reduced_matrix_ninj, get_loss_paper
 from sklearn import decomposition
 
 def get_loocv_predictions(projections, centroids, gamma):
@@ -122,7 +123,7 @@ def get_loocv_predictions_nnlinear_number_inj(projections, injections, thresh, n
     homo_est = HomogeneousModel(kappa=np.inf)
 
     for i in range(nexp):
-        print('exp', i)
+        #print('exp', i)
         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
         inj, inds = get_reduced_matrix_ninj(injections[otherindices], thresh, number)
         if inj.shape[1] > 0:
@@ -159,5 +160,66 @@ def get_loocv_predictions_nnlinear_pca(projections, injections, n_components):
         exp_var[i] = np.sum(SVD.explained_variance_)
 
     return (predictions, exp_var)
+
+
+def get_loss(true_dict, prediction_dict, pred_ind=None, true_ind=None, keys=None):
+    output = {}
+    major_structure_ids = list(prediction_dict.keys())
+    nms = len(major_structure_ids)
+    ngam = prediction_dict[major_structure_ids[0]].shape[0]
+    nalph = prediction_dict[major_structure_ids[0]].shape[1]
+    for m in range(nms):
+        sid = major_structure_ids[m]
+        if pred_ind == None:
+            # prediction_dict and true_dict will contain predictions for 'bad' experiments with no recorded injection
+            # when we have the wild type predictions, the subset is what is good among the wild types
+            # so 'true' subsetting is always good, since it is w.r.t. the full injection
+            # but prediction needs good w.r.t. wt
+            pind = np.asarray(list(range(prediction_dict[sid].shape[1])), dtype=int)
+        else:
+            pind = pred_ind[sid]
+        if true_ind == None:
+            tind = np.asarray(list(range(true_dict[sid].shape[0])), dtype=int)
+        else:
+            tind = true_ind[sid]
+
+        nexp = len(pind)
+
+        output[sid] = np.zeros(np.append([len(np.unique(keys[:, i])) for i in range(keys.shape[1])], nexp))
+
+        for j in range(keys.shape[0]):
+            output[sid][tuple(keys[j])] = np.asarray(
+                [get_loss_paper(true_dict[sid][tind[i]], prediction_dict[sid][tuple(keys[j])][pind[i]]) for i in
+                 range(nexp)])
+
+    return (output)
+
+
+def get_best_hyperparameters(losses, keys):
+    major_structure_ids = np.asarray(list(losses.keys()))
+    nms = len(major_structure_ids)
+    nkey = keys.shape[1]
+    output = np.zeros((nms, nkey))
+    for m in range(nms):
+        print(m)
+        sid = major_structure_ids[m]
+        lvec = np.asarray([np.nanmean(losses[sid][key]) for key in keys])
+        output[m] = keys[np.nanargmin(lvec)]
+        # if len(np.where(np.isnan(np.nanmean(losses[sid][:,:], axis = 1)))[0]) < losses[sid].shape[0]:
+        #    output[m] = np.nanargmin(np.nanmean(losses[sid][:,:], axis = 1))
+
+    output = np.asarray(output, dtype=int)
+    return (output)
+
+
+def get_loss_best_hyp(losses, hyps):
+    major_structure_ids = np.asarray(list(losses.keys()))
+    nms = len(major_structure_ids)
+    output = np.zeros(nms)
+    for m in range(nms):
+        sid = major_structure_ids[m]
+        output[m] = np.nanmean(losses[sid][hyps[m], :])
+    return (output)
+
 
 # injection_vector = vdata[major_structure].injections[i]
