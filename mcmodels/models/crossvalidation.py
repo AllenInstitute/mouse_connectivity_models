@@ -123,7 +123,7 @@ def get_loocv_predictions_nnlinear_number_inj(projections, injections, thresh, n
     homo_est = HomogeneousModel(kappa=np.inf)
 
     for i in range(nexp):
-        #print('exp', i)
+        print('exp', i)
         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
         inj, inds = get_reduced_matrix_ninj(injections[otherindices], thresh, number)
         if inj.shape[1] > 0:
@@ -132,6 +132,27 @@ def get_loocv_predictions_nnlinear_number_inj(projections, injections, thresh, n
             predictions[i] = pred
 
     return (predictions)
+
+
+
+def get_loocv_predictions_nnlinear_number_inj_norm(projections, injections, thresh, number):
+    projections = np.asarray(projections, dtype=np.float32)
+    injections = np.asarray(injections, dtype=np.float32)
+    nexp = projections.shape[0]
+    predictions = np.zeros(projections.shape)
+    homo_est = HomogeneousModel(kappa=np.inf)
+
+    for i in range(nexp):
+        print('exp', i)
+        otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
+        inj, inds = get_reduced_matrix_ninj(injections[otherindices], thresh, number)
+        if inj.shape[1] > 0:
+            homo_est.fit(inj, projections[otherindices])
+            pred = homo_est.predict(injections[i:(i + 1)][:, inds])
+            predictions[i] = pred / np.linalg.norm(pred)
+
+    return (predictions)
+
 
 
 def get_loocv_predictions_nnlinear_pca(projections, injections, n_components):
