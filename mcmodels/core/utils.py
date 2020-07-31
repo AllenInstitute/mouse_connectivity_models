@@ -12,17 +12,36 @@ import pandas as pd
 from sklearn.metrics.pairwise import pairwise_kernels
 from mcmodels.utils import nonzero_unique, unionize
 from mcmodels.core import Mask
+from collections import Counter
+
+def get_twoormore(classdict):
+    major_structure_ids = np.asarray(list(classdict.keys()))
+    output = {}
+    for sid in major_structure_ids:
+        count = Counter(classdict[sid])
+        freq = np.asarray([count[classdict[sid][i]] for i in range(len(classdict[sid]))])
+        output[sid] = np.where(freq > 1)[0]
+    return (output)
 
 #order = ontological_order
-def get_regionalized_normalized_data(msvds, cache, order, ipsi_key, contra_key, experiments_minor_structures):
+def get_regionalized_normalized_data(msvds, cache, source_order, ipsi_key, contra_key): #experiments_minor_structures):
+    '''
+
+    :param msvds: Class dictionary holding data
+    :param cache: AllenSDK cache
+    :param source_order: Source key (tautologically ipsilateral due to hemisphere mirroring)
+    :param ipsi_key: Ipsilateral target key
+    :param contra_key:  Contralateral target key
+    :return: msvds: Class dictionary holding average data
+    '''
     major_structure_ids = np.asarray(list(msvds.keys()))
     for sid in major_structure_ids:
         # print()
         msvd = msvds[sid]
-        nexp = msvd.projections.shape[0]
+        #nexp = msvd.projections.shape[0]
 
-        minor_structures = np.unique(experiments_minor_structures[sid])
-        nmins = len(minor_structures)
+        #minor_structures = np.unique(experiments_minor_structures[sid])
+        #nmins = len(minor_structures)
 
         projections = msvd.projections
         ipsi_proj = unionize(projections, ipsi_key)
@@ -41,7 +60,7 @@ def get_regionalized_normalized_data(msvds, cache, order, ipsi_key, contra_key, 
         msvd.reg_proj_vcount_norm_renorm = projections
 
         source_mask = Mask.from_cache(cache, structure_ids=[sid], hemisphere_id=2)
-        source_key = source_mask.get_key(structure_ids=order)
+        source_key = source_mask.get_key(structure_ids=source_order)
         source_target_counts, source_target_counts = nonzero_unique(source_key, return_counts=True)
 
         injections = msvd.injections
@@ -49,6 +68,8 @@ def get_regionalized_normalized_data(msvds, cache, order, ipsi_key, contra_key, 
         msvd.reg_inj = reg_ipsi_inj
         reg_inj_vcount_norm = np.divide(reg_ipsi_inj, source_target_counts[np.newaxis, :])
         msvd.reg_inj_vcount_norm = reg_inj_vcount_norm
+        #msvd.reg_proj_vcountnorm_totalnorm =
+
     return (msvds)
 
 
@@ -153,6 +174,7 @@ def get_wt_inds(creline):
     return (wt_2ormore)
 
 
+#indices was wt_2ormore[sid]
 def get_nw_loocv(msvd, indices, loocv, hyperparameters):
 
     if len(indices) > 1:
@@ -164,6 +186,22 @@ def get_nw_loocv(msvd, indices, loocv, hyperparameters):
         loocv_predictions = np.zeros((nhyp, nexp, nreg))
         for g in range(nhyp):
             loocv_predictions[g, indices] = loocv(projections[indices], centroids[indices], hyperparameters[g])
+        return (loocv_predictions)
+    else:
+        return (np.asarray([]))
+
+#groups is better than indices
+def get_nw_loocv2(msvd, loocv, hyperparameters, groups):
+
+    if len(indices) > 1:
+        projections = msvd.reg_proj_vcount_norm_renorm
+        centroids = msvd.centroids
+        nreg = projections.shape[1]
+        nexp = projections.shape[0]
+        nhyp = hyperparameters.shape[0]
+        loocv_predictions = np.zeros((nhyp, nexp, nreg))
+        for g in range(nhyp):
+            loocv_predictions[g, indices] = loocv(projections[indices], centroids[indices], hyperparameters[g],groups)
         return (loocv_predictions)
     else:
         return (np.asarray([]))

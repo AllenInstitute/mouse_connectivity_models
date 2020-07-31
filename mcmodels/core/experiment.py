@@ -11,7 +11,7 @@ import numpy as np
 
 from .utils import compute_centroid, get_injection_hemisphere_id
 
-from .model_data import ModelData#.model_data import ModelData
+from .model_data import ModelData #.model_data import ModelData
 from .masks import Mask
 from .utils import compute_centroid, get_injection_hemisphere_id
 from .utils import get_matrices
