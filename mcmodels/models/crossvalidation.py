@@ -21,6 +21,27 @@ def get_loocv_predictions(projections, centroids, gamma):
     return (predictions)
 
 
+def get_loocv_predictions_code(projections, centroids, gammas, codes=None):
+
+    ngam = len(gammas)
+    if codes is None:
+        # print('yehh')
+        codes = np.zeros((projections.shape[0], 1))
+
+    # print(codes)
+    unique_codes = np.unique(codes, axis=1)
+    predictions = np.empty(np.append(ngam, projections.shape))
+
+    for c in range(len(unique_codes)):
+        print(unique_codes[c])
+        code_ind = np.where(codes == unique_codes[c])[0]
+        if len(code_ind) > 1:
+            predictions[:, code_ind] = np.asarray(
+                [get_loocv_predictions(projections[code_ind], centroids[code_ind], gammas[g]) for g in range(ngam)])
+
+    return (predictions)
+
+
 def get_loocv_predictions_nnlinear_ridge(projections, injections, lam):
     # projections = reg_proj_vcount_norm
     # injections = reg_inj_vcount_norm
