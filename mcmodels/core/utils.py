@@ -61,12 +61,12 @@ def get_regionalized_normalized_data(msvds, cache, source_order, ipsi_key, contr
 
         source_mask = Mask.from_cache(cache, structure_ids=[sid], hemisphere_id=2)
         source_key = source_mask.get_key(structure_ids=source_order)
-        source_target_counts, source_target_counts = nonzero_unique(source_key, return_counts=True)
+        source_regions, source_counts = nonzero_unique(source_key, return_counts=True)
 
         injections = msvd.injections
         reg_ipsi_inj = unionize(injections, source_key)
         msvd.reg_inj = reg_ipsi_inj
-        reg_inj_vcount_norm = np.divide(reg_ipsi_inj, source_target_counts[np.newaxis, :])
+        reg_inj_vcount_norm = np.divide(reg_ipsi_inj, source_counts[np.newaxis, :])
         msvd.reg_inj_vcount_norm = reg_inj_vcount_norm
         #msvd.reg_proj_vcountnorm_totalnorm =
 

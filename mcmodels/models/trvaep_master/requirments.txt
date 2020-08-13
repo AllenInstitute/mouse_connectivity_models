@@ -1,0 +1,11 @@
+get_version
+scanpy
+adjustText
+torch
+torchvision
+numpy
+scipy
+seaborn
+matplotlib
+adjustText
+pandas
