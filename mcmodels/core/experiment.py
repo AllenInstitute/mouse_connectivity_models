@@ -14,7 +14,7 @@ from .utils import compute_centroid, get_injection_hemisphere_id
 from .model_data import ModelData #.model_data import ModelData
 from .masks import Mask
 from .utils import compute_centroid, get_injection_hemisphere_id
-from .utils import get_matrices
+#from .utils import get_matrices
 
 
 class VoxelDataset:
@@ -31,6 +31,35 @@ class VoxelDataset:
     def __init__(self):#, sid):
         pass
         #self.sid = sid
+
+def get_centroid(experiment):
+    """Returns experiment centroid"""
+    return experiment.centroid
+
+def get_injection(experiment, normalized_injection):
+    # print('ts',experiment.normalized_injection)
+    """Returns experiment injection masked & flattened"""
+    injection = experiment.get_injection(normalized_injection)
+    return experiment.injection_mask.mask_volume(injection)
+
+def get_projection(experiment, normalized_projection):
+    """Returns experiment projection masked & flattened"""
+    projection = experiment.get_projection(normalized_projection)
+    return experiment.projection_mask.mask_volume(projection)
+
+def yield_experiments(experiments):
+    ev = experiments.values()
+    keys = np.asarray(list(experiments.keys()))
+    for i in range(len(keys)):
+        yield (experiments[keys[i]])
+
+def get_matrices(experiments):
+    get_data = lambda x: (get_centroid(x),
+                          get_injection(x,True),
+                          get_projection(x, True))
+    arrays = map(get_data, yield_experiments(experiments))
+    centroids, injections, projections = map(np.array, zip(*arrays))
+    return(centroids, injections, projections)
 
 
 def get_experiment(cache, eid,sid,default_structure_ids):
@@ -76,6 +105,8 @@ def get_voxeldata_msvd(cache, sid,experiments_exclude,default_structure_ids,cre)
 
     VDs = VoxelDataset()
     VDs.sid = sid
+    VDs.projection_mask = projection_mask
+    VDs.injection_mask = injection_mask
     VDs.experiments = experiments
     VDs.centroids, VDs.injections, VDs.projections = get_matrices(experiments)
     return (VDs)
