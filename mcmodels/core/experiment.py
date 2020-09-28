@@ -81,6 +81,15 @@ def get_experiment(cache, eid,sid,default_structure_ids):
     return (experiment)
 
 def get_voxeldata_msvd(cache, sid,experiments_exclude,default_structure_ids,cre):
+    '''
+
+    :param cache:
+    :param sid:
+    :param experiments_exclude:
+    :param default_structure_ids:
+    :param cre:
+    :return:
+    '''
     voxel_data = ModelData(cache, sid)
     experiment_ids = voxel_data.get_experiment_ids(experiments_exclude=experiments_exclude, cre=cre)
     experiment_ids = np.asarray(list(experiment_ids))
@@ -97,12 +106,15 @@ def get_voxeldata_msvd(cache, sid,experiments_exclude,default_structure_ids,cre)
         structure_ids=default_structure_ids,
         hemisphere_id=3)
 
+    #first we get the experiment
+    #experiment.from_cache populates injection and projection density
     for eid in experiment_ids:
         # print(eid)
         experiments[eid] = get_experiment(cache, eid, sid,default_structure_ids)
         experiments[eid].projection_mask = projection_mask
         experiments[eid].injection_mask = injection_mask
 
+    #then we get the matrices... uses experiment.get_injection and .get_projection
     VDs = VoxelDataset()
     VDs.sid = sid
     VDs.projection_mask = projection_mask
