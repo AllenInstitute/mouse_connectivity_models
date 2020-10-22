@@ -10,7 +10,7 @@ from allensdk.core import json_utilities
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 from .base import VoxelData
-from .masks import Mask
+from .mask import Mask
 from .voxel_model_api import VoxelModelApi
 
 from ..models.voxel import VoxelConnectivityArray

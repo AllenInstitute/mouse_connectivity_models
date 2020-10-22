@@ -9,11 +9,11 @@ from functools import partial
 
 import numpy as np
 
-from .utils import compute_centroid, get_injection_hemisphere_id
+#from .utils import compute_centroid, get_injection_hemisphere_id
 
 from .model_data import ModelData #.model_data import ModelData
-from .masks import Mask
-from .utils import compute_centroid, get_injection_hemisphere_id
+from .mask import Mask
+from .utils import get_centroid, get_injection_hemisphere_id
 #from .utils import get_matrices
 
 
@@ -327,7 +327,7 @@ class Experiment(object):
     @property
     def centroid(self):
         """Returns centroid of the injection density."""
-        return compute_centroid(self.injection_density)
+        return get_centroid(self.injection_density)
 
     @property
     def normalized_injection_density(self):
