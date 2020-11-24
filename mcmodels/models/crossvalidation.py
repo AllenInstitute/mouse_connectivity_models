@@ -87,7 +87,7 @@ def combine_predictions(predictions, eval_index_matrix):
 def get_nwloocv_predictions_singlemodel_dists(projections, dists, gamma, model_indices, eval_indices):
     eval_index_val = np.where(eval_indices == 1)[0]
     model_index_val = np.where(model_indices == 1)[0]
-    print('e', eval_index_val, 'm', model_index_val)
+    #print('e', eval_index_val, 'm', model_index_val)
 
     projections = np.asarray(projections, dtype=np.float32)
 
@@ -119,7 +119,7 @@ def get_nwloocv_predictions_singlemodel_dists(projections, dists, gamma, model_i
 def get_nwloocv_predictions_multimodel_merge_dists(projections, dists, gammas, model_index_matrix, eval_index_matrix):
     predictions_unmerged = get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_index_matrix,
                                                                     eval_index_matrix)
-    print(predictions_unmerged.shape)
+    #print(predictions_unmerged.shape)
     predictions_merged = combine_predictions(predictions_unmerged, eval_index_matrix)
 
     return (predictions_merged)
@@ -140,7 +140,7 @@ def get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_i
                                                                                model_index_matrix[m],
                                                                                eval_index_matrix[m]) for g in
                                      range(ngammas)])
-        print('m', m, len(np.where(model_index_matrix[m] == 1)[0]), np.nanmean(projections), np.nanmean(predictions[m]))
+        #print('m', m, len(np.where(model_index_matrix[m] == 1)[0]), np.nanmean(projections), np.nanmean(predictions[m]))
 
     return (predictions)
 
@@ -152,7 +152,7 @@ def get_best_hyperparameters(losses, keys):
     nkey = keys.shape[1]
     output = np.empty((nms, nkey))
     for m in range(nms):
-        print(m)
+        #print(m)
         sid = major_structure_ids[m]
         lvec = np.asarray([np.nanmean(losses[sid][key]) for key in keys])
         if np.any(~np.isnan(lvec)):

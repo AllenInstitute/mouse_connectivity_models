@@ -199,6 +199,15 @@ class ConnectivityData():
 
             structure_data.reg_proj_vcount_norm_injnorm = reg_proj_vcount_norm / np.expand_dims(
                 np.linalg.norm(reg_inj_vcount_norm, axis=1), 1)
+
+            reg_proj_injnorm = reg_proj / np.expand_dims(
+                np.linalg.norm(reg_ipsi_inj, axis=1), 1)
+
+            #reg_proj_injnorm_norm = reg_proj_injnorm / np.linalg.norm(reg_proj_injnorm, axis=1)
+
+            #reg_proj_injnorm_vcountnorm = reg_proj_injnorm / np.linalg.norm(reg_proj_injnorm, axis=1)
+
+            structure_data.reg_proj_injnorm = reg_proj_injnorm
             connectivity_data.structure_datas[sid] = structure_data
             # msvd.reg_proj_vcountnorm_totalnorm =
         connectivity_data.ipsi_target_regions = ipsi_target_regions
