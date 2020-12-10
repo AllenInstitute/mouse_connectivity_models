@@ -91,9 +91,10 @@ import numpy as np
 
 class ModelData(object):
 
-    def __init__(self, cache, structure_id):
+    def __init__(self, cache, structure_id, structure_set_id = 687527945):
         self.cache = cache
         self.structure_id = structure_id
+        self.structure_set_id = structure_set_id
 
     def get_structure_id(self, acronym):
         structure_tree = self.cache.get_structure_tree()
@@ -134,7 +135,7 @@ class ModelData(object):
     def get_regional_data(self, high_res=False, threshold_injection=True, **kwargs):
         def get_summary_structure_ids():
             structure_tree = self.cache.get_structure_tree()
-            structures = structure_tree.get_structures_by_set_id([687527945])
+            structures = structure_tree.get_structures_by_set_id([self.structure_set_id])
 
             return [s['id'] for s in structures if s['id'] not in (934, 1009)]
 

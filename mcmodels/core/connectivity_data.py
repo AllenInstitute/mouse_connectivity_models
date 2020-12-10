@@ -17,14 +17,14 @@ def get_minorstructures(eids, data_info, ai_map):
 
     return (experiments_minors)
 
-def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_injection=False):
+def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_injection=False, structure_set_id = 687527945):
     connectivity_data = ConnectivityData(cache)
 
     for sid in structure_ids:
         print(sid)
         sid_data = StructureData(sid)
         # deprecated language
-        model_data = ModelData(cache, sid)
+        model_data = ModelData(cache, sid, structure_set_id)
         sid_data.eids = model_data.get_experiment_ids(experiments_exclude=experiments_exclude, cre=None)
         for eid in sid_data.eids:
 

@@ -131,10 +131,14 @@ class VoxelModelCache(MouseConnectivityCache):
         # MouseConnectivityCache does not set these as attributes so we have
         # to reproduce part of MouseConnectivityCache.__init__() here.
         if version is None:
+            #print('none',self.MANIFEST_VERSION)
             version = self.MANIFEST_VERSION
         if ccf_version is None:
             ccf_version = VoxelModelApi.CCF_VERSION_DEFAULT
-
+            #print('none', ccf_version)
+        #else:
+        #    print('version',ccf_version)
+        print(ccf_version)
         self.manifest_file = manifest_file
         self.ccf_version = ccf_version
         self.base_uri = base_uri
