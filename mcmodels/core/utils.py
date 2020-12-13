@@ -569,11 +569,11 @@ def get_reduced_matrix_ninj(X, thresh, number):
 
 
 
-def get_ordered_summary_structures(mcc):
+def get_ordered_summary_structures(mcc,set_id = 687527945):
     # TODO : replace with json of wanted structures
 
     """Returns structure ids of summary structures - fiber tracts (and 934)"""
-    ss_regions = mcc.get_structure_tree().get_structures_by_set_id([687527945])
+    ss_regions = mcc.get_structure_tree().get_structures_by_set_id([set_id])
     #ss_regions = mcc.get_structure_tree().get_structures_by_set_id([167587189])
 
     # 934 not in 100 micron!!!!! (dont want fiber tracts)
