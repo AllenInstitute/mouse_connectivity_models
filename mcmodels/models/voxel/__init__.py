@@ -8,10 +8,11 @@ integrate the model weights to the regional level.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-from .regionalized_model import RegionalizedModel
+# from .regionalized_model import RegionalizedModel
 from .voxel_connectivity_array import VoxelConnectivityArray
-from .voxel_model import VoxelModel
-
-__all__ = ['RegionalizedModel',
-           'VoxelConnectivityArray',
-           'VoxelModel']
+# from .voxel_model import VoxelModel
+#
+__all__ = ['VoxelConnectivityArray'],
+#           'RegionalizedModel',
+#            '',
+#            'VoxelModel']

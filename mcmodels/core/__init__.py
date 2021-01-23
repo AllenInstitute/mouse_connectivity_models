@@ -5,7 +5,7 @@ The :mod:`mcmodels.core` module implements objects useful in data manipulation.
 # License: Allen Institute Software License
 
 
-from .base import VoxelData, RegionalData
+#from .base import VoxelData, RegionalData
 from .cortical_map import CorticalMap
 from .mask import Mask
 from .experiment import Experiment
@@ -21,10 +21,10 @@ from . import utils
 __all__ = ['CorticalMap',
            'Experiment',
            'Mask',
-           'RegionalData',
-           'VoxelData',
+#           'RegionalData',
+#           'VoxelData',
            'VoxelModelApi',
-           'VoxelModelCache',
+          'VoxelModelCache',
            'ConnectivityData',
            'StructureData',
            'ExperimentData',

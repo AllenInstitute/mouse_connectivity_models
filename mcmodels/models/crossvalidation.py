@@ -1,80 +1,20 @@
 import numpy as np
-from mcmodels.models.homogeneous import svd_subset_selection, HomogeneousModel
-from mcmodels.regressors.nonparametric.nadaraya_watson import get_weights
 from mcmodels.core.utils import get_reduced_matrix_ninj, get_loss_paper
-from sklearn import decomposition
 
-#
-# def combine_predictions(predictions, eval_index_matrix):
-#     nmodels, ngammas, nexp, ntargets = predictions.shape
-#     combined_predictions = np.empty((ngammas, nexp, ntargets))
-#     for m in range(nmodels):
-#         combined_predictions[:, np.where(eval_index_matrix[m] == 1)[0]] = predictions[m][:,
-#                                                                           np.where(eval_index_matrix[m] == 1)[0]]
-#
-#     return (combined_predictions)
-#
-#
-# def get_nwloocv_predictions_singlemodel_dists(projections, dists, gamma, model_indices, eval_indices):
-#     eval_index_val = np.where(eval_indices == 1)[0]
-#     model_index_val = np.where(model_indices == 1)[0]
-#
-#     projections = np.asarray(projections, dtype=np.float32)
-#
-#     nmod_ind = len(model_index_val)
-#     neval = len(eval_index_val)
-#     # nexp = centroids.shape[0]
-#     predictions = np.empty(projections.shape)
-#
-#     if len(model_index_val) > 0 and len(eval_index_val) > 0:
-#         # weights = np.exp(-dists[model_index_val][:, eval_index_val] / gamma)#np.exp(-dists[model_index_val] / gamma) #get_weights(centroids, gamma)
-#         for i in range(neval):
-#             matchindex = np.where(model_index_val == eval_index_val[i])[0]
-#             otherindices = np.setdiff1d(np.asarray(list(range(nmod_ind))), matchindex)
-#             # this order of operations is the fastest I found
-#             dists_i = dists[model_index_val][:, eval_index_val[i]] - np.min(
-#                 dists[model_index_val[otherindices]][:, eval_index_val[i]])
-#             weights_i = np.exp(-dists_i * gamma)  # weights[i,:] / np.nansum(weights[i,:][otherindices])
-#             # print(np.nansum(weights[:,i][otherindices]))
-#             weights_i[matchindex] = 0
-#             weights_i = np.asarray(weights_i, dtype=np.float32)
-#             weights_i = weights_i / np.sum(weights_i)
-#             # weights_i[np.isnan(weights_i)] = 0.
-#             pred = np.dot(weights_i, projections[model_index_val])
-#             predictions[eval_index_val[i]] = pred
-#
-#     return (predictions)
-#
-#
-# def get_nwloocv_predictions_multimodel_merge_dists(projections, dists, gammas, model_index_matrix, eval_index_matrix):
-#     predictions_unmerged = get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_index_matrix,
-#                                                                     eval_index_matrix)
-#     print(predictions_unmerged.shape)
-#     predictions_merged = combine_predictions(predictions_unmerged, eval_index_matrix)
-#
-#     return (predictions_merged)
-#
-#
-# def get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_index_matrix, eval_index_matrix):
-#     ntargets = projections.shape[1]
-#     nexp = projections.shape[0]
-#     nmodels = model_index_matrix.shape[0]
-#     ngammas = len(gammas)
-#
-#     projections = np.asarray(projections, dtype=np.float32)
-#     predictions = np.empty((nmodels, ngammas, nexp, ntargets))
-#
-#     for m in range(nmodels):
-#         # print('m', m, len(np.where(model_index_matrix[m] ==1)[0]))
-#         predictions[m] = np.asarray([get_nwloocv_predictions_singlemodel_dists(projections, dists, gammas[g],
-#                                                                                model_index_matrix[m],
-#                                                                                eval_index_matrix[m]) for g in
-#                                      range(ngammas)])
-#
-#     return (predictions)
-
+class Crossval:
+    '''
+    dummy class for cross validation
+    '''
+    def __init__(self):
+        2 + 2
 
 def combine_predictions(predictions, eval_index_matrix):
+    '''
+
+    :param predictions:
+    :param eval_index_matrix:
+    :return:
+    '''
     nmodels, ngammas, nexp, ntargets = predictions.shape
     combined_predictions = np.empty((ngammas, nexp, ntargets))
     for m in range(nmodels):
@@ -82,68 +22,6 @@ def combine_predictions(predictions, eval_index_matrix):
                                                                           np.where(eval_index_matrix[m] == 1)[0]]
 
     return (combined_predictions)
-
-
-def get_nwloocv_predictions_singlemodel_dists(projections, dists, gamma, model_indices, eval_indices):
-    eval_index_val = np.where(eval_indices == 1)[0]
-    model_index_val = np.where(model_indices == 1)[0]
-    #print('e', eval_index_val, 'm', model_index_val)
-
-    projections = np.asarray(projections, dtype=np.float32)
-
-    nmod_ind = len(model_index_val)
-    neval = len(eval_index_val)
-    # nexp = centroids.shape[0]
-    predictions = np.empty(projections.shape)
-    predictions[:] = np.nan
-    if len(model_index_val) > 0 and len(eval_index_val) > 0:
-        # weights = np.exp(-dists[model_index_val][:, eval_index_val] / gamma)#np.exp(-dists[model_index_val] / gamma) #get_weights(centroids, gamma)
-        for i in range(neval):
-            matchindex = np.where(model_index_val == eval_index_val[i])[0]
-            otherindices = np.setdiff1d(np.asarray(list(range(nmod_ind))), matchindex)
-            # this order of operations is the fastest I found
-            dists_i = dists[model_index_val][:, eval_index_val[i]] - np.min(
-                dists[model_index_val[otherindices]][:, eval_index_val[i]])
-            weights_i = np.exp(-dists_i * gamma)  # weights[i,:] / np.nansum(weights[i,:][otherindices])
-            # print(np.nansum(weights[:,i][otherindices]))
-            weights_i[matchindex] = 0
-            weights_i = np.asarray(weights_i, dtype=np.float32)
-            weights_i = weights_i / np.sum(weights_i)
-            # weights_i[np.isnan(weights_i)] = 0.
-            pred = np.dot(weights_i, projections[model_index_val])
-            predictions[eval_index_val[i]] = pred
-
-    return (predictions)
-
-
-def get_nwloocv_predictions_multimodel_merge_dists(projections, dists, gammas, model_index_matrix, eval_index_matrix):
-    predictions_unmerged = get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_index_matrix,
-                                                                    eval_index_matrix)
-    #print(predictions_unmerged.shape)
-    predictions_merged = combine_predictions(predictions_unmerged, eval_index_matrix)
-
-    return (predictions_merged)
-
-
-def get_nwloocv_predictions_multimodel_dists(projections, dists, gammas, model_index_matrix, eval_index_matrix):
-    ntargets = projections.shape[1]
-    nexp = projections.shape[0]
-    nmodels = model_index_matrix.shape[0]
-    ngammas = len(gammas)
-
-    projections = np.asarray(projections, dtype=np.float32)
-    predictions = np.empty((nmodels, ngammas, nexp, ntargets))
-    predictions[:] = np.nan
-    for m in range(nmodels):
-        # print()
-        predictions[m] = np.asarray([get_nwloocv_predictions_singlemodel_dists(projections, dists, gammas[g],
-                                                                               model_index_matrix[m],
-                                                                               eval_index_matrix[m]) for g in
-                                     range(ngammas)])
-        #print('m', m, len(np.where(model_index_matrix[m] == 1)[0]), np.nanmean(projections), np.nanmean(predictions[m]))
-
-    return (predictions)
-
 
 
 def get_best_hyperparameters(losses, keys):
@@ -163,209 +41,6 @@ def get_best_hyperparameters(losses, keys):
     output = np.asarray(output, dtype=int)
     return (output)
 
-#def get_nwloocv_predictions(self):
-
-#
-# def get_loocv_predictions(projections, centroids, gamma):
-#     projections = np.asarray(projections, dtype=np.float32)
-#     nexp = centroids.shape[0]
-#     predictions = projections.copy()
-#     weights = get_weights(centroids, gamma)
-#
-#     for i in range(nexp):
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         weights_i = weights[i] / weights[i][otherindices].sum()
-#         weights_i[i] = 0
-#         weights_i = np.asarray(weights_i, dtype=np.float32)
-#         pred = np.dot(weights_i, projections)
-#         predictions[i] = pred
-#
-#     return (predictions)
-#
-#
-# def get_loocv_predictions_code(projections, centroids, gammas, codes=None):
-#
-#     ngam = len(gammas)
-#     if codes is None:
-#         # print('yehh')
-#         codes = np.zeros((projections.shape[0], 1))
-#
-#     # print(codes)
-#     unique_codes = np.unique(codes, axis=1)
-#     predictions = np.empty(np.append(ngam, projections.shape))
-#
-#     for c in range(len(unique_codes)):
-#         print(unique_codes[c])
-#         code_ind = np.where(codes == unique_codes[c])[0]
-#         if len(code_ind) > 1:
-#             predictions[:, code_ind] = np.asarray(
-#                 [get_loocv_predictions(projections[code_ind], centroids[code_ind], gammas[g]) for g in range(ngam)])
-#
-#     return (predictions)
-#
-#
-# def get_loocv_predictions_nnlinear_ridge(projections, injections, lam):
-#     # projections = reg_proj_vcount_norm
-#     # injections = reg_inj_vcount_norm
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     predictions = projections.copy()
-#
-#     # homo_est = HomogeneousModel(kappa=kappa)
-#
-#     for i in range(nexp):
-#         print(i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         d = injections[otherindices].shape[1]
-#         X = injections[otherindices].copy()
-#         # not normalizing for now
-#         # norms = np.linalg.norm(X, axis = 0)
-#         # X = X / norms
-#         # X[:,np.where(norms < 0.0000001)[0]] = 0.
-#         Q = X.transpose() @ X + lam * np.identity(d)
-#         c = injections[otherindices].transpose() @ projections[otherindices]  # - A'y
-#         betas = np.empty((Q.shape[0], c.shape[1]))
-#         for j in range(c.shape[1]):
-#             bjs, _ = scipy.optimize.nnls(Q, c[:, j])
-#             betas[:, j] = bjs  # bjs / norms
-#
-#         # betas[np.where(np.isnan(betas))] = 0.
-#         # betas[np.where(betas == np.inf)] = 0.
-#         # betas[np.where(betas == np.nan)] = 0.
-#
-#         # print(betas.shape)
-#         # print(injections[i:(i+1)].shape)
-#
-#         pred = betas.transpose() @ injections[i:(i + 1)].transpose()  # homo_est.predict(injections[i:(i+1)])
-#         predictions[i] = np.squeeze(pred)
-#
-#     return (predictions)
-#
-#
-# def get_loocv_predictions_nnlinear_nmf(projections, injections, n_components):
-#     # projections = reg_proj_vcount_norm
-#     # injections = reg_inj_vcount_norm
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     predictions = projections.copy()
-#
-#     homo_est = HomogeneousModel(kappa=np.inf)
-#     NMF = decomposition.NMF(n_components=n_components)
-#
-#     recon_err = np.zeros(nexp)
-#     for i in range(nexp):
-#         # print(i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         NMF.fit(injections[otherindices])
-#         trans_inj = NMF.transform(injections[otherindices])
-#         homo_est.fit(trans_inj, projections[otherindices])
-#
-#         test_inj = NMF.transform(injections[i:(i + 1)])
-#         tpred = homo_est.predict(test_inj)
-#         predictions[i] = tpred  # NMF.inverse_transform(tpred)
-#         recon_err[i] = NMF.reconstruction_err_
-#
-#     return (predictions, recon_err)
-#
-#
-# def get_loocv_predictions_nnlinear_ic(projections, injections, rank, nfeatures):
-#     # this is not necessarily the best option but oh well
-#     number = rank
-#
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     conds = np.empty(nexp)
-#     predictions = projections.copy()
-#     homo_est = HomogeneousModel(kappa=np.inf)
-#
-#     for i in range(nexp):
-#         print('exp', i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         injs = injections[otherindices]
-#         inds = svd_subset_selection(injs, number)
-#         # if len(inds) == 1:
-#         #    homo_est.fit(injs[:,[inds]], projections[otherindices])
-#         #    pred =  homo_est.predict(injections[i:(i+1)][:,[inds]])
-#         # else:
-#         homo_est.fit(injs[:, inds], projections[otherindices])
-#         pred = homo_est.predict(injections[i:(i + 1)][:, inds])
-#         predictions[i] = pred
-#         conds[i] = LA.cond(injs[:, inds])
-#
-#     return (predictions, conds)
-#
-#
-# def get_loocv_predictions_nnlinear_number_inj(projections, injections, thresh, number):
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     predictions = np.zeros(projections.shape)
-#     homo_est = HomogeneousModel(kappa=np.inf)
-#
-#     for i in range(nexp):
-#         print('exp', i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         inj, inds = get_reduced_matrix_ninj(injections[otherindices], thresh, number)
-#         if inj.shape[1] > 0:
-#             homo_est.fit(inj, projections[otherindices])
-#             pred = homo_est.predict(injections[i:(i + 1)][:, inds])
-#             predictions[i] = pred
-#
-#     return (predictions)
-#
-#
-#
-# def get_loocv_predictions_nnlinear_number_inj_norm(projections, injections, thresh, number):
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     predictions = np.zeros(projections.shape)
-#     homo_est = HomogeneousModel(kappa=np.inf)
-#
-#     for i in range(nexp):
-#         print('exp', i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         inj, inds = get_reduced_matrix_ninj(injections[otherindices], thresh, number)
-#         if inj.shape[1] > 0:
-#             homo_est.fit(inj, projections[otherindices])
-#             pred = homo_est.predict(injections[i:(i + 1)][:, inds])
-#             predictions[i] = pred / np.linalg.norm(pred)
-#
-#     return (predictions)
-#
-#
-#
-# def get_loocv_predictions_nnlinear_pca(projections, injections, n_components):
-#     # projections = reg_proj_vcount_norm
-#     # injections = reg_inj_vcount_norm
-#     projections = np.asarray(projections, dtype=np.float32)
-#     injections = np.asarray(injections, dtype=np.float32)
-#     nexp = projections.shape[0]
-#     predictions = projections.copy()
-#
-#     homo_est = HomogeneousModel(kappa=np.inf)
-#     SVD = decomposition.TruncatedSVD(n_components=n_components)
-#
-#     exp_var = np.zeros(nexp)
-#     for i in range(nexp):
-#         print(i)
-#         otherindices = np.setdiff1d(np.asarray(list(range(nexp))), i)
-#         SVD.fit(injections[otherindices])
-#         trans_inj = SVD.transform(injections[otherindices])
-#         homo_est.fit(trans_inj, projections[otherindices])
-#         test_inj = SVD.transform(injections[i:(i + 1)])
-#         homo_est.fit(trans_inj, projections[otherindices])
-#         tpred = homo_est.predict(test_inj)
-#         predictions[i] = tpred
-#         # predictions[i] = SVD.inverse_transform(tpred.transpose())
-#         exp_var[i] = np.sum(SVD.explained_variance_)
-#
-#     return (predictions, exp_var)
-#
-#
 def get_loss(true_dict, prediction_dict, pred_ind=None, true_ind=None, keys=None):
     output = {}
     major_structure_ids = list(prediction_dict.keys())
@@ -398,24 +73,6 @@ def get_loss(true_dict, prediction_dict, pred_ind=None, true_ind=None, keys=None
 
     return (output)
 
-#
-# def get_best_hyperparameters(losses, keys):
-#     major_structure_ids = np.asarray(list(losses.keys()))
-#     nms = len(major_structure_ids)
-#     nkey = keys.shape[1]
-#     output = np.zeros((nms, nkey))
-#     for m in range(nms):
-#         print(m)
-#         sid = major_structure_ids[m]
-#         lvec = np.asarray([np.nanmean(losses[sid][key]) for key in keys])
-#         output[m] = keys[np.nanargmin(lvec)]
-#         # if len(np.where(np.isnan(np.nanmean(losses[sid][:,:], axis = 1)))[0]) < losses[sid].shape[0]:
-#         #    output[m] = np.nanargmin(np.nanmean(losses[sid][:,:], axis = 1))
-#
-#     output = np.asarray(output, dtype=int)
-#     return (output)
-#
-#
 def get_loss_best_hyp(losses, hyps):
     major_structure_ids = np.asarray(list(losses.keys()))
     nms = len(major_structure_ids)
@@ -425,5 +82,3 @@ def get_loss_best_hyp(losses, hyps):
         output[m] = np.nanmean(losses[sid][hyps[m], :])
     return (output)
 
-
-# injection_vector = vdata[major_structure].injections[i]

@@ -1,5 +1,4 @@
 import numpy as np
-
 from .model_data import ModelData
 from .structure_data import StructureData
 from .utils import get_ccf_data
@@ -10,14 +9,21 @@ from sklearn.metrics import pairwise_distances
 
 def get_minorstructures(eids, data_info, ai_map):
     experiments_minors = np.zeros(len(eids), dtype=object)
-
     for i in range(len(eids)):
         experiment_id = eids[i]
         experiments_minors[i] = ai_map[data_info['primary-injection-structure'].loc[experiment_id]]
-
     return (experiments_minors)
 
 def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_injection=False, structure_set_id = 687527945):
+    '''
+
+    :param cache: VoxelModelCache for communicating with AllenSDK
+    :param structure_ids: Ids for which to pull data
+    :param experiments_exclude: Experiments to exclude (not tested)
+    :param remove_injection: Remove injection signal from projection (not tested)
+    :param structure_set_id: Structure set specifying list of structures (not same as location of structures)
+    :return:
+    '''
     connectivity_data = ConnectivityData(cache)
 
     for sid in structure_ids:
@@ -47,7 +53,11 @@ def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_inje
     return (connectivity_data)
 
 class ConnectivityData():
-
+    '''
+    Basic experimental class for holding data from multiple major structures (e.g. CB)
+    Rewrites much of the functionality from Knox.
+    The goal is to more explicitly state the algorithmic steps.
+    '''
     def __init__(self,cache):
         self.structure_datas = {}
         self.cache = cache
@@ -62,7 +72,10 @@ class ConnectivityData():
         self.structure_datas = structure_datas
 
     def align(self):
-
+        '''
+        Align all experiments to have same hemisphere
+        :return: self
+        '''
         structure_datas = self.structure_datas
 
         for sid in list(structure_datas.keys()):
@@ -70,7 +83,10 @@ class ConnectivityData():
         self.structure_datas = structure_datas
 
     def get_centroids(self):
-
+        '''
+        Compute centroids of all experiments in dataset
+        :return: self
+        '''
         structure_datas = self.structure_datas
 
         for sid in list(structure_datas.keys()):

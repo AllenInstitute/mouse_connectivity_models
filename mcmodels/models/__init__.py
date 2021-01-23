@@ -10,10 +10,10 @@ recent VoxelModel from Knox et al. 2018.
 from . import homogeneous
 from .homogeneous import HomogeneousModel
 
-from . import voxel
-from .voxel import VoxelModel
+#from . import voxel
+#from .voxel import VoxelModel
 
 __all__ = ['HomogeneousModel',
-           'VoxelModel',
+#           'VoxelModel',
            'homogeneous',
            'voxel']
