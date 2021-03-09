@@ -300,3 +300,18 @@ class ConnectivityData():
             major_structure_dictionary[sid] = np.asarray(strs_sid, dtype=int)
         self.major_leaf_dictionary = major_structure_dictionary
         #return (major_structure_dictionary)
+
+    def get_cresum_combos(self):
+
+        connectivity_data = self
+        summary_structures = self.summary_structures
+        creline = self.creline
+        cresums = {}
+        cresums_merged = {}
+
+        major_structure_ids = np.asarray(list(connectivity_data.structure_datas.keys()))
+        for sid in major_structure_ids:
+            cresums[sid] = np.asarray(np.vstack([summary_structures[sid], creline[sid]]), dtype=str).transpose()
+            cresums_merged[sid] = [cresums[sid][:, 0][i] + cresums[sid][:, 1][i] for i in range(cresums[sid].shape[0])]
+            cresums_merged[sid] = np.asarray(cresums_merged[sid])
+        self.cresum_combos = cresums_merged

@@ -31,6 +31,11 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
                                       injection_structure_ids=structure_ids)
     return [experiment['id'] for experiment in experiments]
 
+def get_aligned_ids(st, list1,list2):
+    output = np.empty(len(list1), dtype = int)
+    for i in range(len(list1)):
+        output[ i] = np.intersect1d(st.ancestor_ids([list1[i]]), list2)[0]
+    return(output)
 
 def nonzero_unique(ar, **unique_kwargs):
     """np.unique returning only nonzero unique elements.

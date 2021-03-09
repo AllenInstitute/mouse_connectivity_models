@@ -27,6 +27,7 @@ def get_nwloocv_predictions_singlemodel_dists(projections, dists, gamma, model_i
             weights_i = weights_i / np.sum(weights_i)
             # weights_i[np.isnan(weights_i)] = 0.
             pred = np.dot(weights_i, projections[model_index_val])
+            pred = pred / np.linalg.norm(pred)
             predictions[eval_index_val[i]] = pred
 
     return (predictions)
