@@ -18,6 +18,6 @@ def get_nw_predictions(projections, dists, gamma):
         weights_i = weights_i / np.sum(weights_i)
         # predictions[i] = np.dot(weights_i, projections)
         pred = np.dot(weights_i, projections)
-        predictions[i] = pred / np.linalg.norm(pred)  # np.sum(pred)#np.linalg.norm(pred)
+        predictions[i] = pred #/ np.sum(pred)#/ np.linalg.norm(pred)  # np.sum(pred)#np.linalg.norm(pred)
 
     return (predictions)

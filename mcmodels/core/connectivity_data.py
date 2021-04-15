@@ -173,7 +173,14 @@ class ConnectivityData():
         :param source_order: Source key (tautologically ipsilateral due to hemisphere mirroring)
         :param ipsi_key: Ipsilateral target key
         :param contra_key:  Contralateral target key
-        :return: msvds: Class dictionary holding average data
+        :return: reg_proj: the regionalized projection vector
+                reg_proj_vcount_norm: the regionalized projection normalized by target size
+                 reg_proj_norm: the regionalized normalized projection vector
+                   reg_inj_vcount_norm: the regionalized injection normalized by source size
+                    reg_inj: the regionalized injection vector
+                    reg_proj_vcount_norm_injnorm:  this doesn't make sense (divise target size normalized projection by sum of source size normalized injection)
+                    reg_proj_injnorm: the regionalized projection vector normalized by total injection (the one from Knox et al)
+
         '''
         connectivity_data = self
         cache = self.cache
@@ -199,9 +206,9 @@ class ConnectivityData():
             reg_proj_vcount_norm = np.divide(reg_proj, target_counts[np.newaxis, :])
             structure_data.reg_proj_vcount_norm = reg_proj_vcount_norm
             structure_data.reg_proj_vcount_norm_renorm = reg_proj_vcount_norm / np.expand_dims(
-                np.linalg.norm(reg_proj_vcount_norm, axis=1), 1)
-            structure_data.reg_proj_norm = reg_proj / np.expand_dims(np.linalg.norm(reg_proj, axis=1), 1)
-            # structure_data.reg_proj_norm_vcount_norm = np.divide(structure_data.reg_proj_norm, target_counts[np.newaxis, :]) # / np.expand_dims(np.linalg.norm(reg_proj_vcount_norm, axis=1), 1)
+                #np.linalg.norm(reg_proj_vcount_norm, axis=1), 1)
+                np.sum(reg_proj_vcount_norm, axis=1), 1)
+            structure_data.reg_proj_norm = reg_proj / np.expand_dims(np.sum(reg_proj, axis=1), 1)#np.expand_dims(np.linalg.norm(reg_proj, axis=1), 1)
 
             source_mask = Mask.from_cache(cache, structure_ids=[sid], hemisphere_id=2)
             source_key = source_mask.get_key(structure_ids=source_order)
@@ -214,14 +221,12 @@ class ConnectivityData():
             structure_data.reg_inj_vcount_norm = reg_inj_vcount_norm
 
             structure_data.reg_proj_vcount_norm_injnorm = reg_proj_vcount_norm / np.expand_dims(
-                np.linalg.norm(reg_inj_vcount_norm, axis=1), 1)
+                #np.linalg.norm(reg_inj_vcount_norm, axis=1), 1)
+                np.sum(reg_inj_vcount_norm, axis=1), 1)
 
             reg_proj_injnorm = reg_proj / np.expand_dims(
-                np.linalg.norm(reg_ipsi_inj, axis=1), 1)
-
-            #reg_proj_injnorm_norm = reg_proj_injnorm / np.linalg.norm(reg_proj_injnorm, axis=1)
-
-            #reg_proj_injnorm_vcountnorm = reg_proj_injnorm / np.linalg.norm(reg_proj_injnorm, axis=1)
+                #np.linalg.norm(reg_ipsi_inj, axis=1), 1)
+                np.sum(reg_ipsi_inj, axis=1), 1)
 
             structure_data.reg_proj_injnorm = reg_proj_injnorm
             connectivity_data.structure_datas[sid] = structure_data
