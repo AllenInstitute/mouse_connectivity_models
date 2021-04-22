@@ -1,0 +1,38 @@
+\section{Introduction}
+ 
+The animal nervous system enables an extraordinary range of natural behaviors, and has inspired much of modern artifical intelligence.
+Neural connectivities - axon-dendrite connections from one region to another - form the architecture underlying this capability.
+These connectivities vary by neuron type, as well as axonic source and dendritic target structure.
+Thus, characterization of the relationship between neuron type and source and target structure is an important step to understanding the nervous system.
+
+Viral tracing experiments - in which a viral vector expressing GFP is transduced into neural cells through stereotaxic injection - are a useful tool for understanding these connections on the mesoscale \citep{Chamberlin1998-hi,Harris2012-fw, Daigle2018-gd}.
+The GFP protein moves from axon to dendrite through the process of anterograde projection, so neurons 'downstream' of the injection site will also fluoresce.
+Two-photon tomography imaging can then determine the location and strength of the fluorescent signals in two-dimensional slices.
+These locations can then be mapped back into three-dimensional space, and
+the signal is partitioned into the transduced source and merely transfected target regions.
+
+
+The conversion of such experiment-specific signals into an overall estimate of the connectivity strength of two regions is accomplished by a statistical model.
+\citet{Oh2014-kh} and \citet{Knox2019-ot} describe two such methods.
+Intuitively, both of these models provide some improvement over simply averaging the projection signals of injections in a given region.
+\citet{} is another.
+These models are evaluated based off of their ability to predict held-out experiments in leave-one-out cross validation.
+A model that performs well in such validation experiments is then assumed to generate the most accurate connectivity. 
+
+Both \citet{Oh2014-kh} and \citet{Knox2019-ot} develop models for mostly wild-type mice using a standardized vector over all experiments.
+However, recent work \citep{Harris2019-mr} has extended these datasets to include viral tracing experiments inducing cell-type specific fluorescence.
+This is accomplished by injecting vectors with Cre-recombinase triggered GFP promoters into transgenic mice with cell-type specific Cre-recombinase expression
+Thus, the this paper extends the methodology of \citet{Oh2014-kh} and \citet{Knox2019-ot} to deal with the diverse set of cre-lines described in \citet{Harris2019-mr}.
+
+This extension relies on a to our knowledge novel estimator that takes into account both the spatial position of the labelled source, as well as the categorical cre-label.
+This model outperforms the model of \citet{Knox2019-ot}, even for wild-type experiments.
+
+The resulting cell-type specific connectivity matrices form a multi-way \textit{neural connection tensor} of information about neural structure.
+We do not attempt an exhaustive analysis of this data, but do demonstrate several basic phenomena.
+First, we verify several cell-type specific patterns found elsewhere in the literature.
+Second, we discover cell-type specific signals in the neural connection tensor.
+Finally, we decompose the overall (wild-type) connectivity matrix into factors representing archetypal connective patterns.
+
+
+
+\newpage
