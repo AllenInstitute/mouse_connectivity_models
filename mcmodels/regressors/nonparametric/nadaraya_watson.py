@@ -11,7 +11,7 @@ import numpy as np
 from scipy.sparse import issparse
 
 from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.metrics.scorer import check_scoring
+from sklearn.metrics import check_scoring
 from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.model_selection import GridSearchCV, ParameterGrid, check_cv
 from sklearn.model_selection._search import _check_param_grid

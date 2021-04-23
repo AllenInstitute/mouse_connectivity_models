@@ -12,7 +12,7 @@ import numpy as np
 import scipy.linalg as linalg
 import scipy.optimize as sopt
 
-from sklearn.linear_model.base import _rescale_data
+from sklearn.linear_model._base import _rescale_data
 from sklearn.utils import check_array
 from sklearn.utils import check_X_y
 from sklearn.utils import check_consistent_length
