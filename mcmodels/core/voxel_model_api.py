@@ -4,7 +4,7 @@ Module containing VoxelModelApi.
 # Authors: Joseph Knox <josephk@alleninstitute.org>
 # License: Allen Institute Software License
 
-from allensdk.api.cache import cacheable, Cache
+from allensdk.api.warehouse_cache.cache import cacheable, Cache
 from allensdk.api.queries.mouse_connectivity_api import MouseConnectivityApi
 
 
