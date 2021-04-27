@@ -68,7 +68,7 @@ community is welcome to submit issues, but you should not expect an active
 response.
 
 
-Contrubuting
+Contributing
 ------------
 We encourage the community to contribute! Please first review the `Allen
 Institute Contributing Agreement <https://github.com/AllenInstitute/
