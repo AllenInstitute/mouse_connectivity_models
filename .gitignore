@@ -84,7 +84,7 @@ target/
 docs/modules/generated
 
 # data
-connectivity
+#connectivity
 
 # OS files
 *.DS_Store
