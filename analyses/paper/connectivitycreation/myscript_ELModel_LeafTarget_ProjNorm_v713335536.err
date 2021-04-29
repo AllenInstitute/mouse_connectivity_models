@@ -1,0 +1,7 @@
+Could not find conda environment: allen_env
+You can list all discoverable environments with `conda info --envs`.
+
+  File "ELModel_LeafTarget_ProjNorm_v7.py", line 1
+    %load_ext autoreload
+    ^
+SyntaxError: invalid syntax

@@ -1,6 +1,3 @@
-%load_ext autoreload
-%autoreload 2
-
 import os
 import numpy as np
 import pandas as pd 
@@ -130,9 +127,9 @@ eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100'
 
 for c in range(len(eval_cre_list)):
     print(c, eval_cre_list[c])
-    conn_v3 = get_connectivity_matrices3(connectivity_data, surfaces, experiment_sids_surfaces,experiment_sids_nws, model_ordering, source_ordering_surface[117:123], source_ordering_nw[117:123], source_ordering[117:123], target_ordering, [eval_cre_list[c]])
-    connectivity_matrices = pd.DataFrame(conn_v3[0], columns = cnam_multi, index=rnames[117:123])
-    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_leafsurf_leafsmth_leafleaf_' + str(eval_cre_names[c]) + '0428_visp.csv')
+    conn_v3 = get_connectivity_matrices3(connectivity_data, surfaces, experiment_sids_surfaces,experiment_sids_nws, model_ordering, source_ordering_surface, source_ordering_nw, source_ordering, target_ordering, [eval_cre_list[c]])
+    connectivity_matrices = pd.DataFrame(conn_v3[0], columns = cnam_multi, index=rnames)
+    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_leafsurf_leafsmth_leafleaf_' + str(eval_cre_names[c]) + '0428.csv')
     
     
 
