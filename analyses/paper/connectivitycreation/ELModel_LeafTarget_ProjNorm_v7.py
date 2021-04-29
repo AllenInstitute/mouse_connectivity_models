@@ -60,13 +60,14 @@ def get_row_col_names(connectivity_data, target_ordering):
     return(cnam_multi, rnames)
 
 #read data
-TOP_DIR = '/Users/samsonkoelle/alleninstitute/mcm_2020/mcm_updated/'
-INPUT_JSON = os.path.join(TOP_DIR, 'input_011520.json')
-EXPERIMENTS_EXCLUDE_JSON = os.path.join(TOP_DIR, 'experiments_exclude.json')
+data_dir = workingdirectory + '/data/rawdata'
+INPUT_JSON = os.path.join(data_dir, 'input_011520.json')
+EXPERIMENTS_EXCLUDE_JSON = os.path.join(data_dir, 'experiments_exclude.json')
 input_data = ju.read(INPUT_JSON)
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
-manifest_file = input_data.get('manifest_file')
-manifest_file = os.path.join(TOP_DIR, manifest_file)
+#manifest_file = input_data.get('manifest_file')
+#manifest_file = os.path.join(data_dir, manifest_file)
+manifest_file = os.path.join(data_dir, 'new_manifest.json')
 cache = VoxelModelCache(manifest_file=manifest_file)
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
