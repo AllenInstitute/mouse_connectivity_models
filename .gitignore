@@ -86,6 +86,10 @@ docs/modules/generated
 # data
 connectivity
 
+# cluster
+*.out
+*.err
+
 # OS files
 *.DS_Store
 

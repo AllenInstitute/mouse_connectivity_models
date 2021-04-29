@@ -10,5 +10,5 @@
 #SBATCH --mail-user=sjkoelle@gmail.com # Email to which notifications will be sent
 
 export PATH="~/anaconda3/bin:$PATH"
-source activate allen_env
+source activate allen_env5
 python -u ELModel_LeafTarget_ProjNorm_v7.py > ELModel_LeafTarget_ProjNorm_v7.out
