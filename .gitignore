@@ -84,7 +84,7 @@ target/
 docs/modules/generated
 
 # data
-connectivity
+#connectivity
 
 # cluster
 *.out
