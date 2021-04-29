@@ -122,7 +122,7 @@ class CrossvalNW:
         meanloss = get_loss_best_hyp(losses, bestgamma)
 
         self.losses = losses
-        self.bestgamma = bestgamma
+        self.bestgamma = gammas[bestgamma]
         self.meanloss = meanloss
 
     def get_results_weightedloocv(self, structures,crelines,ia_map):
@@ -157,7 +157,7 @@ class CrossvalNW:
                 nw_losses_all[g, m] = np.nanmean(np.asarray(meanlosses[sid]))
 
         self.weighted_losses = meanlosses
-        self.bestgamma_weighted = np.argmin(nw_losses_all, axis = 0)
+        self.bestgamma_weighted = gammas[np.argmin(nw_losses_all, axis = 0)]
         self.meanloss_weighted = np.min(nw_losses_all, axis = 0)
 
 
