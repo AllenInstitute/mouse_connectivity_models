@@ -61,22 +61,23 @@ def get_row_col_names(connectivity_data, target_ordering):
 
 #read data
 data_dir = workingdirectory + '/data/rawdata'
-INPUT_JSON = os.path.join(data_dir, 'input_011520.json')
-EXPERIMENTS_EXCLUDE_JSON = os.path.join(data_dir, 'experiments_exclude.json')
+INPUT_JSON = os.path.join(data_dir, '/input_011520.json')
+EXPERIMENTS_EXCLUDE_JSON = os.path.join(data_dir, '/experiments_exclude.json')
 input_data = ju.read(INPUT_JSON)
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
 #manifest_file = input_data.get('manifest_file')
 #manifest_file = os.path.join(data_dir, manifest_file)
-manifest_file = os.path.join(data_dir, 'new_manifest.json')
+manifest_file = os.path.join(data_dir, '/new_manifest.json')
 cache = VoxelModelCache(manifest_file=manifest_file)
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
 ia_map = {value: key for key, value in ai_map.items()}
-major_structures = np.load(workingdirectory + 'mouse_connectivity_models/paper/info/major_structures.npy')
-major_structure_ids = np.load(workingdirectory + 'paper/info/major_structure_ids.npy')
-data_info = pd.read_excel('/Users/samsonkoelle/alleninstitute/Whole Brain Cre Image Series_curation only.xlsx', 'all datasets curated_070919pull')
+major_structures = np.load(workingdirectory + '/paper/info/major_structures.npy')
+major_structure_ids = np.load(workingdirectory + '/paper/info/major_structure_ids.npy')
+data_info = pd.read_excel(os.path.join(data_dir,'/Whole Brain Cre Image Series_curation only.xlsx', 'all datasets curated_070919pull'))
 data_info.set_index("id", inplace=True)
-with open('data/info/leafs.pickle', 'rb') as handle:
+
+with open('/data/info/leafs.pickle', 'rb') as handle:
     leafs = pickle.load(handle)
 ontological_order_leaves = np.load(workingdirectory + '/paper/info/ontological_order_leaves_v3.npy')
 
@@ -122,9 +123,10 @@ for sid in major_structure_ids:
 with open(workingdirectory + '/paper/trainedmodels/ELleaf_surface_0427_leafleaf2.pickle', 'rb') as handle:
     surfaces = pickle.load(handle)
  
-source_reg = np.asarray(['MOp2/3', 'MOp5', 'MOp6a','MOs2/3', 'MOs5', 'MOs6a' ])
+#source_reg = np.asarray(['MOp2/3', 'MOp5', 'MOp6a','MOs2/3', 'MOs5', 'MOs6a' ])
 eval_cre_list = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
+eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
 
 for c in range(len(eval_cre_list)):
     print(c, eval_cre_list[c])
