@@ -17,6 +17,8 @@ workingdirectory = os.popen('git rev-parse --show-toplevel').read()[:-1]
 sys.path.append(workingdirectory)
 os.chdir(workingdirectory)
 
+
+import allensdk
 import allensdk.core.json_utilities as ju
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
@@ -57,24 +59,24 @@ def get_row_col_names(connectivity_data, target_ordering):
     return(cnam_multi, rnames)
 
 #read data
-data_dir = workingdirectory + '/data/rawdata'
-INPUT_JSON = os.path.join(data_dir, '/input_011520.json')
-EXPERIMENTS_EXCLUDE_JSON = os.path.join(data_dir, '/experiments_exclude.json')
+data_dir = workingdirectory + '/data/rawdata/'
+INPUT_JSON = data_dir + 'input_011520.json'
+EXPERIMENTS_EXCLUDE_JSON = data_dir + 'experiments_exclude.json'
 input_data = ju.read(INPUT_JSON)
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
 #manifest_file = input_data.get('manifest_file')
 #manifest_file = os.path.join(data_dir, manifest_file)
-manifest_file = os.path.join(data_dir, '/new_manifest.json')
+manifest_file = data_dir + 'new_manifest.json'
 cache = VoxelModelCache(manifest_file=manifest_file)
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
 ia_map = {value: key for key, value in ai_map.items()}
 major_structures = np.load(workingdirectory + '/paper/info/major_structures.npy')
 major_structure_ids = np.load(workingdirectory + '/paper/info/major_structure_ids.npy')
-data_info = pd.read_excel(os.path.join(data_dir,'/Whole Brain Cre Image Series_curation only.xlsx', 'all datasets curated_070919pull'))
+data_info = pd.read_excel(data_dir +'/Whole Brain Cre Image Series_curation only.xlsx', 'all datasets curated_070919pull')
 data_info.set_index("id", inplace=True)
 
-with open('/data/info/leafs.pickle', 'rb') as handle:
+with open(workingdirectory + '/data/info/leafs.pickle', 'rb') as handle:
     leafs = pickle.load(handle)
 ontological_order_leaves = np.load(workingdirectory + '/paper/info/ontological_order_leaves_v3.npy')
 

@@ -96,3 +96,6 @@ docs/modules/generated
 *.npy
 *.pkl
 *.png
+
+# raw data
+*.nrrd
