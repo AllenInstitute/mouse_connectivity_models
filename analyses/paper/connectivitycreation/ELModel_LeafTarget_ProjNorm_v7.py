@@ -66,7 +66,7 @@ input_data = ju.read(INPUT_JSON)
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
 #manifest_file = input_data.get('manifest_file')
 #manifest_file = os.path.join(data_dir, manifest_file)
-manifest_file = data_dir + 'new_manifest.json'
+manifest_file = data_dir + '/new_manifest.json'
 cache = VoxelModelCache(manifest_file=manifest_file)
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
@@ -78,9 +78,8 @@ data_info.set_index("id", inplace=True)
 
 with open(workingdirectory + '/data/info/leafs.pickle', 'rb') as handle:
     leafs = pickle.load(handle)
+
 ontological_order_leaves = np.load(workingdirectory + '/paper/info/ontological_order_leaves_v3.npy')
-
-
 ontological_order = np.load(workingdirectory + '/paper/info/ontological_order_v3.npy')
 ontological_order_leaves_majors = get_aligned_ids(st,ontological_order_leaves,major_structure_ids)
 ontological_order_leaves_summary = get_aligned_ids(st,ontological_order_leaves,ontological_order)
@@ -123,15 +122,18 @@ with open(workingdirectory + '/paper/trainedmodels/ELleaf_surface_0427_leafleaf2
     surfaces = pickle.load(handle)
  
 #source_reg = np.asarray(['MOp2/3', 'MOp5', 'MOp6a','MOs2/3', 'MOs5', 'MOs6a' ])
-eval_cre_list = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+eval_cre_list_old = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
+eval_cre_list = np.setdiff1d(eval_cre_list,eval_cre_list_old)
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
-eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+#eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+#eval_cre_list
 
 for c in range(len(eval_cre_list)):
     print(c, eval_cre_list[c])
     conn_v3 = get_connectivity_matrices3(connectivity_data, surfaces, experiment_sids_surfaces,experiment_sids_nws, model_ordering, source_ordering_surface, source_ordering_nw, source_ordering, target_ordering, [eval_cre_list[c]])
     connectivity_matrices = pd.DataFrame(conn_v3[0], columns = cnam_multi, index=rnames)
-    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_leafsurf_leafsmth_leafleaf_' + str(eval_cre_names[c]) + '0428.csv')
+    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_leafsurf_leafsmth_leafleaf_' + str(eval_cre_list[c]) + '0428.csv')
     
     
 
