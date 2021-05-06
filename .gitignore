@@ -86,9 +86,16 @@ docs/modules/generated
 # data
 #connectivity
 
+# cluster
+*.out
+*.err
+
 # OS files
 *.DS_Store
 
 *.npy
 *.pkl
 *.png
+
+# raw data
+*.nrrd

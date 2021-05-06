@@ -111,7 +111,7 @@ summary_structures = {sid: connectivity_data.structure_datas[sid].summary_struct
 experiment_sids_surfaces = leafs
 experiment_sids_nws = leafs
 model_ordering = ontological_order_leaves_majors
-source_ordering_surface = ontological_order_leaves
+source_ordering_surface = ontological_order_leaves_summary
 source_ordering_nw = ontological_order_leaves
 source_ordering = ontological_order_leaves
 target_ordering = ontological_order_leaves
@@ -126,19 +126,12 @@ eval_cre_list_old = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL1
 eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
 eval_cre_list = np.setdiff1d(eval_cre_list,eval_cre_list_old)
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
-#eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
 #eval_cre_list
 
 for c in range(len(eval_cre_list)):
     print(c, eval_cre_list[c])
     conn_v3 = get_connectivity_matrices3(connectivity_data, surfaces, experiment_sids_surfaces,experiment_sids_nws, model_ordering, source_ordering_surface, source_ordering_nw, source_ordering, target_ordering, [eval_cre_list[c]])
     connectivity_matrices = pd.DataFrame(conn_v3[0], columns = cnam_multi, index=rnames)
-    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_leafsurf_leafsmth_leafleaf_' + str(eval_cre_list[c]) + '0428.csv')
+    connectivity_matrices.to_csv(workingdirectory + '/paper/connectivities/el_sumsurf_leafsmth_leafleaf_' + str(eval_cre_names[c]) + '0428.csv')
     
-    
-
-# for c in range(len(eval_cre_list)):
-#     print(c, eval_cre_list[c])
-#     conn_v3 = get_connectivity_matrices3(connectivity_data, surfaces, experiment_sids_surfaces,experiment_sids_nws, model_ordering, source_ordering_surface, source_ordering_nw, source_ordering, target_ordering, [eval_cre_list[c]])
-#     connectivity_matrices = pd.DataFrame(conn_v3[0], columns = cnam_multi, index=rnames[117:123])
-#     connectivity_matrices.to_csv('/Users/samsonkoelle/alleninstitute/sambranch/mouse_connectivity_models/paper/connectivities/el_sumsurf_leafsmth_v3_leafleaf_' + str(eval_cre_list_name[c]) + '0422_visp.csv')

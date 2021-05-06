@@ -1,0 +1,7 @@
+pip install scikit-learn==0.22.1
+pip install pandas
+pip install seaborn
+pip install dill
+pip install allensdk==1.0.0
+pip install pygam
+pip install xlrd
