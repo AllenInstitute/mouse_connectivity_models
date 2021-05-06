@@ -108,7 +108,7 @@ summary_structures = {sid: connectivity_data.structure_datas[sid].summary_struct
 
 #el_leafsurf_leafsmth_v3_leafleaf_
 
-experiment_sids_surfaces = leafs
+experiment_sids_surfaces = summary_structures
 experiment_sids_nws = leafs
 model_ordering = ontological_order_leaves_majors
 source_ordering_surface = ontological_order_leaves_summary
@@ -122,9 +122,9 @@ with open(workingdirectory + '/paper/trainedmodels/ELleaf_surface_0427_leafleaf2
     surfaces = pickle.load(handle)
  
 #source_reg = np.asarray(['MOp2/3', 'MOp5', 'MOp6a','MOs2/3', 'MOs5', 'MOs6a' ])
-eval_cre_list_old = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
-eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
-eval_cre_list = np.setdiff1d(eval_cre_list,eval_cre_list_old)
+eval_cre_list = ['C57BL/6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
+#eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
+#eval_cre_list = np.setdiff1d(eval_cre_list,eval_cre_list_old)
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
 eval_cre_names =  ['C57BL6J', 'Cux2-IRES-Cre','Ntsr1-Cre_GN220','Rbp4-Cre_KL100','Tlx3-Cre_PL56']
 #eval_cre_list
