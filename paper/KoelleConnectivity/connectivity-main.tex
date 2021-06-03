@@ -9,6 +9,7 @@
 \usepackage{makecell}
 \usepackage{fourier} 
 \usepackage{array}
+%\usepackage{algorithmic}
 \usepackage{xr}
 \usepackage{cleveref}
 %\usepackage{adjustbox}
@@ -22,6 +23,10 @@
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage[export]{adjustbox}
+
+%\usepackage{hyperref}
+%\include{connectivity-commands}
+
 \newlength\Colsep
 \setlength\Colsep{10pt}
 \usetikzlibrary{arrows.meta,
@@ -49,6 +54,7 @@
     \addFileDependency{#1.tex}%
     \addFileDependency{#1.aux}%
 }
+%\newcommand{\comment}[1]{}
 \myexternaldocument{Supplement}
 \listfiles
 
@@ -65,7 +71,9 @@
 %   \end{figure} % or: \end{table}
 %} % end of scope of \afterpage directive
 
-\title{Modelling the cell-type specific murine connectome}
+
+
+\title{Modeling the cell-type specific murine connectome}
 %\subtitle{mouse connectome} %% Optional subtitle
 
 \author[Koelle et al]% shortened version for running head, optional
@@ -102,11 +110,11 @@ The Funder and award ID information you input at submission will be introduced b
 Please use this space for any additional acknowledgements and verbiage required by your funders.
 
 \section{Supporting Information}
-This is an optional section. Please use this space to provide information about any supporting information referred to in your manuscript.
+
+\input{connectivity-supplement.tex}
 
 \section{Competing Interests}
 This is an optional section. If you declared a conflict of interest when you submitted your manuscript, please  use this space to provide details about this conflict.
-
 
 \bibliography{bibsamp}
 

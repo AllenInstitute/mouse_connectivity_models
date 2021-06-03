@@ -11,7 +11,6 @@ Table  contains the sizes of these evaluation sets in each major structure.
 This information may be cross-referenced visually with the figures in 
 Our two-stage model generally performs better than the cre-line specific NW estimator.
 
-
 \newpage 
 \begin{table}[H]
 \begin{adjustbox}{width=.5\columnwidth,center}
@@ -139,8 +138,6 @@ CB        &    0.039327 &              0.049425 &      0.039327 &               
 \end{table}
 \end{comment}
 
-
-
 \newpage
 
 \subsection{Connectivities}
@@ -148,7 +145,7 @@ CB        &    0.039327 &              0.049425 &      0.039327 &               
 Our main result is the estimation of matrices $\hat {\mathcal C}_v$ representing connections of source structures to target structures for particular cre-lines $v$. 
 We exhibit several characteristics of interest, and confirm the detection of several well-established connectivities within our tensor.
 Many additional interesting biological processes are visible within this matrix - more than we can report in this paper - and it is our expectation that these will be identified by users of our results.
-The connectivity tensor and code to reproduce it are available at \skcomment{footnote}.
+The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
 
 The connectivity matrix for wild-type connectivities from leaf sources to summary structure targets is illustrated in Figure \ref{fig:connectome}.
 The clear intraareal connectivities mirror previous estimates in \citet{Oh2014-kh} and \citet{Knox2019-ot} and descriptive depictions of individual experiments in \citet{Harris2019-mr}.
@@ -287,7 +284,8 @@ We then apply non-negative matrix factorization (NMF) to decompose the remaining
 %The choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations. 
 
 \newpage
-
+ \begin{comment}
+%\comment{
 \begin{figure}[h]
     \centering
     \includegraphics[width = 6in]{figs/Figure4.png}
@@ -295,6 +293,7 @@ We then apply non-negative matrix factorization (NMF) to decompose the remaining
     \label{fig:heirarchical}
 \end{figure}
 \newpage
+
 
 \begin{figure}[h]
 \begin{tabular}[t]{ccc}
@@ -311,6 +310,8 @@ We then apply non-negative matrix factorization (NMF) to decompose the remaining
     %\caption{Caption}
     \label{fig:my_label}
 \end{figure}
+\end{comment}
+%}
 % \begin{figure}[h]
 %     \centering
 %     \includegraphics[width = 6in]{figs/Figure5.png}
