@@ -1,5 +1,7 @@
 
-\section{Data}
+\section{Supplemental Information}
+
+\subsection{Data}
 \label{supp_sec:data}
 
 This section describes the set of leaf and cre-line experimental combinations.
@@ -93,8 +95,18 @@ This section describes the set of leaf and cre-line experimental combinations.
 
 \newpage
 
+\subsection{Structure information}
 
-\section{Data preprocessing}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../analyses/paper/figures/distances_leafs.png} 
+    \label{fig:distances}
+    \caption{Distance between structures.  Short-range connections are masked in red}
+\end{figure}
+
+\section{Supplemental methods}
+
+\subsection{Data preprocessing}
 
 %In this paper, source regions are typically at the lowest level (shown in blue).
 %In the cortex, layer-specific connectivities are generated.
@@ -164,10 +176,10 @@ f (v,s,t) = f (v,t)[t].
 \end{eqnarray*}
 Thus, for the remainder of this section, we will discuss only $f (s,v)$.
 
-\paragraph{Regionalized non-negative least squares}
+%\paragraph{Regionalized non-negative least squares}
 
-In the non-negative least squares approach of \citet{Oh2014-kh}, the injection is considered only through its centroid, while the projection is considered regionalized.
-The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
+%In the non-negative least squares approach of \citet{Oh2014-kh}, the injection is considered only through its centroid, while the projection is considered regionalized.
+%The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
 
 \paragraph{Centroid-based Nadaraya-Watson}
 
@@ -233,8 +245,6 @@ The relative predictive accuracy of cre-distance and centroid distance is determ
 
 %centroids are weighted more highly in the centroid-based Nadaraya-Watson estimator.
 %this estimator is an average (limit) of the cre-specific NW
-
-
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
@@ -530,7 +540,7 @@ We then select the $q$ clusters with the most archetype vectors - the most stabl
 
 %http://alexhwilliams.info/itsneuronalblog/2018/02/26/crossval/
 
-\section{Establishing a lower detection limit}
+\subsection{Establishing a lower detection limit}
 
 The lower detection limit of our approach is a complicated consequence of our experimental and analytical protocols.
 For example, the Nadaraya-Watson estimator is likely to generate many small false positive connections, since the projection of even a single experiment within the source region to a target will cause a non-zero connectivity in the Nadaraya-Watson weighted average.
@@ -547,6 +557,24 @@ We utilize the zero-inflated adjusted Kendall-$\tau$ statistic
 \end{align*}
 where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
 
+
+\section{Supplemental Experiments}
+
+\subsection{Matrix Factorization}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{figs/test_train_0603.png} 
+    \label{fig:distances}
+    \caption{Train and test error across $2$ \skcomment{increase} replicates using NMF decomposition.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{figs/nmfcluster_0610.png} 
+    \label{fig:distances}
+    \caption{Stability of NMF results across replicates.}
+\end{figure}
 %\section{Cross-validation for unsupervised learning}
 
 
