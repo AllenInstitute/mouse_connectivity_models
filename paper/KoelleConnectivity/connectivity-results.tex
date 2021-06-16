@@ -1,4 +1,3 @@
-
 \section{Results}
 
 Our results include evaluation of model fit, the cre-specific connectivity matrices themselves, and retrospective analyses of these matrices for  patterns related to cre-type and source and target regions.
@@ -11,9 +10,10 @@ Table  contains the sizes of these evaluation sets in each major structure.
 This information may be cross-referenced visually with the figures in 
 Our two-stage model generally performs better than the cre-line specific NW estimator.
 
-\newpage 
+%\begin{wraptable}{r}{5.5cm}
 \begin{table}[H]
-\begin{adjustbox}{width=.5\columnwidth,center}
+\scriptsize
+%\begin{adjustbox}{width=.5\columnwidth,center}
 
 \begin{tabular}{ll|rrrrr}
 \toprule
@@ -37,9 +37,148 @@ STR & 45 &  0.084 &  0.088 &   0.089 &  0.097 &  0.265 \\
 TH & 29 &  0.351 &  0.678 &   0.678 &  0.365 &  1.088 \\
 \bottomrule
 \end{tabular}
-\end{adjustbox}
+%\end{adjustbox}
 \caption{Weighted losses with summary structure targets.}
+%\end{wraptable}
 \end{table}
+
+Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}
+
+\newpage
+
+\subsection{Connectivities}
+
+Our main result is the estimation of matrices $\hat {\mathcal C}_v$ representing connections of source structures to target structures for particular cre-lines $v$. 
+We exhibit several characteristics of interest, and confirm the detection of several well-established connectivities within our tensor.
+Many additional interesting biological processes are visible within this matrix - more than we can report in this paper - and it is our expectation that these will be identified by users of our results.
+The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
+
+\subsubsection{Overall connectivity}
+
+The connectivity matrix for wild-type connectivities from leaf sources to summary structure targets is illustrated in Figure \ref{fig:connectome}.
+The clear intraareal connectivities mirror previous estimates in \citet{Oh2014-kh} and \citet{Knox2019-ot} and descriptive depictions of individual experiments in \citet{Harris2019-mr}.
+Compared with \citet{Knox2019-ot}, our more discritized source smoothing and greater number of experiments leads to a significantly more discritized connectivity matrix.
+This is generally expected - for example, different cortical layers have more substantially different connectivities.
+
+
+\newpage
+
+\begin{figure}[H]
+\centering
+    \subfloat[] {
+   % \raisebox{-.5\height}
+    \includegraphics[width = \linewidth]{wt_conn_sumleaf_strength.png}
+    } 
+    \\
+    \vspace{-2cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \tiny
+\begin{tabular}{lrllll}
+\toprule
+{} &  \#\pbox{20cm} {Ipsilateral \\ Leaf Targets } & \pbox{20cm}{Top \\ Entropy }& Bottom Sparsity & Bottom Entropy & Top Sparsity \\
+\midrule
+Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
+OLF       &                          11 &         TMv &             III &            III &          NaN \\
+HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
+CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
+STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
+PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
+TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
+HY        &                          44 &         CLA &              SH &            LSc &           DG \\
+MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
+P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
+MY        &                          43 &          RT &             NaN &             OV &          EPd \\
+CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
+\bottomrule
+\end{tabular}
+    }
+}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \includegraphics[width = 3in]{figs/st_graph}
+    }
+    } \\
+     \vspace{-4cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \tiny
+    \begin{tabular}{lrllll}
+       
+\toprule
+{} &  \# Ipsilateral Leaf Targets & Top Entropy & Bottom Sparsity & Bottom Entropy & Top Sparsity \\
+\midrule
+Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
+OLF       &                          11 &         TMv &             III &            III &          NaN \\
+HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
+CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
+STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
+PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
+TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
+HY        &                          44 &         CLA &              SH &            LSc &           DG \\
+MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
+P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
+MY        &                          43 &          RT &             NaN &             OV &          EPd \\
+CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
+\bottomrule
+\end{tabular}
+}
+}
+\vspace{-4cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \includegraphics[width = 3in]{figs/page_graph}
+    }
+    }
+\end{figure}
+
+
+
+\newpage
+\subsubsection{Class-specific connectivities}
+The cell-type specific connectivities that we provide also conform to well-known behaviors.
+Examples from the visual processing and motor control regions of the cortex are given in Figure \ref{fig:visp_mo_1201} for both wild type and several cre-lines.
+Rbp4-Cre and Ntsr1-Cre target layers $5$ and $6$, respectively. As in \citet{Jeong2016-dc}, layer 5 projects to anterior basolateral amygdala (BLA) and capsular central amygdala (CEA), while layer 6 does not.
+
+\newpage
+
+\begin{figure}[H]
+\subfloat[]{
+    \includegraphics[width=1.\textwidth]{figs/visp_mo_1201.png}}
+    \newline
+ \subfloat[]{
+    \includegraphics[width=1.\textwidth]{figs/Figure4.png}}
+    \caption{   Cre-specific connection strengths from motor-cortex and visual cortex. Sources without a injection of that cre-type are blank. \skcomment{Remove 'ipsi' from columns'}}
+    \label{fig:data}
+\end{figure}
+\newpage
+
+
+\subsection{Connectivity Analyses}
+
+%weight entropy versus accuracy
+
+The connectivity matrix represents a collection of relatively few biological processes.
+For example, certain cell-types and layers have a characteristic connectivity pattern, and structures tend to connect most strongly to the most proximal areas.
+We elucidate these patterns through two types of analyses. 
+First, we demonstrate cell-type specific connectivity patterns by heirarchical clustering of connectivities from multiple cre-lines, and showing that cre-line is a key factor driving the observed behavior. 
+Then, we perform a different unsupervised analysis - non-negative matrix factorization - of distal wild-type connectivities, to estimate underlying overall connectivity patterns.
+
+Figure \ref{fig:heirarchical} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from visual signal processing leafs in the cortex to cortical and thalymic nucleii.
+Heirarchical clustering is applied to sort the different source/cre combinations by the similarity of their connectivities to summary-structure targets.
+This analysis shows that Ntsr1 cre-lines tend to target thalymic nucleii, in particular LP and LD \citet{Jeong2016-dc}.
+However, with this exception, for the other plotted cre-lines, connectivity tends to cluster by source structure.
+That the tendency for structures to connect to themselves is quite strong emphasizes the special nature of the Ntsr1-Thalymic connection in this analysis.
+
+The overall wild-type connectivity strength matrix also displays an underlying modellable structure.
+As discussed in \citet{Knox2019-ot}, one of the most basic processes underlying the observed connectivity is the tendency of each source region to predominantly project to proximal regions.
+The heatmap in \ref{fig:nmf}a) shows intraregion distances clearly contains an overall pattern reminscent of the connectivity matrix in \ref{fig:connectome}.
+This relationship is plotted in \ref{fig:nmf} b), showing that there exists substantial variability that would be impossible to model with low-error in a univariate model, even using the diffusion model suggested in \citet{Knox2019-ot}.
+These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
+For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
+We then apply non-negative matrix factorization (NMF) to decompose the remaining censored matrix into a relatively small number of distinct projection signals, and apply an unsupervised cross-validation method to select the optimum number of signals \skcomment{Percent error... show reconstruction? log scale?}.
+
+
 
 \begin{comment}
 \resizebox{1.5in}{!}{%
@@ -138,132 +277,6 @@ CB        &    0.039327 &              0.049425 &      0.039327 &               
 \end{table}
 \end{comment}
 
-\newpage
-
-\subsection{Connectivities}
-
-Our main result is the estimation of matrices $\hat {\mathcal C}_v$ representing connections of source structures to target structures for particular cre-lines $v$. 
-We exhibit several characteristics of interest, and confirm the detection of several well-established connectivities within our tensor.
-Many additional interesting biological processes are visible within this matrix - more than we can report in this paper - and it is our expectation that these will be identified by users of our results.
-The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
-
-The connectivity matrix for wild-type connectivities from leaf sources to summary structure targets is illustrated in Figure \ref{fig:connectome}.
-The clear intraareal connectivities mirror previous estimates in \citet{Oh2014-kh} and \citet{Knox2019-ot} and descriptive depictions of individual experiments in \citet{Harris2019-mr}.
-Compared with \citet{Knox2019-ot}, our more discritized source smoothing and greater number of experiments leads to a significantly more discritized connectivity matrix.
-This is generally expected - for example, different cortical layers have more substantially different connectivities.
-
-The cell-type specific connectivities that we provide also conform to well-known behaviors.
-Examples from the visual processing and motor control regions of the cortex are given in Figure \ref{fig:visp_mo_1201} for both wild type and several cre-lines.
-Rbp4-Cre and Ntsr1-Cre target layers $5$ and $6$, respectively. As in \citet{Jeong2016-dc}, layer 5 projects to anterior basolateral amygdala (BLA) and capsular central amygdala (CEA), while layer 6 does not.
-
-\newpage
-
-\begin{figure}[h]
-\centering
-    \subfloat[] {
-   % \raisebox{-.5\height}
-    \includegraphics[width = \linewidth]{wt_conn_sumleaf_strength.png}
-    } 
-    \\
-    \vspace{-2cm}
-    \subfloat[]{
-    \adjustbox{valign=c}{
-    \tiny
-\begin{tabular}{lrllll}
-\toprule
-{} &  \#\pbox{20cm} {Ipsilateral \\ Leaf Targets } & \pbox{20cm}{Top \\ Entropy }& Bottom Sparsity & Bottom Entropy & Top Sparsity \\
-\midrule
-Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
-OLF       &                          11 &         TMv &             III &            III &          NaN \\
-HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
-CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
-STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
-PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
-TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
-HY        &                          44 &         CLA &              SH &            LSc &           DG \\
-MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
-P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
-MY        &                          43 &          RT &             NaN &             OV &          EPd \\
-CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
-\bottomrule
-\end{tabular}
-    }
-}
-    \subfloat[]{
-    \adjustbox{valign=c}{
-    \includegraphics[width = 3in]{figs/st_graph}
-    }
-    } \\
-     \vspace{-4cm}
-    \subfloat[]{
-    \adjustbox{valign=c}{
-    \tiny
-    \begin{tabular}{lrllll}
-       
-\toprule
-{} &  \# Ipsilateral Leaf Targets & Top Entropy & Bottom Sparsity & Bottom Entropy & Top Sparsity \\
-\midrule
-Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
-OLF       &                          11 &         TMv &             III &            III &          NaN \\
-HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
-CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
-STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
-PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
-TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
-HY        &                          44 &         CLA &              SH &            LSc &           DG \\
-MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
-P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
-MY        &                          43 &          RT &             NaN &             OV &          EPd \\
-CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
-\bottomrule
-\end{tabular}
-}
-}
-\vspace{-4cm}
-    \subfloat[]{
-    \adjustbox{valign=c}{
-    \includegraphics[width = 3in]{figs/page_graph}
-    }
-    }
-\end{figure}
-
-\newpage
-
-\begin{figure}[H]
-\subfloat[]{
-    \includegraphics[width=1.\textwidth]{figs/visp_mo_1201.png}}
-    \newline
- \subfloat[]{
-    \includegraphics[width=1.\textwidth]{figs/Figure4.png}}
-    \caption{   Cre-specific connection strengths from motor-cortex and visual cortex. Sources without a injection of that cre-type are blank. \skcomment{Remove 'ipsi' from columns'}}
-    \label{fig:data}
-\end{figure}
-\newpage
-
-
-\subsection{Connectivity Analyses}
-
-%weight entropy versus accuracy
-
-The connectivity matrix represents a collection of relatively few biological processes.
-For example, certain cell-types and layers have a characteristic connectivity pattern, and structures tend to connect most strongly to the most proximal areas.
-We elucidate these patterns through two types of analyses. 
-First, we demonstrate cell-type specific connectivity patterns by heirarchical clustering of connectivities from multiple cre-lines, and showing that cre-line is a key factor driving the observed behavior. 
-Then, we perform a different unsupervised analysis - non-negative matrix factorization - of distal wild-type connectivities, to estimate underlying overall connectivity patterns.
-
-Figure \ref{fig:heirarchical} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from visual signal processing leafs in the cortex to cortical and thalymic nucleii.
-Heirarchical clustering is applied to sort the different source/cre combinations by the similarity of their connectivities to summary-structure targets.
-This analysis shows that Ntsr1 cre-lines tend to target thalymic nucleii, in particular LP and LD \citet{Jeong2016-dc}.
-However, with this exception, for the other plotted cre-lines, connectivity tends to cluster by source structure.
-That the tendency for structures to connect to themselves is quite strong emphasizes the special nature of the Ntsr1-Thalymic connection in this analysis.
-
-The overall wild-type connectivity strength matrix also displays an underlying modellable structure.
-As discussed in \citet{Knox2019-ot}, one of the most basic processes underlying the observed connectivity is the tendency of each source region to predominantly project to proximal regions.
-The heatmap in \ref{fig:nmf}a) shows intraregion distances clearly contains an overall pattern reminscent of the connectivity matrix in \ref{fig:connectome}.
-This relationship is plotted in \ref{fig:nmf} b), showing that there exists substantial variability that would be impossible to model with low-error in a univariate model, even using the diffusion model suggested in \citet{Knox2019-ot}.
-These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
-For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
-We then apply non-negative matrix factorization (NMF) to decompose the remaining censored matrix into a relatively small number of distinct projection signals, and apply an unsupervised cross-validation method to select the optimum number of signals \skcomment{Percent error... show reconstruction? log scale?}.
 
 
 

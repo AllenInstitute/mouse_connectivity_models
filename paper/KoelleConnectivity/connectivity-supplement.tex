@@ -151,16 +151,38 @@ Injections and projections were downloaded using the Allen SDK.
 These were originally annotated manually.
 The injection and projection vectors are Hadamard multiplied by a data quality matrix. We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
 
+\begin{algorithm}[H]
+\floatname{algorithm}{\textsc{Preprocess}}%{\preprocess}
+%\renewcommand{\thealgorithm}{}
 \begin{algorithmic}
+\caption{{\bf Input} Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
+\State Data-quality censor $y_M (i) = M(i) \odot y(i)$ 
+\State Average structures $y_S (i) = A y_M(i)$
+\State Normalize $\tilde y(i) = \frac{y_S (i)}{\|y_S (i)\|}$
+%\Return $\tilde y(i)$
+%\caption{(Local dataset $\delta_i^{x} $, local embedding coordinates $\delta_i^{\phi}, \tsalg$) ) }
+%\begin{algorithmic}[1]
+%\State { known at data points, embedding algorithm \embed~ and algorithm parameters, \mmp{weights?}, embedding dimension $m$}
+%\State Compute neighborhood graph $\neigh_i $ using (\ref{eq:kernelmatrix})% \delta_i^f$, for $i=1:n$ 
+% \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\|\tilde\delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:weights})
+% \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\| \delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:manifold_learning})
+ \State {\bf Output}$\tilde y(i)$ )  % \mmp{what -- notation for grad f needed}
+\end{algorithmic}
+\end{algorithm}
+
+%\begin{algorithm}
+%\begin{algorithmic}
 %\label{alg:norm}
-\begin{algorithm}{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
-\State Data-quality censor $y_M (i) = M(i) \odot y(i)$ (also $x_M(i) = M(i) \odot x(i)$ for linear model)
+%\KwData{{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}}
+%\begin{algorithm}%{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
+%\State Data-quality censor $y_M (i) = M(i) \odot y(i)$ (also $x_M(i) = M(i) \odot x(i)$ for linear model)
 %\State Normalize $x_N(i) = F(i) \odot x_M(i)$ (only for linear model)
 %\State Average structures $y_S (i) = A y_M(i)$ (also $x_S (i) = A x_M(i)$ for linear model)
 %\State Normalize $\tilde y(i) = \frac{y_S (i)}{\|y_S (i)\|}$ (also $\tilde x (i) = A x_M(i)$ for linear model)
-% \Return $\tilde y(i)$ (optional $\tilde x(i)$ )
-\end{algorithm}
-\end{algorithmic}
+%\Return $\tilde y(i)$ (optional $\tilde x(i)$ )
+%\end{algorithm}
+%\end{algorithmic}
+%\end{algorithm}
 
 The data-quality censor is established by \skcomment{fill}
 The injection fraction accounts for the relatively coarse graining of the voxel grid compared with the histological analysis used to establish the injection region.  In particular, certain voxels are only partially contained within the injection region.

@@ -12,51 +12,15 @@
 \usepackage{amsfonts}
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 \usepackage{algpseudocode}
+\usepackage{wrapfig,lipsum,booktabs}
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage{amsthm}
-%\usepackage{big\u
 \newcommand{\comment}[1]{}
-%\newcommand{\E}{\mathrm{E}}
-%\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\preprocess}{\textsc{preprocess}}
 \newcommand{\Cov}{\mathrm{Cov}}
 \newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
-\newcommand{\var}{\text{Var}}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\cov}{\text{Cov}}
-\newcommand{\cor}{\text{cor}}
-\newcommand{\cp}{\text{cp}}
-\newcommand{\grad}{\text{grad}}
-\newcommand{\spn}{\text{span}}
-\newcommand{\cspn}{\text{colspan}}
-\newcommand{\rspn}{\text{rowspan}}
-\newcommand{\bias}{\text{Bias}}
 \newcommand{\dataset}{\mathcal{Dataset}}
-%\usepackage{}
-%\newcommand{\grad}{\text{grad}}
-\newcommand{\ols}{\textsc{ols}}
-\newcommand{\pls}{\textsc{pls}}
-\newcommand{\wls}{\textsc{wls}}
-\newcommand{\tsls}{\textsc{2sls}}
-\newcommand{\tls}{\textsc{tls}}
-\newcommand{\svd}{\textsc{svd}}
-\newcommand{\specthresh}{\textsc{specthresh}}
-\newcommand{\neigh}{\mathcal{N}}
-\newcommand{\im}{\text{Im}}
-\newcommand{\diag}{\operatorname{diag}}
-\newcommand{\tppalg}{{\sc LocalPCA}}
-\newtheorem{assumption}{Assumption}
-%\newcommand{\ker}{\text{Ker}}
-\newcommand{\tsalg}{\textsc{wlPCA}}
-%\newcommand{\wls}{\textsc{wls}}
-\newcommand{\embedts}{\textsc{embedts}}
-\newcommand{\embed}{\textsc{embed}}
-\newcommand{\embedgradient}{\textsc{embedgrad}}
-\newcommand{\lapalg}{\textsc{Laplacian}}
-% math mode commands
-\newcommand{\txim}{T_{\xi_i}M}  
-\newcommand{\rrr}{{\mathbb R}}
-%\DeclareMathOperator{\dim}{dim}
-%\DeclareMathOperator{\grad}{grad}
 
 
 \newcommand{\mmp}[1]{\textcolor{red}{\em MMP: #1}}
@@ -77,6 +41,6 @@
 }
 
 % Attempt to make hyperref and algorithmic work together better:
-%\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
 
 

@@ -79,7 +79,7 @@ However, what we actually create is, given a set of source regions $\mathcal S =
 &\text{\textit {normalized projection density} } \mathcal C^D \in \mathcal V \times \mathcal S \times \mathcal T \times \mathbb R_{\geq 0} \text{ with } \mathcal C^D(V,S,T) = \frac{1}{| S | | T|}\mathcal C(V,S,T)).
 \end{align*}
 These represent the strength of the connection from source to target regions for each class.
-Since the normalized strength and density are computable from the strength via a fixed normalization, our main statistical goal is to estimate $\mathcal C (V,S,T)$.% with data $\mathcal D$.
+Since the normalized strength and density are computable from the strength via a fixed normalization, our main statistical goal is to estimate $\mathcal C (V,S,T)$. % with data $\mathcal D$.
 We call this estimator $\widehat { \mathcal C } $.
 
 Construction of such an estimator raises the questions of what data to use for estimating which connectivity, how to featurize the dataset, what statistical estimator to use, and how to reconstruct the connectivity using the chosen estimator.
@@ -117,7 +117,7 @@ Additional information is given in Appendix \ref{supp_sec:el}.
     \label{tab:estimators}
 \end{table}
 
-Our new modelling contributions - the Cre-NW and Expected Loss (EL) models - have several differences from the previous methods.
+Our contributions - the Cre-NW and Expected Loss (EL) models - have several differences from the previous methods.
 In contrast to the \citet{Oh2014-kh} non-negative least squares and \citet{Knox2019-ot} Nadaraya-Watson estimators that take into account $s$ and $t$, but not $v$, our new estimators specifically account for neural class.
 The Cre-NW estimator only uses experiments from a particular neural class to predict connectivity for that class, while the EL estimator shares information between classes.
 
@@ -146,6 +146,7 @@ We use $l2$-loss and weighted $l2$-loss to evaluate these predictions.
 As a final modeling step, we establish a lower limit of detection.
 This is covered in Appendix \ref{supp:methods_lower}
 
+\newpage
 %\paragraph{Construction of the evaluation set}
 
 %If we construct cre-means at the summary-structure level, then even if we smooth at the leaf level, we can evaluate estimator performance on the summary-structure set  as long as there at least $1$ experiments of any cre-line in that leaf.
@@ -186,22 +187,19 @@ This is covered in Appendix \ref{supp:methods_lower}
 We show neuronal processes underlying our estimated connectome using a variety of types of undersupervised learning.
 Clustering projection patterns by class and source structure.
 This shows that cell-class has a dominating effect on projection in certain regions.
+We flatten the connectivity tensor $\mathcal C \in \mathbb R^{c \times s \times t}$ to $\mathcal C_\flat \in \mathbb R^{c s \times t}$ and cluster the $cs$ sources by their $t$-dimensional projections.
+
 Second, we extend the characterization of \citet{Knox2019-ot} on structural differences in short-range projections.
 These are primarily assumed to be due to diffusion, and the diffusion-rate helps to characterize the basic structural anatomy.
 Third, since the overall wild-type connectome results from the combination of underlying cell-classes, we apply non-negative matrix factorization (NMF) to decompose the observed long-range connectivity into \textit{connectivity archetypes} that linearly combine to reproduce the observed connectivity.
 These methods identify structures with both known and plausible biological meaning, and simplistically exemplify useful posthoc analyses for data of this type.
 Technical details of these approaches are given in Appendix.
-%types of latent structure in the estimated connectivities.
-%As a simple proof of the cell-class specific nature of $\mathcal C$, we cluster regional projections estimated for combinations of structure and cell-class.
 
+\newpage
 %Under this hypothesis, unsupervised learning algorithms provide useful reduced-dimensional descriptions of the data-generating mechanism.
 %We therefore apply heirarchical clustering to illustrate which source and cell-type combinations behave similarly, and non-negative matrix factorization to estimate a dimensionality of the latent space of biological processes, as well which target projections tend to co-occur.
 
-
-%\paragraph{Factoring the connectivity tensor with heirarchical clustering}
-
 %Heirarchical clustering is an algorithm for uncovering similar data points available in many computational libraries.
-%We flatten the connectivity tensor $\mathcal C \in \mathbb R^{c \times s \times t}$ to $\mathcal C_\flat \in \mathbb R^{c s \times t}$ and cluster the $cs$ sources by their $t$-dimensional projections.
 %Clustered source-cell combinations have similar projection patterns.
 
 %In particular, we illustrate which source and cell-type combinations behave similarly, and which target projections tend to co-occur. 
@@ -226,9 +224,7 @@ Technical details of these approaches are given in Appendix.
 %In contrast to \citet{Knox2019-ot}, which only uses wild type $C57BL/6J$ mice, these experiments utilize $113$ different transgene cassettes. 
 
 %In these coordinates, the brain $B \subset \mathbb R^{131 \times 75 \times 108)}$ is discretized into 100-$\mu m$ wide cubes known as voxel. This is shown in Figure \ref{fig:data_process}.
-
-%$B \subset \mathbb R^{a \times b \times c}$, where the coordinate discretezation of $B$ is at the 100 micrometer resolution.
 % The injection and projection signals $x(1:n) \in B$ and $y(1:n) \in B$ respectively are determined via histology. Note that the histologically determined injection and projection regions may subsegment individual voxels. Therefore, the injection is determined by element-wise multiplication of the injection and projection with the fraction contained in the injection region. 
 %Check if injection is just masked projection in allen_sdk download (i.e. at first step)
 
-%Injections and projections were downloaded using the Allen SDK. These were originally annotated manually. The injection and projection vectors are adjusted by a data quality matrix.
+% The injection and projection vectors are adjusted by a data quality matrix.
