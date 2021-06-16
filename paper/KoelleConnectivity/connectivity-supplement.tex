@@ -1,4 +1,3 @@
-
 \section{Supplemental Information}
 
 \subsection{Data}
@@ -94,7 +93,6 @@ This section describes the set of leaf and cre-line experimental combinations.
 \end{figure}
 
 \newpage
-
 \subsection{Structure information}
 
 \begin{figure}[H]
@@ -104,23 +102,49 @@ This section describes the set of leaf and cre-line experimental combinations.
     \caption{Distance between structures.  Short-range connections are masked in red}
 \end{figure}
 
+\subsection{Model evaluation}
+\label{supp_sec:model-evaluation}
+
+
+\begin{table}[H]
+\begin{tabular}{lrrrr}
+\toprule
+{} &  Total &  Cre-Summary &  Cre-Summary, Leaf &  Cre-Leaf \\
+\midrule
+0  &     36 &           10 &                  9 &         4 \\
+1  &      7 &            2 &                  2 &         2 \\
+2  &    122 &           79 &                 79 &        62 \\
+3  &     85 &           41 &                 41 &        41 \\
+4  &   1128 &          838 &                829 &       732 \\
+5  &     68 &           23 &                 23 &        18 \\
+6  &     46 &            7 &                  7 &         7 \\
+7  &     35 &           17 &                 17 &        17 \\
+8  &     33 &            8 &                  8 &         8 \\
+9  &     30 &           11 &                 11 &        11 \\
+10 &     78 &           45 &                 45 &        45 \\
+11 &     83 &           29 &                 29 &        29 \\
+\bottomrule
+\end{tabular}
+\caption{Number of experiments available to evaluate models in leave-one-out cross validation. 
+Models that rely on a finer granularity of modeling have less data available to validate with.}  
+\end{table}
+
+\newpage 
 \section{Supplemental methods}
+\label{sec:supp_methods}
+
+This section consists of additional information on preprocessing of the neural connectivity data, estimation of connectivity, and matrix factorization.
 
 \subsection{Data preprocessing}
+\label{sec:dp}
 
-%In this paper, source regions are typically at the lowest level (shown in blue).
-%In the cortex, layer-specific connectivities are generated.
 %Injection mask
 %Projection mask
 %Data quality mask
 %From this, a weighted centroid $c(x_i) \in \mathbb R^3$ and 
-
 %Regionalization occurs in several ways.
 %A per-region average $r(x_i) \in \mathbb R^{M_i}$ may be computed, where $M_i$ is the number of substructures in the major brain region.
 %Similarly, for the projection, $r(y_i) \in R^{M}$.
-
-
-\label{sec:dp}
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
 Injections and projections were downloaded using the Allen SDK.
@@ -129,19 +153,18 @@ The injection and projection vectors are Hadamard multiplied by a data quality m
 
 \begin{algorithmic}
 %\label{alg:norm}
-%\begin{algorithm}{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
+\begin{algorithm}{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
 \State Data-quality censor $y_M (i) = M(i) \odot y(i)$ (also $x_M(i) = M(i) \odot x(i)$ for linear model)
 %\State Normalize $x_N(i) = F(i) \odot x_M(i)$ (only for linear model)
 %\State Average structures $y_S (i) = A y_M(i)$ (also $x_S (i) = A x_M(i)$ for linear model)
 %\State Normalize $\tilde y(i) = \frac{y_S (i)}{\|y_S (i)\|}$ (also $\tilde x (i) = A x_M(i)$ for linear model)
 % \Return $\tilde y(i)$ (optional $\tilde x(i)$ )
-%\end{algorithm}
+\end{algorithm}
 \end{algorithmic}
 
 The data-quality censor is established by \skcomment{fill}
 The injection fraction accounts for the relatively coarse graining of the voxel grid compared with the histological analysis used to establish the injection region.  In particular, certain voxels are only partially contained within the injection region.
 
-\subsubsection{Normalization}
 
 One basic but significant methodological change from \citet{Knox2019-ot} is the normalization of projection vectors.
 
@@ -153,20 +176,16 @@ One basic but significant methodological change from \citet{Knox2019-ot} is the 
     \label{fig:my_label}
 \end{figure}
 \end{comment}
-%We also note that normalization simplifies our loss function.
 The loss function in \citet{Knox2019-ot} is
 \begin{eqnarray*}
 \frac{\|y - \hat y\|} {\|y\|\|\hat y\|}
 \end{eqnarray*}
 
 %We find the $l2$ norm not appropriate in a few ways 1) there is not a clear inner product structure on the connectome.
-
-%It is reasonable to ask can we back-divide densities after normalization... seemingly yes.  But then how should we interpret the previously normalized row sums.  Areas with high row sum have high density of connection.  
-
-%It doesn't matter if we normalize prior to regionalization as long as we don't correct for density of the target region.
+%doesn't matter if we normalize prior to regionalization as long as we don't correct for density of the target region.
 %which, due to normalization, can be rewritten as simply the $l2$ loss $\|y - \hat y\|.$  Note that, due to normalization, $\|y - \hat y\| = \langle y - \hat y , y - \hat y \rangle = 2 - 2 \langle y, \hat y\rangle $, and, applying normalization again, $ \langle y, \hat y\rangle $ is the vector cosine of $\hat y$ and $y$.
 
-
+\newpage
 \subsection{Estimators}
 
 Our estimators span a range of training and featurization methods.
@@ -176,58 +195,34 @@ f (v,s,t) = f (v,t)[t].
 \end{eqnarray*}
 Thus, for the remainder of this section, we will discuss only $f (s,v)$.
 
-%\paragraph{Regionalized non-negative least squares}
-
-%In the non-negative least squares approach of \citet{Oh2014-kh}, the injection is considered only through its centroid, while the projection is considered regionalized.
-%The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
-
-\paragraph{Centroid-based Nadaraya-Watson}
+\subsubsection{Centroid-based Nadaraya-Watson}
 
 In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid, while the projection is considered regionalized.
-The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
+%The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
 That is,
 \begin{eqnarray*}
 f_*({\mathcal D}_i) = \{c(x_i) , r(y_i)\}.
 \end{eqnarray*}
-Since the injection is considered only by its centroid, this model only generates predictions for particular locations $c$.  The prediction for a structure $s$ is given by integrating over locations within the structure.
-That is,
+Since the injection is considered only by its centroid, this model only generates predictions for particular locations $c$, and the prediction for a structure $s$ is given by integrating over locations within the structure
 \begin{eqnarray*}
 \label{eq:regionalize}
-f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{c \in s} \hat f (f_*(\mathcal D)) (v,c).
+f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{c \in s} \hat f (f_*(\mathcal D)) (v,c),
 \end{eqnarray*}
-Here, we set $\hat f$ to be the so-called Nadaraya-Watson estimator
+This $\hat f$ is the Nadaraya-Watson estimator
 \begin{eqnarray*}
-\hat f_{NW}( c(x_{1:n}) , r(y_{1:n}) ) (c,v) =  \sum_{i \in I} \frac{ \omega_{c(x_i) c}}{\sum_{i \in I} \omega_{c(x_i) c}} r(y_i)
+\hat f_{NW}( c(x_{1:n}) , r(y_{1:n}) ) (c,v) :=  \sum_{i \in I} \frac{ \omega_{c(x_i) c}}{\sum_{i \in I} \omega_{c(x_i), c}} r(y_i)
 \end{eqnarray*}
-with $\omega_{c(x_i) c} = \exp( - \gamma d( c , c(x_i))^2 )$ where $d$ is the Euclidean distance between centroid $c(x_i)$ and voxel $c$.
-%\begin{eqnarray*}
-%f^*( f_*(\mathcal D), v,s) = \sum_{c \in s} f_{NW}^{ \gamma} (c, c(x_{I}) , r(y_{I}), v).
-%\end{eqnarray*}
-
-Several facets of the estimator are visible here. $f_{NW}^{\gamma}$ is the Nadaraya-Watson estimator with smoothing given by inverse-bandwidth $\gamma$.
+where $\omega_{c(x_i) c} = \exp( - \gamma d( c , c(x_i))^2 )$ and $d$ is the Euclidean distance between centroid $c(x_i)$ and voxel $c$.
+Several facets of the estimator are visible here. %$f_{NW}^{\gamma}$ is the Nadaraya-Watson estimator with smoothing given by inverse-bandwidth $\gamma$.
 A smaller $\gamma$ corresponds to a greater amount of smoothing, and index set $I \subseteq  \{1:n\}$ indicates which experiments to use to generate the prediction.
 Fitting $\gamma$ via empirical risk minimization therefore bridges between $1$-nearest neighbor prediction and averaging of all experiments in $I$.
 In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division.
-This model is easily extensible to a cre-specific model by restricting the index set to only include experiments with the same cre-line.
+ Restricting of index set to only include experiments with the same neuron class gives the class-specific model.
 
-%The model is then a weighted sum of nearby centroids.
-%\begin{eqnarray*}
-%f_{NW} (c, c(x_{1:n}) , r(y_{1:n}), v,t) &= \sum_{i \in I} %\tilde w_c r(y(i))
-%( \tilde w_c^R)^T y_{1:n, t}
-%\end{eqnarray*}
-%with 
-%\begin{eqnarray*}
-%w_{ci} = \exp( - \gamma \| c - c(i)\|_2^2 ) \\
-%\tilde w_{ci^R} = \frac{w_{ci} }{\sum_}
-%\end{eqnarray*}
+\newpage
+\subsubsection{The expected-loss estimator}
 
-%\begin{eqnarray*}
-%f_{NW} (c, c(x_{1:n}) , r(y_{1:n}), v,t) = ((1_v^n)^T \tilde w_c)^T y_{1:n, t}
-%\end{eqnarray*}
-%where $(1_{v,M}^n)$ is a vector of length $n$ indicating %only using experiments with the same cre-line and major structure.
-
-%
-\paragraph{The expected-loss estimator}
+\label{supp_sec:el}
 
 The response induced by each of the cre-lines is effected by both the injection location and the targeted cell types.
 Cre-lines that target similar cell types are therefore expected to induce similar projections, and including similar cre-lines in our estimator thus increases the effective sample size.
@@ -410,9 +405,9 @@ job/.style args = {#1/#2}{
 \newpage
 
 
+%\subsubsection{The expected-loss estimator}
+\paragraph{Justification of shape constraint}
 
-\section{The expected-loss estimator}
-\label{supp_sec:el}
 The shape-constrained expected-loss estimator introduced in this paper is, to our knowledge, novel.  It should be considered an alternative method to the classic weighted kernel method. While we do not attempt a detailed theoretical study of this estimator, we do establish the need for the shape constraint in our spline estimator. Though this fact is probably well known, we prove a (slightly stronger) version here for completeness.
 %This fact is probably well known, but we prove slightly stronger version of this fact here for completeness.
 
@@ -442,13 +437,27 @@ We then show that $f$ being a metric implies that $g$ satisfies the above proper
     \item The final property is that $g$ is concave. We proceed by contradiction. Suppose $g$ is strictly convex. Then there exist vectors $d, d'$ such that $g(d + d')  < g(d) + g(d')$.  Assume that $d$ and $d'$ only are non-zero in the first position, and $d = d(0, x), d' = d(0,x')$.  Then, $f(0,x) + f(0,x') <  f(0,x+ x')$, which violates the triangle inequality on $f$.  Therefore, $g$ must be concave.
 \end{itemize}
 
-\section{Decomposing the connectivity matrix}
+\subsubsection{Establishing a lower detection limit}
+\label{supp:methods_lower}
+
+The lower detection limit of our approach is a complicated consequence of our experimental and analytical protocols.
+For example, the Nadaraya-Watson estimator is likely to generate many small false positive connections, since the projection of even a single experiment within the source region to a target will cause a non-zero connectivity in the Nadaraya-Watson weighted average.
+On the other hand, the complexities of the experimental protocol itself and the image analysis and alignment can also cause spurious signals.
+Therefore, it is of interest to establish a lower-detection threshold below which we have very little power-to-predict, and set estimated connectivities below this threshold to zero.
+This should make our estimated connectivities more accurate, especially in the biologically-important sense of sparsity.
+
+We establish this limit with respect to the sum of Type 1 and Type 2 errors
+\begin{eqnarray*}
+\tau = \sum 1_{f(s,t,c) = 0} 1_{\hat f(s,t,c) > 0} + 1_{f(s,t,c) > 0}  1_{\hat f(s,t,c) = 0} .
+\end{eqnarray*}
+
+\subsection{Decomposing the connectivity matrix}
 
 We utilize non-negative matrix factorization (NMF) to analyze the principal signals in our connectivity matrix.
 Here, we review this approach as applied to decomposition of the distal elements of the estimated connectivity matrix $\widehat {\mathcal C}$ to identify $q$ connectivity archetypes.
 Aside from the NMF program itself, the key elements are selection of the number of archetypes $q$ and stabilization of the tendency of NMF to give random results over different initialization. 
 
-\subsection{Non-negative matrix factorization}
+\subsubsection{Non-negative matrix factorization}
 
 Given a matrix $X \in \mathbb R_{\geq 0}^{a \times b}$ and a desired latent space dimension $q$, the non-negative matrix factorization is
 \begin{eqnarray*}
@@ -473,7 +482,7 @@ Long range connections are more biologically interesting or cell-type dependent.
 Second, it enables cross-validation based selection of the number of retained components.
 %$1_{\text{dist}\geq 1500 \mu m}$
 
-\subsection{Cross-validating NMF}
+\subsubsection{Cross-validating NMF}
 
 Perhaps surprisingly, cross-validation techniques may also be applied to unsupervised learning problems.
 These techniques are somewhat standard, but not entirely well-known, so we review them here, in particular as they apply to the NMF problem.
@@ -517,7 +526,7 @@ The optimum number of components is then
     \widehat q = \arg \min_q \epsilon_q.
 \end{align*}
 
-\subsection{Stabilizing NMF}
+\subsubsection{Stabilizing NMF}
 
 The NMF program is non-convex, and, empirically, individual replicates will not converge to the same optima.
 One solution therefore is to run multiple replicates of the NMF algorithm, cluster the resulting vectors.
@@ -540,26 +549,39 @@ We then select the $q$ clusters with the most archetype vectors - the most stabl
 
 %http://alexhwilliams.info/itsneuronalblog/2018/02/26/crossval/
 
-\subsection{Establishing a lower detection limit}
 
-The lower detection limit of our approach is a complicated consequence of our experimental and analytical protocols.
-For example, the Nadaraya-Watson estimator is likely to generate many small false positive connections, since the projection of even a single experiment within the source region to a target will cause a non-zero connectivity in the Nadaraya-Watson weighted average.
-On the other hand, the complexities of the experimental protocol itself and the image analysis and alignment can also cause spurious signals.
-Therefore, it is of interest to establish a lower-detection threshold below which we have very little power-to-predict.
-We will then set estimated connectivities below this threshold to zero.
-This should make our estimated connectivities more accurate, in particular in the biologically-important sense of sparsity.
 
-The limit-of-detection problem is common in a variety of scientific fields, but statistical methodology is not 
-We utilize the zero-inflated adjusted Kendall-$\tau$ statistic
 
-\begin{align*}
-    \tau_0 = p_{11}^2 \tau_11 + 2(p_{00} p_{11} - p_{10} p_{01}),
-\end{align*}
-where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
 
+
+%\comment{ 
+%The limit-of-detection problem is common in a variety of scientific fields, but statistical methodology is not 
+%We utilize the zero-inflated adjusted Kendall-$\tau$ statistic
+
+%\begin{align*}
+%    \tau_0 = p_{11}^2 \tau_11 + 2(p_{00} p_{11} - p_{10} p_{01}),
+%\end{align*}
+%where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
+%}
+
+\newpage
 
 \section{Supplemental Experiments}
 
+\subsection{Establishing a lower limit of detection}
+\label{supp:exp_lower}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../figures/Threshold}
+    \label{fig:threshold}
+    \caption{$\tau$ at different limits of detection.}
+\end{figure}
+
+
+\subsection{Loss subsets}
+
+The 
 \subsection{Matrix Factorization}
 
 \begin{figure}[H]
@@ -596,10 +618,6 @@ where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
 %    \caption{Caption}
 %    \label{fig:my_label}
 %\end{figure}
-
-
-%\section{Model evaluation}
-%\label{supp_sec:model-evaluation}
 
 
 
