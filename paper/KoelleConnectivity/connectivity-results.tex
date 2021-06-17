@@ -68,7 +68,7 @@ This is generally expected - for example, different cortical layers have more su
 \centering
     \subfloat[] {
    % \raisebox{-.5\height}
-    \includegraphics[width = \linewidth]{wt_conn_sumleaf_strength.png}
+    \includegraphics[width = \linewidth]{../../analyses/paper/figures/conn_leafs_0617.png}
     } 
     \\
     \vspace{-2cm}
@@ -179,23 +179,24 @@ This relationship is plotted in \ref{fig:nmf} b), showing that there exists subs
 These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
 For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
 We then apply non-negative matrix factorization (NMF) to decompose the remaining censored matrix into a relatively small number of distinct projection signals, and apply an unsupervised cross-validation method to select the optimum number of signals \skcomment{Percent error... show reconstruction? log scale?}.
+
 \newpage
 
-\begin{figure}[h]
-\begin{tabular}[t]{ccc}
-\subfloat[]{\includegraphics[width = 2in]{figs/distances_nice.png}}
-& 
-\vspace{1cm}
-\subfloat[]{\includegraphics[width = 1.5in]{figs/figsforpres/test_train.png}} &
-\subfloat[]{\includegraphics[width = 2in]{figs/wt_nmf_alpha0.png}}
+\begin{figure}[H]
+\begin{tabular}[t]{c}
+\subfloat[]{\includegraphics[width = 1. \textwidth]{../../paper/figures/H_wt_0617.png}}
+\\
+%\subfloat[]{\includegraphics[width = 1.5in]{figs/figsforpres/test_train.png}} &
+\subfloat[]{\includegraphics[width = .4\textwidth]{../../paper/figures/W_wt_0617.png}}
 \end{tabular}
 \end{figure}
 
-\begin{figure}[h]
-    \includegraphics[width = 5in]{figs/wt_recon.png}
-    %\caption{Caption}
-    \label{fig:my_label}
-\end{figure}
+\newpage
+%\begin{figure}[h]
+%    \includegraphics[width = 5in]{figs/wt_recon.png}
+%    %\caption{Caption}
+%    \label{fig:my_label}
+%\end{figure}
 
 
 \begin{comment}
