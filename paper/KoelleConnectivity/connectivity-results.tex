@@ -6,7 +6,7 @@ Our results include evaluation of model fit, the cre-specific connectivity matri
 \label{sec:model_eval}
 
 %Note that this is also the largest evaluation set for 2-stage model, since leave-one-out means of each cre-line may only be computed for lines which are present at least twice in the leaf.
-Table  contains the sizes of these evaluation sets in each major structure.
+Table \ref{tab:loss} contains the sizes of these evaluation sets in each major structure.
 This information may be cross-referenced visually with the figures in 
 Our two-stage model generally performs better than the cre-line specific NW estimator.
 
@@ -39,6 +39,7 @@ TH & 29 &  0.351 &  0.678 &   0.678 &  0.365 &  1.088 \\
 \end{tabular}
 %\end{adjustbox}
 \caption{Weighted losses with summary structure targets.}
+\label{tab:loss}
 %\end{wraptable}
 \end{table}
 
@@ -144,11 +145,12 @@ Rbp4-Cre and Ntsr1-Cre target layers $5$ and $6$, respectively. As in \citet{Jeo
 
 \begin{figure}[H]
 \subfloat[]{
-    \includegraphics[width=1.\textwidth]{figs/visp_mo_1201.png}}
+    \includegraphics[width=1.\textwidth]{../../analyses/paper/figures/visp_mo_0615.png} 
+    }
     \newline
  \subfloat[]{
-    \includegraphics[width=1.\textwidth]{figs/Figure4.png}}
-    \caption{   Cre-specific connection strengths from motor-cortex and visual cortex. Sources without a injection of that cre-type are blank. \skcomment{Remove 'ipsi' from columns'}}
+    \includegraphics[width=1.\textwidth]{../../analyses/paper/figures/heirarchical.png}
+    }
     \label{fig:data}
 \end{figure}
 \newpage
@@ -177,7 +179,23 @@ This relationship is plotted in \ref{fig:nmf} b), showing that there exists subs
 These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
 For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
 We then apply non-negative matrix factorization (NMF) to decompose the remaining censored matrix into a relatively small number of distinct projection signals, and apply an unsupervised cross-validation method to select the optimum number of signals \skcomment{Percent error... show reconstruction? log scale?}.
+\newpage
 
+\begin{figure}[h]
+\begin{tabular}[t]{ccc}
+\subfloat[]{\includegraphics[width = 2in]{figs/distances_nice.png}}
+& 
+\vspace{1cm}
+\subfloat[]{\includegraphics[width = 1.5in]{figs/figsforpres/test_train.png}} &
+\subfloat[]{\includegraphics[width = 2in]{figs/wt_nmf_alpha0.png}}
+\end{tabular}
+\end{figure}
+
+\begin{figure}[h]
+    \includegraphics[width = 5in]{figs/wt_recon.png}
+    %\caption{Caption}
+    \label{fig:my_label}
+\end{figure}
 
 
 \begin{comment}
