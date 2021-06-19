@@ -28,12 +28,6 @@ def get_ccf_data(cache, experiment_id):
     eid_data.injection_fraction = cache.get_injection_fraction(experiment_id)[0]
     eid_data.projection_signal = cache.get_projection_density(experiment_id)[0]
     return(eid_data)
-#     return {
-#         "data_quality_mask" : cache.get_data_mask(experiment_id)[0],
-#         "injection_signal" : cache.get_injection_density(experiment_id)[0],
-#         "injection_fraction" : cache.get_injection_fraction(experiment_id)[0],
-#         "projection_signal" : cache.get_projection_density(experiment_id)[0]
-#     }
 
 def get_centroid(density):
     """Computes centroid in index coordinates.

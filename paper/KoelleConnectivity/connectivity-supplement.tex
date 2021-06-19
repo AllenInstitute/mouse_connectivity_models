@@ -1,9 +1,10 @@
 \section{Supplemental Information}
 
-\subsection{Data}
+\subsection{Cre/structure combinations in $\mathcal D$}
 \label{supp_sec:data}
 
-This section describes the set of leaf and cre-line experimental combinations.
+This section describes the abundances of leaf and cre line combinations in our dataset.
+Users of the connectivity matrices who are interested in a particular cre line or structure can see the quantity and type of data used to compute and evaluate that connectivity.
 
 \newpage
 
@@ -93,7 +94,8 @@ This section describes the set of leaf and cre-line experimental combinations.
 \end{figure}
 
 \newpage
-\subsection{Structure information}
+
+\subsection{Distances between structures}
 
 \begin{figure}[H]
     \centering
@@ -105,24 +107,24 @@ This section describes the set of leaf and cre-line experimental combinations.
 \subsection{Model evaluation}
 \label{supp_sec:model-evaluation}
 
-
 \begin{table}[H]
-\begin{tabular}{lrrrr}
+\small
+\begin{tabular}{lrr}
 \toprule
-{} &  Total &  Cre-Summary &  Cre-Summary, Leaf &  Cre-Leaf \\
+{} &  Total &  Cre-Leaf \\
 \midrule
-0  &     36 &           10 &                  9 &         4 \\
-1  &      7 &            2 &                  2 &         2 \\
-2  &    122 &           79 &                 79 &        62 \\
-3  &     85 &           41 &                 41 &        41 \\
-4  &   1128 &          838 &                829 &       732 \\
-5  &     68 &           23 &                 23 &        18 \\
-6  &     46 &            7 &                  7 &         7 \\
-7  &     35 &           17 &                 17 &        17 \\
-8  &     33 &            8 &                  8 &         8 \\
-9  &     30 &           11 &                 11 &        11 \\
-10 &     78 &           45 &                 45 &        45 \\
-11 &     83 &           29 &                 29 &        29 \\
+Isocortex &     36 &         4 \\
+OLF       &      7 &         2 \\
+HPF       &    122 &        62 \\
+CTXsp     &     85 &        41 \\
+STR       &   1128 &       732 \\
+PAL       &     68 &        18 \\
+TH        &     46 &         7 \\
+HY        &     35 &        17 \\
+MB        &     33 &         8 \\
+P         &     30 &        11 \\
+MY        &     78 &        45 \\
+CB        &     83 &        29 \\
 \bottomrule
 \end{tabular}
 \caption{Number of experiments available to evaluate models in leave-one-out cross validation. 
@@ -147,18 +149,50 @@ This section consists of additional information on preprocessing of the neural c
 %Similarly, for the projection, $r(y_i) \in R^{M}$.
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
-Injections and projections were downloaded using the Allen SDK.
-These were originally annotated manually.
-The injection and projection vectors are Hadamard multiplied by a data quality matrix. We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
+These steps are described in Algorithm \ref{alg:preprocess}.
+The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK. %and injection fraction $F(i)$ 
+The injections and projection signals $\in \mathcal B \times \mathbb [0,1]$ were segmented manually in histological analysis.
+The projection signal gives the proportion of pixels within the voxel displaying fluorescence, and the injection signal gives the proportion of pixels within the histologically-selected injection subset displaying fluorescence.
+The injection fraction $\in \mathcal B \times \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
+Finally, the data quality mask $\in \mathcal B \times \mathbb \{0,1\}$ gives the voxels that have valid data.
+
+%The injection and projection vectors are Hadamard multiplied by a data quality matrix.
+%We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
+Our preprocessing makes use of the above ingredients, as well as several other essential steps.
+First, we compute the weighted injection centroid
+\begin{eqnarray*}
+c(i) &= \sum_{v \in \mathcal B} x(i,v) l(v) 
+\end{eqnarray*}
+Given a regionalization $\mathcal R$, we also have access to a regionalization map as $R: \mathcal B  \to \mathcal R $ which induces a map of connectivities 
+\begin{eqnarray*}
+R_*: \mathcal F &\to \mathcal R \times \mathbb R^+ \\
+(v, y) &\mapsto \sum_{v' \in R} y'  \text{ for } (v,y') \text{ s.t. } R \ni v.
+\end{eqnarray*}
+This map depends on the choice of regionalization; we regionalize at the leaf level.
+We also can restrict a signal to a individual structure
+\begin{eqnarray*}
+S_* :  \mathcal F &\to  \mathcal F \\
+ (v, y) &= \begin{cases} 
+ (v, y) \text{ if } v \in S \\
+ (v, 0) \text{ otherwise }
+ \end{cases}
+\end{eqnarray*}
+Finally, given a vector or array $a$, we have the $L1$ normalization map
+\begin{eqnarray*}
+n: a &\mapsto \frac{a}{\sum_{j = 1}^p a_j}
+\end{eqnarray*}
 
 \begin{algorithm}[H]
 \floatname{algorithm}{\textsc{Preprocess}}%{\preprocess}
 %\renewcommand{\thealgorithm}{}
 \begin{algorithmic}
-\caption{{\bf Input} Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
-\State Data-quality censor $y_M (i) = M(i) \odot y(i)$ 
-\State Average structures $y_S (i) = A y_M(i)$
-\State Normalize $\tilde y(i) = \frac{y_S (i)}{\|y_S (i)\|}$
+\caption{{\bf Input} Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data quality mask $q(i)$}
+\State Injection fraction $x_F(i) \gets x(i) \odot F(i)$
+\State Data-quality censor $y_M (i) \gets  \odot y(i) \odot q(i) , x_M(i) \gets x_F(i) \odot F(i)$
+\State Restrict injection $x_M(i)  \odot S(i)$.
+\State Compute centroid $c(i)$ from $x_M(i) $
+\State Regionalize $y_S (i) \gets R_*(  y_M(i))$
+\State Normalize $\tilde y(i) \gets n(Y_S(i))$
 %\Return $\tilde y(i)$
 %\caption{(Local dataset $\delta_i^{x} $, local embedding coordinates $\delta_i^{\phi}, \tsalg$) ) }
 %\begin{algorithmic}[1]
@@ -166,8 +200,9 @@ The injection and projection vectors are Hadamard multiplied by a data quality m
 %\State Compute neighborhood graph $\neigh_i $ using (\ref{eq:kernelmatrix})% \delta_i^f$, for $i=1:n$ 
 % \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\|\tilde\delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:weights})
 % \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\| \delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:manifold_learning})
- \State {\bf Output}$\tilde y(i)$ )  % \mmp{what -- notation for grad f needed}
+ \State {\bf Output}$\tilde y(i)$, $c(i)$ )  % \mmp{what -- notation for grad f needed}
 \end{algorithmic}
+\label{alg:preprocess}
 \end{algorithm}
 
 %\begin{algorithm}

@@ -46,7 +46,7 @@ Thus, we use the term \textit{neuron class} to describe the neurons targeted by 
 This is the notion of cell-type specificity that we model.
 
 After injection, the resultant fluorescent signal is imaged, and aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional idealized model of the brain that is consistent between animals.
-This imaging and alignment procedure (described in detail in \citep{Harris2019-mr}) records fluourescent intensity discretized at the $100 \; \mu$m \textit{voxel} level. 
+This imaging and alignment procedure (described in detail in \citep{Harris2019-mr}) records fluorescent intensity discretized at the $100 \; \mu$m \textit{voxel} level. 
 The image is histologically segmented into \textit{injection} and \textit{projection} areas corresponding to areas of transduction and transduction/transfection, respectively.
 An example for a single experiment is given in Figure \ref{fig:injproj}.
 
@@ -137,14 +137,15 @@ The performance of $\widehat {\mathcal C}$ is therefore determined by performanc
 We can then evaluate $\widehat f(v,s,t)$ using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
 In order to compare between methods, we necessarily restrict to the smallest set of evaluation experiments suggested by any of our models.
 Since the number of parameters fit is quite low relative to the size of the evaluation set, we do not make use of a formal validation-test split.
-We use $l2$-loss and weighted $l2$-loss to evaluate these predictions.
+We use weighted $l2$-loss to evaluate these predictions.
 \begin{align*}
-\text{l2-loss } l ( \hat f) &= \frac{1}{|I_M|} \sum_{i \in I_M} \| r(y(i)) - \hat f(c(i)) \|_2^2. \\
+%\text{l2-loss } l ( \hat f) &= \frac{1}{|I_M|} \sum_{i \in I_M} \| r(y(i)) - \hat f(c(i)) \|_2^2. \\
 \text{weighted l2-loss } l ( \hat f) &= \frac{1}{|\{S,V\}|} \sum_{s,v \in \{S,V\}} \frac{1}{ |I_{s,v}|} \sum_{i \in I_{s,v} } l(r(y(i)), \hat f(\mathbb D \setminus i)) .
 \end{align*}
 %Due to our normalizing preprocessing step, the former is equivalent to the normalized loss in \citet{Knox2019-ot}, and also to cosine loss, while the latter weights all region cell-class combinations equally.
 As a final modeling step, we establish a lower limit of detection.
 This is covered in Appendix \ref{supp:methods_lower}
+
 
 \newpage
 %\paragraph{Construction of the evaluation set}

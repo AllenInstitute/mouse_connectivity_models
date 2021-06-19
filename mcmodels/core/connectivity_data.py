@@ -34,20 +34,16 @@ def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_inje
         sid_data.eids = model_data.get_experiment_ids(experiments_exclude=experiments_exclude, cre=None)
         for eid in sid_data.eids:
 
-            eid_data = get_ccf_data(cache, eid)  # ExperimentData(eid)
+            eid_data = get_ccf_data(cache, eid)
             eid_data.data_mask_tolerance = .5
-            # ccf_data = get_ccf_data(cache, eid)
-            eid_data.injection_signal_true = eid_data.injection_signal * eid_data.injection_fraction
+            eid_data.injection_signal_true = eid_data.injection_signal * eid_data.injection_fraction # see help(cache.get_injection_density)
             if remove_injection == True:
                 pass  # remove injection fraction from projection
             # injection_signal should = projection_signal in some locations (nonzero)
-            # why do we use partial?
-            # mask_func = partial(_mask_data_volume,data_mask=eid_data.data_mask,tolerance=eid_data.data_mask_tolerance)
             eid_data.injection_qmasked = get_masked_data_volume(eid_data.injection_signal_true, eid_data.data_quality_mask,
                                                            eid_data.data_mask_tolerance)
             eid_data.projection_qmasked = get_masked_data_volume(eid_data.projection_signal, eid_data.data_quality_mask,
                                                             eid_data.data_mask_tolerance)  # mask_func(eid_data.projection_signal)
-            # eid_data.centroid = compute_centroid(eid_data.injection_qmasked)
             sid_data.experiment_datas[eid] = eid_data
         connectivity_data.structure_datas[sid] = sid_data
     return (connectivity_data)
