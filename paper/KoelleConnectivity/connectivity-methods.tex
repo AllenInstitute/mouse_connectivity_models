@@ -101,14 +101,14 @@ Additional information on these estimators is given in Supplemental Section \ref
 \begin{table}[H]
     \centering
     \begin{tabular}{c|c|c|c|c|}
-        Name & $f^*$ & $\widehat f$&  $ f_*$ & $\mathcal D(v,s,t)$ \\
+        Name & $f^*$ & $\widehat f$&  $ f_*$ & $\mathcal D(v,s)$ \\
         \hline
         %Leaf-mean & & & & \\
-        NNLS \citep{Oh2014-kh} & $\widehat f (S)$ & NNLS(X,Y) & $X= x_{\mathcal S},Y = y_{\mathcal T}$ & $ I_m / I_m$ \\
-        NW \citep{Knox2019-ot} &$ \sum_{l_s \in s} \widehat f (l_s)$ & NW(X,Y)  & $X = c, Y = y_{\mathcal T}$ & $I_m /I_m$ \\
+        NNLS \citep{Oh2014-kh} & $\widehat f (S)$ & \nnls(X,Y) & $X= x_{\mathcal S},Y = y_{\mathcal T}$ & $ I_m / I_m$ \\
+        NW \citep{Knox2019-ot} &$ \sum_{l_s \in s} \widehat f (l_s)$ & \nw(X,Y)  & $X = c, Y = y_{\mathcal T}$ & $I_m /I_m$ \\
         %Cre-leaf-mean & & & & \\
-        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & NW(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ (I_s \cap I_v) / I_m$ \\
-        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\text{EL}(X,Y,v)$ & $X= c, Y = y_{\mathcal T}, v$  &$I_s / I_m$
+        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & \nw(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ (I_s \cap I_v) / I_m$ \\
+        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\el(X,Y,v)$ & $X= c, Y = y_{\mathcal T}, v$  &$I_s / I_m$
     \end{tabular}
     \caption{Estimation of $\mathcal C$ using connectivity data.
     The regionalization, estimation, and featurization steps are denoted by $f^*, \widehat f,$ and  $f_*$, respectively.
@@ -135,12 +135,12 @@ Thus, nearby experiments with similar Cre-lines can help generate the prediction
 We select optimum functions from within and between our estimator classes using empirical risk minimization. %in leave-one-out cross-validation.
 Equation \ref{eq:estimator} includes a deterministic step $f^*$ included without input by the data.
 %Note that $\hat f = \widehat e (e_*(\mathcal D))$.
-The performance of $\widehat {\mathcal C (v,s,t)}$ is therefore determined by performance of the model $\widehat f (f_*(\mathcal D(v,s,t)))$.
-We can thus evaluate $\widehat f(v,s,t)$ using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
-This method is robust to the trivial overfitting in Nadaraya-Watson bandwidth selection.
+The performance of $\widehat {\mathcal C (v,s,t)}$ is thus determined by performance of $\widehat f (f_*(\mathcal D(v,s)))$.
+Furthermore, in practice we can represent $f$ as $f_{\mathcal T}: \mathbb R^3 \to \mathbb R_{\geq 0}^T$ giving the structural connection strength at a given location.
+We can then evaluate the accuracy of $\widehat f_{\mathcal T} (f_*(\mathcal D(v,s)))$ using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
+%This method is robust to the trivial overfitting in Nadaraya-Watson bandwidth selection.
 
-
-Another main estimation question is what combinations of $v, s, $ and $t$ to generate a prediction for.
+Another question is what combinations of $v, s, $ and $t$ to generate a prediction for.
 Our EL and Cre-NW models are leaf specific; they only generate predictions for cell classes in leafs where at least one experiment with a Cre-line targeting that class has a centroid.
 To compare our new estimators accurately with less-restrictive models such as used in \citet{Knox2019-ot}, we therefore restrict restrict to the smallest set of evaluation experiments suggested by any of our models: virus-leaf combinations that are present at least twice. 
 The sizes of these evaluation sets are given in Supplemental Section \ref{supp_sec:model-evaluation}.
@@ -148,7 +148,7 @@ The sizes of these evaluation sets are given in Supplemental Section \ref{supp_s
 We use weighted $l2$-loss to evaluate these predictions.
 \begin{align*}
 \text{l2-loss } \ell (y_{\mathcal T}(i)),\widehat {y_{\mathcal T}(i))}) &=   \| y_{\mathcal T} (i)) - \widehat {y_{\mathcal T}(i))} \|_2^2. \\
-\text{weighted l2-loss } \mathcal L ( \widehat {f(f_*)}) &= \frac{1}{|\{s,v\}|} \sum_{s,v \in \{\mathcal S,\mathcal V\}} \frac{1}{ |I_{s} \cap I_v |} \sum_{i \in (I_{s} \cap I_v ) } \ell (y_{\mathcal T}(i)), \hat f(f_*(\mathcal D(s,t,v) \setminus i)) .
+\text{weighted l2-loss } \mathcal L ( \widehat {f(f_*)}) &= \frac{1}{|\{s,v\}|} \sum_{s,v \in \{\mathcal S,\mathcal V\}} \frac{1}{ |I_{s} \cap I_v |} \sum_{i \in (I_{s} \cap I_v ) } \ell (y_{\mathcal T}(i)), \hat f_{\mathcal T} (f_*(\mathcal D(v,s) \setminus i)) .
 \end{align*}
 This is a somewhat different loss from \citet{Knox2019-ot}, both because of the normalization of projection, and because of the increased weighting of rarer combinations of $s$ and $v$ implicit in the loss.
 Since the number of parameters fit is quite low relative to the size of the evaluation set, we do not make use of a formal validation-test split.

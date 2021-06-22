@@ -1,10 +1,16 @@
+This supplement is divided into information about our dataset, supplemental methods, and supplemental results.
+However, note that there is substantial interconnectedness between these sections.
+Thus, if a reader is interested in, say, non-negative matrix factorization, they may find relevant information in both methods and results.
+
 \section{Supplemental Information}
 \label{supp_sec:info}
+
+Our supplementary information consists of abundances of leaf/Cre-line combinations, information about distances between structures, and the size of our restricted evaluation dataset.
 
 \subsection{Cre/structure combinations in $\mathcal D$}
 \label{supp_sec:data}
 
-This section describes the abundances of leaf and cre line combinations in our dataset.
+This section describes the abundances of leaf and Cre-line combinations in our dataset.
 Users of the connectivity matrices who are interested in a particular cre line or structure can see the quantity and type of data used to compute and evaluate that connectivity.
 
 \newpage
@@ -143,54 +149,60 @@ This section consists of additional information on preprocessing of the neural c
 \label{supp_sec:dp}
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
-These steps are described in Algorithm \ref{alg:preprocess}.
+These steps are described in Algorithm \pre.
 The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK. %and injection fraction $F(i)$ 
-The injections and projection signals $\in \mathcal B \times \mathbb [0,1]$ were segmented manually in histological analysis.
+The injections and projection signals $ \mathcal B \to \mathbb [0,1]$ were segmented manually in histological analysis.
 The projection signal gives the proportion of pixels within the voxel displaying fluorescence, and the injection signal gives the proportion of pixels within the histologically-selected injection subset displaying fluorescence.
-The injection fraction $\in \mathcal B \times \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
-Finally, the data quality mask $\in \mathcal B \times \mathbb \{0,1\}$ gives the voxels that have valid data.
+The injection fraction $ \mathcal B \to \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
+Finally, the data quality mask $ \mathcal B \to \mathbb \{0,1\}$ gives the voxels that have valid data.
 
 %We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
 Our preprocessing makes use of the above ingredients, as well as several other essential steps.
 First, we compute the weighted injection centroid
 \begin{eqnarray*}
-c(i) &= \sum_{l \in \mathcal B} x(i) l(v) 
+c(i) &= \sum_{l \in \mathcal B} x(i)(l) l
 \end{eqnarray*}
-Given a regionalization $\mathcal R$, we also have access to a regionalization map as $R: \mathcal B  \to \mathcal R $ which induces a map of connectivities 
+where $x(i)(l)$ is the injection density at location $l \in \mathbb R^3$.
+Given a regionalization $\mathcal R$ from the Allen SDK, we can also access regionalization map $R: \mathcal B  \to \mathcal R $.
+This induces a functional of connectivities from the space of maps $\{\mathcal X = x: \mathcal B \to [0,1]$
 \begin{eqnarray*}
-R_*: \mathcal F &\to \mathcal R \times \mathbb R^+ \\
-(v, y) &\mapsto \sum_{v' \in R} y'  \text{ for } (v,y') \text{ s.t. } R \ni v.
+1_{\mathcal R}: \mathcal X &\to \mathcal R \times \mathbb R_{\geq 0} \\
+x &\mapsto \sum_{l \in r}  x(l)  \text{ for } r \in \mathcal R.
 \end{eqnarray*}
-This map depends on the choice of regionalization; we regionalize at the leaf level.
-We also can restrict a signal to a individual structure
+%This map depends on the choice of regionalization; we regionalize at the leaf level.
+We also can restrict a signal to a individual structure as
 \begin{eqnarray*}
-S_* :  \mathcal F &\to  \mathcal F \\
- (v, y) &= \begin{cases} 
- (v, y) \text{ if } v \in S \\
- (v, 0) \text{ otherwise }
+1 |_s :  \mathcal X &\to  \mathcal X \\
+ x(l) &= \begin{cases} 
+ x(l) \text{ if } l \in S \\
+ 0 \text{ otherwise }.
  \end{cases}
 \end{eqnarray*}
-Finally, given a vector or array $a$, we have the $L1$ normalization map
+Finally, given a vector or array $a \in \mathbb R^T$, we have the $L1$ normalization map
 \begin{eqnarray*}
-n: a &\mapsto \frac{a}{\sum_{j = 1}^p a_j}
+n: a &\mapsto \frac{a}{\sum_{j = 1}^T a_j}.
 \end{eqnarray*}
 
-\begin{algorithm}[H]
-\floatname{algorithm}{\textsc{Preprocess}}%{\preprocess}
-%\renewcommand{\thealgorithm}{}
-\begin{algorithmic}
-\caption{{\bf Input} Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data quality mask $q(i)$}
-\State Injection fraction $x_F(i) \gets x(i) \odot F(i)$
-\State Data-quality censor $y_M (i) \gets  \odot y(i) \odot q(i) , x_M(i) \gets x_F(i) \odot F(i)$
-\State Restrict injection $x_M(i)  \odot S(i)$.
-\State Compute centroid $c(i)$ from $x_M(i) $
-\State Regionalize $y_S (i) \gets R_*(  y_M(i))$
-\State Normalize $\tilde y(i) \gets n(Y_S(i))$
- \State {\bf Output}$\tilde y(i)$, $c(i)$ )  
-\end{algorithmic}
-\label{alg:preprocess}
-\end{algorithm}
+We define these objects as functions and functionals, but this is for notational convenience and non-essential.
+A function $x(i):\mathcal B \to [0,1]$ is mathematically equivalent to the graph $\mathcal G(x(i)) \in \mathcal B \times [0,1]$.
+As an abuse of notation, we define $x \odot x' := z$ such that $z(l) = x(l) x'(l)$ for all $l \in \mathcal B$.
+Also, denote $m(i)$ as the major structure containing experiment $i$.
+We then can write the preprocessing algorithm.
 
+\begin{algorithm}[H]
+\floatname{algorithm}{\pre}%{\preprocess}
+\caption{{\bf Input} Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data quality mask $q(i)$}
+\label{alg:preprocess}
+\begin{algorithmic}
+\State Injection fraction $x_F(i) \gets x(i) \odot F(i)$
+\State Data-quality censor $y_q (i) \gets  \odot y(i) \odot q(i) , x_q(i) \gets x_F(i) \odot q(i)$
+\State Restrict injection $x_m(i) = 1 |_{m(i)} x_q(i) $.
+\State Compute centroid $c(i)$ from $x_m(i) $
+\State Regionalize $\tilde y_{\mathcal T} (i) \gets 1_{\mathcal T}(  y_q(i))$
+\State Normalize $ y_{\mathcal T} (i) \gets n(\tilde y_{\mathcal T} (i) )$
+ \State {\bf Output}$\tilde y_{\mathcal T} (i) $, $c(i)$ 
+\end{algorithmic}
+\end{algorithm}
 
 
 %The data-quality censor is established by \skcomment{fill}
@@ -201,70 +213,103 @@ n: a &\mapsto \frac{a}{\sum_{j = 1}^p a_j}
 \newpage
 \subsection{Estimators}
 \label{supp_sec:estimators}
-Our estimators model a connectivity vector $f (v,s)  \in \mathbb R_{\geq}^T$, and so we may write
-\begin{eqnarray*}
-f (v,s,t) = f (v,t)[t].
-\end{eqnarray*}
+As mentioned previously, we can consider our estimators as modelling a connectivity vector $f_{\mathcal T} (v,s)  \in \mathbb R_{\geq 0}^T$.
 Thus, for the remainder of this section, we will discuss only $f (v,s)$.
+We review the Nadaraya-Watson estimator from  \citet{Knox2019-ot}, and describe its conversion into our cell-class specific Expected Loss estimator.
 
 \subsubsection{Centroid-based Nadaraya-Watson}
 
-In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid $c(i) := c(x(i))$, and the projection is considered regionalized.
+In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid $c(i)$, and the projection is considered regionalized.
 %The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
 That is,
 \begin{eqnarray*}
-f_*({\mathcal D}_i) = \{c(i), y_{\mathcal T}(i)\}.
+f_*(i) = \{c(i), y_{\mathcal T}(i)\}.
 \end{eqnarray*}
-Since the injection is considered only by its centroid, this model only generates predictions for particular locations $c$, and the prediction for a structure $s$ is given by integrating over locations within the structure
+Since the injection is considered only by its centroid, this model only generates predictions for particular locations $l$, and the prediction for a structure $s$ is given by integrating over locations within the structure
 \begin{eqnarray*}
 \label{eq:regionalize}
-f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{l_{s_j} \in s} \hat f (f_*(\mathcal D)) (v,l_{s_j}),
+f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{l \in s} \hat f (f_*(\mathcal D(I))) (v,l ).
 \end{eqnarray*}
-This $\hat f$ is the Nadaraya-Watson estimator
+Here, $I$ is the training data, and $\hat f$ is the Nadaraya-Watson estimator
 \begin{eqnarray*}
-\hat f_{NW}( c(I) , y_{\mathcal T}(I) ) (l) :=  \sum_{i \in I} \frac{ \omega_{c(i) l}}{\sum_{i \in I} \omega_{c(i), l}} y_{\mathcal T}(i)
+\hat f_{NW}( c(I) , y_{\mathcal T}(I) ) (l) :=  \sum_{i \in I} \frac{ \omega_{i l}}{\sum_{i \in I} \omega_{i l}} y_{\mathcal T}(i)
 \end{eqnarray*}
-where $\omega_{c(i) l } = \exp( - \gamma d( l , c(i))^2 )$ and $d$ is the Euclidean distance between centroid $c(i)$ and voxel with position $l$.
+where $\omega_{i l } := \exp( - \gamma d( l , c(i))^2 )$ and $d$ is the Euclidean distance between centroid $c(i)$ and voxel with position $l$.
 
 Several facets of the estimator are visible here. %$f_{NW}^{\gamma}$ is the Nadaraya-Watson estimator with smoothing given by inverse-bandwidth $\gamma$.
-A smaller $\gamma$ corresponds to a greater amount of smoothing, and index set $I \subseteq  \{1:n\}$ indicates which experiments to use to generate the prediction.
+A smaller $\gamma$ corresponds to a greater amount of smoothing, and the index set $I \subseteq  \{1:n\}$ generally depends on $s$ and $v$.
 Fitting $\gamma$ via empirical risk minimization therefore bridges between $1$-nearest neighbor prediction and averaging of all experiments in $I$.
-In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division.
-Restricting of index set to only include experiments with the same neuron class gives the class-specific Cre-NW model.
+In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division, i.e. $I = I_m$, while restricting of index set to only include experiments with the same cell class gives the class-specific Cre-NW model.
+Despite this restriction, we fit $\gamma$ for each $m$ rather than a smaller subset like $s$ or $v$.
+That is,
+\begin{eqnarray}
+\label{eq:gamma_sel}
+\widehat \gamma_m =  \arg \min_{\gamma \in \mathbb R_{\geq 0}} \frac{1}{|\{s,v\}|} \sum_{s,v \in \{m,\mathcal V\}} \frac{1}{ |I_{s} \cap I_v |} \sum_{i \in (I_{s} \cap I_v ) } \ell (y_{\mathcal T}(i)), \hat f_{\mathcal T} (f_*(\mathcal D(v,s) \setminus i)) .
+\end{eqnarray}
 
 \newpage
-\subsubsection{The expected-loss estimator}
+\subsubsection{The Expected-Loss estimator}
 
 \label{supp_sec:el}
 
-The response induced by each of the Cre-lines is effected by both the injection location and the targeted cell types.
-Since Cre-lines that target similar cell classes are therefore expected to induce similar projections, and including similar Cre-lines in the Nadaraya-Watson estimator increases the effective sample size, we introduce an estimator that assigns a predictive weight to each training point that depends both on its centroid-distance and Cre-line.
+Besides the injection location, the targeted cell class also influences projection.
+Since Cre-lines that target similar classes are induce similar projections, and including similar Cre-lines in the Nadaraya-Watson estimator increases effective sample size, we introduce an estimator that assigns a predictive weight to each training point that depends both on its centroid-distance and Cre-line.
 This weight is determined by the expected prediction error of each of the two feature types, as determined by cross-validation.
-These weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
-Estimating $\hat f(v, c)$ shares the advantage of fine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
+For this reason, we call this the Expected Loss Estimator.
+The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
+%It shares thefine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
 
 We formalize Cre-line behavior as the average regionalized projection of a Cre-line in a given structure (i.e. leaf).
-This vectorization of categorical information is known as \textbf{target encoding}.
+This vectorization of categorical information is known as \textbf{target encoding}, and we define this as $\bar y_{\mathcal T,s,v} := \frac{1}{|I_s \cap I_v|}  \sum_{i \in (I_s \cap I_v)} y_{\mathcal T}(i)$.
 We define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
 The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
 \begin{eqnarray*}
-f_*({\mathcal D}_i) = \{c(i) , \bar y_{\mathcal T} ( {I_v} \cap I_s), y_{\mathcal T}(i) \}.
+f_*({\mathcal D}_i) = \{c(i) , \{\bar y_{\mathcal T,s,v}  \forall v \}, y_{\mathcal T}(i) \}.
 \end{eqnarray*}
 $f^*$ is defined as in \eqref{eq:regionalize}.
 The expected loss estimator is then 
 \begin{eqnarray*}
-\hat f_{EL} (c, c(i),v, y_{\mathcal T} (I_v \cap I_s)) =  \sum_{i \in I} \frac{ \nu {(c(i) , c, v(i), v)}}{\sum_{i \in I} \nu {(c(x_i) , c, v_i, v) }} r(y_i)
+\hat f_{EL} ( c(I),y_{\mathcal T} (I))(l,v) :=  \sum_{i \in I} \frac{ \nu_{ilv} }{\sum_{i \in I}  \nu_{ilv}  } y_{\mathcal T}(i)
 \end{eqnarray*}
 where
 \begin{eqnarray*}
-\nu_i = \exp (- \gamma g( d(c, c(x_i))^2, d(\bar r (v), \bar r (v_i))^2))
+\nu_{ilv} := \exp (- \gamma g( d(l, c(i))^2, d(\bar y_{\mathcal T,s,v} , \bar y_{\mathcal T,s,v(i)}  )^2))
 \end{eqnarray*}
-Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$, then $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
-A derivation of this fact is given in Appendix \ref{supp_sec:el}, and we therefore use shape-constrained B-splines to estimate $g$.
+and $s$ is the structure containing $l$.
 
+The key step therefore is finding a suitable $g$ with which to weight the positional and Cre information.
+Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$, then $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
+A derivation of this fact is given later in this section, and we therefore use shape-constrained B-splines to estimate $g$.
+Similarly to the Nadaraya-Watson model, we make the decision to fit a $g$ separately for each major brain division.
+We can then select $\hat \gamma$ as in \ref{eq:gamma_sel}.
+
+\newpage
+
+\begin{figure}[H]
+\begin{tabular}[t]{cc}
+\subfloat[]{
+    \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_scatter.png}
+   % \caption{Isocortex loss distribution}
+    \label{fig:expected_loss} 
+   }
+    &
+    \subfloat[]{
+    \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_surface.png}
+   % \caption{$\hat g$ fit to expected-loss using shape-constrained splines}
+   \label{fig:expected_loss_surface}
+    }
+   \end{tabular}
+   \caption{Fitting $g$.
+   \ref{fig:expected_loss} Distribution of projection errors against centroid distance and cre-distance in Isocortex.
+    \ref{fig:expected_loss_surface} $\hat g$ found using B-splines.
+    }
+   \end{figure}
+   
+  \newpage
+  
 %This contrasts with the models in \citet{Knox2019-ot} and \citet{Oh2014-kh}, where connectivity was directly estimated by $\hat f$ a function of $S$ without an integral.
 %Since we wish to weight similar points more highly, we weight distances in cre-space and centroid-space by how well they predict the response variable.
 %Due to the fact that the cre-space is defined with respect to the response variable, points are removed from their cre-mean prior to cross-validation.
@@ -272,6 +317,7 @@ A derivation of this fact is given in Appendix \ref{supp_sec:el}, and we therefo
 
 %In the low-sample size setting, it is worth utilizing points from similar groups.
 
+\begin{comment}{
 \begin{algorithm}[H]
 \floatname{algorithm}{\textsc{EL}}%{\preprocess}
 %\renewcommand{\thealgorithm}{}
@@ -287,8 +333,8 @@ A derivation of this fact is given in Appendix \ref{supp_sec:el}, and we therefo
 \end{algorithmic}
 \label{alg:preprocess}
 \end{algorithm}
-
-\newpage
+}
+%\newpage
 
 %\begin{algorithmic}
 %\label{alg:model}
@@ -341,8 +387,6 @@ job/.style args = {#1/#2}{
    \end{tikzpicture}
    }
 \newline
-\end{comment}
-\begin{comment}
 \begin{tabular}[t]{cc}
 \subfloat[]{
     \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_scatter.png}
@@ -357,12 +401,11 @@ job/.style args = {#1/#2}{
     %\end{figure}
     }
     \end{tabular}
-\end{comment}
  %  \end{subfigure}
 % \end{adjustbox}
  \caption{The Expected-Loss estimator}
  \end{figure}
-
+\end{comment}
 
 \newpage
 %\subsubsection{The expected-loss estimator}
@@ -373,8 +416,11 @@ It should be considered an alternative method to the classic weighted kernel met
 While we do not attempt a detailed theoretical study of this estimator, we do establish the need for the shape constraint in our spline estimator.
 Though this fact is probably well known, we prove a (slightly stronger) version here for completeness.
 
+\begin{proposition}
 Given a collection of metric spaces $X_1, ... X_n$ with metrics $d_1 ... d_n$ (e.g. $d_{centroid}, d_cre$), and a function $f: (X_1 \times X_1) ... \times (X_n  \times X_n) = g(d_1(X_1 \times X_1),... d_n(X_n \times X_n))$, then then $f$ is a metric iff $g$ is concave, non-decreasing and $g(d) = 0 \Longleftrightarrow d = 0$.
+\end{proposition}
 
+\begin{proof}
 We first show $g$ satisfying the above properties implies that $f$ is a metric.
 \begin{itemize}
     \item The first property of a metric is that $f(x,x') = 0 \Longleftrightarrow x = x'$.  The left implication: $x = x' \implies f(x_1, x_1', ... x_n, x_n') = g(0,....,0)$, since $d$ are metrics.  Then, since $g(0) = 0$, we have that $f(x,x') = 0$. The right implication: $f(x,x') = 0 \implies  d = 0 \implies x = x'$ since $d$ are metrics.
@@ -397,6 +443,8 @@ We then show that $f$ being a metric implies that $g$ satisfies the above proper
     \item The final property is that $g$ is concave. We proceed by contradiction. Suppose $g$ is strictly convex. Then there exist vectors $d, d'$ such that $g(d + d')  < g(d) + g(d')$.  Assume that $d$ and $d'$ only are non-zero in the first position, and $d = d(0, x), d' = d(0,x')$.  Then, $f(0,x) + f(0,x') <  f(0,x+ x')$, which violates the triangle inequality on $f$.  Therefore, $g$ must be concave.
 \end{itemize}
 
+\end{proof}
+
 \newpage
 
 \subsection{Establishing a lower detection limit}
@@ -410,7 +458,7 @@ This should make our estimated connectivities more accurate, especially in the b
 
 We establish this limit with respect to the sum of Type 1 and Type 2 errors
 \begin{eqnarray*}
-\iota = \sum_{i \in \mathcal E} 1_{y_{\mathcal T}(i) = 0}^T 1_{\hat f(v(i),c(i)) > \tau} + 1_{y_{\mathcal T}(i) > 0}^T 1_{\hat f(v(i),c(i)) < \tau}  .
+\iota = \sum_{i \in \mathcal E} 1_{y_{\mathcal T}(i) = 0}^T 1_{\hat f_{\mathcal T}(v(i),c(i)) > \tau} + 1_{y_{\mathcal T}(i) > 0}^T 1_{\hat f_{\mathcal T}(v(i),c(i)) < \tau}  .
 \end{eqnarray*}
 
 We then select the $\tau$ that minimizes $\iota$.
@@ -423,16 +471,14 @@ Results for this approach are given in Supplemental Section \ref{supp:exp_lower}
 
 We utilize non-negative matrix factorization (NMF) to analyze the principal signals in our connectivity matrix.
 Here, we review this approach as applied to decomposition of the distal elements of the estimated connectivity matrix $\widehat {\mathcal C}$ to identify $q$ connectivity archetypes.
-Aside from the NMF program itself, the key elements are selection of the number of archetypes $q$ and stabilization of the tendency of NMF to give random results over different initialization. 
+Aside from the NMF program itself, the key elements are selection of the number of archetypes $q$ and stabilization of the tendency of NMF to give random results over different initializations. 
 
 \subsubsection{Non-negative matrix factorization}
 
 Given a matrix $X \in \mathbb R_{\geq 0}^{a \times b}$ and a desired latent space dimension $q$, the non-negative matrix factorization is
 \begin{eqnarray*}
-\textsc{NMF}(\mathcal V, \lambda, q) = \arg \min_{W, H} \frac{1}{2}\| 1_{M} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
+\nmf (\mathcal C, \lambda, q,1_{M}) = \arg \min_{W \in \mathbb R_{\geq 0}^{S \times q}, H\in \mathbb R_{\geq 0}^{q \times T}} \frac{1}{2}\| 1_{M} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
-%NMF creates a useful decomposition since $X$ is in the positive orthant, and PCA cannot not apply.
-%There is no orthogonality without sparsity.
 We note the existence of NMF with alternative norms for certain marginal distributions, but leave utilization of this approach for future work \citep{Brunet2004-gi}.
 
 The mask $1_M \in \{0,1\}^{S \times T}$ serves two purposes.
@@ -448,34 +494,31 @@ After random masking of the evaluation set, the loss of the learned model is the
 This procedure is performed repeatedly, with replicates of random masks at each tested dimensionality $q$.
 This determines the point past which additional hidden units provide no reconstructive value.
 
-The differentiating feature of cross-validation for $NMF$ compared with supervised learning is the random masking of the matrix $\mathcal C$.
+The differentiating feature of cross-validation for NMF compared with supervised learning is the randomness of the masking matrix $1_M$.
 Cross-validation for supervised learning generally leaves out entire observations, but this is insufficient for our situation.
 %where $e(\mathcal C)$ is a map that encodes $\mathcal C$ in a learned representation, and $d$ is the decoding reconstruction map.
 This is because, given $W$, our $H$ is the solution of a regularized non-negative least squares optimization problem
-\begin{align*}
-H := e_W(X) = \arg \min_{\beta \in \mathbb R_{\geq 0}^{q \times T}} \|X - W \beta\|_2^2 + \|\beta\|_1.
-\end{align*}
+\begin{eqnarray}
+H := \widehat e_W(1_{M} \odot \mathcal C) = \arg \min_{\beta \in \mathbb R_{\geq 0}^{q \times T}} \|1_{M} \odot \mathcal C - W \beta\|_2^2 + \|\beta\|_1.
+\label{eq:nmf_nnls}
+\end{eqnarray}
 The negative effects of an overfit model can therefore be optimized away from on the evaluation set.
 
-The standard solution is to generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
+A standard solution is to generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
 \begin{align*}
 1_{M(p)} (s,t) \sim \text{Bernoulli(p)}.
 \end{align*}
-Our cross-validation error is then
+NMF is then performed using the mask $1_{M(p)}$ to get $W$.
+The cross-validation error is then
 \begin{align*}
-\epsilon_q &= \frac{1}{R} \sum_{r = 1}^R (\|1_{M(p)_r^C} \odot X - \widehat d_q(\widehat e_q (1_{M(p)_r^C} \odot X ))\|_2^2 
+\epsilon_q &= \frac{1}{R} \sum_{r = 1}^R (\|1_{M(p)_r^C} \odot X - W (\widehat e_W (1_{M(p)_r^C} \odot X ))\|_2^2 
 \end{align*}
-where
-\begin{align*}
-\widehat d_q, \widehat e_q &= \widehat{\text{ NMF}}(1_{M(p)_r} \odot X, q)).
-\end{align*}
-Here, $1_{M(p)_r}^C$ is the binary complement of $1_{M(p)_r}$.
-
+where $1_{M(p)_r}^C$ is the binary complement of $1_{M(p)_r}$ and $R$ is a number of replicates.
 Theoretically, the optimum number of components is then
 \begin{align*}
     \widehat q = \arg \min_q \epsilon_q.
 \end{align*}
-However, the low decrease in error at higher values of $q$ will motivate us to empirically select a slightly smaller number of components.
+%However, the low decrease in error at higher values of $q$ will motivate us to empirically select a slightly smaller number of components.
 
 \subsubsection{Stabilizing NMF}
 
@@ -497,6 +540,7 @@ Intuitively, archetype vectors that cluster together frequently over clustering 
 For $d$, we utilize the adjusted Rand Index - a simple dissimilarity measure between clusterings.
 Note that we expect to select slightly more than the $q$ components suggested by cross-validation, since archetype vectors which appear in one NMF replicate generally should appear in others.
 We then select the $q$ clusters with the most archetype vectors - the most stable NMF results - and take the median of each cluster to create a sparse representative archetype \citet{Wu2016-gg, Kotliar2019-yj}.
+We then find the according $H$ using Program \ref{eq:nmf_nnls}.
 Experimental results for these cross-validation and stability selection approaches are given in Supplemental Section \ref{supp_sec:matrix_factor_results}.
 
 \newpage
@@ -507,11 +551,13 @@ Experimental results for these cross-validation and stability selection approach
 \subsection{Establishing a lower limit of detection}
 \label{supp:exp_lower}
 
+We give results on the false detection rate at different limits of detection.
+These conclusively show that $10^{-6}$ is the good threshold for our normalized data.
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{../figures/Threshold}
     \label{fig:threshold}
-    \caption{$\tau$ at different limits of detection.}
+    \caption{$\tau$ at different limits of detection in different major structures.  $10^{-6}$ is clearly the optimal detection threshold.}
 \end{figure}
 
 \newpage
@@ -662,7 +708,7 @@ As a simple heuristic validation of our archetypes, we plot the reconstructed wi
     \centering
     \includegraphics[width = 5in]{../../analyses/paper/figures/conn_leafs_recon_0617.png} 
     \label{fig:distances}
-    \caption{Reconstruction of $\mathcal C$ from $H$ and $W$ with $q=15$ in Figure \ref{nmf_results}.}
+    \caption{Reconstruction of $\mathcal C$ from $H$ and $W$ with $q=15$ in Figure \ref{fig:nmf_results}.}
 \end{figure}
 
 
@@ -671,8 +717,23 @@ As a simple heuristic validation of our archetypes, we plot the reconstructed wi
 \section{Glossary of symbols}
 
 \begin{table}
-\begin{tabular}{c|c}
-Symbol & Meaning \\
+\small
+\begin{tabular}{c|c|c }
+Symbol & Mathematical setting & Meaning \\
+\hline
+$\mathcal D$ & [1:n] & Dataset \\
+n & & Number of data points \\
+$f$ & $\mathcal V \times \mathbb R^3 \times \mathbb R^3 \to \mathbb R_{\geq 0} $ \\
+$x(i)$ & $\mathcal B \to [0,1] $ & Injection \\ 
+$y(i)$ & $\mathcal B \to [0,1]$ & Projection \\
+$\mathcal C$ & $\mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}$  & structural connection strength\\
+$\mathcal C^D$ & $\mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}$  & normalized structural connectivity strength\\
+$\mathcal C^S$ & $\mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}$  & normalized structural connectivity density\\
+$\mathcal C_v$ & $\in \mathbb R^{S \times T} $& Structural connection matrix for Cre-line $v$. \\
+$y_{\mathcal T} (i)$ &$ \in \mathbb R_{\geq 0}^T$ & Regionalized projection \\
+$I_m$ & $\subset [1:n]$ & Experiments in major subdivision \\
+$I_s$ & $\subset [1:n]$ & Experiments in structure \\
+$I_v$ &  $\subset [1:n]$ & Experiments with Cre-line $v$ \\
 $q$ & Number of components of latent space \\
 $\mathcal S$ & Set of source structures \\
 $\mathcal T$ & Set of target structures \\
@@ -686,11 +747,6 @@ $\mathcal R$ & Set of regions
 \end{table}
 
 
-
-
-
-
-%Recall that in supervised learning
 %Recall that in a supervised learning model $y \sim f(x)$.
 %Standard cross-validation removes elements of $X$, fits $f$, and then uses the $f$ learned from part of the data to predict $Y$.
 %A good $f$ will have low error on the training data, and also low error on the test data, indicating that it has not overfit.
@@ -700,40 +756,14 @@ $\mathcal R$ & Set of regions
 %\arg \min_{d,e} \widehat E(l(X, d_{X^C}(e_{X^C}(X)))) = \sum_{r=  1}^R l(X_r, d_{X^{C_r}}(e_{X^{C_r}}(X_r)))
 %\end{align*}
 %over $R$ random samples of rows of $X$.
-%However, i
 %http://alexhwilliams.info/itsneuronalblog/2018/02/26/crossval/
-
-
 
 %\comment{ 
 %The limit-of-detection problem is common in a variety of scientific fields, but statistical methodology is not 
 %We utilize the zero-inflated adjusted Kendall-$\tau$ statistic
-
 %\begin{align*}
 %    \tau_0 = p_{11}^2 \tau_11 + 2(p_{00} p_{11} - p_{10} p_{01}),
 %\end{align*}
 %where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
 %}
-
-%\section{Data}\label{sec:supp_structure_cre}
-
-%\begin{figure}
-%    \centering
-%    \includegraphics[width = 7in]{figs/CB centroid densityoct12.png}
-%    \caption{Caption}
-%    \label{fig:my_label}
-%\end{figure}
-
-
-
-%\begin{table}[]
-%    \centering
-%    \begin{tabular}{c|c}
-%         &  \\
-%         & 
-%    \end{tabular}
-%    \caption{Caption}
-%    \label{tab:cross-validation}
-%\end{table}
-
 %However, for alternate models, such as the major-structure divided model from \citet{Knox2019-ot}, the potential evaluation set is larger. In order to compare between methods, we therefore restrict to the smallest set of evaluation indices, which is to say, virus-leaf combinations that are present at least twice.  This means that in some cases, our training set exceeds our evaluation set in size. 
