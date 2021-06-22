@@ -89,7 +89,6 @@ def get_indices(ids):
         output[i, np.where(ids == ids_unique[i])[0]] = 1
     return (output)
 
-
 # get indices of firstlist in firstlisttest in categories defined by secondlist
 def get_indices2(firstlist, firstlisttest, secondlist):
     sl_unique = np.unique(secondlist)

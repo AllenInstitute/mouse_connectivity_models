@@ -1,4 +1,5 @@
 \section{Supplemental Information}
+\label{supp_sec:info}
 
 \subsection{Cre/structure combinations in $\mathcal D$}
 \label{supp_sec:data}
@@ -48,7 +49,7 @@ Users of the connectivity matrices who are interested in a particular cre line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/Isocortex centroid densityoct12.png}
-    \label{fig:my_label}
+    \label{fig:iso_count}
 \end{figure}
 \newpage
 
@@ -100,8 +101,8 @@ Users of the connectivity matrices who are interested in a particular cre line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{../../analyses/paper/figures/distances_leafs.png} 
-    \label{fig:distances}
     \caption{Distance between structures.  Short-range connections are masked in red}
+    \label{fig:dist_bw_str}
 \end{figure}
 
 \subsection{Model evaluation}
@@ -133,20 +134,12 @@ Models that rely on a finer granularity of modeling have less data available to 
 
 \newpage 
 \section{Supplemental methods}
-\label{sec:supp_methods}
+\label{supp_sec:methods}
 
 This section consists of additional information on preprocessing of the neural connectivity data, estimation of connectivity, and matrix factorization.
 
 \subsection{Data preprocessing}
-\label{sec:dp}
-
-%Injection mask
-%Projection mask
-%Data quality mask
-%From this, a weighted centroid $c(x_i) \in \mathbb R^3$ and 
-%Regionalization occurs in several ways.
-%A per-region average $r(x_i) \in \mathbb R^{M_i}$ may be computed, where $M_i$ is the number of substructures in the major brain region.
-%Similarly, for the projection, $r(y_i) \in R^{M}$.
+\label{supp_sec:dp}
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
 These steps are described in Algorithm \ref{alg:preprocess}.
@@ -156,12 +149,11 @@ The projection signal gives the proportion of pixels within the voxel displaying
 The injection fraction $\in \mathcal B \times \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
 Finally, the data quality mask $\in \mathcal B \times \mathbb \{0,1\}$ gives the voxels that have valid data.
 
-%The injection and projection vectors are Hadamard multiplied by a data quality matrix.
 %We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
 Our preprocessing makes use of the above ingredients, as well as several other essential steps.
 First, we compute the weighted injection centroid
 \begin{eqnarray*}
-c(i) &= \sum_{v \in \mathcal B} x(i,v) l(v) 
+c(i) &= \sum_{l \in \mathcal B} x(i) l(v) 
 \end{eqnarray*}
 Given a regionalization $\mathcal R$, we also have access to a regionalization map as $R: \mathcal B  \to \mathcal R $ which induces a map of connectivities 
 \begin{eqnarray*}
@@ -193,201 +185,124 @@ n: a &\mapsto \frac{a}{\sum_{j = 1}^p a_j}
 \State Compute centroid $c(i)$ from $x_M(i) $
 \State Regionalize $y_S (i) \gets R_*(  y_M(i))$
 \State Normalize $\tilde y(i) \gets n(Y_S(i))$
-%\Return $\tilde y(i)$
-%\caption{(Local dataset $\delta_i^{x} $, local embedding coordinates $\delta_i^{\phi}, \tsalg$) ) }
-%\begin{algorithmic}[1]
-%\State { known at data points, embedding algorithm \embed~ and algorithm parameters, \mmp{weights?}, embedding dimension $m$}
-%\State Compute neighborhood graph $\neigh_i $ using (\ref{eq:kernelmatrix})% \delta_i^f$, for $i=1:n$ 
-% \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\|\tilde\delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:weights})
-% \State Compute Gaussian kernel matrix $K$ by $K_{ij}=\exp(-\| \delta_i^{\xi_\epsilon}\|^2/h^2)$ for $j\in\neigh(i)$, and weights $w_i=\sum_{j\in \neigh(i)}K_{ij}$ for $i=1,\ldots n$, a (see Section \ref{sec:manifold_learning})
- \State {\bf Output}$\tilde y(i)$, $c(i)$ )  % \mmp{what -- notation for grad f needed}
+ \State {\bf Output}$\tilde y(i)$, $c(i)$ )  
 \end{algorithmic}
 \label{alg:preprocess}
 \end{algorithm}
 
-%\begin{algorithm}
-%\begin{algorithmic}
-%\label{alg:norm}
-%\KwData{{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}}
-%\begin{algorithm}%{Injection $x(i)$, Projection $y(i)$, Injection centroid $c(i) \in \mathbb R^3$, injection fraction $F(i)$, data mask $M(i)$}
-%\State Data-quality censor $y_M (i) = M(i) \odot y(i)$ (also $x_M(i) = M(i) \odot x(i)$ for linear model)
-%\State Normalize $x_N(i) = F(i) \odot x_M(i)$ (only for linear model)
-%\State Average structures $y_S (i) = A y_M(i)$ (also $x_S (i) = A x_M(i)$ for linear model)
-%\State Normalize $\tilde y(i) = \frac{y_S (i)}{\|y_S (i)\|}$ (also $\tilde x (i) = A x_M(i)$ for linear model)
-%\Return $\tilde y(i)$ (optional $\tilde x(i)$ )
-%\end{algorithm}
-%\end{algorithmic}
-%\end{algorithm}
-
-The data-quality censor is established by \skcomment{fill}
-The injection fraction accounts for the relatively coarse graining of the voxel grid compared with the histological analysis used to establish the injection region.  In particular, certain voxels are only partially contained within the injection region.
 
 
-One basic but significant methodological change from \citet{Knox2019-ot} is the normalization of projection vectors.
-
-\begin{comment}
-\begin{figure}
-    \centering
-    \includegraphics{}
-    \caption{Caption}
-    \label{fig:my_label}
-\end{figure}
-\end{comment}
-The loss function in \citet{Knox2019-ot} is
-\begin{eqnarray*}
-\frac{\|y - \hat y\|} {\|y\|\|\hat y\|}
-\end{eqnarray*}
-
+%The data-quality censor is established by \skcomment{fill}
 %We find the $l2$ norm not appropriate in a few ways 1) there is not a clear inner product structure on the connectome.
 %doesn't matter if we normalize prior to regionalization as long as we don't correct for density of the target region.
 %which, due to normalization, can be rewritten as simply the $l2$ loss $\|y - \hat y\|.$  Note that, due to normalization, $\|y - \hat y\| = \langle y - \hat y , y - \hat y \rangle = 2 - 2 \langle y, \hat y\rangle $, and, applying normalization again, $ \langle y, \hat y\rangle $ is the vector cosine of $\hat y$ and $y$.
 
 \newpage
 \subsection{Estimators}
-
-Our estimators span a range of training and featurization methods.
-One commonality is that they model a connectivity vector $f (\mathcal D, v,s)  \in \mathbb R^T$, and so we may write
+\label{supp_sec:estimators}
+Our estimators model a connectivity vector $f (v,s)  \in \mathbb R_{\geq}^T$, and so we may write
 \begin{eqnarray*}
 f (v,s,t) = f (v,t)[t].
 \end{eqnarray*}
-Thus, for the remainder of this section, we will discuss only $f (s,v)$.
+Thus, for the remainder of this section, we will discuss only $f (v,s)$.
 
 \subsubsection{Centroid-based Nadaraya-Watson}
 
-In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid, while the projection is considered regionalized.
+In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid $c(i) := c(x(i))$, and the projection is considered regionalized.
 %The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
 That is,
 \begin{eqnarray*}
-f_*({\mathcal D}_i) = \{c(x_i) , r(y_i)\}.
+f_*({\mathcal D}_i) = \{c(i), y_{\mathcal T}(i)\}.
 \end{eqnarray*}
 Since the injection is considered only by its centroid, this model only generates predictions for particular locations $c$, and the prediction for a structure $s$ is given by integrating over locations within the structure
 \begin{eqnarray*}
 \label{eq:regionalize}
-f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{c \in s} \hat f (f_*(\mathcal D)) (v,c),
+f^* (\hat f (f_*(\mathcal D))) (v,s) = \sum_{l_{s_j} \in s} \hat f (f_*(\mathcal D)) (v,l_{s_j}),
 \end{eqnarray*}
 This $\hat f$ is the Nadaraya-Watson estimator
 \begin{eqnarray*}
-\hat f_{NW}( c(x_{1:n}) , r(y_{1:n}) ) (c,v) :=  \sum_{i \in I} \frac{ \omega_{c(x_i) c}}{\sum_{i \in I} \omega_{c(x_i), c}} r(y_i)
+\hat f_{NW}( c(I) , y_{\mathcal T}(I) ) (l) :=  \sum_{i \in I} \frac{ \omega_{c(i) l}}{\sum_{i \in I} \omega_{c(i), l}} y_{\mathcal T}(i)
 \end{eqnarray*}
-where $\omega_{c(x_i) c} = \exp( - \gamma d( c , c(x_i))^2 )$ and $d$ is the Euclidean distance between centroid $c(x_i)$ and voxel $c$.
+where $\omega_{c(i) l } = \exp( - \gamma d( l , c(i))^2 )$ and $d$ is the Euclidean distance between centroid $c(i)$ and voxel with position $l$.
+
 Several facets of the estimator are visible here. %$f_{NW}^{\gamma}$ is the Nadaraya-Watson estimator with smoothing given by inverse-bandwidth $\gamma$.
 A smaller $\gamma$ corresponds to a greater amount of smoothing, and index set $I \subseteq  \{1:n\}$ indicates which experiments to use to generate the prediction.
 Fitting $\gamma$ via empirical risk minimization therefore bridges between $1$-nearest neighbor prediction and averaging of all experiments in $I$.
 In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division.
- Restricting of index set to only include experiments with the same neuron class gives the class-specific model.
+Restricting of index set to only include experiments with the same neuron class gives the class-specific Cre-NW model.
 
 \newpage
 \subsubsection{The expected-loss estimator}
 
 \label{supp_sec:el}
 
-The response induced by each of the cre-lines is effected by both the injection location and the targeted cell types.
-Cre-lines that target similar cell types are therefore expected to induce similar projections, and including similar cre-lines in our estimator thus increases the effective sample size.
-In order to leverage this fact in a data-driven way, we introduce an estimator that assigns a predictive weight to each training point that depends both on its centroid-distance and cre-line.
+The response induced by each of the Cre-lines is effected by both the injection location and the targeted cell types.
+Since Cre-lines that target similar cell classes are therefore expected to induce similar projections, and including similar Cre-lines in the Nadaraya-Watson estimator increases the effective sample size, we introduce an estimator that assigns a predictive weight to each training point that depends both on its centroid-distance and Cre-line.
 This weight is determined by the expected prediction error of each of the two feature types, as determined by cross-validation.
 These weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
+Estimating $\hat f(v, c)$ shares the advantage of fine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
 
-%
-%standard optimization approach gives plane
-We formalize cre-line behavior as the average regionalized projection of a cre-line in a given leaf.
-This vectorization of categorical information is known as target encoding.
-We define a {\textit cre-distance} in a leaf to be the distance between the target-encoded projections of two cre-lines.
-The relative predictive accuracy of cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of cre-distance and centroid distance. 
-
-
-%centroids are weighted more highly in the centroid-based Nadaraya-Watson estimator.
-%this estimator is an average (limit) of the cre-specific NW
+We formalize Cre-line behavior as the average regionalized projection of a Cre-line in a given structure (i.e. leaf).
+This vectorization of categorical information is known as \textbf{target encoding}.
+We define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
+The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
 \begin{eqnarray*}
-f_*({\mathcal D}_i) = \{c(x_i) , \bar r(y_{I_v}), r(y_i) \}.
+f_*({\mathcal D}_i) = \{c(i) , \bar y_{\mathcal T} ( {I_v} \cap I_s), y_{\mathcal T}(i) \}.
 \end{eqnarray*}
-$f^*$ is defined as in \eqref{eq:regionalize}. The expected loss estimator is then 
+$f^*$ is defined as in \eqref{eq:regionalize}.
+The expected loss estimator is then 
 \begin{eqnarray*}
-\hat f_{EL} (c, c(x_i),v , r(y_{I_v})) =  \sum_{i \in I} \frac{ \nu {(c(x_i) , c, v_i, v)}}{\sum_{i \in I} \nu {(c(x_i) , c, v_i, v) }} r(y_i)
+\hat f_{EL} (c, c(i),v, y_{\mathcal T} (I_v \cap I_s)) =  \sum_{i \in I} \frac{ \nu {(c(i) , c, v(i), v)}}{\sum_{i \in I} \nu {(c(x_i) , c, v_i, v) }} r(y_i)
 \end{eqnarray*}
 where
 \begin{eqnarray*}
 \nu_i = \exp (- \gamma g( d(c, c(x_i))^2, d(\bar r (v), \bar r (v_i))^2))
 \end{eqnarray*}
-Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$, then $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator.  A derivation of this fact is given in Appendix \ref{supp_sec:el}, and we therefore use shape-constrained B-splines to estimate $g$.
+Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$, then $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
+A derivation of this fact is given in Appendix \ref{supp_sec:el}, and we therefore use shape-constrained B-splines to estimate $g$.
 
-This contrasts with the model is \citet{Knox2019-ot}, where $\hat f(c)$ does not depend on $v$, and \citet{Oh2014-kh}, where connectivity was directly estimated by $\hat f$ a function of $S$ without an integral.
-Estimating $\hat f(v, c)$ shares the advantage of fine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular virus-type $v$, and, as we will see, make use of experimental data in our estimator.
-
-
-%We fit $g$ using a simple heuristic based.
+%This contrasts with the models in \citet{Knox2019-ot} and \citet{Oh2014-kh}, where connectivity was directly estimated by $\hat f$ a function of $S$ without an integral.
 %Since we wish to weight similar points more highly, we weight distances in cre-space and centroid-space by how well they predict the response variable.
 %Due to the fact that the cre-space is defined with respect to the response variable, points are removed from their cre-mean prior to cross-validation.
 %Figure shows an example of such an estimated $g$.
 
-%Theoretically, there is a trade off between similarity of the point, and the statistical convergence.
 %In the low-sample size setting, it is worth utilizing points from similar groups.
 
-
-%All of these methods are improvements on the average method.
-
-%is the set of ipsilateral and medialateral brain regions, $R_{IMC}$ is the set of ipsilateral, mediolateral, and contralateral targets,
-
-%We use the experiments to estimate the virus-specific connectivity matrix $\mathcal C_v \in \mathbb R^{|R_{IM}| \times |R_{IMC}|}$.
-%$R_{IM}$ is the set of ipsilateral and medialateral brain regions, $R_{IMC}$ is the set of ipsilateral, mediolateral, and contralateral targets, and $v$ is a cre-line. 
-
-%Each row of this matrix represents the fraction of projected virus to a structure $r$.
-
-%Given a region $r$, we estimate the projection vector ${\mathcal C_v}_r$, the row corresponding to the region, both $v$ and the spatial position of $r$.
-
-%This estimate is 
-%\begin{equation}
-%\hat {C_v}_{r} = \sum_{c \in r} \hat y (v, c) dc.
-%\end{equation}
-%Here, $\hat y(v, c)$ is the estimate projection pattern of virus-type $v$ at spatial position $c$ within structure $r$.
-%In our experiments, this sum is discretized at the voxel level.
-
-
-%Given a centroid position $c$ and cre-line $v$, we call %our estimator of the projection $\hat y(v, c)$, which is the local weighted average
-%\begin{align*}
-%\hat y(v, c) &= \sum_{i \in R(c)} \tilde w_\gamma(v,c,c(i),v(i)) y_i
-%\end{align*}
-%with
-%\begin{align*}
-%    \tilde w_\gamma(v,c,c(i),v(i)) &= \frac{w_\gamma(v,c,c(i),v(i))}{\sum_{i \in R(c)} w_\gamma(v,c,c(i),v(i))} \\
-%\end{align*}
-%In this average, nearby experimental projections $y_i$ are averaged with weights determined with respect to the cre-lines $v(i) \in C$ and injection centroid positions $c(i) \in \mathbb R^3$ in the training data.
-%In contrast with the estimator in \citet{Knox2019-ot}, we define these weights to depend on cre-line as well as centroid positions.
-%In particular,
-%\begin{align*}
-%    w_\gamma(v,c,c(i),v(i)) &= \exp(- \gamma \hat l ( \Delta c_i,\Delta y_v (i))) % \bar y_{r(c)} (v(i)) - \bar y_{r(c)} (v)) )
-%\end{align*}
-%where, defining 
-%\begin{align*}
-%\Delta c_i &= c(i) - c \\
-%\Delta y_v (i) &= \bar y_{r(c)} (v(i)) - \bar y_{r(c)} (v) \\
-%\delta c_i &= \|\delta c_i\|_2^2 \\
-%\delta v_i &= \|\Delta y_v (i)\|_2^2
-%\end{align*}
-%we have
-%\begin{align*}
-%&\hat l (\Delta c_i, \Delta y_v (i)) = \sum_{r \in R(c)} \sum_{j,k \in r} \frac{w_{\gamma'}'( \delta c_{jk} ,\delta c_i, \delta v_{jk} , \delta v_i)}{1} \|y_j - y_k\|_2^2 
-%= \|y_i - y_j\|
-%\| c - c(i) \|_2^2, \|\bar y(v, r(c)) - \bar y(v(i))\|_2^2)
-%\end{align*}
-%where
-%\begin{align*}
-%w_{\gamma'}'( \delta c_{jk} ,\delta c_i, \delta v_{jk} , \delta v_i) &= \exp(- \gamma' ( \delta c_{jk} - \delta c_i + \delta v_{jk} - \delta v_i) ).
-%\end{align*}
-%\hat l ( [c(i) - c, \bar y_{r(c(i))} (v(i)) - \bar y_{r(c(i))} (v(i))], l) \\
-
-%\end{equation}
+\begin{algorithm}[H]
+\floatname{algorithm}{\textsc{EL}}%{\preprocess}
+%\renewcommand{\thealgorithm}{}
+\begin{algorithmic}
+\caption{{\bf Input} Projection $y_{\mathcal T}(I_s)$, Injection centroids $c(I_s) \in \mathbb R^3$, Cell-classes $v(I_s),$ $g$, location $l$, cell-class $v$}
+\State Get structures $s(1:n) = r(c(1:n))$, $s = r(c)$
+\State Target encode $v(1:n)$ and $v$ with $n(r(y(1:n)))$
+\State 
+%\State (Optional Cross-validation) Estimate expected losses $ \hat f (\|l - c(i')\|_2^2, \|\bar y_{\mathcal T}(v, s\setminus i) - \bar y_{\mathcal T}(v, s)\|_2^2)$
+\State Estimate expected losses $X = [g (\|l - c(i')\|_2^2, \|\bar y_{\mathcal T}(v, s) - \bar y_{\mathcal T}(v(i'), s)\|_2^2) : i' \in ( I_s )]$
+\State Predict $\widehat y_{\mathcal T} = NW(X, y_{\mathcal T}(I_s)$
+ \State {\bf Output}$\tilde y(i)$, $c(i)$ )  
+\end{algorithmic}
+\label{alg:preprocess}
+\end{algorithm}
 
 \newpage
 
+%\begin{algorithmic}
+%\label{alg:model}
+%\begin{algorithm}{Injection centroids $c(1:n)$, normalized projections $n(r(y(1:n)))$, viruses $v(1:n)$. target centroid $c$, target virus $v$}
+%\STATE Get structures $s(1:n) = r(c(1:n))$, $s = r(c)$
+%\STATE Target encode $v(1:n)$ and $v$ with $n(r(y(1:n)))$
+%\STATE Estimate expected loss $l_{ii'} = \hat f (\|c(i) - c(i')\|_2^2, \|t(v(i)) - t(v(i'))\|_2^2)$
+% \RETURN $\tilde y(i)$ (optional $\tilde x(i)$ )
+%\end{algorithm}
+%\end{algorithmic}
 
-\newpage
 
-\begin{figure}
-\begin{adjustbox}{width=.75\columnwidth,center}
-\begin{tabular}[t]{cc}
+\begin{figure}[H]
+%\begin{adjustbox}{width=.75\columnwidth,center}
+\begin{comment}
 \subfloat[]{
 \begin{tikzpicture}[
         execute at begin picture={
@@ -404,71 +319,58 @@ job/.style args = {#1/#2}{
     arr/.style = {semithick, -Stealth}
                     ]
 \node (n1)  [job=Predict ${\hat y_r \in \mathbb R_{\geq 0}^{|T|}}$/${c, v, s(c)}$];
-\node (n21) [job=Voxel /$c$,below left=of n1.south];%$c(i)$/ 2 ,below  left=of n1.south];
-\node (n22) [job= Target encode discrete covariates/ ${\mu_{s,v}} $,below right=of n1.south];%$v(i), s(i)$/compute mean $\mu_{s,v}$,below right=of n1.south];
-\node (n31) [job=Get centroid distances/${d_{cen} = \{\|c(i') - c\|_2^2 \}} $,below =of n21.south];%$c(i)$/ 2 ,below  left=of n1.south];
-\node (n32) [job= Get cre distances/ ${d_{cre} =\{\|\mu_{s,v}(i) - \mu_{s,v}\|_2^2  } $,below =of n22.south];%$v(i), s(i)$/compute mean $\mu_{s,v}$,below right=of n1.south];
+%\node (n21) [job=Voxel /$c$,below left=of n1.south];
+%\node (n22) [job= Target encode discrete covariates/ ${\mu_{s,v}} $,below right=of n1.south];
+%\node (n31) [job=Get centroid distances/${d_{cen} = \{\|c(i') - c\|_2^2 \}} $,below =of n21.south];
+%\node (n32) [job= Get cre distances/ ${d_{cre} =\{\|\mu_{s,v}(i) - \mu_{s,v}\|_2^2  } $,below =of n22.south];
 
-\node (n4)  [job=Get weights/${w  = g_M({d_{cen}, d_{cre}})}$,below right=of n31.south];
-\node (n5)  [job= Predict/{$\hat y_r = \widehat{NW}(w)$},below=of n4];
+%\node (n4)  [job=Get weights/${w  = g_M({d_{cen}, d_{cre}})}$,below right=of n31.south];
+%\node (n5)  [job= Predict/{$\hat y_r = \widehat{NW}(w)$},below=of n4];
 %
 \coordinate[below=4mm of n1.south] (aux1);
-\coordinate[above=4mm of n4.north] (aux2);
+%\coordinate[above=4mm of n4.north] (aux2);
 %
-\draw[arr]  (n1) -- (aux1) -| (n21);
-\draw[arr]  (aux1) -| (n22);
-\draw[arr]  (n22) -- (n32);
-\draw[arr]  (n21) -- (n31);
-\draw[arr]  (n31) |- (aux2)
-            (n32) |- (aux2) -- (n4);
-\draw[arr]  (n4)  -- (n5);
-%\caption{2+2}
+%\draw[arr]  (n1) -- (aux1) -| (n21);
+%\draw[arr]  (aux1) -| (n22);
+%\draw[arr]  (n22) -- (n32);
+%\draw[arr]  (n21) -- (n31);
+%\draw[arr]  (n31) |- (aux2)
+%            (n32) |- (aux2) -- (n4);
+%\draw[arr]  (n4)  -- (n5);
    \end{tikzpicture}
    }
-\hspace{3cm}
-
-   &
-   %\subfloat[]{
-   %\centering
-    \vspace{0cm}
-    \subfloat[]{
+\newline
+\end{comment}
+\begin{comment}
+\begin{tabular}[t]{cc}
+\subfloat[]{
     \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_scatter.png}
-    %\caption{Isocortex loss distribution}
+    \caption{Isocortex loss distribution}
     \label{fig:my_label} 
     }
-    \\
     &
-    %\begin{figure}
-    %\centering
     \subfloat[]{
     \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_surface.png}
-    %\caption{$\hat g$ fit to expected-loss using shape-constrained splines}
-    %\captionof{figure}{Caption for image}
+    \caption{$\hat g$ fit to expected-loss using shape-constrained splines}
     \label{fig:my_label}
     %\end{figure}
     }
-    \vspace{1cm}
     \end{tabular}
-       
+\end{comment}
  %  \end{subfigure}
- \end{adjustbox}
+% \end{adjustbox}
  \caption{The Expected-Loss estimator}
  \end{figure}
-%\end{figure}
-%\end{minipage}
-%\end{minipage}
-%\end{figure}
-%\end{tabular}
+
+
 \newpage
-
-
 %\subsubsection{The expected-loss estimator}
 \paragraph{Justification of shape constraint}
 
-The shape-constrained expected-loss estimator introduced in this paper is, to our knowledge, novel.  It should be considered an alternative method to the classic weighted kernel method. While we do not attempt a detailed theoretical study of this estimator, we do establish the need for the shape constraint in our spline estimator. Though this fact is probably well known, we prove a (slightly stronger) version here for completeness.
-%This fact is probably well known, but we prove slightly stronger version of this fact here for completeness.
-
-%The estimated function of distances must be concave, monotonically-increasing, and normalized in order to be a valid distance function on the combined space.  
+The shape-constrained expected-loss estimator introduced in this paper is, to our knowledge, novel.
+It should be considered an alternative method to the classic weighted kernel method.
+While we do not attempt a detailed theoretical study of this estimator, we do establish the need for the shape constraint in our spline estimator.
+Though this fact is probably well known, we prove a (slightly stronger) version here for completeness.
 
 Given a collection of metric spaces $X_1, ... X_n$ with metrics $d_1 ... d_n$ (e.g. $d_{centroid}, d_cre$), and a function $f: (X_1 \times X_1) ... \times (X_n  \times X_n) = g(d_1(X_1 \times X_1),... d_n(X_n \times X_n))$, then then $f$ is a metric iff $g$ is concave, non-decreasing and $g(d) = 0 \Longleftrightarrow d = 0$.
 
@@ -494,8 +396,10 @@ We then show that $f$ being a metric implies that $g$ satisfies the above proper
     \item The final property is that $g$ is concave. We proceed by contradiction. Suppose $g$ is strictly convex. Then there exist vectors $d, d'$ such that $g(d + d')  < g(d) + g(d')$.  Assume that $d$ and $d'$ only are non-zero in the first position, and $d = d(0, x), d' = d(0,x')$.  Then, $f(0,x) + f(0,x') <  f(0,x+ x')$, which violates the triangle inequality on $f$.  Therefore, $g$ must be concave.
 \end{itemize}
 
-\subsubsection{Establishing a lower detection limit}
-\label{supp:methods_lower}
+\newpage
+
+\subsection{Establishing a lower detection limit}
+\label{supp_sec:methods_lower}
 
 The lower detection limit of our approach is a complicated consequence of our experimental and analytical protocols.
 For example, the Nadaraya-Watson estimator is likely to generate many small false positive connections, since the projection of even a single experiment within the source region to a target will cause a non-zero connectivity in the Nadaraya-Watson weighted average.
@@ -505,10 +409,16 @@ This should make our estimated connectivities more accurate, especially in the b
 
 We establish this limit with respect to the sum of Type 1 and Type 2 errors
 \begin{eqnarray*}
-\tau = \sum 1_{f(s,t,c) = 0} 1_{\hat f(s,t,c) > 0} + 1_{f(s,t,c) > 0}  1_{\hat f(s,t,c) = 0} .
+\iota = \sum_{i \in \mathcal E} 1_{y_{\mathcal T}(i) = 0}^T 1_{\hat f(v(i),c(i)) > \tau} + 1_{y_{\mathcal T}(i) > 0}^T 1_{\hat f(v(i),c(i)) < \tau}  .
 \end{eqnarray*}
 
+We then select the $\tau$ that minimizes $\iota$.
+Results for this approach are given in Supplemental Section \ref{supp:exp_lower}.
+
+\newpage
+
 \subsection{Decomposing the connectivity matrix}
+\label{supp_sec:matrix_factor_methods}
 
 We utilize non-negative matrix factorization (NMF) to analyze the principal signals in our connectivity matrix.
 Here, we review this approach as applied to decomposition of the distal elements of the estimated connectivity matrix $\widehat {\mathcal C}$ to identify $q$ connectivity archetypes.
@@ -518,58 +428,38 @@ Aside from the NMF program itself, the key elements are selection of the number 
 
 Given a matrix $X \in \mathbb R_{\geq 0}^{a \times b}$ and a desired latent space dimension $q$, the non-negative matrix factorization is
 \begin{eqnarray*}
-NMF(X, q) = \arg \min_{W \in \mathbb R_{\geq 0}^{a \times q} ,H_{\geq 0}^{q \times b }} \| (  X  - WH)\|_2^2.
+\textsc{NMF}(\mathcal V, \lambda, q) = \arg \min_{W, H} \frac{1}{2}\| 1_{M} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
-NMF creates a useful decomposition since $X$ is in the positive orthant, and PCA cannot not apply.
-There is no orthogonality without sparsity.
-
+%NMF creates a useful decomposition since $X$ is in the positive orthant, and PCA cannot not apply.
+%There is no orthogonality without sparsity.
 We note the existence of NMF with alternative norms for certain marginal distributions, but leave utilization of this approach for future work \citep{Brunet2004-gi}.
-%The NMF objective function
-%\begin{eqnarray*}
-%\arg \min_{W \in \mathbb R_{\geq 0} ,H_{\geq 0} } \| (\hat{  \mathcal C}  - WH)\|_2^2
-%\end{eqnarray*}
-We can also apply a mask $1_M \in \mathbb R^{S \times T}$ of ones and zeros and solve
-\begin{eqnarray*}
-\arg \min_{W \in \mathbb R_{\geq 0} ,H_{\geq 0} } \| 1_M \odot  ((\hat{  \mathcal C}  - WH))\|_2^2
-\end{eqnarray*}
-For us, such a mask serves for two purposes.
+
+The mask $1_M \in \{0,1\}^{S \times T}$ serves two purposes.
 First, it enables computation of the NMF objective while excluding self and nearby connections.
-These connections are both strong and linearly independent, and so would dominate the $NMF$ reconstruction error.
-Long range connections are more biologically interesting or cell-type dependent.
+These connections are both strong and linearly independent, and so would unduly influence the $NMF$ reconstruction error over more biologically interesting or cell-type dependent long-range connections.
 Second, it enables cross-validation based selection of the number of retained components.
-%$1_{\text{dist}\geq 1500 \mu m}$
 
 \subsubsection{Cross-validating NMF}
 
-Perhaps surprisingly, cross-validation techniques may also be applied to unsupervised learning problems.
-These techniques are somewhat standard, but not entirely well-known, so we review them here, in particular as they apply to the NMF problem.
-A NMF model is first fit on a reduced data set, and an evaluation set is held out.
+Cross-validation for NMF is somewhat standard but not entirely well-known, and so we review it here.
+In summary, a NMF model is first fit on a reduced data set, and an evaluation set is held out.
 After random masking of the evaluation set, the loss of the learned model is then evaluated on the basis of successful reconstruction of the held-out values.
-This procedure is performed repeatedly, with different held out regions and random mask at different dimensionalities $l$, to determine to point past which additional hidden units provide no reconstructive value.
+This procedure is performed repeatedly, with replicates of random masks at each tested dimensionality $q$.
+This determines the point past which additional hidden units provide no reconstructive value.
 
-That is, given a matrix $X \in \mathbb R^{S \times T}$ we can decompose $X \sim d(e(X))$ where $e(X)$ is some map that encodes $X$ in a learned representation, and $d$ is the decoding reconstruction map.
-In our case, $d$ is simply left multiplication by $W$, and $e$ is the solution of a regularized non-negative least squares optimization problem
+The differentiating feature of cross-validation for $NMF$ compared with supervised learning is the random masking of the matrix $\mathcal C$.
+Cross-validation for supervised learning generally leaves out entire observations, but this is insufficient for our situation.
+%where $e(\mathcal C)$ is a map that encodes $\mathcal C$ in a learned representation, and $d$ is the decoding reconstruction map.
+This is because, given $W$, our $H$ is the solution of a regularized non-negative least squares optimization problem
 \begin{align*}
-H := e_W(X) = \arg \min_{\beta} \|X - W \beta\|_2^2.
+H := e_W(X) = \arg \min_{\beta \in \mathbb R_{\geq 0}^{q \times T}} \|X - W \beta\|_2^2 + \|\beta\|_1.
 \end{align*}
-%We note 
-The form of this solution particularly motivates our cross-validation estimator.
+The negative effects of an overfit model can therefore be optimized away from on the evaluation set.
 
-Recall that in supervised learning, the learned model is $Y \sim f(X)$.
-Standard cross-validation removes elements of $X$, fits $f$, and then uses the $f$ learned from part of the data to predict $Y$.
-A good $f$ will have low error on the training data, and also low error on the test data, indicating that it has not overfit.
-Although there is no assumed dichotomy between $X$ and $Y$ in unsupervised learning, for techniques like autoencoders, the above paradigm still applies, i.e., one can still hold out values of $X$.
-We can then estimate 
-\begin{align*}
-\arg \min_{d,e} \widehat E(l(X, d_{X^C}(e_{X^C}(X)))) = \sum_{r=  1}^R l(X_r, d_{X^{C_r}}(e_{X^{C_r}}(X_r)))
-\end{align*}
-over $R$ random samples of rows of $X$.
-However, in our setting, since computing $e(X)$ on the test rows amounts to fitting a non-negative least squares w.r.t. $W$, so the negative effects of an overfit model can simply be optimized away from.
-Thus,  the standard solution is to generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
+The standard solution is to generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
 \begin{align*}
 1_{M(p)} (s,t) \sim \text{Bernoulli(p)}.
 \end{align*}
-%randomly mask $\widehat {\mathcal C}$, we can evaluate the 
 Our cross-validation error is then
 \begin{align*}
 \epsilon_q &= \frac{1}{R} \sum_{r = 1}^R (\|1_{M(p)_r^C} \odot X - \widehat d_q(\widehat e_q (1_{M(p)_r^C} \odot X ))\|_2^2 
@@ -578,15 +468,18 @@ where
 \begin{align*}
 \widehat d_q, \widehat e_q &= \widehat{\text{ NMF}}(1_{M(p)_r} \odot X, q)).
 \end{align*}
-The optimum number of components is then
+Here, $1_{M(p)_r}^C$ is the binary complement of $1_{M(p)_r}$.
+
+Theoretically, the optimum number of components is then
 \begin{align*}
     \widehat q = \arg \min_q \epsilon_q.
 \end{align*}
+However, the low decrease in error at higher values of $q$ will motivate us to empirically select a slightly smaller number of components.
 
 \subsubsection{Stabilizing NMF}
 
 The NMF program is non-convex, and, empirically, individual replicates will not converge to the same optima.
-One solution therefore is to run multiple replicates of the NMF algorithm, cluster the resulting vectors.
+One solution therefore is to run multiple replicates of the NMF algorithm and cluster the resulting vectors.
 This approach raises the questions of how many clusters to use, and how to deal with stochasticity in the clustering algorithm itself.
 We address this issue through the notion of clustering stability \citep{Von_Luxburg2010-lu}.
 
@@ -602,12 +495,212 @@ A review of this approach is found in \citet{Von_Luxburg2010-qe}.
 Intuitively, archetype vectors that cluster together frequently over clustering replicates indicate the presence of a stable clustering.
 For $d$, we utilize the adjusted Rand Index - a simple dissimilarity measure between clusterings.
 Note that we expect to select slightly more than the $q$ components suggested by cross-validation, since archetype vectors which appear in one NMF replicate generally should appear in others.
-We then select the $q$ clusters with the most archetype vectors - the most stable NMF results - and take the median of each cluster to create a sparse representative archetype.
+We then select the $q$ clusters with the most archetype vectors - the most stable NMF results - and take the median of each cluster to create a sparse representative archetype \citet{Wu2016-gg, Kotliar2019-yj}.
+Experimental results for these cross-validation and stability selection approaches are given in Supplemental Section \ref{supp_sec:matrix_factor_results}.
 
+\newpage
+
+\section{Supplemental Experiments}
+\label{supp_sec:exp}
+
+\subsection{Establishing a lower limit of detection}
+\label{supp:exp_lower}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../figures/Threshold}
+    \label{fig:threshold}
+    \caption{$\tau$ at different limits of detection.}
+\end{figure}
+
+\newpage
+
+\subsection{Loss subsets}
+\label{supp_sec:loss_subsets}
+
+We report model accuracies for our $EL$ model by neuron class and structure.
+These expand upon the results in Table \ref{tab:crossvalidation} and give more specific information about the quality of our estimates. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_512.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_703.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_1089.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_1097.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_315.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_313.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_354.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_698.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_771.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_477.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{../../paper/figures/lossdetails_0618_549.png} 
+    \label{fig:distances}
+    \caption{}
+\end{figure}
+
+\newpage
+
+\subsection{Matrix Factorization}
+\label{supp_sec:matrix_factor_results}
+
+We give additional results on the generation of the archetypal connectome patterns.
+These consist of cross-validation selection of $q$, the number of latent components, stability analysis, and visualization of the reconstructed wild-type connectivity.
+
+\subsubsection{Cross-validation}
+
+We set $\alpha = 0.002$ and run Program \ref{eq:nmf} on $\mathcal C_{wt}$.
+We use a random mask with $p = .3$ to evaluate prediction accuracy of models trained on the unmasked data on the masked data.
+To account for stochasticity in the NMF algorithm, we run $R = 8$ replicates at each potential dimension $q$.
+This selects $\hat q = 60$.
+\skcomment{Can run longer experient to show larger elbow. Note that training error also increases at high $q$ due to difficulty training model}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 5in]{figs/test_train_0603.png} 
+    \label{fig:train_test}
+    \caption{Train and test error using NMF decomposition.}
+\end{figure}
+
+\newpage
+
+\subsubsection{Stability}
+
+For the purposes of visualization and interpretability, we restrict to a $q = 15$ component model.
+To address the instability of the NMF algorithm in identifying components, we $k-means$ cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
+Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index.
+
+\begin{table}[H]
+\begin{tabular}{lrrrrr}
+\toprule
+{} &          0 &          1 &          2 &         3 &          4 \\
+\midrule
+q          &  10 &  15 &  20 &  25 &  30 \\
+Rand index &   0.685081 &   0.789262 &   0.921578 &   \textbf{0.94548} &   0.914799 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Since $k$-means is most stable at $k=25$, we cluster the $qR = 150$ components into $25$ clusters and select the $15$ clusters appearing in the most replicates.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 5in]{figs/nmfcluster_0620.png} 
+    \label{fig:distances}
+    \caption{Stability of NMF results across replicates. 
+    Replicate and NMF component are shown on rows.
+    Components that are in the top $15$ are also indicated.}
+\end{figure}
+These are the components whose medians are plotted in Figure \ref{fig:H}.
+
+
+\newpage
+
+\subsubsection{Reconstructed connectivity from archetypes}
+As a simple heuristic validation of our archetypes, we plot the reconstructed wild-type connectivity.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 5in]{../../analyses/paper/figures/conn_leafs_recon_0617.png} 
+    \label{fig:distances}
+    \caption{Reconstruction of $\mathcal C$ from $H$ and $W$ with $q=15$ in Figure \ref{nmf_results}.}
+\end{figure}
+
+
+\newpage
+
+\section{Glossary of symbols}
+
+\begin{table}
+\begin{tabular}{c|c}
+Symbol & Meaning \\
+$q$ & Number of components of latent space \\
+$\mathcal S$ & Set of source structures \\
+$\mathcal T$ & Set of target structures \\
+$S$ & $|\mathcal S|$ \\ 
+$T$ & $|\mathcal T|$ \\ 
+$\mathcal C$ & Connectivity \\
+$R$ & Number of replicates \\
+$r$ & A replicate index \\
+$\mathcal R$ & Set of regions
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+%Recall that in supervised learning
+%Recall that in a supervised learning model $y \sim f(x)$.
+%Standard cross-validation removes elements of $X$, fits $f$, and then uses the $f$ learned from part of the data to predict $Y$.
+%A good $f$ will have low error on the training data, and also low error on the test data, indicating that it has not overfit.
+%Although there is no assumed dichotomy between $X$ and $Y$ in unsupervised learning, for techniques like autoencoders, the above paradigm still applies, i.e., one can still hold out values of $X$.
+%We can then estimate 
+%\begin{align*}
+%\arg \min_{d,e} \widehat E(l(X, d_{X^C}(e_{X^C}(X)))) = \sum_{r=  1}^R l(X_r, d_{X^{C_r}}(e_{X^{C_r}}(X_r)))
+%\end{align*}
+%over $R$ random samples of rows of $X$.
+%However, i
 %http://alexhwilliams.info/itsneuronalblog/2018/02/26/crossval/
-
-
-
 
 
 
@@ -620,52 +713,6 @@ We then select the $q$ clusters with the most archetype vectors - the most stabl
 %\end{align*}
 %where \citep{Pimentel2009KendallsTA, Albasi2018-iv}
 %}
-
-\newpage
-
-\section{Supplemental Experiments}
-
-\subsection{Establishing a lower limit of detection}
-\label{supp:exp_lower}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 7in]{../figures/Threshold}
-    \label{fig:threshold}
-    \caption{$\tau$ at different limits of detection.}
-\end{figure}
-
-
-\subsection{Loss subsets}
-
-The 
-\subsection{Matrix Factorization}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 7in]{figs/test_train_0603.png} 
-    \label{fig:distances}
-    \caption{Train and test error across $2$ \skcomment{increase} replicates using NMF decomposition.}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 7in]{figs/nmfcluster_0610.png} 
-    \label{fig:distances}
-    \caption{Stability of NMF results across replicates.}
-\end{figure}
-%\section{Cross-validation for unsupervised learning}
-
-
-
-
-
-
-
-
-
-
-
 
 %\section{Data}\label{sec:supp_structure_cre}
 

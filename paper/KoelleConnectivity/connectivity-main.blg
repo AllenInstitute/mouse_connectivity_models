@@ -1,0 +1,61 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: connectivity-main.aux
+The style file: apacite.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: bibsamp.bib
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+Warning--No journal in Harris2016-fn
+Warning--No journal in Lotfollahi2019-tr
+Warning--No journal in Von_Luxburg2010-lu
+Warning--No journal in Von_Luxburg2010-qe
+You've used 16 entries,
+            6951 wiz_defined-function locations,
+            1376 strings with 15875 characters,
+and the built_in function-call counts, 38739 in all, are:
+= -- 4643
+> -- 354
+< -- 2033
++ -- 2324
+- -- 33
+* -- 2636
+:= -- 7344
+add.period$ -- 60
+call.type$ -- 16
+change.case$ -- 316
+chr.to.int$ -- 0
+cite$ -- 36
+duplicate$ -- 1184
+empty$ -- 1333
+format.name$ -- 694
+if$ -- 6930
+int.to.chr$ -- 0
+int.to.str$ -- 52
+missing$ -- 0
+newline$ -- 431
+num.names$ -- 128
+pop$ -- 483
+preamble$ -- 1
+purify$ -- 92
+quote$ -- 0
+skip$ -- 2260
+stack$ -- 0
+substring$ -- 2528
+swap$ -- 641
+text.length$ -- 60
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 1280
+warning$ -- 4
+while$ -- 268
+width$ -- 0
+write$ -- 574
+(There were 4 warnings)

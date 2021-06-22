@@ -1,7 +1,5 @@
-
-
 \documentclass[NETN,manuscript]{stjour-new}
-
+\setcounter{secnumdepth}{1}
 \usepackage{comment}
 \usepackage{booktabs}
 \usepackage{pbox}
@@ -9,13 +7,10 @@
 \usepackage{makecell}
 \usepackage{fourier} 
 \usepackage{array}
-%\usepackage{algorithmic}
 \usepackage{xr}
 \usepackage{cleveref}
-%\usepackage{adjustbox}
 \usepackage{tikz-cd}
 \usepackage{graphics}
-%\usepackage{adjustbox}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{algorithm}
@@ -73,7 +68,7 @@
 
 
 
-\title{Modeling the cell-type specific murine connectome}
+\title{Modelling the cell-type specific mesoscale murine connectome with anterograde tracing experiments}
 %\subtitle{mouse connectome} %% Optional subtitle
 
 \author[Koelle et al]% shortened version for running head, optional
@@ -88,66 +83,78 @@
 \keywords{[a series of capitalized words, separated with commas]}
 
 \begin{abstract}
-
-The Allen Brain Connectivity Atlas consists of thousands of labelling experiments targeting interrogating diverse structures and classes of projecting neurons.
+The Allen Brain Atlas contains of thousands of anterograde tracing experiments targeting diverse structures and classes of projecting neurons.
 This paper describes the conversion of these experiments into class-specific connectivity matrices representing the connection between source and target structures.
 We introduce and validate a novel statistical model for creation of connectivity matrices that combines spatial and categorical smoothing to share information between similar neuron classes.
-We then investigate patterns in the resultant connectivities, and show that our connectivities display expected cell-type specific structures.
-
+We then show that our connectivities display expected cell-type and structure specific connectivities, and factor the wild-type connectivity matrix to uncover the underlying latent structure. 
 \end{abstract}
 
 \begin{authorsummary}
+
 \end{authorsummary}
 
+\newpage
+
 \input{connectivity-introduction.tex}
+\newpage
 \input{connectivity-methods.tex}
+\newpage
 \input{connectivity-results.tex}
+\newpage
 \input{connectivity-discussion.tex}
 
+\newpage
 
 \acknowledgments
-The Funder and award ID information you input at submission will be introduced by the publisher under a Funding Information head during production. 
+The Funder and award ID information you input at submission will be introduced by the publisher under a Funding Information head during production.
 Please use this space for any additional acknowledgements and verbiage required by your funders.
-
-\section{Supporting Information}
-
+\newpage
 \input{connectivity-supplement.tex}
 
+\newpage
 \section{Competing Interests}
+\label{sec:comp}
 This is an optional section. If you declared a conflict of interest when you submitted your manuscript, please  use this space to provide details about this conflict.
 
+\newpage
 \bibliography{bibsamp}
 
+\newpage
 \section{Technical Terms}
 
-All NETN article types require Technical Terms.
-
-Identify approximately 10 key terms that are mentioned in your article and whose usage and definition may not be familiar across the broad readership of the journal. 
-Provide brief (20-word or less) definitions for each term, avoiding in these definitions the use of jargon, or highly technical or specialized language. 
-When the article is typeset, the Technical Terms will appear in the margins at or near their first mention in the text.
-
-In your manuscript, bold the first occurrence of each \textbf{Technical Term} and then provide a list of the terms and their definitions at the end of the manuscript after the references. 
-
 \textbf{Technical Term} a key term that is mentioned in an NETN article and whose usage and definition may not be familiar across the broad readership of the journal. 
+
+
+\textbf{Cre-line}  Refers to the combination of cre-recombinase expression in transgenic mouse and cre-induced promotion in the vector that induces labelling of cell-class specific projection. 
+
+\textbf{Cell class} The projecting neurons targeted by a particular cre-line 
+
+\textbf{structural connectivities}  connectivity between structures 
+
+\textbf{Voxel} A $100 \mu m$ cube of brain. 
+
+\textbf{structural connection tensor}  Connectivities between structures given a neuron class
+
+\textbf{dictionary-learning} A family of algorithms for finding low-dimensional data representations.
+
+\textbf{shape constrained estimator} A statistical estimator that fits a function of a particular shape (e.g. monotonic increasing, convex).
+
+\textbf{Nadaraya-Watson} A simple smoothing estimator.
+
+\textbf{connectivity archetypes} Typical connectivity patterns
+
+ \textbf{Expected Loss} Our new estimator that weights different features by their estimated predictive power.
+ 
+%All NETN article types require Technical Terms.
+
+%Identify approximately 10 key terms that are mentioned in your article and whose usage and definition may not be familiar across the broad readership of the journal. 
+%Provide brief (20-word or less) definitions for each term, avoiding in these definitions the use of jargon, or highly technical or specialized language. 
+%When the article is typeset, the Technical Terms will appear in the margins at or near their first mention in the text.
+
+%In your manuscript, bold the first occurrence of each \textbf{Technical Term} and then provide a list of the terms and their definitions at the end of the manuscript after the references. 
+
 
 \end{document}
 
 
-%\begin{algorithm}[h]{\label{alg:2stage}}
-%\caption{2-stage estimator (Injection centroids $c(1:n)$, normalized projections $n(r(y(1:n)))$, viruses $v(1:n)$, target centroid $c$, target virus $v$)}
-%\begin{algorithmic}
-
-%\State Get structures $s(1:n) = r(c(1:n))$, $s = r(c)$
-%\State Target encode $v(1:n)$ and $v$ with $n(r(y(1:n)))$
-%\State Estimate expected loss $l_{ii'} = \hat f (\|c(i) - c(i')\|_2^2, \|t(v(i)) - t(v(i'))\|_2^2)$
-%\State Return $\tilde y(i)$ (optional $\tilde x(i)$ )
-%\end{algorithmic}
-%\end{algorithm}
-
-%\begin{algorithm}[h]{\label{alg:conn_mat}}
-%\caption{Construct connectivity matrix (Cre-line $v$, Models $f_{1:N} (c,v)$, positions $c(R_n)$)}
-%\begin{algorithmic}
-%\State 2
-%\end{algorithmic}
-%\end{algorithm}
 %\newpage

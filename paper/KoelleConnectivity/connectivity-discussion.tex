@@ -1,87 +1,28 @@
-
-
 \section{Discussion}
 
+We see several opportunities for improving on our model.
+Our particular task of transforming the injection and projection signal depending on cell-type is a non-linear transformation problem with categorical covariate.
+Model averaging based off of cross-validation has been implemented in \citet{Gao2016-qe}, but we note that our approach makes use of a non-parametric estimator, rather than an optimization method for selecting the weights \citep{Saul2003-th}, and is applied specifically to a target-encoded feature space.
+The properties of this estimator, as well as its relation to estimators fit using an optimization algorithm, are a possible future avenue of research.
+Therefore, a deep model such as \citet{Lotfollahi2019-tr} could be appropriate, provided enough data was available.
+With respect to the model, a Wasserstein-based measure of injection similarity per structure would combine both the physical simplicity of the centroid model while also incorporating structural knowledge.
+Residual models of the above could also be considered.
+
+The factorization of the connectivity matrix could be similarly improved.
 Flattening $\mathcal C$ prior to unsupervised analysis is not necessarily recommended, but provides an easy solution for this problem.
 
-With respect to the model, a Wasserstein-based measure of injection similarity per structure would combine both the physical simplicity of the centroid model while also incorpating structural knowledge.
 
-The Nadaraya-Watson weighting procedure introduced here is, to our knowledge, novel.  In particular, our method of utilizing the expected loss to weight points differs from the minimization task of fitting data to weighted sums of neighbors \citep{Saul2003-th}.  We make a key assumption: that the additional statistical accuracy of including more samples makes up for the fact that their expected accuracy is lower. Note that this assumption can be easily violated, if, for example, the data is distributed on a circle without error, and only nearest neighbors are most predictive.
+%The Nadaraya-Watson weighting procedure introduced here is, to our knowledge, novel. 
 
-Model averaging based off of cross-validation has been implemented in \citet{Gao2016-qe}, but we note that our approach makes use of a non-parametric estimator, rather than an optimization method for selecting the weights.  \skcomment{CITE METHOD THAT SELECTS WEIGHTS IN KERNEL (has catchy name)}
-
-%and is related to the theoretical research problem of interpreting learned dynamical systems. 
+%We make a key assumption: that the additional statistical accuracy of including more samples makes up for the fact that their expected accuracy is lower.
+%Note that this assumption can be easily violated, if, for example, the data is distributed on a circle without error, and only nearest neighbors are most predictive.
 
 
+%\skcomment{CITE METHOD THAT SELECTS WEIGHTS IN KERNEL (has catchy name)}
 
-%We synthesize the two equivalently in a product space as
-%\begin{eqnarray*}
-%d(i,i')^2 = \|\mu (v(i)) - \mu (v(i')\|_2^2 + \|c(i) - c(i')\|_2^2.
-%\end{eqnarray*}
-
-%However, the weighting of the two feature types is unclear. In lieu of an optimization-based approach for learning the weights of each distance coordinate, we utilize the following approach.
-
-%(indeed, only wild-type tracing experiments were 
-
-
-%where
-%\begin{equation}
-%f: \mathbb R^3 \times \mathcal V \to \mathbb R^{S_{IMC}}
-%\end{equation}
-%is the projection of a particular voxel.
-
-
-%We therefore write the generic model with errors-in-variables as
-%The general model is thus
-
-%\begin{eqnarray*}
-%y = f(x + \epsilon_x, v) + \epsilon_y.
-%\end{eqnarray*}
-
-%We assume $\epsilon_x = 0$, and $x$ and $y$ have been regionalized as $r_y(y(i)) \in \mathbb R^{S_{IMC}}, r_x(x(i) \in \mathbb R^S$. \citet{Knox2019-ot} utilizes the model $r(y(i)) = f_{NW} (c(x(i)))$, where $f_{NW}$ is the Nadaraya-Watson estimator.  In contrast, \citet{Oh2014-kh} uses the model $r(y(i)) = f_{NNLS} (r(x(i)))$ where $f_{NNLS}$ is fitted non-negative least squares.  In both cases, data consisted of only the wild type cre line.
-%Although the Knox model is conceptually simpler, it generated improved predictive performance. This improvement is due to the fact that the regionalization map $r$ is a relatively coarse description of the injection $x(i)$, compared with the centroid function $c(x(i))$.  Furthermore, the slow convergence of the Nadaraya-Watson estimator is mediated by the lower dimensionality of $c(x(i))$ compared with $r_x x((i))$, and generalization issues caused by poor-conditioning of the somewhat sparse design matrix $r(x(1:n))$ are avoided.
 
 %The major-structure specific Nadaraya-Watson estimator from $\citet{Knox2019-ot}$ nevertheless appears poorly adapted for our circumstances since it does not take into account the virus $v$. It is not straightforward to include the viral strain in either $f_{NW}$ or $f_{NNLS}$. For $f_{NW}$, it is not clear how a one-hot encoded class-membership feature should be weighted. For $f_{NNLS}$, our sample size seems too low to utilize a fixed or mixed effect, particularly since the impact of the virus depend on the particular injection region, motivating use of an interaction term.
 
-%A related, more simplistic, model is to average exactly in the cre-leaf combination. \begin{eqnarray*}
-%y = f_1(x) = \mu_v \\
-%\end{eqnarray*}
-
-%This average model is in the limit of both the Nadaraya-Watson and non-negative least square models. In the former, the bandwidth is expanded infinitely. In the later, the design matrix is diagonal in centroid location in a block diagonal expanded design matrix only filled in the appropriate cre block.
-
-%Although both $f_{NW}$ and $f_{VL}$ work well, we are still have not yet estimated when one is preferable to another. This trade-off is important to understand, and even a misspecified model may be useful, since the sample-size to noise ratio is low. We do this by relating difference in creline and distance between centroids to the loss using the following simple non-parametric estimator.
-
-%The benefit of this model's simplicity is that it is immediately apparent that it defines a refeaturization of the one-hot matrix in terms of the leave-one-out means of each class. We can thus define an asymptotically/out-of-sample (although asymmetric in leave-one-out) distance between points  
-
-
-%In order to measure the accuracy of our estimate $\hat {\mathcal C}$, we assess our model via cross-validation of held-out experimental projections.
-
-%\begin{eqnarray*}
-%\hat \epsilon = \mu_v - \mu_{v'} \sim y - y'
-%\end{eqnarray*}
-
-
-%Another way of conceptualizing the Knox model is as a residual model with regionalized features only including the centroid region.  This is precisely an average model.
-
-
-%On the other hand, we have 
-%\begin{eqnarray*}
-%\hat \epsilon = f(c - c') \sim y - y'
-%\end{eqnarray*}
-
-
-
-
-
-%\begin{algorithmic}
-%\label{alg:model}
-%\begin{algorithm}{Injection centroids $c(1:n)$, normalized projections $n(r(y(1:n)))$, viruses $v(1:n)$. target centroid $c$, target virus $v$}
-%\STATE Get structures $s(1:n) = r(c(1:n))$, $s = r(c)$
-%\STATE Target encode $v(1:n)$ and $v$ with $n(r(y(1:n)))$
-%\STATE Estimate expected loss $l_{ii'} = \hat f (\|c(i) - c(i')\|_2^2, \|t(v(i)) - t(v(i'))\|_2^2)$
-% \RETURN $\tilde y(i)$ (optional $\tilde x(i)$ )
-%\end{algorithm}
-%\end{algorithmic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% End of Article
