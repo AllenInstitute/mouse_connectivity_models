@@ -2,7 +2,6 @@
 \label{sec:methods}
 
 We create and analyze cell class-specific connectivity matrices using models trained on murine viral-tracing experiments.
-%This model predicts projections of each neuron class at each location within the brain. %that are more accurate than simple averages over nearby experiments in cross-validation.
 This section describes the data used to generate the model, the model itself, the evaluation of the model, and the use of the model in creation of the connectivity matrices.
 It also includes background on the non-negative matrix factorization method used for decomposing the wild-type connectivity matrix into latent structures.
 Additional information on our data is given in Supplemental Section \ref{supp_sec:data} methods is given in Supplemental Section \ref{supp_sec:methods}.
@@ -62,22 +61,18 @@ A summary of the most frequently assayed cell classes and structures is given in
 Since users of the connectivity matrices may be interested in particular combinations, or interested in the amount of data used to generate a particular connectivity estimate, we present this information about all experiments in Supplemental Section \ref*{supp_sec:data}.
 
 At an essential level, cell-class specific neural connectivity is a function $f:  \mathcal V \times \mathbb R^3 \times \mathbb R^3 \to \mathbb R_{\geq 0}$ giving the directed connection of a particular cell class from a one position in the brain to another.
-However, what we will actually estimate are structural connectivities defined with respect to a set of source regions $\mathcal S := \{ s\} $, target regions $\mathcal T := \{ t \}$, and cell classes $\mathcal V := \{v\}$.
-%As in \citet{Knox2019-ot}, we divide the brain into 12 {\it major brain divisions} $M$ (the isocortex, olfactory areas, hippocampal formation, cortical subplate, striatum, pallidum, thalamus, hypothalamus, midbrain, pons, medulla, and cerebellum), and, at a finer level, divide the brain into 286 ipsilateral, 5 medial, and 286 contralateral summary structures {\it summary structures} $R$.
-%We also introduce an even finer, leaf-specific, decomposition $L$, with $|L| = 1077$.
-%In contrast to \citet{Knox2019-ot}, which only uses wild type $C57BL/6J$ mice, these experiments utilize $113$ different transgene cassettes. 
-Thus, we preprocess this data in several ways.
+However, what we will actually estimate are structural connectivities defined with respect to a set of $S$ source regions $\mathcal S := \{ s\} $, $T$ target regions $\mathcal T := \{ t \}$, and $V$ cell classes $\mathcal V := \{v\}$.
+In contrast to \citet{Knox2019-ot}, which only uses wild type $C57BL/6J$ mice, these experiments utilize $V = 114$ different Cre-lines. 
+We generally consider $S = 564$ leaf sources and $T = 1123$ leaf targets, where $559$ are contralateral or mediolateral.
+
+We preprocess our data in several ways.
 We discretize flourescent signals like injections and projections into $100 \mu m^3$ \textbf{voxels}.
-Given an experiment $i$, we represent injections and projections as maps $x(i),y(i) : \mathcal B \to \mathbb R_{\geq 0}$, where $\mathcal \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard mouse brain.
-A structure $s$ then contains $|s|$ voxels at locations $\{l(s_j) \in \mathbb R^3\}$, and similarly for targets.
+Given an experiment $i$, we represent injections and projections as maps $x(i),y(i) : \mathcal B \to \mathbb R_{\geq 0}$, where $\mathcal B \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard mouse brain.
+A structure $s$ then contains $|s|$ voxels at locations $\{l_{s_j} \in \mathbb R^3\}$, and similarly for targets.
 We calculate injection centroids $c(i) \in \mathbb R^3$ and regionalized projections $y_{\mathcal T} (i) \in \mathbb R^{T} $ giving the sum of $y(i)$ in each region.
 In contrast to \citet{Knox2019-ot}, we also $l1$ normalize these projection vectors.
+This accounts for differences in the cre-driven expression of eGFP via the various transgene promoters.
 A detailed mathematical description of these steps, including data quality control, is given in Supplemental Section \ref{supp_sec:dp}.
-
-%We also have access to a regionalization map as $r: \mathcal B  \to \mathcal R $ which induces a map of connectivities $r_*: \mathcal F \to \mathcal R \times \mathbb R^+$.
-%Given an experiment $i$, this preprocessing generates injection centroids $c(i) \in \mathbb R^3$ and structural projection $y(i) \in \mathbb R_{\geq 0}^{T}$, where $T$ is the number 
-%We represent fluorescences as arrays $\mathcal F= \mathcal B \times \mathbb R^+$, where $B \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the voxelized $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard mouse brain.
-%We also normalize projections by total intensity to account for differences in the cre-driven expression of eGFP via the various transgene promoters.
 
 \newpage
 
@@ -98,10 +93,10 @@ Mathematically, we represent these considerations as
 \label{eq:estimator}
 \widehat { \mathcal C }(v,s,t) = f^* (\widehat f (f_*( \mathcal D(v,s,t))).
 \end{align}
-This makes explicit the data featurization $f_{*}$, statistical estimator $\widehat f$, and any potential subsequent transformation $f^*$ such as averaging over the source region, as well as the fact that different data may be used to estimate different connectivities.
-Table \ref{tab:estimators} reviews estimators used for this data-type used in previous work, as well as our two main extensions.
+This makes explicit the data featurization $f_{*}$, statistical estimator $\widehat f$, and any potential subsequent transformation $f^*$ such as summing over the source and target regions.
+Denoting $ \mathcal D$ as a function of $v,s,$ and $t$ reflects that different data may be used to estimate different connectivities.
+Table \ref{tab:estimators} reviews estimators used for this data-type used in previous work, as well as our two main extensions: the Cre-NW and \textbf{Expected Loss} (EL) models.
 Additional information on these estimators is given in Supplemental Section \ref{supp_sec:estimators}.
-%The models in \citet{Knox2019-ot} and \citet{Oh2014-kh} use all data from the same major brain division to generate a connectivity for a given structure.
 
 \begin{table}[H]
     \centering
@@ -109,90 +104,83 @@ Additional information on these estimators is given in Supplemental Section \ref
         Name & $f^*$ & $\widehat f$&  $ f_*$ & $\mathcal D(v,s,t)$ \\
         \hline
         %Leaf-mean & & & & \\
-        NNLS \citep{Oh2014-kh} & $\widehat f (S)$ & NNLS(X,Y) & $X= x_{\mathcal S},Y = y_{\mathcal T}$ & $ I_m$ \\
-        NW \citep{Knox2019-ot} &$ \sum_{l_s \in s} \widehat f (l_s)$ & NW(X,Y)  & $X = c, Y = y_{\mathcal T}$ & $I_m$ \\
+        NNLS \citep{Oh2014-kh} & $\widehat f (S)$ & NNLS(X,Y) & $X= x_{\mathcal S},Y = y_{\mathcal T}$ & $ I_m / I_m$ \\
+        NW \citep{Knox2019-ot} &$ \sum_{l_s \in s} \widehat f (l_s)$ & NW(X,Y)  & $X = c, Y = y_{\mathcal T}$ & $I_m /I_m$ \\
         %Cre-leaf-mean & & & & \\
-        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & NW(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ I_l \cap I_v$ \\
-        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\text{EL}(X,Y,V)$ & $X= c, Y = y_{\mathcal T}, V = v$  &$I_l$
+        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & NW(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ (I_s \cap I_v) / I_m$ \\
+        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\text{EL}(X,Y,v)$ & $X= c, Y = y_{\mathcal T}, v$  &$I_s / I_m$
     \end{tabular}
     \caption{Estimation of $\mathcal C$ using connectivity data.
     The regionalization, estimation, and featurization steps are denoted by $f^*, \widehat f,$ and  $f_*$, respectively.
     The training data used to fit the model is given by $I$.
-    We denote experiments with centroids in particular major brain divisions and leafs as $I_m$ and $I_l$, respectively.
-    $D(v,s,t) = I_m$ means that the model $f^*(\widehat f( ( f_*(I)))$ generates prediction for a structure in $m$ using only data in $I_m$. 
+    We denote experiments with centroids in particular major brain divisions and leafs as $I_m$ and $I_s$, respectively.
+    Data $I_s / I_m$ means that, given a location $l_s \in s \in m$, the model $\widehat f$ is trained on all of $I_m$, but only uses $I_s$ for prediction.
     }
     \label{tab:estimators}
 \end{table}
 
-Our contributions - the Cre-NW and \textbf{Expected Loss} (EL) models - have several differences from the previous methods.
-In contrast to the \citet{Oh2014-kh} non-negative least squares and \citet{Knox2019-ot} Nadaraya-Watson estimators that take into account $s$ and $t$, but not $v$, our new estimators specifically account for cell class.
-The Cre-NW estimator only uses experiments from a particular class to predict connectivity for that class, while the EL estimator shares information between classes.
+Our contributions have several differences from the previous methods.
+In contrast to the non-negative least squares \citep{Oh2014-kh} and Nadaraya-Watson  \citep{Knox2019-ot} estimators that take into account $s$ and $t$, but not $v$, our new estimators specifically account for cell class.
+The Cre-NW estimator only uses experiments from a particular class to predict connectivity for that class, while the EL estimator shares information between classes within a structure.
+A detailed mathematical description of our new estimator is given in Appendix \ref{supp_sec:el}.
 This estimator takes into account two types of covariate information about each experiment: the centroid of the injection, and the Cre-line.
 Like the NW and Cre-NW estimator, the EL estimator generates predictions for each voxel in a structure, and then sums them together to get the overall connectivity.
 However, in contrast to these alternative approaches, when predicting the projection pattern of a certain cell-class at a particular location, the EL estimator weights the average behavior of the class in the structure containing the location in question against the locations of the various proximal experiments. 
 Thus, nearby experiments with similar Cre-lines can help generate the prediction, even when there are few nearby experiments of the cell-class in question.
-A detailed mathematical description of our new estimator is given in Appendix \ref{supp_sec:el}.
-Finally, in order to synthesize information about leafs targeted by different Cre-lines, we also generate an average connectivity matrix over all Cre-lines.
-This model is not evaluated in our testing, and is only a general heuristic for overall behavior, but provides a useful summary of results.
-
-%Certain cell classes predominate in different layers, so by averaging
-%Both of these estimators perform better than the estimator in \citet{Knox2019-ot} across the whole dataset, and comparably well in wild-type, while the Expected Loss estimator in general gives the best performance.
 
 \newpage
 
 \subsection{Model evaluation}
 
-We select optimum functions from within and between our estimator classes using empirical risk minimization.
-Equation \ref{eq:estimator}  includes a deterministic step $f^*$ included without input by the data.
+We select optimum functions from within and between our estimator classes using empirical risk minimization. %in leave-one-out cross-validation.
+Equation \ref{eq:estimator} includes a deterministic step $f^*$ included without input by the data.
 %Note that $\hat f = \widehat e (e_*(\mathcal D))$.
-The performance of $\widehat {\mathcal C}$ is therefore determined by performance of the model $\widehat f (f_*(\mathcal D(s,t,v)))$.
-We can then evaluate $\widehat f(v,s,t)$ using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
+The performance of $\widehat {\mathcal C (v,s,t)}$ is therefore determined by performance of the model $\widehat f (f_*(\mathcal D(v,s,t)))$.
+We can thus evaluate $\widehat f(v,s,t)$ using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
+This method is robust to the trivial overfitting in Nadaraya-Watson bandwidth selection.
 
-Another main estimation question is what combinations of $v, s, $ and $t$ we actually want to generate a prediction for.
-Our EL and Cre-NW models are leaf specific.
-They only generates predictions for a cell class in a leaf when at least one experiment with a Cre-line targeting that class has a centroid in the leaf.
-To compare our contributions accurately with less-restrictive models such as used in \citet{Knox2019-ot}, we therefore restrict restrict to the smallest set of evaluation experiments suggested by any of our models.
+
+Another main estimation question is what combinations of $v, s, $ and $t$ to generate a prediction for.
+Our EL and Cre-NW models are leaf specific; they only generate predictions for cell classes in leafs where at least one experiment with a Cre-line targeting that class has a centroid.
+To compare our new estimators accurately with less-restrictive models such as used in \citet{Knox2019-ot}, we therefore restrict restrict to the smallest set of evaluation experiments suggested by any of our models: virus-leaf combinations that are present at least twice. 
 The sizes of these evaluation sets are given in Supplemental Section \ref{supp_sec:model-evaluation}.
 
-Since the number of parameters fit is quite low relative to the size of the evaluation set, we do not make use of a formal validation-test split.
 We use weighted $l2$-loss to evaluate these predictions.
 \begin{align*}
 \text{l2-loss } \ell (y_{\mathcal T}(i)),\widehat {y_{\mathcal T}(i))}) &=   \| y_{\mathcal T} (i)) - \widehat {y_{\mathcal T}(i))} \|_2^2. \\
 \text{weighted l2-loss } \mathcal L ( \widehat {f(f_*)}) &= \frac{1}{|\{s,v\}|} \sum_{s,v \in \{\mathcal S,\mathcal V\}} \frac{1}{ |I_{s} \cap I_v |} \sum_{i \in (I_{s} \cap I_v ) } \ell (y_{\mathcal T}(i)), \hat f(f_*(\mathcal D(s,t,v) \setminus i)) .
 \end{align*}
 This is a somewhat different loss from \citet{Knox2019-ot}, both because of the normalization of projection, and because of the increased weighting of rarer combinations of $s$ and $v$ implicit in the loss.
+Since the number of parameters fit is quite low relative to the size of the evaluation set, we do not make use of a formal validation-test split.
 As a final modeling step, we establish a lower limit of detection.
 This is covered in Supplemental Section \ref{supp_sec:methods_lower}
 
 \newpage
 
-%We also remove points from their own target-encoded mean in the expected-loss estimator, alghough instances, for the same type of point, should be zero.
-\newpage
 \subsection{Connectivity analyses}
 
-We show neuronal processes underlying our estimated connectome using a variety of types of unsupervised learning.
+We show neuronal processes underlying our estimated connectome using two types of unsupervised learning.
 Our use of heirarchical clustering is standard, and so we do not review it here.
 However, our application of non-negative matrix factorization (NMF) to decompose the estimated long-range connectivity into \textit{connectivity archetypes} that linearly combine to reproduce the observed connectivity is novel and technically of some independent interest.
-Non-negative matrix factorization refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a positively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
+Non-negative matrix factorization refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a non-negatively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
+Unlike PCA, NMF specifically accounts for the fact that data are all in the positive orthant.
 This $H$ is typically used to identify latent structures with interpretable biological meaning, and the choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations. 
 
-Our application of NMF has several interesting characteristics.
 Our algorithm is 
 \begin{eqnarray*}
 \label{eq:nmf}
-\textsc{NMF}(\mathcal V, \lambda, q) = \arg \min_{W, H} \frac{1}{2}\| 1_{d > 1500 \mu m} \otimes \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
+\nmf(\mathcal C, \lambda, q) := \arg \min_{W, H} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
-We ignore connections between source and and target regions less than $1500 \mu m$ apart, and set $\alpha = 0.001$ to encourage sparsity.
+We ignore connections between source and and target regions less than $1500 \mu m$ apart.
 This is because short-range projections resulting from diffusion dominate the matrices $\hat {\mathcal C}$, and represent a less-interesting type of biological structure.
-We use unsupervised cross-validation to determine $q$, and show the top $15$ stable components.
-Stability analysis accounts for the difficult-to-optimize NMF optimization problem by clustering the resultant $H$ from  multiple replicates.
-We then determine a superset of clusters appearing frequently across NMF replicates, and select the median-vectors of the $q$ most common clusters as \textbf{connectivity archetypes}.
-Details of these approaches are given in Appendix \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}.
+We also set $\lambda = 0.002$ to encourage sparser and therefore more interpretable components.
+We use unsupervised cross-validation to determine an optimum $q$, and show the top $15$ stable components.
+Stability analysis accounts for the difficult-to-optimize NMF optimization problem by clustering the resultant $H$ from multiple replicates.
+The medians of the component clusters appearing frequently across NMF replicates are selected as \textbf{connectivity archetypes}.
+Details of these approaches are given in Supplementary Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}.
+
 %Second, we extend the characterization of \citet{Knox2019-ot} on structural differences in short-range projections.
 %These are primarily assumed to be due to diffusion, and the diffusion-rate helps to characterize the basic structural anatomy.
-
-%Like PCA, NMF identifies a low dimensional latent space.
-
 %The latter issue is ameliorated by regularization terms to encourage finding vectors around which  $\hat {\mathcal C}$ is clustered.
 
 

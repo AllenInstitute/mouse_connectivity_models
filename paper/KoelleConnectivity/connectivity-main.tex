@@ -1,36 +1,19 @@
 \documentclass[NETN,manuscript]{stjour-new}
 \setcounter{secnumdepth}{1}
-\usepackage{comment}
-\usepackage{booktabs}
-\usepackage{pbox}
-\usepackage{afterpage}
-\usepackage{makecell}
-\usepackage{fourier} 
-\usepackage{array}
-\usepackage{xr}
-\usepackage{cleveref}
-\usepackage{tikz-cd}
-\usepackage{graphics}
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{algorithm}
-\usepackage{tikz-cd}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage[export]{adjustbox}
+
 
 %\usepackage{hyperref}
-%\include{connectivity-commands}
+\include{connectivity-commands}
 
 \newlength\Colsep
 \setlength\Colsep{10pt}
-\usetikzlibrary{arrows.meta,
-                positioning
-                }
+%\usetikzlibrary{arrows.meta,
+%                positioning
+%                }
 %\externaldocument[supp-]{Supplement.tex}
 
 
-\newcommand{\skcomment}[1]{({\color{blue}{SK's comment:}}\textbf{\color{blue}{#1}})}
+%\newcommand{\skcomment}[1]{({\color{blue}{SK's comment:}}\textbf{\color{blue}{#1}})}
 \renewcommand\theadalign{bc}
 \renewcommand\theadfont{\bfseries}
 \renewcommand\theadgape{\Gape[4pt]}
@@ -50,26 +33,17 @@
     \addFileDependency{#1.aux}%
 }
 %\newcommand{\comment}[1]{}
-\myexternaldocument{Supplement}
+%\myexternaldocument{Supplement}
 \listfiles
 
 \articletype{Research}
 
-\def\taupav{\tau_{\mathrm{Pav}}}
+%\def\taupav{\tau_{\mathrm{Pav}}}
 
 \begin{document}
 
-%\afterpage{%
-%   \clearpage % flush any accumulated floats
-%   \begin{figure}[ht!]  % or: \begin{table}[ht!]
-%   ... % body of figure/table environment
-%   \end{figure} % or: \end{table}
-%} % end of scope of \afterpage directive
-
-
 
 \title{Modelling the cell-type specific mesoscale murine connectome with anterograde tracing experiments}
-%\subtitle{mouse connectome} %% Optional subtitle
 
 \author[Koelle et al]% shortened version for running head, optional
 {Samson Koelle \affil{1,2}, Jennifer Whitesell \affil{1}, Karla Hirokawa \affil{1},  Hongkui Zeng\affil{1}, Marina Meila\affil{2}, Julie Harris\affil{1}, Stefan Mihalas\affil{1}}
