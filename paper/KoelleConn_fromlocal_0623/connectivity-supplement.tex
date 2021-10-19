@@ -17,14 +17,14 @@ Users of the connectivity matrices who are interested in a particular cre line o
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/CB centroid densityoct12.png}
+    \includegraphics[width = 7in]{figs/CB centroid density.png}
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/TH centroid densityoct12.png}
+    \includegraphics[width = 7in]{figs/TH centroid density.png}
     \caption{Caption}
     \label{fig:my_label}
 \end{figure}
@@ -32,7 +32,7 @@ Users of the connectivity matrices who are interested in a particular cre line o
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/CTXsp centroid densityoct12.png}
+    \includegraphics[width = 7in]{figs/CTXsp centroid density.png}
     \caption{Caption}
     \label{fig:my_label}
 \end{figure}
@@ -40,67 +40,68 @@ Users of the connectivity matrices who are interested in a particular cre line o
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/P centroid densityoct12.png}
+    \includegraphics[width = 7in]{figs/P centroid density.png}
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/PAL centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/PAL centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/Isocortex centroid densityoct12.png}
+    \includegraphics[width = 7in]{figs/Isocortex centroid density.png}
     \label{fig:iso_count}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/MB centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/MB centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/MY centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/MY centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/HPF centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/HPF centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/OLF centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/OLF centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/STR centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/STR centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{figs/HY centroid densityoct12.png} 
+    \includegraphics[width = 7in]{figs/HY centroid density.png} 
     \label{fig:my_label}
 \end{figure}
 
 \newpage
+
 
 \subsection{Distances between structures}
 
@@ -114,28 +115,56 @@ Users of the connectivity matrices who are interested in a particular cre line o
 \subsection{Model evaluation}
 \label{supp_sec:model-evaluation}
 
+\paragraph{Number of experiments in evaluation sets}
+
 \begin{table}[H]
 \small
-\begin{tabular}{lrr}
+\begin{tabular}{lrrr}
 \toprule
-{} &  Total &  Cre-Leaf \\
+{} &  Total &  Cre-Leaf & Cre-leaf over threshold \\
 \midrule
-Isocortex &     36 &         4 \\
-OLF       &      7 &         2 \\
-HPF       &    122 &        62 \\
-CTXsp     &     85 &        41 \\
-STR       &   1128 &       732 \\
-PAL       &     68 &        18 \\
-TH        &     46 &         7 \\
-HY        &     35 &        17 \\
-MB        &     33 &         8 \\
-P         &     30 &        11 \\
-MY        &     78 &        45 \\
-CB        &     83 &        29 \\
+Isocortex &     36 &         4  & 4\\
+OLF       &      7 &         2 & 2\\
+HPF       &    122 &        62 & 59\\
+CTXsp     &     85 &        41 & 38\\
+STR       &   1128 &       732& 7 \\
+PAL       &     68 &        18 & 17\\
+TH        &     46 &         7& 7 \\
+HY        &     35 &        17& 17 \\
+MB        &     33 &         8 & 8\\
+P         &     30 &        11& 11\\
+MY        &     78 &        45 & 44\\
+CB        &     83 &        29& 29 \\
 \bottomrule
 \end{tabular}
 \caption{Number of experiments available to evaluate models in leave-one-out cross validation. 
 Models that rely on a finer granularity of modeling have less data available to validate with.} 
+\label{tab:eval_size}
+\end{table}
+
+\paragraph{Injection-normalized losses}
+
+\begin{table}
+\begin{tabular}{lrrrrrrr}
+\toprule
+$\widehat f$ &           Mean & \multicolumn{5}{l}{NW} &     EL \\
+$\mathcal D$ & $I_c \cap I_L$ & $I_c \cap I_M$ & $I_c \cap I_L$ &  $I_L$ & $I_{wt} \cap I_M$ &  $I_M$ &  $I_L$ \\
+\midrule
+Isocortex &          0.413 &          0.453 &          0.408 &  0.538 &             0.528 &  0.528 &  0.396 \\
+OLF       &          0.499 &          0.504 &          0.494 &  0.441 &             0.543 &  0.543 &  0.437 \\
+HPF       &          0.336 &          0.483 &          0.332 &  0.444 &             0.501 &  0.501 &  0.321 \\
+CTXsp     &          0.497 &          0.497 &          0.497 &  0.497 &             0.497 &  0.497 &  0.497 \\
+STR       &          0.359 &          0.386 &          0.359 &  0.364 &             0.433 &  0.433 &  0.322 \\
+PAL       &          0.519 &          0.497 &          0.519 &  0.436 &             0.459 &  0.459 &  0.434 \\
+TH        &          0.769 &          0.767 &          0.769 &  0.514 &             0.539 &  0.539 &  0.556 \\
+HY        &          0.414 &          0.439 &          0.414 &  0.441 &             0.452 &  0.452 &  0.399 \\
+MB        &          0.459 &          0.396 &          0.397 &  0.358 &             0.324 &  0.324 &  0.403 \\
+P         &          0.562 &          0.562 &          0.562 &  0.758 &             0.764 &  0.764 &  0.562 \\
+MY        &          0.699 &          0.552 &          0.621 &  0.439 &             0.578 &  0.578 &  0.439 \\
+CB        &          0.849 &          0.689 &          0.849 &  0.500 &             0.615 &  0.615 &  0.495 \\
+\bottomrule
+\end{tabular}
+\caption{Injection-normalized losses.} 
 \label{tab:eval_size}
 \end{table}
 

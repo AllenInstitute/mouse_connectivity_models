@@ -1,0 +1,151 @@
+{
+  "manifest": [
+    {
+      "type": "manifest_version",
+      "value": 1.3
+    },
+    {
+      "key": "BASEDIR",
+      "type": "dir",
+      "spec": "."
+    },
+    {
+      "key": "STRUCTURE_TREE",
+      "type": "file",
+      "spec": "structures.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "REFERENCE_SPACE_VERSION",
+      "type": "dir",
+      "spec": "%s",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "ANNOTATION",
+      "type": "file",
+      "spec": "annotation_%d.nrrd",
+      "parent_key": "REFERENCE_SPACE_VERSION"
+    },
+    {
+      "key": "TEMPLATE",
+      "type": "file",
+      "spec": "average_template_%d.nrrd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "STRUCTURE_MASK",
+      "type": "file",
+      "spec": "structure_masks/resolution_%d/structure_%d.nrrd",
+      "parent_key": "REFERENCE_SPACE_VERSION"
+    },
+    {
+      "key": "STRUCTURE_MESH",
+      "type": "file",
+      "spec": "structure_meshes/structure_%d.obj",
+      "parent_key": "REFERENCE_SPACE_VERSION"
+    },
+    {
+      "key": "EXPERIMENTS",
+      "type": "file",
+      "spec": "experiments_011520.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "STRUCTURE_UNIONIZES",
+      "type": "file",
+      "spec": "experiment_%d/structure_unionizes.csv",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "INJECTION_DENSITY",
+      "type": "file",
+      "spec": "experiment_%d/injection_density_%d.nrrd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "INJECTION_FRACTION",
+      "type": "file",
+      "spec": "experiment_%d/injection_fraction_%d.nrrd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "DATA_MASK",
+      "type": "file",
+      "spec": "experiment_%d/data_mask_%d.nrrd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "PROJECTION_DENSITY",
+      "type": "file",
+      "spec": "experiment_%d/projection_density_%d.nrrd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "DEFORMATION_FIELD_HEADER",
+      "type": "file",
+      "spec": "experiment_%d/dfmfld.mhd",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "DEFORMATION_FIELD_VOXELS",
+      "type": "file",
+      "spec": "experiment_%d/dfmfld.raw",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "ALIGNMENT3D",
+      "type": "file",
+      "spec": "experiment_%d/alignment3d.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NODES",
+      "type": "file",
+      "spec": "voxel_model/nodes.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "WEIGHTS",
+      "type": "file",
+      "spec": "voxel_model/weights.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "SOURCE_MASK",
+      "type": "file",
+      "spec": "voxel_model/source_mask_params.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "TARGET_MASK",
+      "type": "file",
+      "spec": "voxel_model/target_mask_params.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "CONNECTION_DENSITY",
+      "type": "file",
+      "spec": "voxel_model/connection_density.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "CONNECTION_STRENGTH",
+      "type": "file",
+      "spec": "voxel_model/connection_strength.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NORMALIZED_CONNECTION_DENSITY",
+      "type": "file",
+      "spec": "voxel_model/normalized_connection_density.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NORMALIZED_CONNECTION_STRENGTH",
+      "type": "file",
+      "spec": "voxel_model/normalized_connection_strength.csv.gz",
+      "parent_key": "BASEDIR"
+    }
+  ]
+}
