@@ -1,0 +1,20 @@
+\section{Discussion}
+
+The model presented here is a milestone in characterization of connectomes. It is the first cell-type specific whole brain projectomme for a mammalian species. It can open the door for a large umber of models linking brain structure to computational architectures. 
+
+The method presented here is also novel. Beyond using a Nadaraya-Watson kernel regression defined in physical space, we define a cell-type space based on similarities of projections, and expand the method to work in this space as well. 
+
+We see several opportunities for improving on our model.
+Our particular task of transforming the injection and projection signal depending on cell-type is a non-linear transformation problem with categorical covariate.
+Model averaging based off of cross-validation has been implemented in \citet{Gao2016-qe}, but we note that our approach makes use of a non-parametric estimator, rather than an optimization method for selecting the weights \citep{Saul2003-th}, and is applied specifically to a target-encoded feature space.
+The properties of this estimator, as well as its relation to estimators fit using an optimization algorithm, are a possible future avenue of research.
+Therefore, a deep model such as \citet{Lotfollahi2019-tr} could be appropriate, provided enough data was available.
+With respect to the model, a Wasserstein-based measure of injection similarity per structure would combine both the physical simplicity of the centroid model while also incorporating structural knowledge.
+Residual models of the above could also be considered.
+
+The factorization of the connectivity matrix could be similarly improved.
+Flattening $\mathcal C$ prior to unsupervised analysis is not necessarily recommended, but provides an easy solution for this problem.
+
+%The major-structure specific Nadaraya-Watson estimator from $\citet{Knox2019-ot}$ nevertheless appears poorly adapted for our circumstances since it does not take into account the virus $v$. It is not straightforward to include the viral strain in either $f_{NW}$ or $f_{NNLS}$. For $f_{NW}$, it is not clear how a one-hot encoded class-membership feature should be weighted. For $f_{NNLS}$, our sample size seems too low to utilize a fixed or mixed effect, particularly since the impact of the virus depend on the particular injection region, motivating use of an interaction term.
+
+

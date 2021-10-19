@@ -1,0 +1,142 @@
+\documentclass[NETN,manuscript]{stjour-new}
+\setcounter{secnumdepth}{1}
+
+
+%\usepackage{hyperref}
+\include{connectivity-commands}
+
+\newlength\Colsep
+\setlength\Colsep{10pt}
+%\usetikzlibrary{arrows.meta,
+%                positioning
+%                }
+%\externaldocument[supp-]{Supplement.tex}
+
+
+\newcommand{\smcomment}[1]{({\color{red}{Stefan's comment:}}\textbf{\color{red}{#1}})}
+%\newcommand{\skcomment}[1]{({\color{blue}{SK's comment:}}\textbf{\color{blue}{#1}})}
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}% latexmk will find this if $recorder=0 (however, in that case, it will ignore #1 if it is a .aux or .pdf file etc and it exists! if it doesn't exist, it will appear in the list of dependents regardless)
+  \@addtofilelist{#1}% if you want it to appear in \listfiles, not really necessary and latexmk doesn't use this
+  \IfFileExists{#1}{}{\typeout{No file #1.}}% latexmk will find this message if #1 doesn't exist (yet)
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+%\newcommand{\comment}[1]{}
+%\myexternaldocument{Supplement}
+\listfiles
+
+\articletype{Research}
+
+%\def\taupav{\tau_{\mathrm{Pav}}}
+
+\begin{document}
+
+
+\title{Modelling the cell-type specific mesoscale murine connectome with anterograde tracing experiments}
+
+\author[Koelle et al]% shortened version for running head, optional
+{Samson Koelle \affil{1,2}, Jennifer Whitesell \affil{1}, Karla Hirokawa \affil{1},  Hongkui Zeng\affil{1}, Marina Meila\affil{2}, Julie Harris\affil{1}, Stefan Mihalas\affil{1}}
+
+\affiliation{1}{Allen Institute for Brain Science, Seattle, WA, USA}
+
+\affiliation{2}{Department of Statistics, University of Washington, Seattle, WA, USA}
+
+\correspondingauthor{Stefan Mihalas}{stefanm@alleninstitute.org}
+
+\keywords{[Connectivity, Cell-type, Mouse]}
+
+\begin{abstract}
+The Allen Brain Connectivity Atlas consists of anterograde tracing experiments targeting diverse
+structures and classes of projecting neurons. Beyond anterograde tracing done in C57BL6 wildtype mice, a large fraction of these experiments are performed using transgenic cre lines. This allows access to cell-class specific connectivity information, with class defined by the transgenic lines.
+However, even though the number of experiments is large, it does not come close to covering all existing cell classes in every area where they exist.
+We study how much we can fill in these gaps and construct a voxel-based connectivity given the observations that nearby voxels have similar connections when they are in the same area, that connections can change dramatically at area boundaries, and that particular cell classes can have similar connections, but that this similarity is region-dependent.  
+
+This paper describes the conversion of these experiments into class-specific connectivity matrices representing the connection between source and target structures. We introduce and validate a novel statistical model for creation of connectivity matrices. We expand a Nadaraya-Watson kernel learning method which we previous used to fill in spatial gaps, to also fill in a gaps in cell class connectivity information. To do this, we construct a "cell-class space" and combine smoothing in 3D spatial as well as in this abstract space to share information between similar neuron classes.
+Using this method we construct a set of connectivity matrices using multiple levels of resolution at which discontinuities in connectivity are assumed. We show that the connectivities obtained from this model display expected cell-type and structure specific connectivities. 
+Inspired by how this complexity arises from a much smaller set of genetic information during development, we also show that the wild-type connectivity matrix can be factored using a small set of factors, and we uncover the underlying latent structure.
+
+\end{abstract}
+
+\begin{authorsummary}
+Large scale studies have described the connections between areas multiple mammalian models in ever expanding detail. Standard connectivity studies focus on the connection strength between areas. However, when describing functions at a local circuit level, there is an increasing focus on cell types.  We have recently described the importance of connection types in the cortico-thalamic system, which allows an unsupervised discovery of its hierarchical organization. In this study we focus on adding a dimension of connection type for a brain-wide mesoscopic connectivity model. Even with our massive dataset, the data in the type direction for the connectivity is quite sparse, and we had to develop methods to more reliably extrapolate in such directions, and to estimate when such extrapolations are impossible. This allows us to fill in such a connection type specific inter-areal connectivity matrix to the extent our data allows us to. 
+While analysing this complex connectivity, we observed that it can be described via a small set of factors. 
+While not complete, this connectivity matrix represents a large leap forward in mouse connectivity models. 
+\end{authorsummary}
+
+\newpage
+
+\input{connectivity-introduction.tex}
+\newpage
+\input{connectivity-methods.tex}
+\newpage
+\input{connectivity-results.tex}
+\newpage
+\input{connectivity-discussion.tex}
+
+\newpage
+
+\acknowledgments
+The Funder and award ID information you input at submission will be introduced by the publisher under a Funding Information head during production.
+Please use this space for any additional acknowledgements and verbiage required by your funders.
+\newpage
+\input{connectivity-supplement.tex}
+
+\newpage
+\section{Competing Interests}
+\label{sec:comp}
+This is an optional section. If you declared a conflict of interest when you submitted your manuscript, please  use this space to provide details about this conflict.
+
+\newpage
+\bibliography{bibsamp}
+
+\newpage
+\section{Technical Terms}
+
+\textbf{Technical Term} a key term that is mentioned in an NETN article and whose usage and definition may not be familiar across the broad readership of the journal. 
+
+
+\textbf{Cre-line}  Refers to the combination of cre-recombinase expression in transgenic mouse and cre-induced promotion in the vector that induces labelling of cell-class specific projection. 
+
+\textbf{Cell class} The projecting neurons targeted by a particular cre-line 
+
+\textbf{structural connectivities}  connectivity between structures 
+
+\textbf{Voxel} A $100 \mu m$ cube of brain. 
+
+\textbf{structural connection tensor}  Connectivities between structures given a neuron class
+
+\textbf{dictionary-learning} A family of algorithms for finding low-dimensional data representations.
+
+\textbf{shape constrained estimator} A statistical estimator that fits a function of a particular shape (e.g. monotonic increasing, convex).
+
+\textbf{Nadaraya-Watson} A simple smoothing estimator.
+
+\textbf{connectivity archetypes} Typical connectivity patterns
+
+ \textbf{Expected Loss} Our new estimator that weights different features by their estimated predictive power.
+ 
+%All NETN article types require Technical Terms.
+
+%Identify approximately 10 key terms that are mentioned in your article and whose usage and definition may not be familiar across the broad readership of the journal. 
+%Provide brief (20-word or less) definitions for each term, avoiding in these definitions the use of jargon, or highly technical or specialized language. 
+%When the article is typeset, the Technical Terms will appear in the margins at or near their first mention in the text.
+
+%In your manuscript, bold the first occurrence of each \textbf{Technical Term} and then provide a list of the terms and their definitions at the end of the manuscript after the references. 
+
+
+\end{document}
+
+
+%\newpage

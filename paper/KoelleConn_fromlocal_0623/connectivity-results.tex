@@ -1,0 +1,245 @@
+\section{Results}
+\label{sec:results}
+
+We provide several types of results.
+First, we show that the novel expected-loss (EL) estimator performs best in our validation assays.
+Second, qualitative comparison with known biological markers through exploratory analysis confirms that the Cre-specific connectivity matrices generated using this model are consistent with known biology. 
+Third, statistical decomposition of the wild-type connectivity matrix using unsupervised learning shows how archetypal components can combine to produce observed signals.
+
+\subsection{Model evaluation}
+\label{sec:model_eval}
+
+Our EL model generally performs better than the other estimators that we consider.
+Table \ref{tab:crossvalidation} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from  \citet{Knox2019-ot}.
+The EL model combines the good performance of class-specific models like NW Leaf-Cre in regions like Isocortex with the good performance of class-agnostic models in regions like Thalamus.
+Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}.
+In particular, Supplementary Table \ref{tab:eval_size} contains the sizes of these evaluation sets in each major structure, and Supplementary Section \ref{supp_sec:loss_subsets} contains the structure- and class specific losses.
+
+\begin{table}[H]
+\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+& Mean Leaf-Cre & NW Major-Cre& NW Leaf-Cre & NW Leaf &NW Major-WT  & NW Major & EL \\
+$\widehat f$ &           Mean & \multicolumn{5}{l}{NW} &     EL \\
+$\mathcal D$ & $I_c \cap I_L$ & $I_c \cap I_M$ & $I_c \cap I_L$ & $I_L$ & $I_{wt} \cap I_M$ &  $I_M$ &  $I_L$ \\
+\midrule
+Isocortex &          0.264 &          0.256 &          0.257 &             0.358 &          0.370 &  0.370 &  \textbf{0.246} \\
+OLF       &          0.185 &          0.215 &          0.184 &             \textbf{0.131 }&          0.175 &  0.175 &  0.136 \\
+HPF       &          0.176 &          0.335 &          0.170 &             0.201 &          0.235 &  0.235 &  \textbf{0.148} \\
+CTXsp     &         \textbf{ 0.758} &          \textbf{0.758} &          \textbf{0.758} &             \textbf{0.758 }&          \textbf{0.758 }&  \textbf{0.758 }&  \textbf{0.758} \\
+STR       &          0.131 &         \textbf {0.121} &          0.129 &             0.173 &          0.236 &  0.236 &  0.125 \\
+PAL       &          0.220 &          0.223 &          0.220 &             0.339 &          0.324 &  0.324 &  \textbf{0.197} \\
+TH        &          0.634 &          0.626 &          0.634 &             0.362 &         \textbf {0.360} &  \textbf{0.360 }&  0.366 \\
+HY        &          0.388 &          0.392 &          0.381 &             0.359 &          0.338 &  0.338 &  \textbf{0.331} \\
+MB        &          0.213 &          0.232 &          0.201 &             0.276 &          0.285 &  0.285 &  \textbf{0.195} \\
+P         &          0.309 &          0.309 &          0.309 &             0.404 &          0.402 &  0.402 &  \textbf{0.306} \\
+MY        &          0.261 &          0.340 &          0.261 &             0.188 &         \textbf{ 0.187 }&  \textbf{0.187} &  0.198 \\
+CB        &          0.062 &          \textbf{0.061} &          0.062 &             0.067 &          0.111 &  0.111 &  0.068 \\
+\bottomrule
+\end{tabular}
+\caption{Losses from leave-one-out cross-validation of candidate models. \textbf{Bold} numbers are best for their major structure.}
+\label{tab:crossvalidation}
+\end{table}
+
+\newpage
+
+\subsection{Connectivities}
+
+Our main result is the estimation of matrices $\hat {\mathcal C}_v \in \mathbb R_{\geq 0}^{S \times T}$ representing connections of source structures to target structures for particular cre-lines $v$. 
+We confirm the detection of several well-established connectivities within our tensor, although it is our expectation that additional interesting biological processes are also manifest.
+The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
+%Note that many entries of these matrices are missing due to lack of experiments.
+
+\subsubsection{Overall connectivity}
+
+Several expected biological processes are evident in the wild-type connectivity matrix $\mathcal C_{wt}$ from leaf sources to leaf targets shown in Figure \ref{fig:full_wt}.
+Intraareal connectivities are clear, as are ipsilateral connections between cortex and thalymus.
+The clear intrastructural and intraareal connectivities mirror previous estimates in \citet{Oh2014-kh} and \citet{Knox2019-ot} and descriptive depictions of individual experiments in \citet{Harris2019-mr}.
+These short-range connectivities define a 
+
+Compared with the wild-type specific connectivities in \citet{Knox2019-ot}, ours appear more variable.
+This is both because of the layer-specific targeting, and also the layer-specificity of the selected model.
+Although layer-specificity is a major advantage of including distinct Cre-lines, for comparison, we also plot coarser projections between summary-structure sources and targets in the cortex in Figure \ref{fig:cortex_wt}.
+These are averages over component layers weighted by layer size.
+Grossly congruent with the previous work, our results exhibit a larger range of connectivities than those in \citet{Knox2019-ot}, and therefore appear more dense.
+
+
+\newpage
+
+\begin{figure}[H]
+\centering
+    \subfloat[] {
+    \label{fig:full_wt}
+    \includegraphics[width = \textwidth]{analyses/paper/figures/conn_leafs_0617.png}
+    } 
+        \newline
+       \subfloat[] {
+    \label{fig:cortex_wt}
+    \includegraphics[width = .5\textwidth]{analyses/paper/figures/conn_sum_cortex_0617.png}
+    } 
+   \caption{Wild-type connectivities.
+   \ref{fig:full_wt} Log wild-type connectivity matrix $\log \mathcal {C} (s,t,v_{wt})$.
+   \ref{fig:cortex_wt} Log wild-type intracortical connectivity matrix at the summary structure level.}
+   \label{fig:connectome}
+\end{figure}
+
+\newpage
+\subsubsection{Class-specific connectivities}
+
+Source and cell-type combinations which project similarly indicate the network structure underpinning cognition.
+Our estimates of these class-specific connectivities exhibit certain known behaviors.
+In Figure \ref{fig:data_ct}, we display results for the VISp and MO cortical areas.
+These are ideal testbeds for our connectivities because they have well-established layer-specific projection patterns that can be detected with our layer-specific Cre-line based targeting \citet{Jeong2016-dc}, and are also well-represented in our dataset.
+
+Our results are consistent with anterograde tracing experiments outside our dataset \citet{Jeong2016-dc}.
+Figure \ref{fig:ct_spc} shows that in VISp, the Ntsr1-Cre line strongly targets the thalymic LP nuclei, and in MO, layer 5 projects to anterior basolateral amygdala (BLA) and capsular central amygdala (CEA), while layer 6 does not.
+Recall that we display connectivity estimates for structures with at least one injection centroid in the structure.
+Thus, the position of non-zero rows in Figure \ref{fig:ct_spc} shows the localization of Rbp4-Cre and Ntsr1-Cre injection centroids to layers 5 and 6 respectively (this is further examined in Supplemental Figure \ref{fig:iso_count}).
+Thus, as a heuristic alternative model, to also synthesize information about leafs targeted by different Cre-lines, we also generate an average connectivity matrix over all Cre-lines.
+This model is not evaluated in our testing, and is only a general stand-in for overall behavior, but provides a useful summary of results.
+
+Cell-class, while often correlated with cortical layer, is often a stronger driver of connectivity than summary structure.
+Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from visual signal processing leafs in the cortex to cortical and thalymic nucleii.
+We use heirarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
+Examining the former, we can see that the Ntsr1 Cre-line distinctly projects to thalymic nucleii, regardless of summary structure.
+This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
+Similarly, layer 6 targets are not strongly projected to by any of the displayed Cre-lines.
+There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
+
+\newpage
+
+\begin{figure}[H]
+\subfloat[]{
+\label{fig:ct_spc}
+    \includegraphics[width=.8\textwidth]{analyses/paper/figures/visp_mo_0615.png} 
+    }
+    \newline
+ \subfloat[]{
+ \label{fig:ct_clust}
+    \includegraphics[width=.8\textwidth]{analyses/paper/figures/heirarchical.png}
+    }
+    
+    \caption{  Cell-class specificity. \ref{fig:ct_spc} Selected cell-class and layer specific connectivities from VISp and MO.
+	 Sources without a injection of that Cre-type are not estimated due to lack of data for that Cre-line in that structure.
+    		\ref{fig:ct_clust}
+		Heirarchical clustering of connectivity strengths from visual signal processing cell-types to cortical and thalymic targets.
+		Cre-line, summary structure, and layer are labelled on the sources.
+		Major brain division and layer are labelled on the targets.}
+\label{fig:data_ct}
+\end{figure}
+
+\newpage
+
+\subsection{Connectivity Analyses}
+
+Each structural connectivity matrix is a high-dimensional realization of relatively few biological processes, and decomposition of neural signals to recover these processes is a fundamental goal in neuroscience.
+In this section, we apply non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of archetypal connectivities.
+This decomposes the remaining censored connectivity matrix into a linear model based off a relatively small number of distinct signals.
+This model is able to capture a large amount of the observed variability, and recovers structure-specific archetypal signals.
+
+These signals are plotted in Figure \ref{fig:nmf_results}, and technical details and intermediate results are given in Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}, respectively.
+These details include a cross-validation based method for selecting the number of components, a masking method for focusing only on long range connections, and a stability method for ensuring that the decomposition is reliable across computational replicates.
+The plotted decomposition shows that these underlying connectivity archetypes correspond strongly to major brain division.
+However, certain components that predominantly represent connectivity from a given major brain division may also be accessed from other areas.
+For example, the IP and FN regions of CB are strongly associated in \ref{fig:W} with the component projecting to MY in \ref{fig:H}.
+
+\newpage
+
+\begin{figure}[H]
+\begin{tabular}[t]{c}
+\subfloat[]{\includegraphics[width = .8 \textwidth]{paper/figures/H_wt_0617.png}
+\label{fig:H}}
+\\
+%\subfloat[]{\includegraphics[width = 1.5in]{figs/figsforpres/test_train.png}} &
+\subfloat[]{
+\includegraphics[width = .3\textwidth]{paper/figures/W_wt_0617.png}
+\label{fig:W}
+}
+\end{tabular}
+\caption{Non-negative matrix factorization results $\mathcal C_{wt} = WH$ for $q = 15$ components.
+\ref{fig:H} Latent space coordinates $H$ of $\mathcal C$.
+Target major structure and hemisphere are plotted.
+\ref{fig:W} Loading matrix $W$.
+Source major structure and layer are plotted.
+}
+\label{fig:nmf_results}
+\end{figure}
+
+\newpage
+%
+
+
+\newpage
+
+
+ \begin{comment}
+\begin{figure}[H]
+\centering
+    \subfloat[] {
+   % \raisebox{-.5\height}
+    \includegraphics[width = \linewidth]{analyses/paper/figures/conn_leafs_0617.png}
+    } 
+    \\
+    \vspace{-2cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \tiny
+\begin{tabular}{lrllll}
+\toprule
+{} &  \#\pbox{20cm} {Ipsilateral \\ Leaf Targets } & \pbox{20cm}{Top \\ Entropy }& Bottom Sparsity & Bottom Entropy & Top Sparsity \\
+\midrule
+Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
+OLF       &                          11 &         TMv &             III &            III &          NaN \\
+HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
+CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
+STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
+PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
+TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
+HY        &                          44 &         CLA &              SH &            LSc &           DG \\
+MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
+P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
+MY        &                          43 &          RT &             NaN &             OV &          EPd \\
+CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
+\bottomrule
+\end{tabular}
+    }
+}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \includegraphics[width = 3in]{figs/st_graph}
+    }
+    } \\
+     \vspace{-4cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \tiny
+    \begin{tabular}{lrllll}
+       
+\toprule
+{} &  \# Ipsilateral Leaf Targets & Top Entropy & Bottom Sparsity & Bottom Entropy & Top Sparsity \\
+\midrule
+Isocortex &                          51 &          CP &             BAC &            BAC &         ENTl \\
+OLF       &                          11 &         TMv &             III &            III &          NaN \\
+HPF       &                          15 &          IG &             EPv &             PA &          NaN \\
+CTXsp     &                           7 &          TT &              FC &            APr &           TT \\
+STR       &                          14 &         RPA &             ISN &            PYR &           TU \\
+PAL       &                           9 &          PG &           ACVII &             GR &           MG \\
+TH        &                          44 &         NOD &              DN &         SSp-ll &          SCm \\
+HY        &                          44 &         CLA &              SH &            LSc &           DG \\
+MB        &                          39 &         NDB &            SubG &            SGN &          SUB \\
+P         &                          26 &          MT &            Acs5 &            SOC &          NDB \\
+MY        &                          43 &          RT &             NaN &             OV &          EPd \\
+CB        &                          18 &         ECT &             AOB &            MOB &           GU \\
+\bottomrule
+\end{tabular}
+}
+}
+\vspace{-4cm}
+    \subfloat[]{
+    \adjustbox{valign=c}{
+    \includegraphics[width = 3in]{figs/page_graph}
+    }
+    }
+\end{figure}
+\end{comment}
+
