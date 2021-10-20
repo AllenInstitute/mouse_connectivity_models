@@ -33,7 +33,7 @@ def get_connectivity_data(cache, structure_ids, experiments_exclude, remove_inje
         model_data = ModelData(cache, sid, structure_set_id)
         sid_data.eids = model_data.get_experiment_ids(experiments_exclude=experiments_exclude, cre=None)
         for eid in sid_data.eids:
-            print(eid)
+            #print(eid)
             eid_data = get_ccf_data(cache, eid, folder)
             eid_data.data_mask_tolerance = .5
             eid_data.injection_signal_true = eid_data.injection_signal * eid_data.injection_fraction # see help(cache.get_injection_density)

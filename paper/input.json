@@ -1,4 +1,0 @@
-{
-  "structures" : ["Isocortex", "OLF", "HPF", "CTXsp", "STR", "PAL", "TH", "HY", "MB", "P", "MY", "CB"],
-  "manifest_file": "connectivity/mcmodels_manifest.json"
-}

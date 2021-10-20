@@ -98,6 +98,54 @@
       "type": "file",
       "spec": "experiment_%d/alignment3d.json",
       "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NODES",
+      "type": "file",
+      "spec": "voxel_model/nodes.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "WEIGHTS",
+      "type": "file",
+      "spec": "voxel_model/weights.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "SOURCE_MASK",
+      "type": "file",
+      "spec": "voxel_model/source_mask_params.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "TARGET_MASK",
+      "type": "file",
+      "spec": "voxel_model/target_mask_params.json",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "CONNECTION_DENSITY",
+      "type": "file",
+      "spec": "voxel_model/connection_density.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "CONNECTION_STRENGTH",
+      "type": "file",
+      "spec": "voxel_model/connection_strength.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NORMALIZED_CONNECTION_DENSITY",
+      "type": "file",
+      "spec": "voxel_model/normalized_connection_density.csv.gz",
+      "parent_key": "BASEDIR"
+    },
+    {
+      "key": "NORMALIZED_CONNECTION_STRENGTH",
+      "type": "file",
+      "spec": "voxel_model/normalized_connection_strength.csv.gz",
+      "parent_key": "BASEDIR"
     }
   ]
 }

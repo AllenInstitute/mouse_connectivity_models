@@ -23,10 +23,10 @@ from mcmodels.core.experiment_data import ExperimentData
 def get_ccf_data(cache, experiment_id, folder):
 
     eid_data = ExperimentData(experiment_id)
-    eid_data.data_quality_mask = cache.get_data_mask(experiment_id, folder + str(experiment_id))[0]
-    eid_data.injection_signal = cache.get_injection_density(experiment_id, folder +str(experiment_id))[0]
-    eid_data.injection_fraction = cache.get_injection_fraction(experiment_id, folder + str(experiment_id))[0]
-    eid_data.projection_signal = cache.get_projection_density(experiment_id, folder +  str(experiment_id))[0]
+    eid_data.data_quality_mask = cache.get_data_mask(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/data_mask_100.nrrd')[0]
+    eid_data.injection_signal = cache.get_injection_density(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/injection_density_100.nrrd')[0]
+    eid_data.injection_fraction = cache.get_injection_fraction(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/injection_fraction_100.nrrd')[0]
+    eid_data.projection_signal = cache.get_projection_density(experiment_id, folder+ 'experiment_'+ str(experiment_id) + '/projection_density_100.nrrd')[0]
     return(eid_data)
 
 def get_centroid(density):
