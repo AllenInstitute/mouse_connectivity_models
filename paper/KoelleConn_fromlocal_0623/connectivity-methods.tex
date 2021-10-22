@@ -49,11 +49,11 @@ Thus, we use the term cell class to describe neurons expressing cre in a specifi
 This is the notion of cell-type specificity that we model.
 
 The fluorescent signal imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional idealized model of the brain that is consistent between animals.
-This imaging and alignment procedure (described in detail in \citep{Harris2019-mr}) records fluorescent intensity discretized at the $100 \; \mu$m \textit{voxel} level. 
+This imaging and alignment procedure (described in detail in \citep{Harris2019-mr}) records fluorescent intensity discretized at the $100 \; \mu$m \textbf{voxel} level. 
 Given an experiment, this image is histologically segmented into \textit{injection} and \textit{projection} areas corresponding to areas containing somas, dendrites and axons or exclusively axons of the transfected neurons.
 An example for a single experiment is given in Figure \ref{fig:injproj}.
 
-Our goal is the estimation of \textit{structural connectivity} from one structure to another.
+Our goal is the estimation of \textbf{structural connectivity} from one structure to another.
 A visual depiction of this structural regionalization for a slice of the brain is given in Figure \ref{fig:segment}.
 For different areas of the brain, the Allen Brain Atlas contains different depths of regionalization.
 We denote these levels as Major Structures, Summary Structures, and Leafs.
@@ -82,7 +82,7 @@ A detailed mathematical description of these steps, including data quality contr
 We define
 \begin{align*}
 &\text{\textit {structural connectivity strength} } \mathcal C : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C(v,s,t) = \sum_{l_{s_j} \in s} \sum_{l_{j'} \in  t} f(v,l_{j},l_{j'}), \\
-&\text{\textit {normalized structural connectivity strength} } \mathcal C^N : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C^S(v,s,t) = \frac{1}{|s|} \mathcal C(v,l_{j},l_{j'}), \\
+&\text{\textit {normalized structural connectivity strength} } \mathcal C^N : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C^N(v,s,t) = \frac{1}{|s|} \mathcal C(v,l_{j},l_{j'}), \\
 &\text{\textit {normalized structural projection density} } \mathcal C^D : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0} \text{ with } \mathcal C^D(v,s,t) = \frac{1}{| s | | t|}\mathcal C(v,l_{j},l_{j'}).
 \end{align*}
 %These are the total strength and average strength from source to target regions for each class \skcomment{no density}.
@@ -110,14 +110,18 @@ Additional information on these estimators is given in Supplemental Section \ref
         NNLS \citep{Oh2014-kh} & $\widehat f (S)$ & \nnls(X,Y) & $X= x_{\mathcal S},Y = y_{\mathcal T}$ & $ I_m / I_m$ \\
         NW \citep{Knox2019-ot} &$ \sum_{l_s \in s} \widehat f (l_s)$ & \nw(X,Y)  & $X = c, Y = y_{\mathcal T}$ & $I_m /I_m$ \\
         %Cre-leaf-mean & & & & \\
-        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & \nw(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ (I_s \cap I_v) / I_m$ \\
-        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\el(X,Y,v)$ & $X= c, Y = y_{\mathcal T}, v$  &$I_s / I_m$
+        Cre-NW& $\sum_{l_s \in s} \widehat f(l_s)$ & \nw(X,Y) & $X= c, Y = y_{\mathcal T}$  &$ (I_l \cap I_v) / I_m$ \\
+        Expected Loss (EL) & $\sum_{l_s \in s} \widehat f (s)$ & $\el(X,Y,v)$ & $X= c, Y = y_{\mathcal T}, v$  &$I_l / I_m$
     \end{tabular}
     \caption{Estimation of $\mathcal C$ using connectivity data.
     The regionalization, estimation, and featurization steps are denoted by $f^*, \widehat f,$ and  $f_*$, respectively.
     The training data used to fit the model is given by $I$.
-    We denote experiments with centroids in particular major brain divisions and leafs as $I_m$ and $I_s$, respectively.
-    Data $I_s / I_m$ means that, given a location $l_s \in s \in m$, the model $\widehat f$ is trained on all of $I_m$, but only uses $I_s$ for prediction. \smcomment{add more description of NNLS, NW, etc}
+    We denote experiments with centroids in particular major brain divisions and leafs as $I_m$ and $I_l$, respectively.
+    Data $I_l / I_m$ means that, given a location $l_s \in s \in m$, the model $\widehat f$ is trained on all of $I_m$, but only uses $I_l$ for prediction.
+    The non-negative least squares estimator (NNLS) fits a linear model that predicts structural projection signal as a function of structural injection signal.
+    It generates estimated connectivities for individual structures.
+    The Nadaraya-Watson model (NW) is a local smoothing model that generates a prediction for each voxel within a structure.
+    These predictions are averaged to create estimate the structure-specific connectivity.
     }
     \label{tab:estimators}
 \end{table}
@@ -125,7 +129,7 @@ Additional information on these estimators is given in Supplemental Section \ref
 Our contributions have several differences from the previous methods.
 In contrast to the non-negative least squares \citep{Oh2014-kh} and Nadaraya-Watson  \citep{Knox2019-ot} estimators that take into account $s$ and $t$, but not $v$, our new estimators specifically account for cell class.
 The Cre-NW estimator only uses experiments from a particular class to predict connectivity for that class, while the EL estimator shares information between classes within a structure.
-A detailed mathematical description of our new estimator is given in Appendix \ref{supp_sec:el}.
+A detailed mathematical description of our new estimator is given in Supplemental Section \ref{supp_sec:el}.
 This estimator takes into account two types of covariate information about each experiment: the centroid of the injection, and the Cre-line.
 Like the NW and Cre-NW estimator, the EL estimator generates predictions for each voxel in a structure, and then sums them together to get the overall connectivity.
 However, in contrast to these alternative approaches, when predicting the projection pattern of a certain cell-class at a particular location, the EL estimator weights the average behavior of the class in the structure containing the location in question against the locations of the various proximal experiments. 
@@ -135,9 +139,9 @@ Thus, nearby experiments with similar Cre-lines can help generate the prediction
 
 \subsection{Model evaluation}
 
-We select optimum functions from within and between our estimator classes using {\textit leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data. %in leave-one-out cross-validation.
+We select optimum functions from within and between our estimator classes using \textbf{leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data. %in leave-one-out cross-validation.
 Equation \ref{eq:estimator} includes a deterministic step $f^*$ included without input by the data.
-The performance of $\widehat {\mathcal C (v,s,t)}$ is thus determined by performance of $\widehat f (f_*(\mathcal D(v,s)))$.
+The performance of $\widehat {\mathcal C} (v,s,t)$ is thus determined by performance of $\widehat f (f_*(\mathcal D(v,s)))$.
 Furthermore, we can represent $f$ as $f_{\mathcal T}: \mathbb R^3 \to \mathbb R_{\geq 0}^T$ giving the structural connection strength at a given location.
 This is the predictand we evaluate. 
 
@@ -164,7 +168,7 @@ These approaches are covered in Supplemental Section \ref{supp_sec:methods_lower
 
 We show neuronal processes underlying our estimated connectome using two types of unsupervised learning.
 Our use of heirarchical clustering is standard, and so we do not review it here.
-However, our application of non-negative matrix factorization (NMF) to decompose the estimated long-range connectivity into \textit{connectivity archetypes} that linearly combine to reproduce the observed connectivity is novel and technically of some independent interest.
+However, our application of non-negative matrix factorization (NMF) to decompose the estimated long-range connectivity into \textbf{connectivity archetypes} that linearly combine to reproduce the observed connectivity is novel and technically of some independent interest.
 Non-negative matrix factorization refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a non-negatively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
 Unlike PCA, NMF specifically accounts for the fact that data are all in the positive orthant.
 This $H$ is typically used to identify latent structures with interpretable biological meaning, and the choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations. 
@@ -172,7 +176,7 @@ This $H$ is typically used to identify latent structures with interpretable biol
 Our algorithm is 
 \begin{eqnarray*}
 \label{eq:nmf}
-\nmf(\mathcal C, \lambda, q) := \arg \min_{W, H} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
+\nmf(\mathcal C, \lambda, q) := \arg \min_{W\in \mathbb R^{S \times q}_{\geq 0}, H \in \mathbb R^{q  \times T}_{\geq 0}} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
 For this decomposition we ignore connections between source and and target regions less than  $1500 \mu m$ apart.
 This is because short-range projections resulting from diffusion dominate the matrices $\hat {\mathcal C}$, and represent a less-interesting type of biological structure.
