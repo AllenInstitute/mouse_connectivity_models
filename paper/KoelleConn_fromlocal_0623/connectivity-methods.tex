@@ -82,11 +82,12 @@ A detailed mathematical description of these steps, including data quality contr
 We define
 \begin{align*}
 &\text{\textit {structural connectivity strength} } \mathcal C : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C(v,s,t) = \sum_{l_{s_j} \in s} \sum_{l_{j'} \in  t} f(v,l_{j},l_{j'}), \\
-&\text{\textit {normalized structural connectivity strength} } \mathcal C^S : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C^S(v,s,t) = \frac{1}{|s|} \mathcal C(v,l_{j},l_{j'}), \\
-%&\text{\textit {normalized structural projection density} } \mathcal C^D : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0} \text{ with } \mathcal C^D(v,s,t) = \frac{1}{| s | | t|}\mathcal C(v,l_{j},l_{j'}).
+&\text{\textit {normalized structural connectivity strength} } \mathcal C^N : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C^S(v,s,t) = \frac{1}{|s|} \mathcal C(v,l_{j},l_{j'}), \\
+&\text{\textit {normalized structural projection density} } \mathcal C^D : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0} \text{ with } \mathcal C^D(v,s,t) = \frac{1}{| s | | t|}\mathcal C(v,l_{j},l_{j'}).
 \end{align*}
-These are the total strength and average strength from source to target regions for each class \skcomment{no density}.
-Since the normalized strength is computable from the strength via a fixed normalization, our main statistical goal is to estimate $\mathcal C (v,s,t) $ for all $v, s$ and $t$.% and density are
+%These are the total strength and average strength from source to target regions for each class \skcomment{no density}.
+Since the normalized strength and densities are computable from the strength via a fixed normalization, our main statistical goal is to estimate $\mathcal C (v,s,t) $ for all $v, s$ and $t$.% and density are
+In other words, we want to estimate matrices $\mathcal C_v \in \mathbb R_{\geq 0}^{S \times T}$.
 We call this estimator $\widehat { \mathcal C } $.
 
 Construction of such an estimator raises the questions of what data to use for estimating which connectivity, how to featurize the dataset, what statistical estimator to use, and how to reconstruct the connectivity using the chosen estimator.

@@ -96,12 +96,12 @@ Grossly congruent with the previous work, our results exhibit a larger range of 
 \centering
     \subfloat[] {
     \label{fig:full_wt}
-    \includegraphics[width = \textwidth]{analyses/paper/figures/conn_leafs_0617.png}
+    \includegraphics[width = \textwidth]{figs/conn_leaf2.png}
     } 
         \newline
        \subfloat[] {
     \label{fig:cortex_wt}
-    \includegraphics[width = .5\textwidth]{analyses/paper/figures/conn_sum_cortex_0617.png}
+    \includegraphics[width = .5\textwidth]{figs/conn_sum_cortex.png}
     } 
    \caption{Wild-type connectivities.
    \ref{fig:full_wt} Log wild-type connectivity matrix $\log \mathcal {C} (s,t,v_{wt})$.
@@ -137,12 +137,12 @@ There are too many targeted summary structures to plot here, but we expect that 
 \begin{figure}[H]
 \subfloat[]{
 \label{fig:ct_spc}
-    \includegraphics[width=.8\textwidth]{analyses/paper/figures/visp_mo_0615.png} 
+    \includegraphics[width=.8\textwidth]{figs/visp_mo.png} 
     }
     \newline
  \subfloat[]{
  \label{fig:ct_clust}
-    \includegraphics[width=.8\textwidth]{analyses/paper/figures/heirarchical.png}
+    \includegraphics[width=.6\textwidth]{figs/heirarchical.png}
     }
     
     \caption{  Cell-class specificity. \ref{fig:ct_spc} Selected cell-class and layer specific connectivities from VISp and MO.
@@ -169,23 +169,34 @@ The plotted decomposition shows that these underlying connectivity archetypes co
 However, certain components that predominantly represent connectivity from a given major brain division may also be accessed from other areas.
 For example, the IP and FN regions of CB are strongly associated in \ref{fig:W} with the component projecting to MY in \ref{fig:H}.
 
+Inspection of the reconstructed distal normalized connection strength using the top $15$ components shows qualitatively shows that this relatively sparse decomposition is able to capture much of the observed variability.
+Layer-specific targeting is evident, indicating that the factorization method is detecting cell-type specific signals, even though it is trained only on the wild-type connectivity.
+Other connectivity patterns like cortical-cortical and cortical-thalymic are also detected.
+
 \newpage
 
 \begin{figure}[H]
-\begin{tabular}[t]{c}
-\subfloat[]{\includegraphics[width = .8 \textwidth]{paper/figures/H_wt_0617.png}
-\label{fig:H}}
-\\
-\subfloat[]{
-\includegraphics[width = .3\textwidth]{paper/figures/W_wt_0617.png}
-\label{fig:W}
-}
+\centering
+\hspace{1cm}
+\subfloat[]{\includegraphics[width = .85 \textwidth]{figs/H_wt.png}
+\label{fig:H}} 
+\newline
+\begin{tabular}[t]{cc}
+\adjustbox{valign=t}{\subfloat[]{
+\includegraphics[width = .3\textwidth]{figs/W_wt.png}
+\label{fig:W}}
+} & 
+\adjustbox{valign=t}{\subfloat[]{
+\includegraphics[width = .7\textwidth]{figs/conn_leafs_recon.png}
+\label{fig:recon}}
+} 
 \end{tabular}
-\caption{Non-negative matrix factorization results $\mathcal C_{wt} = WH$ for $q = 15$ components.
+\caption{Non-negative matrix factorization results $\mathcal C_{wt}^N = WH$ for $q = 15$ components.
 \ref{fig:H} Latent space coordinates $H$ of $\mathcal C$.
 Target major structure and hemisphere are plotted.
 \ref{fig:W} Loading matrix $W$.
 Source major structure and layer are plotted.
+\ref{fig:recon} Reconstruction of the normalized distal connectivity strength using the top $15$ archetypes.  Areas less than $1500 \mu m$ apart are not modeled, and therefore shown in red.
 }
 \label{fig:nmf_results}
 \end{figure}

@@ -20,6 +20,7 @@ pip install allensdk==1.3.0
 pip install pygam
 pip install openpyxl
 
+Add the custom utils/validation and decomposition/_nmf files to sklearn
 source deactivate mcm_class
 conda env remove --name mcm_class
 
