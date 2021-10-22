@@ -365,13 +365,13 @@ We can then select $\hat \gamma$ as in \ref{eq:gamma_sel}.
 \begin{figure}[H]
 \begin{tabular}[t]{cc}
 \subfloat[]{
-    \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_scatter.png}
+    \includegraphics[width = 2.1in]{figs/315_summary_scatter.png}
    % \caption{Isocortex loss distribution}
     \label{fig:expected_loss} 
    }
     &
     \subfloat[]{
-    \includegraphics[width = 2.1in]{figs/figsforpres/315_summary_surface.png}
+    \includegraphics[width = 2.1in]{figs/315_summary_surface.png}
    % \caption{$\hat g$ fit to expected-loss using shape-constrained splines}
    \label{fig:expected_loss_surface}
     }
@@ -473,7 +473,7 @@ Aside from the NMF program itself, the key elements are selection of the number 
 \subsubsection{Non-negative matrix factorization}
 
 As discussed in \citet{Knox2019-ot}, one of the most basic processes underlying the observed connectivity is the tendency of each source region to predominantly project to proximal regions.
-For example, the heatmap in Supplemental Figure \ref{fig:dist_bw_str} shows intrastructure distances clearly contains a diagonal pattern resembling  the connectivity matrix in \ref{fig:connectome}.
+For example, the heatmap in Supplemental Figure \ref{fig:dist_bw_str} shows intrastructure distances contains a diagonal pattern resembling  the connectivity matrix in \ref{fig:connectome}.
 These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
 For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
 
@@ -561,9 +561,9 @@ We give results on the false detection rate at different limits of detection.
 These conclusively show that $10^{-6}$ is the good threshold for our normalized data.
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{paper/Threshold.png}
+    \includegraphics[width = 7in]{figs/Threshold.png}
     \label{fig:threshold}
-    \caption{$\tau$ at different limits of detection in different major structures.  $10^{-6}$ is clearly the optimal detection threshold.}
+    \caption{$\tau$ at different limits of detection in different major structures.  $10^{-6}$ is the optimal detection threshold.}
 \end{figure}
 
 \newpage
@@ -572,83 +572,89 @@ These conclusively show that $10^{-6}$ is the good threshold for our normalized 
 \label{supp_sec:loss_subsets}
 
 We report model accuracies for our $EL$ model by neuron class and structure.
-These expand upon the results in Table \ref{tab:crossvalidation} and give more specific information about the quality of our estimates. 
+These expand upon the results in Table \ref{tab:crossvalidation} and give more specific information about the quality of our estimates.   CTXsp is omitted due to the small nature of the evaluation set.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_512.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in CB.  Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width = 7in]{figs/lossdetails_703.png} 
-    \label{fig:distances}
-    \caption{}
-\end{figure}
+%\begin{figure}[H]
+ %   \centering
+ %   \includegraphics[width = 7in]{figs/lossdetails_703.png} 
+ %   \label{fig:distances}
+  %  \caption{Weighted loss for cre-leaf combinations in CTXsp.}
+%\end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1089.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in HPF. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1097.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in HY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_315.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in Isocortex. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_313.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in MB. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_354.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in MY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{paper/figures/lossdetails_0618_698.png} 
+    \includegraphics[width = 7in]{figs/lossdetails_698.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in OLF.  Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{paper/figures/lossdetails_0618_771.png} 
+    \includegraphics[width = 7in]{figs/lossdetails_771.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in P. Missing values are omitted.    Row and column averages are also plotted.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 7in]{figs/lossdetails_803.png} 
+    \label{fig:distances}
+    \caption{Weighted loss for cre-leaf combinations in PAL. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{paper/figures/lossdetails_0618_477.png} 
+    \includegraphics[width = 7in]{figs/lossdetails_477.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in STR. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{paper/figures/lossdetails_0618_549.png} 
+    \includegraphics[width = 7in]{figs/lossdetails_549.png} 
     \label{fig:distances}
-    \caption{}
+    \caption{Weighted loss for cre-leaf combinations in TH. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \newpage
