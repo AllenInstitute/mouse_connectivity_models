@@ -18,14 +18,15 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/CB centroid density.png}
-    \label{fig:my_label}
+        \caption{Abundances of cre-line and leaf-centroid combinations.}
+            \label{fig:my_label}
 \end{figure}
 \newpage
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/TH centroid density.png}
-    \caption{Caption}
+    \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -33,7 +34,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/CTXsp centroid density.png}
-    \caption{Caption}
+    \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -41,6 +42,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/P centroid density.png}
+        \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -48,6 +50,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/PAL centroid density.png} 
+        \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -55,6 +58,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/Isocortex centroid density.png}
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:iso_count}
 \end{figure}
 \newpage
@@ -62,6 +66,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/MB centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -69,6 +74,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/MY centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -76,6 +82,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/HPF centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -83,6 +90,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/OLF centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -90,6 +98,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/STR centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -97,6 +106,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/HY centroid density.png} 
+     \caption{Abundances of cre-line and leaf-centroid combinations.}
     \label{fig:my_label}
 \end{figure}
 
@@ -106,7 +116,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 7in]{analyses/paper/figures/distances_leafs.png} 
+    \includegraphics[width = 7in]{figs/distances_leafs.png} 
     \caption{Distance between structures.  Short-range connections are masked in red}
     \label{fig:dist_bw_str}
 \end{figure}
@@ -687,18 +697,16 @@ For the purposes of visualization and interpretability, we restrict to a $q = 15
 To address the instability of the NMF algorithm in identifying components, we $k-means$ cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
 Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index.
 
-\begin{table}[H]
 \begin{tabular}{lrrrrr}
 \toprule
-{} &          0 &          1 &          2 &         3 &          4 \\
-\midrule
-q          &  10 &  15 &  20 &  25 &  30 \\
-Rand index &   0.685081 &   0.789262 &   0.921578 &   \textbf{0.94548} &   0.914799 \\
+%{} &          0 &          1 &          2 &          3 &          4 \\
+%\midrule
+q          &  10.000000 &  20.000000 &  30.000000 &  40.000000 &  50.000000 \\
+Rand index &   0.772544 &   0.844981 &   \textbf{0.932957} &   0.929827 &   0.885862 \\
 \bottomrule
 \end{tabular}
-\end{table}
 
-Since $k$-means is most stable at $k=25$, we cluster the $qR = 150$ components into $25$ clusters and select the $15$ clusters appearing in the most replicates.
+Since $k$-means is most stable at $k=30$, we cluster the $qR = 150$ components into $30$ clusters and select the $15$ clusters appearing in the most replicates.
 \begin{figure}[H]
     \centering
     \includegraphics[width = 5in]{figs/nmfcluster.png} 
