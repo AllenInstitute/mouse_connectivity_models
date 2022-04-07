@@ -55,7 +55,7 @@ We use `Git <https://git-scm.com/>`_ for our version control and `Github
 
 You can check out the latest sources and install using ``pip``::
 
-    $ git clone https://github.com/AllenInstitute/mouse_connectivity_models.git
+    $ git clone git@github.com:AllenInstitute/mouse_connectivity_models.git
     $ cd mouse_connectivity_models
     $ pip install .
 
