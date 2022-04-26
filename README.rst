@@ -10,7 +10,7 @@ Follow the instructions in the master branch at <http://AllenInstitute.github.io
 
 Configuration
 =========================
-`
+```
 conda create -n 'mcm_class' python=3.7 -y
 source activate mcm_class 
 pip install scikit-learn==0.22.1
@@ -24,7 +24,7 @@ pip install openpyxl
 Add the custom utils/validation and decomposition/_nmf files to sklearn
 source deactivate mcm_class
 conda env remove --name mcm_class
-`
+```
 Execution
 =========================
 
