@@ -56,12 +56,13 @@
 \keywords{[Connectivity, Cell-type, Mouse]}
 
 \begin{abstract}
-The Allen Mouse Brain Connectivity Atlas consists of anterograde tracing experiments targeting diverse
-structures and classes of projecting neurons. Beyond regional anterograde tracing done in C57BL/6 wild type mice, a large fraction of experiments are performed using transgenic cre lines. This allows access to cell-class specific whole brain connectivity information, with class defined by the transgenic lines.
+The Allen Mouse Brain Connectivity Atlas consists of anterograde tracing experiments targeting diverse structures and classes of projecting neurons.
+Beyond regional anterograde tracing done in C57BL/6 wild type mice, a large fraction of experiments are performed using transgenic Cre-lines.
+This allows access to cell-class specific whole brain connectivity information, with class defined by the transgenic lines.
 However, even though the number of experiments is large, it does not come close to covering all existing cell classes in every area where they exist.
 Here, we study how much we can fill in these gaps and construct a voxel-based connectivity matrix given the observations that nearby voxels have similar connections when they are in the same area, that connections can change dramatically at area boundaries, and that particular cell classes can have similar connections, but that this similarity is region-dependent.  
 
-This paper describes the conversion of the cre line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures. We introduce and validate a novel statistical model for creation of connectivity matrices. We expand a Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps, to also fill in a gaps in cell class connectivity information. To do this, we construct a "cell-class space" and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
+This paper describes the conversion of the Cre-line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures. We introduce and validate a novel statistical model for creation of connectivity matrices. We expand a Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps, to also fill in a gaps in cell class connectivity information. To do this, we construct a "cell-class space" and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
 Using this method we construct a set of connectivity matrices using multiple levels of resolution at which discontinuities in connectivity are assumed. We show that the connectivities obtained from this model display expected cell-type and structure specific connectivities. 
 Inspired by how this complexity arises from a much smaller set of genetic information during development, we also show that the wild type connectivity matrix can be factored using a small set of factors, and we uncover the underlying latent structure.
 

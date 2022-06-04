@@ -330,17 +330,28 @@ That is,
 
 \label{supp_sec:el}
 
-Besides the injection location, the targeted cell class also influences projection.
-Since Cre-lines that target similar classes are induce similar projections, and including similar Cre-lines in the Nadaraya-Watson estimator increases effective sample size, we introduce an estimator that assigns a predictive weight to each training point that depends both on its centroid-distance and Cre-line.
-This weight is determined by the expected prediction error of each of the two feature types, as determined by cross-validation.
+Besides location of the injection centroid, cell class also influences projection.
+Thus, we introduce method for estimating the effect of Cre-distance, which we define as the distance between the projections of the mean experiment of one (Cre,leaf) pair with another.
+This method assigns a predictive weight to each pair of training points that depends both on their centroid-distance and Cre-distance.
+This weight is determined by the expected prediction error of each of the two feature types
+
+We define Cre-line behavior as the average regionalized projection of a Cre-line in a given structure (i.e. leaf).
+The vectorization of categorical information is known as \textbf{target encoding} 
+\begin{eqnarray*}
+\bar y_{\mathcal T,s,v} := \frac{1}{|I_s \cap I_v|}  \sum_{i \in (I_s \cap I_v)} y_{\mathcal T}(i)
+\end{eqnarray*}
+The Cre-distance is then define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
+The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
+
+ as determined by cross-validation.
+When we use shape-constrained B-splines to estimate this weight, the weights then may be said to be used in a Nadaraya-Watson estimator.
+
+
 For this reason, we call this the Expected Loss Estimator.
 The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
+increase the effective sample size of our Nadaraya-Watson estimator,
 %It shares thefine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
 
-We formalize Cre-line behavior as the average regionalized projection of a Cre-line in a given structure (i.e. leaf).
-This vectorization of categorical information is known as \textbf{target encoding}, and we define this as $\bar y_{\mathcal T,s,v} := \frac{1}{|I_s \cap I_v|}  \sum_{i \in (I_s \cap I_v)} y_{\mathcal T}(i)$.
-We define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
-The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
@@ -360,9 +371,17 @@ and $s$ is the structure containing $l$.
 
 The key step therefore is finding a suitable function $g$ with which to weight the positional and Cre information.
 Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$. Then, $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
-A derivation of this fact is given later in this section, and we therefore use shape-constrained B-splines to estimate $g$.
-Similarly to the Nadaraya-Watson model, we make the decision to fit a $g$ separately for each major brain division.
-We can then select $\hat \gamma$ as in \ref{eq:gamma_sel}.
+A derivation of this fact is given later in this section.
+
+
+ therefore use shape-constrained B-splines to estimate $g$.
+In particular, B-splines is a method for generating a predictive model
+\begin{eqnarray*}
+y = 
+\end{eqnarray}
+In our setting, this gives us a surface the Cre-distance and centroid-distance to the projection-distance response.
+Similarly to the Nadaraya-Watson model, we make the decision to fit a $g$ separately for each major brain division, and select $\hat \gamma$ as in \ref{eq:gamma_sel}.
+We compute our estimates using the pyGAM Python package \citep{Serven2018-aa}.
 
 \newpage
 

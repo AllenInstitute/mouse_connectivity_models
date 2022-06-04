@@ -1,8 +1,0 @@
-/homes/sjkoelle/anaconda3/envs/allen_env5/lib/python3.7/site-packages/sklearn/utils/deprecation.py:144: FutureWarning: The sklearn.linear_model.base module is  deprecated in version 0.22 and will be removed in version 0.24. The corresponding classes / functions should instead be imported from sklearn.linear_model. Anything that cannot be imported from sklearn.linear_model is now part of the private API.
-  warnings.warn(message, FutureWarning)
-/homes/sjkoelle/anaconda3/envs/allen_env5/lib/python3.7/site-packages/sklearn/utils/deprecation.py:144: FutureWarning: The sklearn.metrics.scorer module is  deprecated in version 0.22 and will be removed in version 0.24. The corresponding classes / functions should instead be imported from sklearn.metrics. Anything that cannot be imported from sklearn.metrics is now part of the private API.
-  warnings.warn(message, FutureWarning)
-Traceback (most recent call last):
-  File "ELModel_LeafTarget_ProjNorm_v7.py", line 25, in <module>
-    from mcmodels.connectivity.creation import get_connectivity_matrices3
-ModuleNotFoundError: No module named 'mcmodels.connectivity'
