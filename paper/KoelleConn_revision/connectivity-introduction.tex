@@ -1,0 +1,35 @@
+\section{Introduction}
+ 
+The mammalian nervous system enables an extraordinary range of natural behaviors, and has inspired much of modern artificial intelligence.
+Neural connections from one region to another form the architecture underlying this capability.
+These connectivities vary by neuron type, as well as source (cell body location) and target (axonal projections) structures.
+Thus, characterization of the relationship between neuron type and source and target structure is important for understanding the overall nervous system.
+
+Viral tracing experiments - in which a viral vector expressing GFP is transduced into neural cells through stereotaxic injection - are a useful tool for mapping these connections on the mesoscale \citep{Chamberlin1998-hi,Harris2012-fw, Daigle2018-gd}.
+The GFP protein moves into the axon of the projecting neurons. The long range connections between different areas are generally formed by axons which travel from one region to another. 
+Two-photon tomography imaging can be used to determine the location and strength of the fluorescent signals in two-dimensional slices.
+These locations can then be mapped back into three-dimensional space.
+The signal is integrated over area into cubic voxels.
+
+Several statistical models for the conversion of such experiment-specific signals into generalized estimates of connectivity strength have been proposed \citep{Oh2014-kh, Harris2016-fn, Gamanut2018-sd, Knox2019-ot}.
+Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} model \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
+The value of these models is that they provide some improvement over simply averaging the projection signals of injections in a given region.
+However, these previous works only model connectivities observed in wild type mice in which all neuron types were labeled, and so are poorly suited for extension to tracing experiments that induce cell-type specific fluorescence \citep{Harris2019-mr}.
+In particular, GFP expression is induced by Cre-recombinase in cell-types specified by transgenic strain.
+%The relation of cell-types to neuron classes is complex
+Thus, this paper introduces a \textbf{cell class}-specific statistical model to deal with the diverse set of \textbf{Cre-lines} described in \citet{Harris2019-mr}, and expands this model to the entire mouse brain. In cortex a large number of transgenic lines were chosen for their laminar specific expression.
+
+Our model is a to-our-knowledge novel estimator that takes into account both the spatial position of the labelled source, as well as the categorical cell class.
+Like the previously state-of-the-art model in \citet{Knox2019-ot}, this model predicts regionalized connectivity as an average over positions within the structure, with nearby experiments given more weight.
+However, our model weighs class-specific behavior in a particular structure against spatial position, so a nearby experiment targeting a similar cell class would be relatively upweighted, while a nearby experiment targeting a dissimilar class would be downweighted.
+This model outperforms the model of  \citet{Knox2019-ot} based on their ability to predict held-out experiments in leave-one-out cross-validation.
+We then establish a lower-limit of detection, and use the trained model to estimate overall connectivity matrices for each assayed cell class.
+
+The resulting cell-type specific connectivity is a directed weighted multigraph which can be represented as a  tensor.
+We do not attempt an exhaustive analysis of this data, but do manually verify several cell-type specific connectivity patterns found elsewhere in the literature, and show that these cell-type specific signals are behaving in expected ways.
+Finally, we decompose the wild type connectivity matrix into factors representing archetypal connectivity patterns using non-negative matrix factorization.
+These components are themselves novel and of some independent interest since they allow approximation of the regionalized connectivity using a small set of latent components. Such components can provide a link to the genetic origin of the regionalized connectivity.
+
+Section \ref{sec:methods} gives information on the data and statistical methodology, and Section \ref{sec:results} presents our results.
+These include connectivities, assessments of model fit, and subsequent analyses.
+Additional information on our dataset, methods, and results are given in Supplemental Sections \ref{supp_sec:info}, \ref{supp_sec:methods}, and \ref{supp_sec:exp}, respectively.

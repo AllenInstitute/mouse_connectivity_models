@@ -1,0 +1,17 @@
+{
+ "structures": [
+  "CB",
+  "CTXsp",
+  "HPF",
+  "HY",
+  "Isocortex",
+  "MB",
+  "MY",
+  "OLF",
+  "P",
+  "PAL",
+  "STR",
+  "TH"
+ ],
+ "manifest_file": "data/meta/new_manifest.json"
+}

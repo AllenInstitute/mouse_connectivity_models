@@ -20,20 +20,14 @@ from mcmodels.core.experiment_data import ExperimentData
 
 
 
-def get_ccf_data(cache, experiment_id):
+def get_ccf_data(cache, experiment_id, folder):
 
     eid_data = ExperimentData(experiment_id)
-    eid_data.data_quality_mask = cache.get_data_mask(experiment_id)[0]
-    eid_data.injection_signal = cache.get_injection_density(experiment_id)[0]
-    eid_data.injection_fraction = cache.get_injection_fraction(experiment_id)[0]
-    eid_data.projection_signal = cache.get_projection_density(experiment_id)[0]
+    eid_data.data_quality_mask = cache.get_data_mask(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/data_mask_100.nrrd')[0]
+    eid_data.injection_signal = cache.get_injection_density(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/injection_density_100.nrrd')[0]
+    eid_data.injection_fraction = cache.get_injection_fraction(experiment_id, folder + 'experiment_'+ str(experiment_id) + '/injection_fraction_100.nrrd')[0]
+    eid_data.projection_signal = cache.get_projection_density(experiment_id, folder+ 'experiment_'+ str(experiment_id) + '/projection_density_100.nrrd')[0]
     return(eid_data)
-#     return {
-#         "data_quality_mask" : cache.get_data_mask(experiment_id)[0],
-#         "injection_signal" : cache.get_injection_density(experiment_id)[0],
-#         "injection_fraction" : cache.get_injection_fraction(experiment_id)[0],
-#         "projection_signal" : cache.get_projection_density(experiment_id)[0]
-#     }
 
 def get_centroid(density):
     """Computes centroid in index coordinates.
@@ -94,7 +88,6 @@ def get_indices(ids):
     for i in range(len(ids_unique)):
         output[i, np.where(ids == ids_unique[i])[0]] = 1
     return (output)
-
 
 # get indices of firstlist in firstlisttest in categories defined by secondlist
 def get_indices2(firstlist, firstlisttest, secondlist):

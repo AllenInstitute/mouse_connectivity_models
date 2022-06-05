@@ -1,8 +1,0 @@
-include *.rst
-include LICENSE
-include AUTHORS.rst
-include README.rst
-recursive-include tests *
-recursive-include docs *
-recursive-include examples *
-recursive-include mcmodels/core/cortical_coordinates *.h5
