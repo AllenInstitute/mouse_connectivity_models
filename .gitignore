@@ -1,6 +1,9 @@
 # vi buffers
 *.swp
 
+# notebook checkpoints
+.ipynb_checkpoints
+
 # virtualenvs
 venv*
 .venv*
