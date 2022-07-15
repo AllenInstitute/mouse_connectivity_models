@@ -31,7 +31,7 @@ INPUT_JSON = workingdirectory + "/data/meta/input_011520.json"
 EXPERIMENTS_EXCLUDE_JSON = workingdirectory + "/data/meta/experiments_exclude.json"
 COARSE_STRUCTURE_SET_ID = 2
 DEFAULT_STRUCTURE_SET_IDS = tuple([COARSE_STRUCTURE_SET_ID])
-FOLDER = "/Users/samsonkoelle/mouse_connectivity_models/data/raw/"
+FOLDER = workingdirectory + "/data/raw/"
 
 input_data = ju.read(INPUT_JSON)
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
