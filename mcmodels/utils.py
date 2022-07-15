@@ -8,6 +8,14 @@ import numpy as np
 from allensdk.core.mouse_connectivity_cache import MouseConnectivityCache
 
 
+def fix_pdcsv(csv):
+
+    csv_rownames = np.asarray(csv.iloc[:, 0])
+    csv = csv.iloc[:, 1:]
+    csv.index = csv_rownames
+    return csv
+
+
 def get_experiment_ids(mcc, structure_ids, cre=None):
     """Returns all experiment ids with injection in structure_ids.
 
@@ -26,16 +34,19 @@ def get_experiment_ids(mcc, structure_ids, cre=None):
     -------
     List of experiment ids satisfying the parameters.
     """
-    #filters injections by structure id or Decendent
-    experiments = mcc.get_experiments(dataframe=False, cre=cre,
-                                      injection_structure_ids=structure_ids)
-    return [experiment['id'] for experiment in experiments]
+    # filters injections by structure id or Decendent
+    experiments = mcc.get_experiments(
+        dataframe=False, cre=cre, injection_structure_ids=structure_ids
+    )
+    return [experiment["id"] for experiment in experiments]
 
-def get_aligned_ids(st, list1,list2):
-    output = np.empty(len(list1), dtype = int)
+
+def get_aligned_ids(st, list1, list2):
+    output = np.empty(len(list1), dtype=int)
     for i in range(len(list1)):
-        output[ i] = np.intersect1d(st.ancestor_ids([list1[i]]), list2)[0]
-    return(output)
+        output[i] = np.intersect1d(st.ancestor_ids([list1[i]]), list2)[0]
+    return output
+
 
 def nonzero_unique(ar, **unique_kwargs):
     """np.unique returning only nonzero unique elements.
@@ -79,7 +90,7 @@ def nonzero_unique(ar, **unique_kwargs):
     ordered_unique
     lex_ordered_unique
     """
-    if 'return_inverse' in unique_kwargs:
+    if "return_inverse" in unique_kwargs:
         raise NotImplementedError("returning inverse array not yet implemented")
 
     if np.all(ar):
@@ -136,10 +147,10 @@ def ordered_unique(ar, **unique_kwargs):
     nonzero_unique
     lex_ordered_unique
     """
-    if 'return_inverse' in unique_kwargs:
+    if "return_inverse" in unique_kwargs:
         raise NotImplementedError("returning inverse array not yet implemented")
 
-    _return_index = unique_kwargs.pop('return_index', False)
+    _return_index = unique_kwargs.pop("return_index", False)
     unique = np.unique(ar, return_index=True, **unique_kwargs)
 
     # need indices (always @ index 1)
@@ -195,7 +206,7 @@ def lex_ordered_unique(ar, lex_order, allow_extra=False, **unique_kwargs):
     nonzero_unique
     ordered_unique
     """
-    if 'return_inverse' in unique_kwargs:
+    if "return_inverse" in unique_kwargs:
         raise NotImplementedError("returning inverse array not yet implemented")
 
     if len(set(lex_order)) < len(lex_order):
@@ -211,8 +222,10 @@ def lex_ordered_unique(ar, lex_order, allow_extra=False, **unique_kwargs):
             # cast to np.array in order to index with boolean array
             lex_order = np.array(lex_order)[np.isin(lex_order, unique[0])]
         else:
-            raise ValueError("lex_order contains elements not found in ar, "
-                             "call with allow_extra=True")
+            raise ValueError(
+                "lex_order contains elements not found in ar, "
+                "call with allow_extra=True"
+            )
 
     # generate a permutation order for unique
     permutation = np.argsort(np.argsort(lex_order))
@@ -246,7 +259,7 @@ def padded_diagonal_fill(arrays):
     i, j = 0, 0
     for (n_rows, n_cols), arr in zip(shapes, arrays):
         # fill padded with arr
-        padded[i:i+n_rows, j:j+n_cols] = arr
+        padded[i : i + n_rows, j : j + n_cols] = arr
 
         i += n_rows
         j += n_cols
@@ -266,7 +279,7 @@ def squared_norm(arr):
     -------
     norm: float
     """
-    arr = arr.ravel(order='K')
+    arr = arr.ravel(order="K")
     return np.dot(arr, arr)
 
 
@@ -294,8 +307,10 @@ def unionize(volume, key, return_regions=False):
     """
     volume = np.atleast_2d(volume)
     if volume.shape[1] != key.size:
-        raise ValueError("volume (%s) and key (%s) shapes are incompatible"
-                         % (volume.shape[1], key.size))
+        raise ValueError(
+            "volume (%s) and key (%s) shapes are incompatible"
+            % (volume.shape[1], key.size)
+        )
 
     regions = nonzero_unique(key)
     result = np.empty((volume.shape[0], regions.size))
