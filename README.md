@@ -12,10 +12,16 @@ Then run
 ```
 conda create -n 'mouse_connectivity' python=3.7 -y
 source activate mouse_connectivity
-pip install scikit-learn==0.22.1 pandas seaborn dill allensdk==1.3.0 pygam openpyxl
+pip install numpy pandas matplotlib scikit-learn==0.22.1 seaborn dill allensdk==1.3.0 pygam  openpyxl
 ```
 
-Add the custom `utils/validation` and `decomposition/_nmf` files to your sklearn path.
+Add the custom files allowing masked NMF to your sklearn path.
+
+```
+export sklearn_path=$(python -c "import sklearn; print(sklearn.__path__[0])")
+curl  https://raw.githubusercontent.com/scikit-learn/scikit-learn/bc250035a4f096d4b39105e256635341fc84e651/sklearn/decomposition/nmf.py -o $sklearn_path'/decomposition/_nmf.py'
+curl https://raw.githubusercontent.com/scikit-learn/scikit-learn/bc250035a4f096d4b39105e256635341fc84e651/sklearn/utils/validation.py -o $sklearn_path'/utils/validation.py'
+```
 
 # Summary
 
@@ -44,6 +50,7 @@ These may also be obtained from the Allen SDK and `analyses/paper_final/get_info
 We evaluate the performance of candidate connectivity estimators in
 
 ```
+sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm.sh
 analyses/paper_final/modelvalidations/ELModel_LeafTarget_ProjNorm_final.ipynb
 analyses/paper_final/modelvalidations/ELModel_LeafTarget_InjNorm_cutoffremoved_final.ipynb
 analyses/paper_final/modelvalidations/ELModel_LeafTarget_ProjNorm_cutoffremoved_final.ipynb
