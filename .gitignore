@@ -2,7 +2,7 @@
 *.swp
 
 # notebook checkpoints
-.ipynb_checkpoints
+*.ipynb_checkpoints
 
 # virtualenvs
 venv*
@@ -96,7 +96,7 @@ docs/modules/generated
 # OS files
 *.DS_Store
 
-*.npy
+# *.npy
 *.pkl
 
 # raw data
