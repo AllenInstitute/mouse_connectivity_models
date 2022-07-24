@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=short
-#SBATCH --mem=10000
+#SBATCH --partition=largemem
+#SBATCH --mem=100000
 #SBATCH --job-name=allen_institute_projection_normalization
 #SBATCH --error=allen_institute_projection_normalization.err
 #SBATCH --output=allen_institute_projection_normalization.log
@@ -11,6 +11,6 @@
 cd /homes/sjkoelle/mouse_connectivity_models
 export PATH="~/anaconda3/bin:$PATH"
 source activate mouse_connectivity
-python analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm.py 
+python -u analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm.py > ELModel_LeafTarget_ProjNorm.out 
 source deactivate
 echo "end"

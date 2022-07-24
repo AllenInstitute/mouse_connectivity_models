@@ -1,3 +1,5 @@
+print('starting model validation')
+
 import os
 import numpy as np
 import pandas as pd
@@ -154,7 +156,7 @@ distances = {
     sid: pairwise_distances(connectivity_data.structure_datas[sid].centroids) ** 2
     for sid in major_structure_ids
 }
-
+print('Entering cross validation')
 nw_creleaf_creleaf2 = CrossvalNW(
     reg_proj_norm, distances, creleaf2_index_matrices, creleaf2_evalindices, gammas
 )
@@ -283,10 +285,10 @@ plt.savefig("paper/KoelleConn_revision/figs/isocortexsurface")
 surfaces = {}
 for m in range(len(major_structure_ids)):
     sid = major_structure_ids[m]
-    surfaces[sid] = connectivity_data.structure_datas[sid].loss_surface_cv_sum
+    surfaces[sid] = connectivity_data.structure_datas[sid].loss_surface_cv_leaf
     surfaces[sid].gamma = twostage_leaf_creleaf2.bestgamma_weighted[m]
 
-with open("data/results/EL_leafsurface_060622_leafleaf.pickle", "wb") as handle:
+with open("analyses/results/EL_leafsurface_060622_leafleaf.pickle", "wb") as handle:
     pickle.dump(surfaces, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 with open("data/results/EL_model_060622_leafleaf.pickle", "wb") as handle:
