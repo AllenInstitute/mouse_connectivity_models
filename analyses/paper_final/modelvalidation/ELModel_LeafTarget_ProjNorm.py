@@ -291,8 +291,8 @@ for m in range(len(major_structure_ids)):
 with open("analyses/results/EL_leafsurface_060622_leafleaf.pickle", "wb") as handle:
     pickle.dump(surfaces, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open("data/results/EL_model_060622_leafleaf.pickle", "wb") as handle:
-    pickle.dump(twostage_leaf_creleaf2, handle, protocol=pickle.HIGEST_PROTOCOL)
+with open("analyses/results/EL_model_060622_leafleaf.pickle", "wb") as handle:
+    pickle.dump(twostage_leaf_creleaf2, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Analyze effect of threshold
 gammaids = np.asarray(
@@ -325,6 +325,7 @@ for m in range(nmodels):
         output = np.ones(data[sid][inds].shape)
         baseline = np.ones(data[sid][inds].shape)
         zeroind_data = np.asarray(np.where(data[sid][inds] == 0.0))
+        print(sid, m , inds, c, predictions[sid].shape)
         zeroind_pred = np.asarray(
             np.where(predictions[sid][gammaids[m]][inds] <= threshes[c])
         )
