@@ -1,6 +1,3 @@
-%load_ext autoreload
-%autoreload 2
-
 import os
 import numpy as np
 import pandas as pd 
@@ -138,3 +135,4 @@ sns.heatmap(pd.DataFrame(combpos.mean(axis=1)), ax=ax3,  annot=True, cmap="Greys
 
 plt.suptitle('False negatives + false positives', fontsize = 40)
 fig.savefig('paper/KoelleConn_fromlocal_0623/figs/Threshold', pad_inches = 0)
+print("finished")
