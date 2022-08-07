@@ -122,7 +122,7 @@ major_structures = np.load(workingdirectory + "/data/meta/major_structures.npy")
 major_structure_ids = np.load(workingdirectory + "/data/meta/major_structure_ids.npy")
 data_dir = workingdirectory + "/data/rawdata/"
 data_info = pd.read_excel(
-        "data/meta/Whole Brain Cre Image Series_curation only.xlsx",
+    "data/meta/Whole Brain Cre Image Series_curation only.xlsx",
     "all datasets curated_070919pull",
 )
 data_info.set_index("id", inplace=True)
@@ -147,7 +147,7 @@ connectivity_data = get_connectivity_data(
     experiments_exclude,
     remove_injection=False,
     structure_set_id=167587189,
-    folder = FOLDER,
+    folder=FOLDER,
 )
 connectivity_data.get_injection_hemisphere_ids()
 connectivity_data.align()
@@ -164,7 +164,9 @@ connectivity_data.summary_structures = {
 connectivity_data.leafs = leafs
 
 sid0 = list(connectivity_data.structure_datas.keys())[0]
-print('Identify keys denoting which voxels correspond to which structure in the ipsi and contra targets.')
+print(
+    "Identify keys denoting which voxels correspond to which structure in the ipsi and contra targets."
+)
 targ_ord = ontological_order_leaves
 source_ord = ontological_order_leaves
 contra_targetkey = connectivity_data.structure_datas[sid0].projection_mask.get_key(
@@ -205,7 +207,7 @@ eval_cre_list_old = [
     # "Tlx3-Cre_PL56",
 ]
 eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
-print(eval_cre_list, 'eval cre list')
+print(eval_cre_list, "eval cre list")
 eval_cre_list = np.setdiff1d(eval_cre_list, eval_cre_list_old)
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
 
