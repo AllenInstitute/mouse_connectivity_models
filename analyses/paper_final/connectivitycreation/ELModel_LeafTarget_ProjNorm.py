@@ -43,7 +43,6 @@ from mcmodels.core.utils import (
     screen_index_matrices3,
 )
 from mcmodels.regressors import NadarayaWatson
-from mcmodels.core.plotting import plot_loss_surface, plot_loss_scatter
 from mcmodels.models.expectedloss.crossvalidation import get_loss_surface_cv_spline
 from mcmodels.models.expectedloss.crossvalidation import get_embedding_cv
 from mcmodels.models.crossvalidation import (
@@ -96,33 +95,45 @@ def get_row_col_names(connectivity_data, target_ordering):
 
 
 # read data
-data_dir = workingdirectory + "/data/rawdata/"
-INPUT_JSON = data_dir + "input_011520.json"
-EXPERIMENTS_EXCLUDE_JSON = data_dir + "experiments_exclude.json"
-input_data = ju.read(INPUT_JSON)
+# data_dir = workingdirectory + "/data/rawdata/"
+# INPUT_JSON = data_dir + "input_011520.json"
+# EXPERIMENTS_EXCLUDE_JSON = data_dir + "experiments_exclude.json"
+# input_data = ju.read(INPUT_JSON)
+TOP_DIR = workingdirectory
+INPUT_JSON = workingdirectory + "/data/meta/input_011520.json"
+EXPERIMENTS_EXCLUDE_JSON = workingdirectory + "/data/meta/experiments_exclude.json"
+COARSE_STRUCTURE_SET_ID = 2
+DEFAULT_STRUCTURE_SET_IDS = tuple([COARSE_STRUCTURE_SET_ID])
+FOLDER = workingdirectory + "/data/raw/"
+
 experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
+input_data = ju.read(INPUT_JSON)
+manifest_file = input_data.get("manifest_file")
+
 # manifest_file = input_data.get('manifest_file')
 # manifest_file = os.path.join(data_dir, manifest_file)
-manifest_file = data_dir + "/new_manifest.json"
+# manifest_file = data_dir + "/new_manifest.json"
+
 cache = VoxelModelCache(manifest_file=manifest_file)
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
 ia_map = {value: key for key, value in ai_map.items()}
-major_structures = np.load(workingdirectory + "/paper/info/major_structures.npy")
-major_structure_ids = np.load(workingdirectory + "/paper/info/major_structure_ids.npy")
+major_structures = np.load(workingdirectory + "/data/meta/major_structures.npy")
+major_structure_ids = np.load(workingdirectory + "/data/meta/major_structure_ids.npy")
+data_dir = workingdirectory + "/data/rawdata/"
 data_info = pd.read_excel(
-    data_dir + "/Whole Brain Cre Image Series_curation only.xlsx",
+        "data/meta/Whole Brain Cre Image Series_curation only.xlsx",
     "all datasets curated_070919pull",
 )
 data_info.set_index("id", inplace=True)
 
-with open(workingdirectory + "/data/info/leafs.pickle", "rb") as handle:
+with open(workingdirectory + "/data/meta/leafs.pickle", "rb") as handle:
     leafs = pickle.load(handle)
 
 ontological_order_leaves = np.load(
-    workingdirectory + "/paper/info/ontological_order_leaves_v3.npy"
+    workingdirectory + "/data/meta/ontological_order_leaves_v3.npy"
 )
-ontological_order = np.load(workingdirectory + "/paper/info/ontological_order_v3.npy")
+ontological_order = np.load(workingdirectory + "/data/meta/ontological_order_v3.npy")
 ontological_order_leaves_majors = get_aligned_ids(
     st, ontological_order_leaves, major_structure_ids
 )
@@ -136,6 +147,7 @@ connectivity_data = get_connectivity_data(
     experiments_exclude,
     remove_injection=False,
     structure_set_id=167587189,
+    folder = FOLDER,
 )
 connectivity_data.get_injection_hemisphere_ids()
 connectivity_data.align()
@@ -152,7 +164,7 @@ connectivity_data.summary_structures = {
 connectivity_data.leafs = leafs
 
 sid0 = list(connectivity_data.structure_datas.keys())[0]
-# Identify keys denoting which voxels correspond to which structure in the ipsi and contra targets.
+print('Identify keys denoting which voxels correspond to which structure in the ipsi and contra targets.')
 targ_ord = ontological_order_leaves
 source_ord = ontological_order_leaves
 contra_targetkey = connectivity_data.structure_datas[sid0].projection_mask.get_key(
@@ -193,6 +205,7 @@ eval_cre_list_old = [
     # "Tlx3-Cre_PL56",
 ]
 eval_cre_list = np.unique(np.concatenate(list(connectivity_data.creline.values())))
+print(eval_cre_list, 'eval cre list')
 eval_cre_list = np.setdiff1d(eval_cre_list, eval_cre_list_old)
 cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leaves)
 
@@ -212,9 +225,18 @@ for c in range(len(eval_cre_list)):
         [eval_cre_list[c]],
     )
     connectivity_matrices = pd.DataFrame(conn_v3[0], columns=cnam_multi, index=rnames)
-    connectivity_matrices.to_csv(
-        workingdirectory
-        + "/paper/connectivities/el_leafsurf_leafsmth_leafleaf_"
-        + str(eval_cre_list[c])
-        + "080222.csv"
-    )
+    if eval_cre_list[c] != "C57BL/6J":
+
+        connectivity_matrices.to_csv(
+            workingdirectory
+            + "/paper/connectivities/el_leafsurf_leafsmth_leafleaf_"
+            + str(eval_cre_list[c])
+            + "_080222.csv"
+        )
+    else:
+        connectivity_matrices.to_csv(
+            workingdirectory
+            + "/paper/connectivities/el_leafsurf_leafsmth_leafleaf_"
+            + "C57BL6J"
+            + "_080222.csv"
+        )

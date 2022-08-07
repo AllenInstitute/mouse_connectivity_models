@@ -11,6 +11,6 @@
 
 export PATH="~/anaconda3/bin:$PATH"
 source activate mouse_connectivity
-python -u ELModel_LeafTarget_ProjNorm.py > ELModel_LeafTarget_ProjNorm_conn.out
+python -u analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm.py > ELModel_LeafTarget_ProjNorm_conn.out
 source deactivate
 echo "end"
