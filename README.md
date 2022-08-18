@@ -15,7 +15,7 @@ source activate mouse_connectivity
 pip install numpy pandas matplotlib scikit-learn==0.22.1 seaborn dill allensdk==1.3.0 pygam  openpyxl
 ```
 
-Add the custom files allowing masked NMF to your sklearn path.
+Add the custom files allowing masked NMF to your sklearn path (thank you https://github.com/scikit-learn/scikit-learn/pull/8474).
 
 ```
 export sklearn_path=$(python -c "import sklearn; print(sklearn.__path__[0])")
