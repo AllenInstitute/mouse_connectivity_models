@@ -231,14 +231,14 @@ for c in range(len(eval_cre_list)):
 
         connectivity_matrices.to_csv(
             workingdirectory
-            + "/paper/connectivities/el_leafsurf_leafsmth_leafleaf_"
+            + "/paper/connectivities/revision_unthresholded/el_leafsurf_leafsmth_leafleaf_"
             + str(eval_cre_list[c])
             + "_080222.csv"
         )
     else:
         connectivity_matrices.to_csv(
             workingdirectory
-            + "/paper/connectivities/el_leafsurf_leafsmth_leafleaf_"
+            + "/paper/connectivities/revision_unthresholded/el_leafsurf_leafsmth_leafleaf_"
             + "C57BL6J"
             + "_080222.csv"
         )
