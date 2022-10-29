@@ -64,14 +64,21 @@ Here, we study how much we can fill in these gaps and construct a voxel-based co
 
 This paper describes the conversion of the Cre-line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures. We introduce and validate a novel statistical model for creation of connectivity matrices. We expand a Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps, to also fill in a gaps in cell class connectivity information. To do this, we construct a "cell-class space" and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
 Using this method we construct a set of connectivity matrices using multiple levels of resolution at which discontinuities in connectivity are assumed. We show that the connectivities obtained from this model display expected cell-type and structure specific connectivities. 
-Inspired by how this complexity arises from a much smaller set of genetic information during development, we also show that the wild type connectivity matrix can be factored using a small set of factors, and we uncover the underlying latent structure.
+Inspired by how this complexity arises from a relatively parsimonious set of genetic information during development, we also show that the wild type connectivity matrix can be factored using a sparse set of factors, and analyze the informativeness of this underlying latent structure.
 
 \end{abstract}
 
 \begin{authorsummary}
-Large scale studies have described the connections between areas in multiple mammalian models in ever expanding detail. Standard connectivity studies focus on the connection strength between areas. However, when describing functions at a local circuit level, there is an increasing focus on cell types.  We have recently described the importance of connection types in the cortico-thalamic system, which allows an unsupervised discovery of its hierarchical organization. In this study we focus on adding a dimension of connection type for a brain-wide mesoscopic connectivity model. Even with our relatively massive dataset, the data in the cell type direction for connectivity is quite sparse, and we had to develop methods to more reliably extrapolate in such directions, and to estimate when such extrapolations are impossible. This allows us to fill in such a connection type specific inter-areal connectivity matrix to the extent our data allows. 
-While analysing this complex connectivity, we observed that it can be described via a small set of factors. 
+Large-scale studies have described the connections between areas in multiple mammalian models in ever expanding detail.
+Standard connectivity studies focus on the connection strength between areas.
+However, when describing functions at a local circuit level, there is an increasing focus on cell types.
+We have recently described the importance of connection types in the cortico-thalamic system, which allows an unsupervised discovery of its hierarchical organization.
+In this study we focus on adding a dimension of connection type for a brain-wide mesoscopic connectivity model.
+Even with our relatively massive dataset, the data in the cell type direction for connectivity is quite sparse, and we had to develop methods to more reliably extrapolate in such directions, and to estimate when such extrapolations are impossible.
+This allows us to fill in such a connection type specific inter-areal connectivity matrix to the extent our data allows. 
+While analyzing this complex connectivity, we observed that it can be described via a small set of factors. 
 While not complete, this connectivity matrix represents a large leap forward in mouse mesoscale connectivity models. 
+
 \end{authorsummary}
 
 \newpage

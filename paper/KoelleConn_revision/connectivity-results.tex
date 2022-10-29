@@ -86,24 +86,60 @@ Importantly, as shown in Table \ref{tab:crossvalidation} this finer spatial reso
 \subsubsection{Class-specific connectivities}
 
 Source and cell-type combinations which project similarly indicate the network structure underpinning cognition.
-Our estimates of these class-specific connectivities exhibit certain known behaviors.
-In Figure \ref{fig:data_ct}, we display results for two visual cortical areas (VISp and VISl) and two cortical motor areas (MOp and MOs) .
-These are ideal testbeds for our connectivities because there are well-established layer-specific projection patterns that can be labeled with the layer-specific cre-lines from the Allen datasets and others \citet{Jeong2016-dc, Harris2019-mr}, and are also well-represented in our dataset.
+Although there is a rich anatomical literature using anterograde tracing data to describe projection patterns from subcortical sources to a small set of targets of interest, most accessible whole brain projection data are from the Allen Mouse Connectivity Atlas (MCA) project used here to generate the connectome models.
+Thus, to validate our results while avoiding a circular validation of the data used to generate the model weights, we confirm that these class-specific connectivities exhibit certain known behaviors.
+In particular, we focus on several cell types and source areas with extensive previous anatomical descriptions of projections using both bulk tracer methods with cell type specificity and single cell reconstructions: 1) thalamic-projecting neurons in the visual and motor cortical regions, 2) cholinergic neurons in the medial septum and nucleus of the diagonal band (MS/NDB); 3) cholinergic neurons in the caudoputamen, and 4) serotonergic neurons of the dorsal raphe nucleus (DR).
+We find that our inferred connections are in agreement with literature on these cell types.
 
+\paragraph{Dependence of thalamic connection on cortical layer.}
 
+Visual cortical areas VISp and VISl and cortical motor areas MOp and MOs are ideal testbeds for our connectivities because there are well-established layer-specific projection patterns that can be labeled with the layer-specific cre-lines from the Allen datasets and others \citet{Jeong2016-dc, Harris2019-mr}, and are also well-represented in our dataset.
 Figure \ref{fig:ct_spc} shows that in VISp, the Ntsr1-Cre line strongly targets the core part of the thalamic LGd nucleus while in VISl has a very strong projection to the LP nucleus. In VISp, the the Rbp-4Cre strongly targets LP as well.  
 Recall that we display connectivity estimates for structures with at least one injection centroid in the structure.
-Thus, the position of non-zero rows in Figure \ref{fig:ct_spc} shows the localization of Rbp4-Cre and Ntsr1-Cre injection centroids to layers 5 and 6 respectively (this is further examined in Supplemental Section \ref{sec:data}). In cortex mane Cre lines were chosen to since they express in specific layers. 
-Thus, as a heuristic alternative model, to also synthesize information about leafs targeted by different cre-lines, we also generate an average connectivity matrix over all cre-lines.
-This model is not evaluated in our testing, and is only a general stand-in for overall behavior, but provides a useful summary of results.
+Thus, the position of non-zero rows in Figure \ref{fig:ct_spc} shows the localization of Rbp4-Cre and Ntsr1-Cre injection centroids to layers 5 and 6 respectively.
+This is further examined in Supplemental Section \ref{sec:data}).
+Thus, as a heuristic alternative model, to also synthesize information about leafs targeted by different cre-lines, we also display an average connectivity matrix over all cre-lines.
+This combined output is not evaluated in our testing, and is only a general stand-in for overall behavior, but provides a useful summary of results.
 
-Cell-class, while often correlated with cortical layer, can be a stronger driver of connectivity than summary structure especially when looking at targets at major brain division level.
-Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
-We use hierarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
-Examining the former, we can see that the layer 6 Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure.
-This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
-Similarly, layer 6 targets are not strongly projected to by any of the displayed Cre-lines.
-There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
+\paragraph{MS and NDB projections in the Chat-IRES-Cre-neo model.}
+Cholinergic neurons in the MS and NDB are well-known to strongly innervate the hippocampus, olfactory bulb, piriform cortex, entorhinal cortex, and lateral hypothalamus \citep{Zaborszky2015-fm, Watson2012TheMN}.
+In the Allen MCA, cholinergic neurons were labeled by injections into Chat-IRES-Cre-neo mice.
+We first checked the estimated connectome weights to targets in these major brain divisions from MS and NDB.
+We observed that all these expected divisions were represented above the 90th percentile of weights.
+Recently, a single cell whole brain mapping project using Chat-Cre mice fully reconstructed n=50 cells, revealing these same major targets and also naming additional targets from MS/NDB \citep{Li2018-nu}. We compared our Chat-IRES-Cre connectome model data for MS and NDB with the targets identified by  \citet{Li2018-nu}.
+We identified ~150 targets at the fine leaf structure level in the top 10\% of estimated weights. To directly compare our data across studies, we had to merge structures as needed to get to the same ontology level and remove ipsilateral and contralateral information.
+After formatting our data, we found 51 targets in the top 10\%; Li et al. reported 47 targets across the 50 cells.
+There was good consistency overall between the target sets; 35 targets were shared, 12 were unique to the single cell dataset, and 16 unique to our model data.
+We checked whether targets missing from our dataset were because of the threshold level.
+Indeed, lowering the threshold to the 75 th percentile confirmed 6 more targets-in-common, and all but 2 targets from \citet{ Li2018-nu} were above the 50th percentile weights in our model.
+Of note, the absence of a target in the single cell dataset that was identified in our model data is most likely due to the sparse sampling of all possible projections from only n=50 MS/NDB cells.
+
+\paragraph{CP projections in the Chat-IRES-Cre-neo model.}
+Most cells in the caudoputamen (CP) are GABAergic spiny projection neurons.
+These cells are also the only type that send projections outside the CP.
+Cholinergic interneurons make up 1-2\% of all CP cells and their axon terminals do not extend beyond the CP borders.
+We confirmed that the model predictions for connection weights from CP cholinergic cells were consistent with this known anatomy; the connection weight to CP was $\sim2$-fold higher than any other in the top $5\%$.
+
+\paragraph{DR projections in the Slc6a4-Cre\_ET33 model.}
+
+Serotonergic projections from cells in the dorsal raphe (DR) are widely distributed and innervate many forebrain structures including isocortex and amygdala.
+In the Allen MCA, serotonergic neurons were labeled using Slc6a4-Cre\_ET33 and Slc6a4-CreERT2\_EZ13 mice.
+This small nucleus appears to contain a complex mix of molecularly distinct serotonergic neuron subtypes with some hints of subtype-specific projection patterns \citep{Ren2018-ty, Ren2019-jg,  Huang2019-xh}.
+We expect that the Cre lines we used here in the Allen MCA, which utilize the serotonin transporter promoter (Slc6a4-Cre and -CreERT2), will lead to expression of tracer in all the serotonergic subtypes recently described in an unbiased way, but this assumption has not been tested directly.
+We compared our model data to a single cell reconstruction dataset consisting of n=50 serotonergic cells with somas in the DR that also had bulk tracer validation \skcomment{INSERT LINK TO FIGURE}.
+\citet{ Ren2019-jg} listed 55 targets across the single cell reconstructions.
+After processing our data to match the target structure ontology level across studies, we identified 37 targets from the DR with weights above the 90 th percentile; 27 of these targets matched those named by \citet{ Ren2019-jg}.
+Overall there was good consistency between targets in olfactory areas, cortical subplate, CP, ACB and amygdala areas, as well in pallidum and midbrain.
+
+The two major brain divisions with the least number of matches are the isocortex and thalamus.
+There are a few likely reasons for these observations.
+First, in the isocortex, there is known to be significant variation in the density of projections across different locations, with the strongest innervation in lateral and frontal orbital cortices \citet{ Ren2019-jg,}. %e.g., see MCA experiment 480074702 and Figs. 6, 7 in Ren 2019
+Indeed, when we lower the threshold and check for weights of the targets outside of the 90\%, we see all but one of these regions (PTLp, parietal cortex which is not frontal or lateral) has a weight assigned in the top half of all targets.
+In the thalamus, it was also interesting to observe that our model predicted strong connections to several medial thalamic nuclei (i.e., MD, SMT), that were not targeted by the single cells.
+This discrepancy may be at least partially explained by the complex topographical organization of the DR that, like the molecular subtypes, is not yet completely understood.
+A previous bulk tracer study that specifically targeted injections to the central, lateral wings, and dorsal subregions of the DR reported semi-quantitative differences in projection patterns \citep{Muzerelle2016-sn}.%( Muzarelle et al. 2016% , Table 3).
+Notably, \citet{Muzerelle2016-sn} report that cells in the ventral region of DR project more strongly to medial thalamic nuclei, whereas the lateral and dorsal DR cells innervate more lateral regions (e.g., LGd).
+So it is possible that the single cell somas did not adequately sample the entire DR.
 
 \newpage
 
@@ -129,7 +165,23 @@ There are too many targeted summary structures to plot here, but we expect that 
 
 \newpage
 
+%There are also an increasing number of single neuron brain-wide reconstructions, often with genetic information about the reconstructed cell type, that can serve as ground-truth data for these models as they are made available [BICCN fMOST ref].
+
+ 
+%We found only minor differences in the models for the two Slc6a4-Cre lines and focus on results from _ET33 below.
+
 \subsection{Connectivity Analyses}
+
+\skcomment{move to connectivity analysis section}
+
+Cell-class, while often correlated with cortical layer, can be a stronger driver of connectivity than summary structure especially when looking at targets at major brain division level.
+Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
+We use hierarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
+Examining the former, we can see that the layer 6 Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure.
+This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
+Similarly, layer 6 targets are not strongly projected to by any of the displayed Cre-lines.
+There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
+
 
 Each regionalized connectivity matrix is a high-dimensional realization of relatively few biological processes, and decomposition of neural signals to recover these processes is a fundamental goal in neuroscience.
 In this section, we apply non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of archetypal connectivities.
