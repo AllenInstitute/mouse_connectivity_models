@@ -10,7 +10,7 @@ Third, statistical decomposition of the wild-type connectivity matrix using unsu
 \label{sec:model_eval}
 
 Our EL model generally performs better than the other estimators that we consider.
-Table \ref{tab:crossvalidation} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from  \citet{Knox2019-ot}.
+Table \ref{tab:crossvalidation} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from \citet{Knox2019-ot}.
 The EL model combines the good performance of class-specific models like NW Leaf-Cre in regions like Isocortex with the good performance of class-agnostic models in regions like Thalamus.
 Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}.
 In particular, Supplementary Table \ref{tab:eval_size} contains the sizes of these evaluation sets in each major structure, and Supplementary Section \ref{supp_sec:loss_subsets} contains the structure- and class specific losses.
@@ -166,24 +166,18 @@ So it is possible that the single cell somas did not adequately sample the entir
 \newpage
 
 %There are also an increasing number of single neuron brain-wide reconstructions, often with genetic information about the reconstructed cell type, that can serve as ground-truth data for these models as they are made available [BICCN fMOST ref].
-
- 
 %We found only minor differences in the models for the two Slc6a4-Cre lines and focus on results from _ET33 below.
 
 \subsection{Connectivity Analyses}
-
-\skcomment{move to connectivity analysis section}
 
 Cell-class, while often correlated with cortical layer, can be a stronger driver of connectivity than summary structure especially when looking at targets at major brain division level.
 Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
 We use hierarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
 Examining the former, we can see that the layer 6 Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure.
 This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
-Similarly, layer 6 targets are not strongly projected to by any of the displayed Cre-lines.
+Similarly, layer 6 targets are not strongly projected to by any of the displayed cell classes.
 There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
 
-
-Each regionalized connectivity matrix is a high-dimensional realization of relatively few biological processes, and decomposition of neural signals to recover these processes is a fundamental goal in neuroscience.
 In this section, we apply non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of archetypal connectivities.
 This decomposes the remaining censored connectivity matrix into a linear model based off a relatively small number of distinct signals.
 This model is able to capture a large amount of the observed variability, and recovers structure-specific archetypal signals.

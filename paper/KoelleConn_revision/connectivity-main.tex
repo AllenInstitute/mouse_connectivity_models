@@ -45,7 +45,7 @@
 \title{Modelling the cell-type specific mesoscale murine connectome with anterograde tracing experiments}
 
 \author[Koelle et al]% shortened version for running head, optional
-{Samson Koelle \affil{1,2}, Jennifer D Whitesell \affil{1}, Karla E Hirokawa \affil{1},  Hongkui Zeng\affil{1}, Marina Meila\affil{2}, Julie A Harris\affil{1}, Stefan Mihalas\affil{1}}
+{Samson Koelle \affil{1,2}, Dana Mastrovito \affil{1}, Jennifer D Whitesell \affil{1}, Karla E Hirokawa \affil{1},  Hongkui Zeng\affil{1}, Marina Meila\affil{2}, Julie A Harris\affil{1}, Stefan Mihalas\affil{1}}
 
 \affiliation{1}{Allen Institute for Brain Science, Seattle, WA, USA}
 
@@ -60,11 +60,14 @@ The Allen Mouse Brain Connectivity Atlas consists of anterograde tracing experim
 Beyond regional anterograde tracing done in C57BL/6 wild type mice, a large fraction of experiments are performed using transgenic Cre-lines.
 This allows access to cell-class specific whole brain connectivity information, with class defined by the transgenic lines.
 However, even though the number of experiments is large, it does not come close to covering all existing cell classes in every area where they exist.
-Here, we study how much we can fill in these gaps and construct a voxel-based connectivity matrix given the observations that nearby voxels have similar connections when they are in the same area, that connections can change dramatically at area boundaries, and that particular cell classes can have similar connections, but that this similarity is region-dependent.  
+Here, we study how much we can fill in these gaps and estimate the cell-class specific connectivity function given the simplifying assumptions that nearby voxels have smoothly varying projections, but that these projection tensors can change sharply depending on the region and class of the projecting cells.
 
-This paper describes the conversion of the Cre-line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures. We introduce and validate a novel statistical model for creation of connectivity matrices. We expand a Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps, to also fill in a gaps in cell class connectivity information. To do this, we construct a "cell-class space" and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
+This paper describes the conversion of Cre-line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures.
+We introduce and validate a novel statistical model for creation of connectivity matrices.
+We extend the Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps to also fill in a gaps in cell-class connectivity information.
+To do this, we construct a "cell-class space" based on class-specific averaged regionalized projections and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
 Using this method we construct a set of connectivity matrices using multiple levels of resolution at which discontinuities in connectivity are assumed. We show that the connectivities obtained from this model display expected cell-type and structure specific connectivities. 
-Inspired by how this complexity arises from a relatively parsimonious set of genetic information during development, we also show that the wild type connectivity matrix can be factored using a sparse set of factors, and analyze the informativeness of this underlying latent structure.
+We also show that the wild type connectivity matrix can be factored using a sparse set of factors, and analyze the informativeness of this latent variable model.
 
 \end{abstract}
 
@@ -77,7 +80,7 @@ In this study we focus on adding a dimension of connection type for a brain-wide
 Even with our relatively massive dataset, the data in the cell type direction for connectivity is quite sparse, and we had to develop methods to more reliably extrapolate in such directions, and to estimate when such extrapolations are impossible.
 This allows us to fill in such a connection type specific inter-areal connectivity matrix to the extent our data allows. 
 While analyzing this complex connectivity, we observed that it can be described via a small set of factors. 
-While not complete, this connectivity matrix represents a large leap forward in mouse mesoscale connectivity models. 
+While not complete, this connectivity matrix represents a a categorical and quantitative improvement in mouse mesoscale connectivity models. 
 
 \end{authorsummary}
 

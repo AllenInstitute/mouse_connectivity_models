@@ -211,6 +211,36 @@ Harris, K\BPBI D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Huang%
+\ \protect \BOthers {.}}{%
+Huang%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+Huang2019-xh}
+\APACinsertmetastar {%
+Huang2019-xh}%
+\begin{APACrefauthors}%
+Huang, K\BPBI W.%
+, Ochandarena, N\BPBI E.%
+, Philson, A\BPBI C.%
+, Hyun, M.%
+, Birnbaum, J\BPBI E.%
+, Cicconet, M.%
+\BCBL {}\ \BBA {} Sabatini, B\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{{\APACmonth{08}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Molecular and anatomical organization of the dorsal
+  raphe nucleus} {Molecular and anatomical organization of the dorsal raphe
+  nucleus}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Elife}{8}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Jeong%
 \ \protect \BOthers {.}}{%
 Jeong%
@@ -302,6 +332,38 @@ Kotliar, D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Li%
+\ \protect \BOthers {.}}{%
+Li%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+Li2018-nu}
+\APACinsertmetastar {%
+Li2018-nu}%
+\begin{APACrefauthors}%
+Li, X.%
+, Yu, B.%
+, Sun, Q.%
+, Zhang, Y.%
+, Ren, M.%
+, Zhang, X.%
+\BDBL {}Qiu, Z.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{{\APACmonth{01}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Generation of a whole-brain atlas for the cholinergic
+  system and mesoscopic projectome analysis of basal forebrain cholinergic
+  neurons} {Generation of a whole-brain atlas for the cholinergic system and
+  mesoscopic projectome analysis of basal forebrain cholinergic
+  neurons}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Proc. Natl. Acad. Sci. U. S. A.}{115}{2}{415--420}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Lotfollahi%
 , Naghipourfar%
 , Theis%
@@ -329,6 +391,40 @@ Lotfollahi, M.%
   {trVAE}}.{\BBCQ}
 \newblock
 
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Muzerelle%
+, Scotto-Lomassese%
+, Bernard%
+, Soiza-Reilly%
+\BCBL {}\ \BBA {} Gaspar%
+}{%
+Muzerelle%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+Muzerelle2016-sn}
+\APACinsertmetastar {%
+Muzerelle2016-sn}%
+\begin{APACrefauthors}%
+Muzerelle, A.%
+, Scotto-Lomassese, S.%
+, Bernard, J\BPBI F.%
+, Soiza-Reilly, M.%
+\BCBL {}\ \BBA {} Gaspar, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{{\APACmonth{01}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Conditional anterograde tracing reveals distinct
+  targeting of individual serotonin cell groups ({B5-B9}) to the forebrain and
+  brainstem} {Conditional anterograde tracing reveals distinct targeting of
+  individual serotonin cell groups ({B5-B9}) to the forebrain and
+  brainstem}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Brain Struct. Funct.}{221}{1}{535--561}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -361,6 +457,67 @@ Oh, S\BPBI W.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Ren%
+\ \protect \BOthers {.}}{%
+Ren%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+Ren2018-ty}
+\APACinsertmetastar {%
+Ren2018-ty}%
+\begin{APACrefauthors}%
+Ren, J.%
+, Friedmann, D.%
+, Xiong, J.%
+, Liu, C\BPBI D.%
+, Ferguson, B\BPBI R.%
+, Weerakkody, T.%
+\BDBL {}Luo, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{{\APACmonth{10}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Anatomically Defined and Functionally Distinct Dorsal
+  Raphe Serotonin Sub-systems} {Anatomically defined and functionally distinct
+  dorsal raphe serotonin sub-systems}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cell}{175}{2}{472--487.e20}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ren%
+\ \protect \BOthers {.}}{%
+Ren%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2019}}%
+}]{%
+Ren2019-jg}
+\APACinsertmetastar {%
+Ren2019-jg}%
+\begin{APACrefauthors}%
+Ren, J.%
+, Isakova, A.%
+, Friedmann, D.%
+, Zeng, J.%
+, Grutzner, S\BPBI M.%
+, Pun, A.%
+\BDBL {}Luo, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{{\APACmonth{10}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Single-cell transcriptomes and whole-brain projections
+  of serotonin neurons in the mouse dorsal and median raphe nuclei}
+  {Single-cell transcriptomes and whole-brain projections of serotonin neurons
+  in the mouse dorsal and median raphe nuclei}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Elife}{8}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Saul%
 \ \BBA {} Roweis%
 }{%
@@ -385,6 +542,27 @@ Saul, L\BPBI K.%
   learning of low dimensional manifolds}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{J. Mach. Learn. Res.}{4}{Jun}{119--155}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Servén~D.%
+}{%
+Servén~D.%
+}{%
+{\protect \APACyear {{\protect \bibnodate {}}}}%
+}]{%
+Serven2018-aa}
+\APACinsertmetastar {%
+Serven2018-aa}%
+\begin{APACrefauthors}%
+Servén~D., B\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{{\protect \bibnodate {}}}{}{}.
+\newblock
+\APACrefbtitle {pyGAM: Generalized Additive Models in Python.} {pygam:
+  Generalized additive models in python.}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -434,6 +612,31 @@ von Luxburg, U.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Watson%
+, Paxinos%
+\BCBL {}\ \BBA {} Puelles%
+}{%
+Watson%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2012}}%
+}]{%
+Watson2012TheMN}
+\APACinsertmetastar {%
+Watson2012TheMN}%
+\begin{APACrefauthors}%
+Watson, C.%
+, Paxinos, G.%
+\BCBL {}\ \BBA {} Puelles, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Mouse Nervous System.} {The mouse nervous
+  system.}{\BBCQ}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Wu%
 \ \protect \BOthers {.}}{%
 Wu%
@@ -461,6 +664,40 @@ Wu, S.%
   expression and build local gene networks}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Proc. Natl. Acad. Sci. U. S. A.}{113}{16}{4290--4295}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Zaborszky%
+\ \protect \BOthers {.}}{%
+Zaborszky%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+Zaborszky2015-fm}
+\APACinsertmetastar {%
+Zaborszky2015-fm}%
+\begin{APACrefauthors}%
+Zaborszky, L.%
+, Csordas, A.%
+, Mosca, K.%
+, Kim, J.%
+, Gielow, M\BPBI R.%
+, Vadasz, C.%
+\BCBL {}\ \BBA {} Nadasdy, Z.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{{\APACmonth{01}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Neurons in the basal forebrain project to the cortex in
+  a complex topographic organization that reflects corticocortical connectivity
+  patterns: an experimental study based on retrograde tracing and {3D}
+  reconstruction} {Neurons in the basal forebrain project to the cortex in a
+  complex topographic organization that reflects corticocortical connectivity
+  patterns: an experimental study based on retrograde tracing and {3D}
+  reconstruction}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cereb. Cortex}{25}{1}{118--137}.
 \PrintBackRefs{\CurrentBib}
 
 \end{thebibliography}

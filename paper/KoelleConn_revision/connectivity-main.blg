@@ -1,0 +1,95 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: connectivity-main.aux
+The style file: apacite.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: connectivity.bib
+Warning--entry type for "Serven2018-aa" isn't style-file defined
+--line 28 of file connectivity.bib
+I was expecting a `,' or a `}'---line 31 of file connectivity.bib
+ : 
+ : year = "2018"
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "Gamanut2018-sd"
+Warning--I didn't find a database entry for "Wang2020-po"
+Warning--I didn't find a database entry for "Kuan2015-zz"
+Warning--I didn't find a database entry for "Perry2009-ia"
+Warning--I didn't find a database entry for ""
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5062 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5066 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5066 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5068 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5068 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5072 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5075 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5076 of file apacite.bst
+Warning--No journal in Harris2016-fn
+Warning--No journal in Lotfollahi2019-tr
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5079 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5079 of file apacite.bst
+Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
+while executing---line 5079 of file apacite.bst
+Warning--No journal in Von_Luxburg2010-lu
+Warning--No journal in Von_Luxburg2010-qe
+You've used 24 entries,
+            6951 wiz_defined-function locations,
+            1427 strings with 18346 characters,
+and the built_in function-call counts, 60033 in all, are:
+= -- 7182
+> -- 545
+< -- 3228
++ -- 3640
+- -- 49
+* -- 4106
+:= -- 11497
+add.period$ -- 89
+call.type$ -- 24
+change.case$ -- 451
+chr.to.int$ -- 0
+cite$ -- 52
+duplicate$ -- 1814
+empty$ -- 2021
+format.name$ -- 1080
+if$ -- 10652
+int.to.chr$ -- 0
+int.to.str$ -- 76
+missing$ -- 0
+newline$ -- 645
+num.names$ -- 192
+pop$ -- 765
+preamble$ -- 1
+purify$ -- 135
+quote$ -- 0
+skip$ -- 3475
+stack$ -- 0
+substring$ -- 3926
+swap$ -- 969
+text.length$ -- 87
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 2056
+warning$ -- 4
+while$ -- 407
+width$ -- 0
+write$ -- 864
+(There were 12 error messages)
