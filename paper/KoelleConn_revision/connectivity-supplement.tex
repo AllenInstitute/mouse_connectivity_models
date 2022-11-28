@@ -455,7 +455,6 @@ The lower detection threshold of our approach is a complicated consequence of ou
 For example, the Nadaraya-Watson estimator is likely to generate many small false positive connections, since the projection of even a single experiment within the source region to a target will cause a non-zero connectivity in the Nadaraya-Watson weighted average.
 On the other hand, the complexities of the experimental protocol itself and the image analysis and alignment can also cause spurious signals.
 Therefore, it is of interest to establish a lower-detection threshold below which we have very little power-to-predict, and set estimated connectivities below this threshold to zero.
-This should make our estimated connectivities more accurate, especially in the biologically-important sense of sparsity.
 
 We set this threshold with respect to the sum of Type 1 and Type 2 errors
 \begin{eqnarray*}

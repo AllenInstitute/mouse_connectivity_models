@@ -135,7 +135,7 @@ A detailed mathematical description of our new estimator is given in Supplementa
 
 \subsection{Model evaluation}
 
-We select optimum functions from within and between our estimator classes using \textbf{leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict experiments excluded from the training data.
+We select optimum functions from within and between our estimator classes using \textbf{leave-one-out cross validation}, in which the accuracy of the model is assessed by its ability to predict projection vectors experiments excluded from the training data on the basis of their cell class and experimental centroid.
 Equation \ref{eq:estimator} includes a deterministic step $f^*$ included without input by the data.
 The performance of $\widehat {\mathcal C} (v,s,t)$ is thus determined by performance of $\widehat f (f_*(\mathcal D(v,s)))$.
 Thus, we evaluate prediction of $f_{\mathcal T}: \mathbb R^3 \to \mathbb R_{\geq 0}^T$ - the regionalized connection strength at a given location.
