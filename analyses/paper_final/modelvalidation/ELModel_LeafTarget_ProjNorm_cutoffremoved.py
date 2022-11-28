@@ -312,4 +312,4 @@ with open(
 with open(
     "analyses/results/EL_model_projnorm_cutoffremoved_060622_leafleaf.pickle", "wb"
 ) as handle:
-    pickle.dump(twostage_leaf_creleaf2, handle, protocol=pickle.HIGEST_PROTOCOL)
+    pickle.dump(twostage_leaf_creleaf2, handle, protocol=pickle.HIGHEST_PROTOCOL)

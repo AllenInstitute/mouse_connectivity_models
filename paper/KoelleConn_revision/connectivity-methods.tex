@@ -4,7 +4,7 @@
 We create and analyze cell class-specific connectivity matrices using models trained on murine brain viral tracing experiments.
 This section describes the data used to generate the model, the model itself, the evaluation of the model, and the use of the model in creation of the connectivity matrices.
 It also includes background on the non-negative matrix factorization method used for decomposing the wild type connectivity matrix into latent structures.
-Additional information on our data is given in Supplemental Section \ref{supp_sec:data} methods is given in Supplemental Section \ref{supp_sec:methods}.
+Additional information about our data and methods are given in Supplemental Sections \ref{supp_sec:data} and \ref{supp_sec:methods}, respectively.
 
 \newpage
 \begin{figure}[H]
@@ -27,7 +27,10 @@ Additional information on our data is given in Supplemental Section \ref{supp_se
 \subfloat[]{
  \label{fig:combos}
     \includegraphics[width=0.35\textwidth]{figs/visp_counts.png}}   
-    \caption{Experimental setting.  \ref{fig:mouse}  For each experiment, a Cre-dependent GFP-expressing transgene casette is transduced by stereotaxic injection into a Cre-driver mouse, followed by serial two-photon tomography imaging. \ref{fig:injproj} An example of the segmentation of projection (targets) and injection (source) for a single experiment. Within each brain (blue), injection (green) and projection (red) areas are determined via histological analysis and alignment to the Allen Common Coordinate Framework (CCF).   \ref{fig:segment} Brain region parcellations within a coronal plane of CCFv3. \ref{fig:ontology} Explanation of nested structural ontology highlighting various levels of CCFv3 structure ontology. Lowest-level (leaf) structures are colored in blue, and structures without an injection centroid are colored in red. \ref{fig:top}  Abundances of tracer experiments by Cre line and region of injection. \ref{fig:combos}  Co-occurrence of layer-specific centroids and Cre lines within VISp}.
+    \caption{Experimental setting.  \ref{fig:mouse}  For each experiment, a Cre-dependent GFP-expressing transgene casette is transduced by stereotaxic injection into a Cre-driver mouse, followed by serial two-photon tomography imaging.
+    \ref{fig:injproj} An example of the segmentation of projection (targets) and injection (source) for a single experiment. Within each brain (blue), injection (green) and projection (red) areas are determined via histological analysis and alignment to the Allen Common Coordinate Framework (CCF).
+    \ref{fig:segment} Brain region parcellations within a coronal plane of CCFv3. \ref{fig:ontology} Explanation of nested structural ontology highlighting various levels of CCFv3 structure ontology. Lowest-level (leaf) structures are colored in blue, and structures without an injection centroid are colored in red.
+    \ref{fig:top}  Abundances of tracer experiments by Cre line and region of injection. \ref{fig:combos}  Co-occurrence of layer-specific centroids and Cre lines within VISp.}
     \label{fig:data}
 \end{figure}
 
@@ -38,49 +41,51 @@ Additional information on our data is given in Supplemental Section \ref{supp_se
 Our dataset $\mathcal D$ consists of $n=1751$ publicly available murine brain viral tracing experiments from the Allen Mouse Brain Connectivity Atlas.
 Figure \ref{fig:mouse} summarizes the multistage experimental process used to generate this dataset.
 In each experiment, a mouse is injected with AAV encoding GFP into a single location in the brain. For cell type-specific labeling, we used a double-inverted floxed (Cre inducible) AAV in a Cre driver mouse, producing fluorescence that depends on Cre expression in infected cells. Cre driver mice are engineered to express Cre under the control of a specific and single gene promoter.
-This single gene promoter-mediated expression of Cre in some rare cases corresponds to a very specific transcriptomic cell-type, but more frequently it correspond to a combination of fine level transcriptomic cell-types that represent broader cell classes. We include experiments from Cre driver lines that selectively label cell classes located in distinct cortical layers or other nuclei across the whole brain. 
+This single gene promoter-mediated expression of Cre in some rare cases corresponds to a very specific transcriptomic cell-type, but more frequently it correspond to a combination of fine level transcriptomic cell-types that represent broader cell classes.
+For example, we include experiments from Cre driver lines that selectively label cell classes located in distinct cortical layers or other nuclei across the whole brain. 
 In wild type mice injected with non-Cre-dependent viruses, fluorescence is induced in all infected cells in the region (not just those expressing Cre), and so the full set of projection target areas are visualized from the given injected brain region.
-We use the term "cell class" here to refer to all neurons expressing cre in a specific Cre driver mouse line.
+We therefore use the term "cell class" here to refer to all neurons expressing Cre in a specific Cre driver mouse line.
 
-The stack of fluorescent signals imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional average template brain that is fully annotated with regional parcellations \cite{Wang2020-po}.
+For each experiment, the fluorescent signal imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional average template brain that is fully annotated with regional parcellations \cite{Wang2020-po}.
 The informatics data processing pipeline including whole brain imaging and registration procedures (described in detail in \citep{Oh2014-kh, Kuan2015-zz}) produces quantitative metrics of fluorescence discretized at the $100 \; \mu$m \textbf{voxel} level. 
 Given an experiment, this image is histologically segmented into \textit{injection} and \textit{projection} areas corresponding to areas containing somas, dendrites and axons or exclusively axons of the transfected neurons.
 An example of a single experiment rendered in 3D is given in Figure \ref{fig:injproj}.
+Given an experiment $i$, we represent injections and projections as maps $x(i),y(i) : \mathcal B \to \mathbb R_{\geq 0}$, where $\mathcal B \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard mouse brain.
+We also calculate injection centroids $c(i) \in \mathbb R^3$ and regionalized projections $y_{\mathcal T} (i) \in \mathbb R^{T} $ given by the sum of $y(i)$ in each region.
+A detailed mathematical description of these steps, including data quality control, is given in Supplemental Section \ref{supp_sec:dp}.
 
 Our goal is the estimation of \textbf{regionalized connectivity} from one region to another.
-A visual depiction of this region parcellation for a slice of the brain is given in Figure \ref{fig:segment}.
- All regions annotated in the CCF belong to a hierarchically ordered ontology. Different areas of the brain are parcellated to differing finer depths within this hierarchical tree .
+A visual depiction of this region parcellation for a two-dimensional slice of the brain is given in Figure \ref{fig:segment}.
+All structures annotated in the CCF belong to a hierarchically ordered ontology, with different areas of the brain are parcellated to differing finer depths within a hierarchical tree.
 We denote the main levels of interest as Major Structures, Summary Structures, and Leaves.
-As indicated in Figure \ref{fig:ontology}, the dataset used to generate the connectivity model reported in this paper contains certain combinations of region and cell class $(v,s)$ frequently, and others not at all.
+As indicated in Figure \ref{fig:ontology}, the dataset used to generate the connectivity model reported in this paper contains certain combinations of region and cell class frequently, and others not at all.
 A summary of the most frequently assayed cell classes and structures is given in Figures \ref{fig:top} and \ref{fig:combos}.
 Since users of the connectivity matrices may be interested in particular combinations, or interested in the amount of data used to generate a particular connectivity estimate, we present this information about all experiments in Supplemental Section \ref*{supp_sec:data}.
 
-A cell-class specific spatial connectivity is a function $f:  \mathcal V \times \mathbb R^3 \times \mathbb R^3 \to \mathbb R_{\geq 0}$ giving the directed connection of a particular cell class from a one position in the brain to another.
-However, what we will actually estimate are regionalized connectivities defined with respect to a set of $S$ source regions $\mathcal S := \{ s\} $, $T$ target regions $\mathcal T := \{ t \}$, and $V$ cell classes $\mathcal V := \{v\}$.
-In contrast to \citet{Knox2019-ot}, which only uses wild type C57BL/6J mice, these experiments utilize $V = 114$ different Cre-lines. 
-We consider $S = 564$ leaf sources and $T = 1123$ leaf targets, where $559$ are lateral, but other structures could be used.
-That is, we estimate a regionalized connectcome.
+%We preprocess our data in several ways.
+%We discretize fluorescent signals assigned to either injection or projections into $100 \; \mu m$ cubic \textbf{voxels}.
+%As an abuse of notation, a structure $s$ then contains $|s|$ voxels at locations $\{l_{s_j} \in \mathbb R^3\}$, and similarly for targets.
 
-We preprocess our data in several ways.
-We discretize fluorescent signals assigned to either injection or projections into $100 \; \mu m$ cubic \textbf{voxels}.
-Given an experiment $i$, we represent injections and projections as maps $x(i),y(i) : \mathcal B \to \mathbb R_{\geq 0}$, where $\mathcal B \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard mouse brain.
-As an abuse of notation, a structure $s$ then contains $|s|$ voxels at locations $\{l_{s_j} \in \mathbb R^3\}$, and similarly for targets.
-We calculate injection centroids $c(i) \in \mathbb R^3$ and regionalized projections $y_{\mathcal T} (i) \in \mathbb R^{T} $ giving the sum of $y(i)$ in each region.
-In contrast to \citet{Knox2019-ot}, we $l1$ normalize the projection vectors.
-This accounts for differences in the cre-driven expression of GFP via the various transgene promoters.
-However, we also for completeness include models of projections normalized by injection signal.
-A detailed mathematical description of these steps, including data quality control, is given in Supplemental Section \ref{supp_sec:dp}.
+%In contrast to \citet{Knox2019-ot}, we $l1$ normalize the projection vectors.
+%This accounts for differences in the cre-driven expression of GFP via the various transgene promoters.
+%However, we also for completeness include models of projections normalized by injection signal.
+
 
 \newpage
 
 \subsection{Modeling Regionalized Connectivity}
-We define
+\label{sec:modelling}
+
+As a continuous function, cell-class specific connectivity maps $f:  \mathcal V \times \mathbb R^3 \times \mathbb R^3 \to \mathbb R_{\geq 0}$, giving the directed connection of a particular cell class from one position in the brain to another.
+In contrast to \citet{Knox2019-ot}, which only uses wild type C57BL/6J mice, our dataset has experiments from $V = 114$ different Cre-lines $\mathcal V := \{v\}$.
+As in \citet{Knox2019-ot}, we ultimately estimate an integrated regionalized connectivity defined with respect to a set of $S = 564$ source regions $\mathcal S := \{ s\} $ and $T = 1123$ target regions $\mathcal T := \{ t \}$, of which $1123 - 564  = 559$ are contralateral.
+That is, we define
 \begin{align*}
 &\text{\textit {regionalized connectivity strength} } \mathcal C : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C(v,s,t) = \sum_{l_{j} \in s} \sum_{l_{j'} \in  t} f(v,l_{j},l_{j'}), \\
 &\text{\textit {normalized regionalized connectivity strength} } \mathcal C^N : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0}  \text{ with } \mathcal C^N(v,s,t) = \frac{1}{|s|} \mathcal C(v,l_{j},l_{j'}), \\
 &\text{\textit {normalized regionalized projection density} } \mathcal C^D : \mathcal V \times \mathcal S \times \mathcal T \to \mathbb R_{\geq 0} \text{ with } \mathcal C^D(v,s,t) = \frac{1}{| s | | t|}\mathcal C(v,l_{j},l_{j'}).
 \end{align*}
-%These are the total strength and average strength from source to target regions for each class \skcomment{no density}.
+
 Since the normalized strength and densities are computable from the strength via a fixed normalization, our main statistical goal is to estimate $\mathcal C (v,s,t) $ for all $v, s$ and $t$.% and density are
 In other words, we want to estimate matrices $\mathcal C_v \in \mathbb R_{\geq 0}^{S \times T}$.
 We call this estimator $\widehat { \mathcal C } $.

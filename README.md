@@ -15,7 +15,7 @@ source activate mouse_connectivity
 pip install numpy pandas matplotlib scikit-learn==0.22.1 seaborn dill allensdk==1.3.0 pygam  openpyxl
 ```
 
-Add the custom files allowing masked NMF to your sklearn path.
+Add the custom files allowing masked NMF to your sklearn path (thank you https://github.com/scikit-learn/scikit-learn/pull/8474).
 
 ```
 export sklearn_path=$(python -c "import sklearn; print(sklearn.__path__[0])")
@@ -50,26 +50,29 @@ These may also be obtained from the Allen SDK and `analyses/paper_final/get_info
 We evaluate the performance of candidate connectivity estimators in
 
 ```
-sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm.sh
-analyses/paper_final/modelvalidations/ELModel_LeafTarget_ProjNorm_final.ipynb
-analyses/paper_final/modelvalidations/ELModel_LeafTarget_InjNorm_cutoffremoved_final.ipynb
-analyses/paper_final/modelvalidations/ELModel_LeafTarget_ProjNorm_cutoffremoved_final.ipynb
+sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm_firsthalf.sh
+sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_InjNorm_cutoffremoved.sh
+sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm_cutoffremoved.sh
 ```
 
-The first notebook contains cross-validation (CV) results using projection signals normalized by the norms of the projections themselves.
+The first script assess cross-validation (CV) results using projection signals normalized by the norms of the projections themselves.
 The second contains CV results using projection signals normalized by the norm of the injections, with a small fraction of experiments removed due to outlying small injection norm.
 The third contains CV results using the projection-normalized signals with the same set of experiments removed.
 
-The cross-validation results from the first notebook are used to estimate the expected-loss surface and Nadaraya-Watson bandwidths used in estimation of the connectivity matrices in the next stage.
-These notebooks were run locally.
+We determine the threshold of the first of the above in 
+
+```
+sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm_threshold.sh
+```
+
+The cross-validation results from the first script are used to estimate the expected-loss surface and Nadaraya-Watson bandwidths used in estimation of the connectivity matrices in the next stage.
 
 # Connectivity creation
 
 Leaf to leaf connectivity estimation was performed using the estimators generated in the previous step in
 
 ```
-analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm_v7.sh
-analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm_v7.py
+sbatch analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm.py
 ```
 
 Once generated, these can be combined into summary structure to summary structure connectivities as in
