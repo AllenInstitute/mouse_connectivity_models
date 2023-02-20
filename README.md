@@ -12,7 +12,7 @@ Then run
 ```
 conda create -n 'mouse_connectivity' python=3.7 -y
 source activate mouse_connectivity
-pip install numpy pandas matplotlib scikit-learn==0.22.1 seaborn dill allensdk==1.3.0 pygam  openpyxl
+pip install numpy pandas matplotlib tqdm scikit-learn==0.22.1 seaborn dill allensdk==1.3.0 pygam  openpyxl
 ```
 
 Add the custom files allowing masked NMF to your sklearn path (thank you https://github.com/scikit-learn/scikit-learn/pull/8474).
@@ -59,7 +59,7 @@ The first script assess cross-validation (CV) results using projection signals n
 The second contains CV results using projection signals normalized by the norm of the injections, with a small fraction of experiments removed due to outlying small injection norm.
 The third contains CV results using the projection-normalized signals with the same set of experiments removed.
 
-We determine the threshold of the first of the above in 
+We determine the threshold of the first of the above in
 
 ```
 sbatch analyses/paper_final/modelvalidation/ELModel_LeafTarget_ProjNorm_threshold.sh
