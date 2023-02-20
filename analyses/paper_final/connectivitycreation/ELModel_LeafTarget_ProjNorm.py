@@ -213,6 +213,7 @@ cnam_multi, rnames = get_row_col_names(connectivity_data, ontological_order_leav
 
 
 for c in range(len(eval_cre_list)):
+
     print(c, eval_cre_list[c])
     conn_v3 = get_connectivity_matrices3(
         connectivity_data,

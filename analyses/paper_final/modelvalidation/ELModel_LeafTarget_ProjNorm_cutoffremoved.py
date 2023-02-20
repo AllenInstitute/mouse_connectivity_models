@@ -40,7 +40,6 @@ experiments_exclude = ju.read(EXPERIMENTS_EXCLUDE_JSON)
 manifest_file = input_data.get("manifest_file")
 manifest_file = os.path.join(TOP_DIR, manifest_file)
 cache = VoxelModelCache(manifest_file=manifest_file)
-tree = cache.get_structure_tree()
 st = cache.get_structure_tree()
 ai_map = st.get_id_acronym_map()
 ia_map = {value: key for key, value in ai_map.items()}
@@ -57,7 +56,7 @@ ontological_order_leaves = np.load(
     workingdirectory + "/data/meta/ontological_order_leaves_v3.npy"
 )
 ontological_order = np.load("data/meta/ontological_order_v3.npy")
-default_structures = tree.get_structures_by_set_id(DEFAULT_STRUCTURE_SET_IDS)
+default_structures = st.get_structures_by_set_id(DEFAULT_STRUCTURE_SET_IDS)
 default_structure_ids = [st["id"] for st in default_structures if st["id"] != 934]
 reorder = np.asarray([4, 7, 2, 1, 10, 9, 11, 3, 5, 8, 6, 0], dtype=int)
 

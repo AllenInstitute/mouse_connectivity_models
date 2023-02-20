@@ -16,7 +16,8 @@ Additional information on model evaluation, including class and structure specif
 In particular, Supplementary Table \ref{tab:eval_size} contains the sizes of these evaluation sets in each major structure, and Supplementary Section \ref{supp_sec:loss_subsets} contains the structure- and class specific losses.
 
 \begin{table}[H]
-\small
+\subfloat[]{
+\scriptsize
 \begin{tabular}{lrrrrrrr}
 \toprule
 & Mean Leaf-Cre & NW Major-Cre& NW Leaf-Cre & NW Leaf &NW Major-WT  & NW Major & EL \\
@@ -37,11 +38,15 @@ MY        &          0.268 &          0.347 &          0.268 &  0.190 &         
 CB        &      \textbf {   0.062} &        \textbf { 0.062 }&         \textbf {0.062 }&  0.068 &             0.112 &  0.112 &  0.068 \\
 \bottomrule
 \end{tabular}
-\caption{Losses from leave-one-out cross-validation of candidate models. \textbf{Bold} numbers are best for their major structure.}
 \label{tab:crossvalidation}
+}
+\subfloat[]{\raisebox{-13ex}{
+\label{fig:loss_overall}
+    \includegraphics[width=0.3\textwidth]{figs/losssummary.png}
+}}
+\caption{Losses from leave-one-out cross-validation of candidate models. \textbf{Bold} numbers are best for their major structure. Empirical performance of selected EL model by data abundance.  The model is more accurate in Cre-leaf combinations where it draws on more data.}
 \end{table}
 
-\newpage
 
 \subsection{Connectivities}
 
