@@ -72,7 +72,7 @@ The cross-validation results from the first script are used to estimate the expe
 Leaf to leaf connectivity estimation was performed using the estimators generated in the previous step in
 
 ```
-sbatch analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm.py
+sbatch analyses/paper_final/connectivitycreation/ELModel_LeafTarget_ProjNorm.sh
 ```
 
 Once generated, these can be combined into summary structure to summary structure connectivities as in
