@@ -352,7 +352,6 @@ The resulting weights are then utilized in a Nadaraya-Watson estimator in a fina
 increase the effective sample size of our Nadaraya-Watson estimator,
 %It shares thefine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
 
-
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
 \begin{eqnarray*}
@@ -373,15 +372,17 @@ The key step therefore is finding a suitable function $g$ with which to weight t
 Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$. Then, $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
 A derivation of this fact is given later in this section.
 
-
- therefore use shape-constrained B-splines to estimate $g$.
-In particular, B-splines is a method for generating a predictive model
+We therefore use a linear generalized additive model of shape-constrained  B-splines to estimate $g$ \citep{Eilers1996-ir}.
+This is a method for generating a predictive model $g$ that minimizes the loss of
 \begin{eqnarray*}
-y = 
+\sum_{i,i' \in S} ( \|y_{\mathcal T}(i) - y_{\mathcal T}(i')\|_2 - \sum_{q = 1}^Q \rho_q B_q(\|c(i') - c(i)\|_2,  \| \bar y_{\mathcal T,s,v} -  \bar y_{\mathcal T,s,v(i)\| ))
 \end{eqnarray*}
-In our setting, this gives us a surface the Cre-distance and centroid-distance to the projection-distance response.
+given the constraints on $g$.
+That is, given all pairs of experiments with injection centroid in the same structure, $g$ gives a prediction of the distance between their projections made using the distance between the average behavior of their Cre-lines given their injection centroid, and the distance between their injection centroids.
+In particular, $g$ is the empirically best such function within the class of $B$-splines, which 
 Similarly to the Nadaraya-Watson model, we make the decision to fit a $g$ separately for each major brain division, and select $\hat \gamma$ as in \ref{eq:gamma_sel}.
-We compute our estimates using the pyGAM Python package \citep{Serven2018-aa}.
+We set $Q = 10$ and leave validation of this parameter, as well as the precise nature of the polynomial B-spline terms $B_q$ out of the scope of this paper.
+Empirically this leads to a smooth surface using the pyGAM Python package \citep{Serven2018-aa}.
 
 \newpage
 
