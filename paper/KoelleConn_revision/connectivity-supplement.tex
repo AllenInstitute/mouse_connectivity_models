@@ -350,7 +350,6 @@ When we use shape-constrained B-splines to estimate this weight, the weights the
 For this reason, we call this the Expected Loss Estimator.
 The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
 increase the effective sample size of our Nadaraya-Watson estimator,
-%It shares thefine-scale spatial resolution with \citet{Knox2019-ot}, but in addition enables us to model a particular cell-class $v$.
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
@@ -375,7 +374,7 @@ A derivation of this fact is given later in this section.
 We therefore use a linear generalized additive model of shape-constrained  B-splines to estimate $g$ \citep{Eilers1996-ir}.
 This is a method for generating a predictive model $g$ that minimizes the loss of
 \begin{eqnarray*}
-\sum_{i,i' \in S} ( \|y_{\mathcal T}(i) - y_{\mathcal T}(i')\|_2 - \sum_{q = 1}^Q \rho_q B_q(\|c(i') - c(i)\|_2,  \| \bar y_{\mathcal T,s,v} -  \bar y_{\mathcal T,s,v(i)\| ))
+\sum_{i,i' \in S} \| \|y_{\mathcal T}(i) - y_{\mathcal T}(i')\|_2 - \sum_{q = 1}^Q  \rho_q B_q(\|c(i') - c(i)\|_2,  \| \bar y_{\mathcal T,s,v} -  \bar y_{\mathcal T,s,v}(i)\| )\|_2
 \end{eqnarray*}
 given the constraints on $g$.
 That is, given all pairs of experiments with injection centroid in the same structure, $g$ gives a prediction of the distance between their projections made using the distance between the average behavior of their Cre-lines given their injection centroid, and the distance between their injection centroids.
@@ -390,13 +389,11 @@ Empirically this leads to a smooth surface using the pyGAM Python package \citep
 \begin{tabular}[t]{cc}
 \subfloat[]{
     \includegraphics[width = 2.1in]{figs/315_summary_scatter.png}
-   % \caption{Isocortex loss distribution}
     \label{fig:expected_loss} 
    }
     &
     \subfloat[]{
     \includegraphics[width = 2.1in]{figs/315_summary_surface.png}
-   % \caption{$\hat g$ fit to expected-loss using shape-constrained splines}
    \label{fig:expected_loss_surface}
     }
    \end{tabular}
@@ -663,6 +660,18 @@ These expand upon the results in Table \ref{tab:crossvalidation} and give more s
 
 \newpage
 
+\subsection{Cell-type specificity}
+
+\begin{figure}
+ \label{fig:ct_clust}
+    \includegraphics[width=.6\textwidth]{figs/heirarchical.png}
+\caption{  \ref{fig:ct_clust}
+		Hierarchical clustering of connectivity strengths from visual cortex cell-types to cortical and thalamic targets.
+		Cre-line, summary structure, and layer are labelled on the sources.
+		Major brain division and layer are labelled on the targets.}
+  \end{figure}
+    
+    
 \subsection{Matrix Factorization}
 \label{supp_sec:matrix_factor_results}
 

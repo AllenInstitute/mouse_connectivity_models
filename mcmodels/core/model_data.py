@@ -73,7 +73,8 @@ class ModelData(object):
         # get experiments
         experiment_ids = self.get_experiment_ids(**kwargs)
 
-        container = RegionalData if high_res else VoxelData
+        # container = RegionalData if high_res else VoxelData
+        container = VoxelData
         container_kwargs = dict(
             injection_structure_ids=injection_set,
             projection_structure_ids=region_set,

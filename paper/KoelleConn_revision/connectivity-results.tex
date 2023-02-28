@@ -109,9 +109,10 @@ This combined output is not evaluated in our testing, and is only a general stan
 \paragraph{MS and NDB projections in the Chat-IRES-Cre-neo model.}
 Cholinergic neurons in the MS and NDB are well-known to strongly innervate the hippocampus, olfactory bulb, piriform cortex, entorhinal cortex, and lateral hypothalamus \citep{Zaborszky2015-fm, Watson2012TheMN}.
 In the Allen MCA, cholinergic neurons were labeled by injections into Chat-IRES-Cre-neo mice.
-We first checked the estimated connectome weights to targets in these major brain divisions from MS and NDB.
+Figure \ref{fig:cholinergic} checks the estimated connectome weights to targets in these major brain divisions from MS and NDB.
 We observed that all these expected divisions were represented above the 90th percentile of weights.
-Recently, a single cell whole brain mapping project using Chat-Cre mice fully reconstructed n=50 cells, revealing these same major targets and also naming additional targets from MS/NDB \citep{Li2018-nu}. We compared our Chat-IRES-Cre connectome model data for MS and NDB with the targets identified by  \citet{Li2018-nu}.
+Recently, a single cell whole brain mapping project using Chat-Cre mice fully reconstructed n=50 cells, revealing these same major targets and also naming additional targets from MS/NDB \citep{Li2018-nu}.
+We compared our Chat-IRES-Cre connectome model data for MS and NDB with the targets identified by  \citet{Li2018-nu}.
 We identified ~150 targets at the fine leaf structure level in the top 10\% of estimated weights. To directly compare our data across studies, we had to merge structures as needed to get to the same ontology level and remove ipsilateral and contralateral information.
 After formatting our data, we found 51 targets in the top 10\%; Li et al. reported 47 targets across the 50 cells.
 There was good consistency overall between the target sets; 35 targets were shared, 12 were unique to the single cell dataset, and 16 unique to our model data.
@@ -119,11 +120,11 @@ We checked whether targets missing from our dataset were because of the threshol
 Indeed, lowering the threshold to the 75 th percentile confirmed 6 more targets-in-common, and all but 2 targets from \citet{ Li2018-nu} were above the 50th percentile weights in our model.
 Of note, the absence of a target in the single cell dataset that was identified in our model data is most likely due to the sparse sampling of all possible projections from only n=50 MS/NDB cells.
 
-\paragraph{CP projections in the Chat-IRES-Cre-neo model.}
-Most cells in the caudoputamen (CP) are GABAergic spiny projection neurons.
-These cells are also the only type that send projections outside the CP.
-Cholinergic interneurons make up 1-2\% of all CP cells and their axon terminals do not extend beyond the CP borders.
-We confirmed that the model predictions for connection weights from CP cholinergic cells were consistent with this known anatomy; the connection weight to CP was $\sim2$-fold higher than any other in the top $5\%$.
+%\paragraph{CP projections in the Chat-IRES-Cre-neo model.}
+%Most cells in the caudoputamen (CP) are GABAergic spiny projection neurons.
+%These cells are also the only type that send projections outside the CP.
+%Cholinergic interneurons make up 1-2\% of all CP cells and their axon terminals do not extend beyond the CP borders.
+%We confirmed that the model predictions for connection weights from CP cholinergic cells were consistent with this known anatomy; the connection weight to CP was $\sim2$-fold higher than any other in the top $5\%$.
 
 \paragraph{DR projections in the Slc6a4-Cre\_ET33 model.}
 
@@ -131,7 +132,7 @@ Serotonergic projections from cells in the dorsal raphe (DR) are widely distribu
 In the Allen MCA, serotonergic neurons were labeled using Slc6a4-Cre\_ET33 and Slc6a4-CreERT2\_EZ13 mice.
 This small nucleus appears to contain a complex mix of molecularly distinct serotonergic neuron subtypes with some hints of subtype-specific projection patterns \citep{Ren2018-ty, Ren2019-jg,  Huang2019-xh}.
 We expect that the Cre lines we used here in the Allen MCA, which utilize the serotonin transporter promoter (Slc6a4-Cre and -CreERT2), will lead to expression of tracer in all the serotonergic subtypes recently described in an unbiased way, but this assumption has not been tested directly.
-We compared our model data to a single cell reconstruction dataset consisting of n=50 serotonergic cells with somas in the DR that also had bulk tracer validation \skcomment{INSERT LINK TO FIGURE}.
+We compared our model data to a single cell reconstruction dataset consisting of n=50 serotonergic cells with somas in the DR that also had bulk tracer validation \ref{fig:serotinergic}.
 \citet{ Ren2019-jg} listed 55 targets across the single cell reconstructions.
 After processing our data to match the target structure ontology level across studies, we identified 37 targets from the DR with weights above the 90 th percentile; 27 of these targets matched those named by \citet{ Ren2019-jg}.
 Overall there was good consistency between targets in olfactory areas, cortical subplate, CP, ACB and amygdala areas, as well in pallidum and midbrain.
@@ -155,23 +156,22 @@ So it is possible that the single cell somas did not adequately sample the entir
     }
     \newline
  \subfloat[]{
- \label{fig:ct_clust}
-    \includegraphics[width=.6\textwidth]{figs/heirarchical.png}
+ \label{fig:cholinergic}
+    \includegraphics[width=.4\textwidth]{figs/cholinergic.png} 
     }
-    
+     \subfloat[]{
+      \label{fig:serotinergic}
+    \includegraphics[width=.42\textwidth]{figs/serotinergic.png} 
+    }
     \caption{  Cell-class specificity. \ref{fig:ct_spc} Selected cell-class and layer specific connectivities from two visual and two motor areas.
 	 Sources without an injection in the Cre driver line are not estimated due to lack of data for that Cre-line in that structure.
-    		\ref{fig:ct_clust}
-		Hierarchical clustering of connectivity strengths from visual cortex cell-types to cortical and thalamic targets.
-		Cre-line, summary structure, and layer are labelled on the sources.
-		Major brain division and layer are labelled on the targets.}
+	 \ref{fig:cholinergic} Targets reported for cholinergic cells in MS/NDB in \citet{ Li2018-nu}  and above the 90th percentile in our Chat-IRES-Cre-neo model.  A black box along the diagonal indicates the target was identified in both studies ($n=35$). The number of single cells (out of 50) with a projection to each target is shown in the first column after the target acronym and the next column shows whether a target appeared in the $90\%$ thresholded model weights (1= present, 0=absent). Some of these targets only appeared at lower thresholds as indicated by asterisks, $*** >85th \%, ** >75th \%, * >50th \%$.
+\ref{fig:serotinergic} Targets reported for serotonergic cells in DR in \citet{Ren2018-ty, Ren2019-jg} and above the 90th percentile in our Slc6a4-Cre\_ET33 model.
+    		}
 \label{fig:data_ct}
 \end{figure}
 
 \newpage
-
-%There are also an increasing number of single neuron brain-wide reconstructions, often with genetic information about the reconstructed cell type, that can serve as ground-truth data for these models as they are made available [BICCN fMOST ref].
-%We found only minor differences in the models for the two Slc6a4-Cre lines and focus on results from _ET33 below.
 
 \subsection{Connectivity Analyses}
 
@@ -183,10 +183,11 @@ This contrasts with the tendency of other cell-classes to project intracorticall
 Similarly, layer 6 targets are not strongly projected to by any of the displayed cell classes.
 There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
 
-In this section, we apply non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of archetypal connectivities.
+This exploratory analysis lead us to apply non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of archetypal connectivities.
 This decomposes the remaining censored connectivity matrix into a linear model based off a relatively small number of distinct signals.
-This model is able to capture a large amount of the observed variability, and recovers structure-specific archetypal signals.
+In contrast to the complex tree of cell types implied by heirarchical clustering, this creates a simple linear statistical model of overall connectivity.
 
+This model is able to capture a large amount of the observed variability, and recovers structure-specific archetypal signals.
 These signals are plotted in Figure \ref{fig:nmf_results}, and technical details and intermediate results are given in Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}, respectively.
 These details include a cross-validation based method for selecting the number of components, a masking method for focusing only on long range connections, and a stability method for ensuring that the decomposition is reliable across computational replicates.
 The plotted decomposition shows that these underlying connectivity archetypes correspond strongly to major brain division in both target and sources.
