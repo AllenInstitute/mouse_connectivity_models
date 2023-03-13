@@ -1,15 +1,15 @@
 \section{Results}
 \label{sec:results}
 
-We provide several types of results.
-First, we show that the novel expected-loss (EL) estimator performs best in our validation assays.
-Second, qualitative exploratory analysis confirms that the Cre-specific connectivity matrices generated using this model are consistent with known biology. 
-Third, statistical decomposition of the wild-type connectivity matrix using unsupervised learning shows how archetypal components can combine to produce observed signals.
+
+We first establish that our novel expected-loss (EL) estimator performs best in validation assays for estimating wild-type and cell-type specific connectivities.
+We then show that Cre-specific connectivity matrices generated using this model are consistent with known biology. 
+Finally, we factor these connectivity matrices to show how wild-type connectivity arises from underlying cell-type specific patterns.
 
 \subsection{Model evaluation}
 \label{sec:model_eval}
 
-Our EL model generally performs better than the other estimators that we consider.
+In general, our EL model performs better than the other estimators that we consider.
 Table \ref{tab:crossvalidation} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from \citet{Knox2019-ot}.
 The EL model combines the good performance of class-specific models like NW Leaf-Cre in regions like Isocortex with the good performance of class-agnostic models in regions like Thalamus.
 Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}.
@@ -44,28 +44,30 @@ CB        &      \textbf {   0.062} &        \textbf { 0.062 }&         \textbf 
 \label{fig:loss_overall}
     \includegraphics[width=0.3\textwidth]{figs/losssummary.png}
 }}
-\caption{Losses from leave-one-out cross-validation of candidate models. \textbf{Bold} numbers are best for their major structure. Empirical performance of selected EL model by data abundance.  The model is more accurate in Cre-leaf combinations where it draws on more data.}
+\caption{\ref{fig:losssummary} Losses from leave-one-out cross-validation of candidate models.
+\textbf{Bold} numbers are best for their major structure.
+\ref{tab:losssummary} Empirical performance of selected EL model by data abundance.
+The model is more accurate in Cre-leaf combinations where it draws on more data.}
 \end{table}
-
 
 \subsection{Connectivities}
 
-Our main result is the estimation of matrices $\hat {\mathcal C}_v \in \mathbb R_{\geq 0}^{S \times T}$ representing connections of source structures to target structures for particular cre-lines $v$. 
-We confirm the detection of several well-established connectivities within our tensor, although it is our expectation that additional interesting biological processes are also manifest.
+Our main result is the estimation of matrices $\hat {\mathcal C}_v \in \mathbb R_{\geq 0}^{S \times T}$ representing connections of source structures to target structures for particular Cre-lines $v$. 
+We confirm the detection of several well-established connectivities within our tensor, although we expect additional interesting biological processes to be identifiable.
 The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
-%Note that many entries of these matrices are missing due to lack of experiments.
 
 \subsubsection{Overall connectivity}
 
-Several expected biological projection patterns are evident in the wild-type connectivity matrix $\mathcal C_{wt}$ from leaf sources to leaf targets shown in Figure \ref{fig:full_wt}.
-Intraareal connectivities are clear, as are ipsilateral connections between cortex and thalumus.
-The clear intrastructural and intraareal connectivities mirror previous estimates in \citet{Oh2014-kh} and \citet{Knox2019-ot} and descriptive depictions of individual experiments in \citet{Harris2019-mr}.
+Several known biological projection patterns are evident in the wild-type connectivity matrix $\mathcal C_{wt}$ shown in Figure \ref{fig:full_wt}.
+This matrix shows connectivity from leaf sources to leaf targets.
+Large-scale patterns like intraareal connectivities and ipsilateral connections between cortex and thalumus are clear, as in previous estimates in \citet{Oh2014-kh, Knox2019-ot, Harris2019-mr}.
 
-Our estimated wild-type connectivities appear more variable than those in \citet{Knox2019-ot}, which used the NW Major-WT model whose accuracy is evaluated in Table \ref{tab:crossvalidation}.
-This is plausibly because of both the layer-specific targeting of the different cre-lines, and also the layer-specificity of the selected model.
-Although layer-specificity is a major advantage of including distinct cre-lines, for comparison, we also plot coarser projections between summary-structure sources and targets in the cortex in Figure \ref{fig:cortex_wt}.
-These are averages over component layers weighted by layer size.
-These connectivities exhibit a finer differentiation between regions and lower limit of detection than those in \citet{Knox2019-ot}, and are grossly congruent with prior work.
+The layer-specific targeting of the different Cre-lines enables our estimated wild-type connectivities to resolve at the layer level.
+This contrasts the model in \citet{Knox2019-ot}, which is denominated as the NW Major-WT model whose accuracy is evaluated in Table \ref{tab:crossvalidation}.
+Layer-specificity is a major advantage of including distinct Cre-lines.
+For comparison, we also plot averages over component layers weighted by layer size projections between summary-structure sources and targets in the cortex in Figure \ref{fig:cortex_wt}.
+Our connectivities therefore exhibit a finer differentiation between regions than those in \citet{Knox2019-ot}
+This also enables us to lower our limit of detection and examine a broader range of connectivity strengths.
 Importantly, as shown in Table \ref{tab:crossvalidation} this finer spatial resolution corresponds to the increased accuracy of our EL model over the NW Major-WT model.
 
 \newpage
@@ -90,8 +92,8 @@ Importantly, as shown in Table \ref{tab:crossvalidation} this finer spatial reso
 \newpage
 \subsubsection{Class-specific connectivities}
 
-Source and cell-type combinations which project similarly indicate the network structure underpinning cognition.
-Although there is a rich anatomical literature using anterograde tracing data to describe projection patterns from subcortical sources to a small set of targets of interest, most accessible whole brain projection data are from the Allen Mouse Connectivity Atlas (MCA) project used here to generate the connectome models.
+Motivated by that source and cell-type combinations which project similarly indicate the network structure underpinning cognition, we investigate the presence of several biological processes within our connectivity estimates.
+Although there is a rich anatomical literature using anterograde tracing data to describe projection patterns from subcortical sources to a small set of targets of interest, much of the accessible whole brain projection data is from the Allen Mouse Connectivity Atlas (MCA) project used here to generate the connectome models.
 Thus, to validate our results while avoiding a circular validation of the data used to generate the model weights, we confirm that these class-specific connectivities exhibit certain known behaviors.
 In particular, we focus on several cell types and source areas with extensive previous anatomical descriptions of projections using both bulk tracer methods with cell type specificity and single cell reconstructions: 1) thalamic-projecting neurons in the visual and motor cortical regions, 2) cholinergic neurons in the medial septum and nucleus of the diagonal band (MS/NDB); 3) cholinergic neurons in the caudoputamen, and 4) serotonergic neurons of the dorsal raphe nucleus (DR).
 We find that our inferred connections are in agreement with literature on these cell types.
