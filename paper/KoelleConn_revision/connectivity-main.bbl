@@ -93,6 +93,32 @@ Daigle, T\BPBI L.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Eilers%
+\ \BBA {} Marx%
+}{%
+Eilers%
+\ \BBA {} Marx%
+}{%
+{\protect \APACyear {1996}}%
+}]{%
+Eilers1996-ir}
+\APACinsertmetastar {%
+Eilers1996-ir}%
+\begin{APACrefauthors}%
+Eilers, P\BPBI H\BPBI C.%
+\BCBT {}\ \BBA {} Marx, B\BPBI D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1996}{{\APACmonth{05}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Flexible smoothing with B-splines and penalties}
+  {Flexible smoothing with b-splines and penalties}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{SSO Schweiz. Monatsschr. Zahnheilkd.}{11}{2}{89--121}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Gao%
 , Zhang%
 , Wang%
@@ -332,6 +358,35 @@ Kotliar, D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Kuan%
+\ \protect \BOthers {.}}{%
+Kuan%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+Kuan2015-zz}
+\APACinsertmetastar {%
+Kuan2015-zz}%
+\begin{APACrefauthors}%
+Kuan, L.%
+, Li, Y.%
+, Lau, C.%
+, Feng, D.%
+, Bernard, A.%
+, Sunkin, S\BPBI M.%
+\BDBL {}Ng, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{{\APACmonth{02}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Neuroinformatics of the Allen Mouse Brain Connectivity
+  Atlas} {Neuroinformatics of the allen mouse brain connectivity atlas}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Methods}{73}{}{4--17}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Li%
 \ \protect \BOthers {.}}{%
 Li%
@@ -454,6 +509,29 @@ Oh, S\BPBI W.%
   connectome of the mouse brain}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Nature}{508}{7495}{207--214}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Perry%
+}{%
+Perry%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+Perry2009-ia}
+\APACinsertmetastar {%
+Perry2009-ia}%
+\begin{APACrefauthors}%
+Perry, P\BPBI O.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{{\APACmonth{09}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Cross-Validation} for Unsupervised Learning}
+  {{Cross-Validation} for unsupervised learning}.{\BBCQ}
+\newblock
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -609,6 +687,36 @@ von Luxburg, U.%
   stability: An overview}.{\BBCQ}
 \newblock
 
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Wang%
+\ \protect \BOthers {.}}{%
+Wang%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2020}}%
+}]{%
+Wang2020-po}
+\APACinsertmetastar {%
+Wang2020-po}%
+\begin{APACrefauthors}%
+Wang, Q.%
+, Ding, S\BHBI L.%
+, Li, Y.%
+, Royall, J.%
+, Feng, D.%
+, Lesnar, P.%
+\BDBL {}Ng, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{{\APACmonth{05}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Allen Mouse Brain Common Coordinate Framework: A
+  {3D} Reference Atlas} {The allen mouse brain common coordinate framework: A
+  {3D} reference atlas}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cell}{181}{4}{936--953.e20}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

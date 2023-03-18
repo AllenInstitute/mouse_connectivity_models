@@ -10,7 +10,7 @@ Finally, we factor some of these connectivity matrices to show how connectivity 
 \label{sec:model_eval}
 
 In general, our EL model performs better than the other estimators that we consider.
-Table \ref{tab:crossvalidation} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from \citet{Knox2019-ot}.
+Table \ref{tab:crossvalidation_main} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from \citet{Knox2019-ot}.
 The EL model combines the good performance of class-specific models like NW Leaf-Cre in regions like Isocortex with the good performance of class-agnostic models in regions like Thalamus.
 Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}.
 In particular, Supplementary Table \ref{tab:eval_size} contains the sizes of these evaluation sets in each major structure, and Supplementary Section \ref{supp_sec:loss_subsets} contains the structure- and class specific losses.
@@ -38,15 +38,15 @@ MY        &          0.268 &          0.347 &          0.268 &  0.190 &         
 CB        &      \textbf {   0.062} &        \textbf { 0.062 }&         \textbf {0.062 }&  0.068 &             0.112 &  0.112 &  0.068 \\
 \bottomrule
 \end{tabular}
-\label{tab:crossvalidation}
+\label{tab:crossvalidation_main}
 }
 \subfloat[]{\raisebox{-13ex}{
 \label{fig:loss_overall}
     \includegraphics[width=0.3\textwidth]{figs/losssummary.png}
 }}
-\caption{\ref{fig:losssummary} Losses from leave-one-out cross-validation of candidate models.
+\caption{\ref{tab:crossvalidation_main} Losses from leave-one-out cross-validation of candidate models.
 \textbf{Bold} numbers are best for their major structure.
-\ref{tab:losssummary} Empirical performance of selected EL model by data abundance.
+\ref{fig:loss_overall} Empirical performance of selected EL model by data abundance.
 The model is more accurate in Cre-leaf combinations where it draws on more data.}
 \end{table}
 
@@ -63,12 +63,12 @@ This matrix shows connectivity from leaf sources to leaf targets.
 Large-scale patterns like intraareal connectivities and ipsilateral connections between cortex and thalumus are clear, as in previous estimates in \citet{Oh2014-kh, Knox2019-ot, Harris2019-mr}.
 
 The layer-specific targeting of the different Cre-lines enables our estimated wild-type connectivities to resolve at the layer level.
-This contrasts the model in \citet{Knox2019-ot}, which is denominated as the NW Major-WT model whose accuracy is evaluated in Table \ref{tab:crossvalidation}.
+This contrasts the model in \citet{Knox2019-ot}, which is denominated as the NW Major-WT model whose accuracy is evaluated in Table \ref{tab:crossvalidation_main}.
 Layer-specificity is a major advantage of including distinct Cre-lines.
 For comparison, we also plot averages over component layers weighted by layer size projections between summary-structure sources and targets in the cortex in Figure \ref{fig:cortex_wt}.
 Our connectivities therefore exhibit a finer differentiation between regions than those in \citet{Knox2019-ot}
 This also enables us to lower our limit of detection and examine a broader range of connectivity strengths.
-Importantly, as shown in Table \ref{tab:crossvalidation} this finer spatial resolution corresponds to the increased accuracy of our EL model over the NW Major-WT model.
+Importantly, as shown in Table \ref{tab:crossvalidation_main} this finer spatial resolution corresponds to the increased accuracy of our EL model over the NW Major-WT model.
 
 \newpage
 
@@ -91,7 +91,7 @@ Importantly, as shown in Table \ref{tab:crossvalidation} this finer spatial reso
 
 \newpage
 \subsubsection{Class-specific connectivities}
-
+\label{sec:class-specific-connectivities}
 Since source and cell-type combinations which project similarly indicate the network structure underpinning cognition, we investigate the presence of several biological processes within our connectivity estimates.
 Although there is a rich anatomical literature using anterograde tracing data to describe projection patterns from subcortical sources to a small set of targets of interest, much of the accessible whole brain projection data is from the MCA project used here to generate the connectome models.
 Thus, to validate our results while avoiding a circular validation of the data used to generate the model weights, we confirm that these class-specific connectivities exhibit certain known behaviors.
@@ -166,7 +166,7 @@ Thus, it is possible that the single cell somas did not adequately sample the en
     }
      \subfloat[]{
       \label{fig:serotinergic}
-    \includegraphics[width=.42\textwidth]{figs/serotinergic.png} 
+    \includegraphics[width=.43\textwidth]{figs/serotinergic.png} 
     }
     \caption{  Cell-class specificity. \ref{fig:ct_spc} Selected cell-class and layer specific connectivities from two visual and two motor areas.
 	 Sources without an injection in the Cre driver line are not estimated due to lack of data for that Cre-line in that structure.
@@ -180,34 +180,17 @@ Thus, it is possible that the single cell somas did not adequately sample the en
 
 \subsection{Connectivity Analyses}
 
-Cell-classes exhibit a wide range of connectivities.
-Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
-%than summary structure especially when looking at targets at major brain division level.
-We use hierarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
-Examining the former, we can see that the layer 6 Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure.
-This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
-Similarly, layer 6 targets are not strongly projected to by any of the displayed cell classes.
-%There are too many targeted summary structures to plot here, but we expect that the source profile of each target clusters by structure.
+While the manual analysis in Section \ref{sec:class-specific-connectivities} is valuable for validation, scaling our interpretation of our connectivity estimates motivated us to apply dimension reduction methods to our connectivity estimates and understand whether the learned structure was consonant with the expected biology.
+For example, Supplemental Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using Cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
+Sorting source and target structure/cell-class combinations hierarchical clustering shows, for example, that layer 6-specific Ntsr1 Cre-lines source regions cluster together.
+This makes sense, since layer 6-specific Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure, and in contrast with the tendency of other cell-classes to project to nearby regions within the cortex.
 
-This exploratory analysis lead us to investigate matrix decomposition methods for our estimated connectivity matrices.
-We applied non-negative matrix factorization to decompose the long-range wild-type connectivities into linear combinations of learned latent connectivities.
-In particular, we censor short range connections due to their clear biological derivation from diffusion and their high mathematical rank.
-This decomposes the remaining censored connectivity matrix into a linear model based off a relatively small number of distinct signals.
-
-In contrast to the complex tree of cell types implied by heirarchical clustering, this creates a simple linear statistical model of overall connectivity. \skcomment{citation}
-These signals are plotted in Figure \ref{fig:nmf_results}, and technical details and results are given in Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}, respectively.
-Connectivity patterns like cortical-cortical and cortical-thalamic are visible in this matrix factorization.
-It generates a reconstructured connectivity matrix with structure and layer-specific targeting from a relatively small number of learned additive factors.
-Supplemental Section \ref{supp_sec:matrix_factor_results} contains quantitative performance of this model, as well as association of factors in this model with individual Cre-lines.
-
-%These details include a cross-validation based method for selecting the number of components, a masking method for focusing only on long range connections, and a stability method for ensuring that the decomposition is reliable across computational replicates.
-%The plotted decomposition shows that these underlying connectivity archetypes correspond strongly to major brain division in both target and sources.
-%However, certain components that predominantly represent connectivity from a given major brain division may also be accessed from other areas.
-%For example, the IP and FN regions of CB are strongly associated in \ref{fig:W} with the component projecting to MY in \ref{fig:H}.
-
-%Inspection of the reconstructed distal normalized connection strength using the top $15$ components shows qualitatively shows that this relatively sparse decomposition is able to capture much of the observed variability.
-%Layer-specific targeting is evident, indicating that the factorization method is detecting cell-type specific signals, even though it is trained only on the wild-type connectivity.
-%Other 
+The low-dimensional coordinates returned by NMF highlight important features within the connectivity matrix in a data-driven way.
+The learned projection archetypes $H$ and model weights $W$ are plotted in Figure \ref{fig:nmf_results}.
+Intrastructural connections such as MB-MB MY-MY are visible in the $7$th and $11$th archetypes, but there is no obvious layer-6 specific signal.
+These factors may be used to generate a reconstructured connectivity matrix using the implied statistical model.
+Despite the relatively small number of learned additive factors, comparing with \ref{fig:full_wt} shows that this reconstructed matrix has a relatively globally plausible structure.
+Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results} contain quantitative performance of this model, association of factors in this model with individual Cre-lines, and assessment of factorization stability to ensure the decomposition is reliable across computational replicates.
 
 \newpage
 

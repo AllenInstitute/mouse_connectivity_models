@@ -29,16 +29,15 @@ Additional information about our data and methods are given in Supplemental Sect
     \includegraphics[width=0.35\textwidth]{figs/visp_counts.png}}   
     \caption{Experimental setting.  \ref{fig:mouse}  For each experiment, a Cre-dependent GFP-expressing transgene casette is transduced by stereotaxic injection into a Cre-driver mouse, followed by serial two-photon tomography imaging.
     \ref{fig:injproj} An example of the segmentation of projection (targets) and injection (source) for a single experiment. Within each brain (blue), injection (green) and projection (red) areas are determined via histological analysis and alignment to the Allen Common Coordinate Framework (CCF).
-    \ref{fig:segment} Brain region parcellations within a coronal plane of CCFv3. \ref{fig:ontology} Explanation of nested structural ontology highlighting various levels of CCFv3 structure ontology. Lowest-level (leaf) structures are colored in blue, and structures without an injection centroid are colored in red.
-    \ref{fig:top}  Abundances of tracer experiments by Cre-line and region of injection. \ref{fig:combos}  Co-occurrence of layer-specific centroids and Cre lines within VISp.}
+    \ref{fig:segment} Brain region parcellations within a coronal plane of CCFv3. \ref{fig:ontology} Explanation of nested structural ontology highlighting various levels of CCFv3 structure ontology.
+    Lowest-level (leaf) structures are colored in blue, and structures without an injection centroid are colored in red.
+    \ref{fig:top}  Abundances of tracer experiments by Cre-line and region of injection. \ref{fig:combos}  Co-occurrence of layer-specific centroids and Cre-lines within VISp.}
     \label{fig:data}
 \end{figure}
 
 \newpage
 
 \subsection{Data}
-
-\skcomment{Update figure to show layer and leaf}
 
 Our dataset $\mathcal D$ consists of $n=1751$ publicly available murine brain viral tracing experiments from the Allen Mouse Brain Connectivity Atlas.
 Figure \ref{fig:mouse} summarizes the experimental process used to generate this data.
@@ -47,7 +46,7 @@ Location of fluorescence is mediated by the location of the injection, the chara
 In particular, Cre-driver mice are engineered to express Cre under the control of a specific and single gene promoter.
 This localizes expression of Cre to regions with certain transcriptomic cell-types signatures.
 In such Cre-driver mice, we used a double-inverted floxed AAV to produce fluorescence that depends on Cre expression in infected cells.
-To account for the complex cell-type targeting induced by a particular combination of Cre-driver genotype and GFP promoter, we refer to the combinations of cell-types targeted by a particular combination of AAV and Cre-drive mice as cell-classes.
+To account for the complex cell-type targeting induced by a particular combination of Cre-driver genotype and GFP promoter, we refer to the combinations of cell-types targeted by a particular combination of AAV and Cre-driver mice as cell-classes.
 For example, we include experiments from Cre-driver lines that selectively label cell classes located in distinct cortical layers or other nuclei across the whole brain.
 By our definition, wild type mice transduced with constitutitively active GFP promoters induce fluorescence of a particularly broad cell class.
 
@@ -57,7 +56,7 @@ Given an experiment, this image was histologically segmented by an analyst into 
 An example of a single experiment rendered in 3D is given in Figure \ref{fig:injproj}.
 Given an experiment $i$, we represent injections and projections as functions $x(i),y(i) : \mathcal B \to \mathbb R_{\geq 0}$, where $\mathcal B \subset [1:132] \times [1:80] \times [1:104]$ corresponds to the subset of the $(1.32 \times 0.8 \times 1.04)$ cm rectangular space occupied by the standard voxelized mouse brain.
 We also calculate injection centroids $c(i) \in \mathbb R^3$ and regionalized projections $y_{\mathcal T} (i) \in \mathbb R^{T} $ given by the sum of $y(i)$ in each region.
-A detailed mathematical description of these steps, including data quality control, is given in Supplemental Section \ref{supp_sec:dp}.
+A description of these steps is in Supplemental Section \ref{supp_sec:dp}.
 
 Our goal is the estimation of \textbf{regionalized connectivity} from one region to another.
 A visual depiction of this region parcellation for a two-dimensional slice of the brain is given in Figure \ref{fig:segment}.
@@ -159,14 +158,19 @@ The establishment of a lower limit of detection and the extra cross-validation s
 
 \subsection{Connectivity analyses}
 
-We examine latent structure underlying our estimated connectome using two types of unsupervised learning.
-Our use of hierarchical clustering is standard, and so we do not review it here.
-However, our application of non-negative matrix factorization (NMF) to decompose the estimated long-range connectivity into \textbf{connectivity archetypes} that linearly combine to reproduce the observed connectivity of some independent interest.
-Non-negative matrix factorization refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a non-negatively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
-Unlike PCA, NMF specifically accounts for the fact that data are all in the positive orthant.
+We examine latent structure underlying our estimated connectome using heirarchical clustering and non-negative matrix factorization.
+First, we use aggloromative heirarchical clustering with Ward's criterion to compare outputs from connectivities from different Cre-lines.
+Details of this approach are given in \citet{Hastie_2009, Lalloue2013-is}.
+Second, we use non-negative matrix factorization (NMF) to factor the wild-type connectivity matrix into a small set of underlying components.
+Inspired by \citet{Mohammadi2018-te}, we refer to these latent coordinates as \textbf{connectivity archetypes} since they represent underlying patterns from which we can reconstruct a broad range of observed connectivities, although we note that the genomic archetypal analysis in that paper is slightly methodologically distinct.
+
+Our application of NMF to decompose the estimated long-range connectivity into latent coordinates that linearly combine to reproduce the observed connectivity is some independent interest, since we censor short range connections due to their clear biological derivation from diffusion and their high mathematical rank.
+NMF refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a non-negatively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
+NMF assumes a simple linear statistical model: that the observed matrix is composed of linear combinations of latent coordinates \citep{Devarajan2008-hd}.
+Unlike PCA, NMF specifically accounts for the fact that data are all in the positive orthant, and it is more stable and interpretable in assays of complex biological systems than heirarchical clustering \citep{Brunet2004-gi}
 The matrix $H$ is typically used to identify latent structures with interpretable biological meaning, and the choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations. 
 
-Our algorithm solves the following optimization problem
+Our NMF algorithm solves the following optimization problem
 \begin{eqnarray*}
 \label{eq:nmf}
 \nmf(\mathcal C, \lambda, q) := \arg \min_{W\in \mathbb R^{S \times q}_{\geq 0}, H \in \mathbb R^{q  \times T}_{\geq 0}} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
