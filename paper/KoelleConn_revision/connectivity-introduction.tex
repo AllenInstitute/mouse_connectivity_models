@@ -14,9 +14,13 @@ Several statistical models for the conversion of such experiment-specific signal
 Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} model \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
 The value of these models is that they provide some improvement over simply averaging the projection signals of injections in a given region.
 However, these previous works only model connectivities observed in wild type mice in which all neuron types were labeled, and so are poorly suited for extension to tracing experiments that induce cell-type specific fluorescence \citep{Harris2019-mr}.
-In particular, GFP expression is induced by Cre-recombinase in cell-types specified by transgenic strain.
-Thus, this paper introduces a \textbf{cell class}-specific statistical model to deal with the diverse set of \textbf{Cre-lines} described in \citet{Harris2019-mr}, and expands this model to the entire mouse brain. In cortex a large number of transgenic lines were chosen for their laminar specific expression.
+In particular, GFP expression is induced by Cre-recombinase in cell-types specified by the combination of transgenic mouse strain and transgene promoter.
+We refer to such sets of cells as \textbf{cell class}.
+For example, use of both wild-type and transgenic mice would give rise to cell-class specific experiments, but with different albeit perhaps overlapping classes of cells.
 
+Thus, this paper introduces a class-specific statistical model to deal with the diverse set of \textbf{Cre-lines} described in \citet{Harris2019-mr}, and expands this model to the entire mouse brain.
+%Since the set of cells targeted by a particular combination of transgene promoter and transgenic mouse line
+%In cortex a large number of transgenic lines were chosen for their laminar specific expression.
 Our model is a to-our-knowledge novel estimator that takes into account both the spatial position of the labelled source, as well as the categorical cell class.
 Like the previously state-of-the-art model in \citet{Knox2019-ot}, this model predicts regionalized connectivity as an average over positions within the structure, with nearby experiments given more weight.
 However, our model weighs class-specific behavior in a particular structure against spatial position, so a nearby experiment specific to a similar cell-class is relatively up-weighted, while a nearby experiment specific to a dissimilar class is down-weighted.

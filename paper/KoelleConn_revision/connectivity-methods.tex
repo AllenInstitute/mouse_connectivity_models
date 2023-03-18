@@ -73,8 +73,8 @@ Since users of the connectivity matrices may be interested in particular combina
 \subsection{Modeling Regionalized Connectivity}
 \label{sec:modelling}
 
-Cell-class specific connectivity $f:  \mathcal V \times \mathbb R^3 \times \mathbb R^3 \to \mathbb R_{\geq 0}$ gives the directed connection of a particular cell class from one position in the brain to another.
-In contrast to \citet{Knox2019-ot}, which only uses wild type C57BL/6J mice, our dataset has experiments targeting $V = 114$ different combinations of Cre-driver mice and Cre-regulated AAV transgenes jointly denoted as $\mathcal V := \{v\}$.
+We define voxelized cell-class specific connectivity $f:  \mathcal V \times \mathcal B \times \mathbb \mathcal \to \mathbb R_{\geq 0}$ as giving the voxelized connectivity strength of a particular cell class from a source voxel to a target voxel.
+In contrast to \citet{Knox2019-ot}, which only uses wild type C57BL/6J mice, our dataset has experiments targeting $|\mathcal V| = 114$ different combinations of Cre-driver mice and Cre-regulated AAV transgenes jointly denoted as $\mathcal V := \{v\}$.
 As in \citet{Knox2019-ot}, we ultimately estimate an integrated regionalized connectivity defined with respect to a set of $S = 564$ source leafs $\mathcal S := \{ s\} $ and $T = 1123$ target leafs $\mathcal T := \{ t \}$, of which $1123 - 564  = 559$ are contralateral.
 That is, we define
 \begin{align*}
@@ -96,7 +96,8 @@ We represent these considerations as
 This makes explicit the data featurization $f_{*}$, statistical estimator $\widehat f$, and any potential subsequent transformation $f^*$ such as summing over the source and target regions.
 Denoting $ \mathcal D$ as a function of $v$ and $s$ reflects that we consider using different data to estimate connectivities for different cell-classes and source regions.
 Table \ref{tab:estimators} reviews estimators used for this data-type used in previous work, as well as our two main extensions: the Cre-NW and \textbf{Expected Loss} (EL) models.
-Additional information on these estimators is given in Supplemental Section \ref{supp_sec:estimators}.
+The main differences in our data featurization from \citep{Knox2019-ot} are that we regionalize our data at the leaf level where available so that it layer-specific behavior is visible, and normalize our data by projection signal in order to account for differences between cell class.
+Additional model selection results are given in Supplemental Section \ref{supp_sec:model-evaluation} for alternative normalization strategies, and more detail on estimation is given in Supplemental Section \ref{supp_sec:estimators}.
 
 \begin{table}[H]
     \centering
@@ -129,7 +130,6 @@ However, in contrast to the NW approaches, the EL estimate of the projection vec
 That is, cell-class and source region combinations with similar average projection vectors will be upweighted when estimating $\widehat f$.
 Thus, all experiments that are nearby in three-dimensional space can help generate the prediction, even when there are few nearby experiments for the cell-class in question.
 A detailed mathematical description of our new estimator is given in Supplemental Section \ref{supp_sec:el}.
-\skcomment{cell-class versus Cre-line?}
 
 \newpage
 
@@ -151,7 +151,8 @@ We use weighted $l2$-loss to evaluate these predictions.
 \text{l2-loss } \ell (y_{\mathcal T}(i)),\widehat {y_{\mathcal T}(i))}) &:=   \| y_{\mathcal T} (i)) - \widehat {y_{\mathcal T}(i))} \|_2^2. \\
 \text{weighted l2-loss } \mathcal L ( \widehat {f(f_*)}) &:= \frac{1}{|\{\mathcal S,\mathcal V\}|} \sum_{s,v \in \{\mathcal S,\mathcal V\}} \frac{1}{ |I_{s} \cap I_v |} \sum_{i \in (I_{s} \cap I_v ) } \ell (y_{\mathcal T}(i)), \hat f_{\mathcal T} (f_*(\mathcal D(v,s) \setminus i)) .
 \end{align*}
-This is a somewhat different loss from \citet{Knox2019-ot}, both because of the normalization of projection, and because of the increased weighting of rarer combinations of $s$ and $v$ implicit in the $\frac{1}{ |I_{s} \cap I_v |}$ term in the loss.
+$I_s$ refers to the set of experiments with centroid in structure $s$, and $I_v$ refers to the set of experiments with Cre-line $v$, so $|I_s \cap I_v|$ is the number of experiments of Cre-line $v$ with injection centroid in structure $s$.
+This is a somewhat different loss from \citet{Knox2019-ot} because of the increased weighting of rarer combinations of $s$ and $v$ implicit in the $\frac{1}{ |I_{s} \cap I_v |}$ term in the loss.
 The establishment of a lower limit of detection and the extra cross-validation step used in the EL model to establish the relative importance of regionally averaged cell-class projection and injection centroid position are covered in Supplemental Section \ref{supp_sec:methods_lower}.
 
 \newpage

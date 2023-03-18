@@ -107,9 +107,7 @@ Figure \ref{fig:ct_spc} shows that in VISp, the Ntsr1-Cre line strongly targets 
 In VISp, the Rbp4-Cre line strongly targets LP as well.  
 Rbp4-Cre and Ntsr1-Cre injections target layers 5 and 6 respectively.
 Since we only generate connectivity estimates for structures with at least one injection centroid, this is shown by the position of non-zero rows in Figure \ref{fig:ct_spc}.
-%This is further examined in Supplemental Section \ref{sec:data}).
 To fill these gaps, as a heuristic alternative model, we also display an average connectivity matrix over all Cre-lines.
-%This combined output is not evaluated in our testing, and is only a general stand-in for overall behavior, but provides a useful summary of results.
 
 \paragraph{MS and NDB projections in the Chat-IRES-Cre-neo model.}
 
@@ -182,8 +180,9 @@ Thus, it is possible that the single cell somas did not adequately sample the en
 
 \subsection{Connectivity Analyses}
 
-Cell-class, while often correlated with cortical layer, can be a stronger driver of connectivity than summary structure especially when looking at targets at major brain division level.
+Cell-classes exhibit a wide range of connectivities.
 Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
+%than summary structure especially when looking at targets at major brain division level.
 We use hierarchical clustering to sort source structure/cell-class combinations by the similarity of their structural projections, and sort target structures by the structures from which they receive projections.
 Examining the former, we can see that the layer 6 Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure.
 This contrasts with the tendency of other cell-classes to project intracortically in a manner determined by the source structure.
@@ -195,14 +194,11 @@ We applied non-negative matrix factorization to decompose the long-range wild-ty
 In particular, we censor short range connections due to their clear biological derivation from diffusion and their high mathematical rank.
 This decomposes the remaining censored connectivity matrix into a linear model based off a relatively small number of distinct signals.
 
-In contrast to the complex tree of cell types implied by heirarchical clustering, this creates a simple linear statistical model of overall connectivity.
-These signals are plotted in Figure \ref{fig:nmf_results}, and technical details and intermediate results are given in Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}, respectively.
-The matrix factorization model captures a large amount of the observed variability, both in the statistical sense, and also in terms of its ability to generate a reconstructured connectivity matrix with structure and layer-specific targeting from a relatively small number of learned additive factors.
-Since underlying tissues are heterogenous, it is plausible that these factors reflect a mixture of cell-types.
-Thus, we associate the factors in this model with individual Cre-lines, and find that certain factors correspond to several of our Cre-lines.
-%and recovers structure-specific signals indicates that
-
-
+In contrast to the complex tree of cell types implied by heirarchical clustering, this creates a simple linear statistical model of overall connectivity. \skcomment{citation}
+These signals are plotted in Figure \ref{fig:nmf_results}, and technical details and results are given in Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}, respectively.
+Connectivity patterns like cortical-cortical and cortical-thalamic are visible in this matrix factorization.
+It generates a reconstructured connectivity matrix with structure and layer-specific targeting from a relatively small number of learned additive factors.
+Supplemental Section \ref{supp_sec:matrix_factor_results} contains quantitative performance of this model, as well as association of factors in this model with individual Cre-lines.
 
 %These details include a cross-validation based method for selecting the number of components, a masking method for focusing only on long range connections, and a stability method for ensuring that the decomposition is reliable across computational replicates.
 %The plotted decomposition shows that these underlying connectivity archetypes correspond strongly to major brain division in both target and sources.
@@ -211,7 +207,7 @@ Thus, we associate the factors in this model with individual Cre-lines, and find
 
 %Inspection of the reconstructed distal normalized connection strength using the top $15$ components shows qualitatively shows that this relatively sparse decomposition is able to capture much of the observed variability.
 %Layer-specific targeting is evident, indicating that the factorization method is detecting cell-type specific signals, even though it is trained only on the wild-type connectivity.
-%Other connectivity patterns like cortical-cortical and cortical-thalamic are also detected.
+%Other 
 
 \newpage
 
@@ -236,7 +232,7 @@ Thus, we associate the factors in this model with individual Cre-lines, and find
 Target major structure and hemisphere are plotted.
 \ref{fig:W} Loading matrix $W$.
 Source major structure and layer are plotted.
-\ref{fig:recon} Reconstruction of the normalized distal connectivity strength using the top $15$ archetypes.  Areas less than $1500 \mu m$ apart are not modeled, and therefore shown in red.
+\ref{fig:recon} Reconstruction of the normalized distal connectivity strength using the top $15$ archetypes.  Areas less than $1500 \mu m$ apart are not modeled, and therefore shown in pink.
 }
 \label{fig:nmf_results}
 \end{figure}

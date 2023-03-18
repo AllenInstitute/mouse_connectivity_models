@@ -10,7 +10,8 @@ Our supplementary information consists of abundances of leaf/Cre-line combinatio
 \subsection{Cre/structure combinations in $\mathcal D$}
 \label{supp_sec:data}
 
-This section describes the abundances of leaf and Cre-line combinations in our dataset.
+This section describes the abundances of structure and Cre-line combinations in our dataset.
+That is, it indicates how many experiments in our dataset with a particular Cre-line have an injection centroid in a particular structure.
 Users of the connectivity matrices who are interested in a particular Cre-line or structure can see the quantity and type of data used to compute and evaluate that connectivity.
 
 \newpage
@@ -129,7 +130,6 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 We give information on the quality of our models.
 This includes the sizes of our evaluation sets in leave-one-out cross-validation and additional losses in the injection-normalized case.
 
-
 \paragraph{Number of experiments in evaluation sets}
 
 In order to compare between methods, we therefore restrict to the smallest set of evaluation indices, which is to say, virus-leaf combinations that are present at least twice. 
@@ -140,24 +140,27 @@ This means that our evaluation set is smaller in size than our overall list of e
 \small
 \begin{tabular}{lrrr}
 \toprule
-{} &  Total &  Cre-Leaf & Cre-leaf over threshold \\
+{} &  Total &  Evaluation set &  Injection-thresholded evaluation \\
 \midrule
-Isocortex &     36 &         4  & 4\\
-OLF       &      7 &         2 & 2\\
-HPF       &    122 &        62 & 59\\
-CTXsp     &     85 &        41 & 38\\
-STR       &   1128 &       732& 7 \\
-PAL       &     68 &        18 & 17\\
-TH        &     46 &         7& 7 \\
-HY        &     35 &        17& 17 \\
-MB        &     33 &         8 & 8\\
-P         &     30 &        11& 11\\
-MY        &     78 &        45 & 44\\
-CB        &     83 &        29& 29 \\
+Isocortex &   1128 &             732 &                               709 \\
+OLF       &     35 &              17 &                                17 \\
+HPF       &    122 &              62 &                                59 \\
+CTXsp     &      7 &               2 &                                 2 \\
+STR       &     78 &              45 &                                44 \\
+PAL       &     30 &              11 &                                11 \\
+TH        &     83 &              29 &                                29 \\
+HY        &     85 &              41 &                                38 \\
+MB        &     68 &              18 &                                18 \\
+P         &     33 &               8 &                                 8 \\
+MY        &     46 &               7 &                                 7 \\
+CB        &     36 &               4 &                                 4 \\
 \bottomrule
 \end{tabular}
-\caption{Number of experiments available to evaluate models in leave-one-out cross validation. 
-Models that rely on a finer granularity of modeling have less data available to validate with.} 
+\caption{Number of experiments available to evaluate models in leave-one-out cross validation.
+The size of the evaluation set is lower than the total number of experiments since models that rely on a finer granularity of modeling have less data available to validate with,
+and we restrict all models to the smallest evaluation set necessitated by any of the modes.
+In this case, the Expected Loss and Cre-NW models require at least two experiments to be present with a combination of injection centroid structure and Cre-line for leave-one-out cross-validation. 
+We also include results with a slightly smaller evaluation set that removes experiments without a sufficiently strong injection signal, as in \citet{Knox2019-ot}} 
 \label{tab:eval_size}
 \end{table}
 
@@ -234,19 +237,18 @@ This section consists of additional information on preprocessing of the neural c
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
 These steps are described in Algorithm \pre.
-The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK. %and injection fraction $F(i)$ 
+The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK, a programatic interface to the brain connectivity data. %and injection fraction $F(i)$ 
 The injections and projection signals $ \mathcal B \to \mathbb [0,1]$ were segmented manually in histological analysis.
 The projection signal gives the proportion of pixels within the voxel displaying fluorescence, and the injection signal gives the proportion of pixels within the histologically-selected injection subset displaying fluorescence.
-The injection fraction $ \mathcal B \to \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
-Finally, the data quality mask $ \mathcal B \to \mathbb \{0,1\}$ gives the voxels that have valid data.
+The injection fraction $F(i): \mathcal B \to \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
+Finally, the data quality mask $q(i): \mathcal B \to \mathbb \{0,1\}$ gives the voxels that have valid data.
 
-%We also have a map $A: \mathbb R \to \mathbb R^{|S|}$ where $S$ is the number of structures that takes the average value for voxels in that structure
 Our preprocessing makes use of the above ingredients, as well as several other essential steps.
 First, we compute the weighted injection centroid
 \begin{eqnarray*}
-c(i) &= \sum_{l \in \mathcal B} x(l) l
+c(i) &= \sum_{l \in \mathcal B} x (i) |_l 
 \end{eqnarray*}
-where $x(i)(l)$ is the injection density at location $l \in \mathbb R^3$.
+where $x(i) |_l$ is the injection density at location $l \in \mathbb R^3$.
 Given a regionalization $\mathcal R$ from the Allen SDK, we can also access regionalization map $R: \mathcal B  \to \mathcal R $.
 This induces a functional of connectivities from the space of maps $\{\mathcal X = x: \mathcal B \to [0,1]$
 \begin{eqnarray*}
@@ -267,11 +269,11 @@ Finally, given a vector or array $a \in \mathbb R^T$, we have the $l1$ normaliza
 n: a &\mapsto \frac{a}{\sum_{j = 1}^T a_j}.
 \end{eqnarray*}
 
-We define these objects as functions and functionals, but this is for notational convenience and non-essential.
-A function $x(i):\mathcal B \to [0,1]$ is mathematically equivalent to the graph $\mathcal G(x(i)) \in \mathcal B \times [0,1]$.
-As an abuse of notation, we define $x \odot x' := z$ such that $z(l) = x(l) x'(l)$ for all $l \in \mathcal B$.
-Also, denote $m(i)$ as the major structure containing experiment $i$.
-We then can write the preprocessing algorithm.
+%We define these objects as functions and functionals, but this is for notational convenience and non-essential.
+%A function $x(i):\mathcal B \to [0,1]$ is mathematically equivalent to the graph $\mathcal G(x(i)) \in \mathcal B \times [0,1]$.
+%We define $x \odot x' = x(l) x'(l)$ for all $l \in \mathcal B$.
+Denote $m(i)$ as the major structure containing experiment $i$, and naturally defining $\odot$ for maps $\mathcal B \to [0,1]$ by e.g.
+ $( y(i) \odot q(i)) |_l := ( y(i)  |_l) ( q(i) |_l )$, we then can write the preprocessing algorithm.
 
 \begin{algorithm}[H]
 \floatname{algorithm}{\pre}%{\preprocess}
@@ -332,6 +334,7 @@ That is,
 
 Besides location of the injection centroid, cell class also influences projection.
 Thus, we introduce method for estimating the effect of Cre-distance, which we define as the distance between the projections of the mean experiment of one (Cre,leaf) pair with another.
+By this definition, similar cell classes have relatively small Cre-distance.
 This method assigns a predictive weight to each pair of training points that depends both on their centroid-distance and Cre-distance.
 This weight is determined by the expected prediction error of each of the two feature types
 
@@ -342,14 +345,11 @@ The vectorization of categorical information is known as \textbf{target encoding
 \end{eqnarray*}
 The Cre-distance is then define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
 The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
-
- as determined by cross-validation.
+%as determined by cross-validation.
 When we use shape-constrained B-splines to estimate this weight, the weights then may be said to be used in a Nadaraya-Watson estimator.
-
-
 For this reason, we call this the Expected Loss Estimator.
 The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
-increase the effective sample size of our Nadaraya-Watson estimator,
+%increase the effective sample size of our Nadaraya-Watson estimator,
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
