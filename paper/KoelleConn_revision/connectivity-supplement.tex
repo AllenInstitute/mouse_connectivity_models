@@ -19,7 +19,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/CB centroid density.png}
-        \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
             \label{fig:my_label}
 \end{figure}
 \newpage
@@ -27,7 +27,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/TH centroid density.png}
-    \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -35,7 +35,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/CTXsp centroid density.png}
-    \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -43,7 +43,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/P centroid density.png}
-        \caption{Abundances of cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -51,7 +51,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/PAL centroid density.png} 
-        \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -59,7 +59,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/Isocortex centroid density.png}
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:iso_count}
 \end{figure}
 \newpage
@@ -67,7 +67,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/MB centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -75,7 +75,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/MY centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -83,7 +83,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/HPF centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -91,7 +91,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/OLF centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -99,7 +99,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/STR centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 \newpage
@@ -107,7 +107,7 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/HY centroid density.png} 
-     \caption{Abundances of Cre-line and leaf-centroid combinations.}
+    \caption{Frequencies of Cre-line and leaf-centroid combinations in our dataset.}
     \label{fig:my_label}
 \end{figure}
 
@@ -115,10 +115,15 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 
 \subsection{Distances between structures}
 
+The distance between structures has a strong effect on the connectivity \citep{Knox2019-ot}.
+For reference, we show these distances here.
+Short range distances are not used in our matrix factorization approach.
+This masking is methodologically novel.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/distances_leafs.png} 
-    \caption{Distance between structures.  Short-range connections are masked in red}
+    \caption{Distance between structures.  Short-range connections are masked in red.}
     \label{fig:dist_bw_str}
 \end{figure}
 
@@ -127,14 +132,13 @@ Users of the connectivity matrices who are interested in a particular Cre-line o
 \subsection{Model evaluation}
 \label{supp_sec:model-evaluation}
 
-We give information on the quality of our models.
-This includes the sizes of our evaluation sets in leave-one-out cross-validation and additional losses in the injection-normalized case.
+We give the sizes of our evaluation sets in leave-one-out cross-validation and additional losses using the injection-based normalization scheme from \citet{Knox2019-ot}.
 
 \paragraph{Number of experiments in evaluation sets}
 
-In order to compare between methods, we therefore restrict to the smallest set of evaluation indices, which is to say, virus-leaf combinations that are present at least twice. 
+In order to compare between methods, we restrict to the smallest set of evaluation indices.
+That is, the set of experiments used to validate our models combinations that are those whose combination of Cre-line and injection centroid leaf are present at least twice, since one experiment at least must be held out.
 This means that our evaluation set is smaller in size than our overall list of experiments.
-
 
 \begin{table}[H]
 \small
@@ -167,6 +171,7 @@ We also include results with a slightly smaller evaluation set that removes expe
 \newpage
 
 \paragraph{Injection-normalized losses}
+
 To compare with the injection-normalization procedure from \citet{Knox2019-ot}, we also remove experiments with small injection, and here give results for this slightly reduced set using injection-normalization.
 That is, instead of dividing the projection signal of each experiment by its $l1$ norm, we divide by the $l1$ norm of the corresponding injection signal.
 We find that setting a summed injection-signal of threshold of $1$ is sufficient for evading pathological edge cases in this normalization, while still retaining a large evaluation set.
@@ -224,8 +229,6 @@ CB        &          0.062 &          0.062 &          0.062 &  0.068 &         
 \label{tab:crossvalidation}
 \end{table}
 
-
-
 \newpage 
 \section{Supplemental methods}
 \label{supp_sec:methods}
@@ -237,7 +240,7 @@ This section consists of additional information on preprocessing of the neural c
 
 Several data prepreprocessing steps take place prior to evaluations of the connectivity matrices.
 These steps are described in Algorithm \pre.
-The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK, a programatic interface to the brain connectivity data. %and injection fraction $F(i)$ 
+The arguments of this normalization process - injection signals $x(i)$, projection signals $y(i)$, injection fraction $F(i)$, and data quality mask $q(i)$ - were downloaded using the Allen SDK, a programatic interface to the brain connectivity data.
 The injections and projection signals $ \mathcal B \to \mathbb [0,1]$ were segmented manually in histological analysis.
 The projection signal gives the proportion of pixels within the voxel displaying fluorescence, and the injection signal gives the proportion of pixels within the histologically-selected injection subset displaying fluorescence.
 The injection fraction $F(i): \mathcal B \to \mathbb [0,1]$ gives the proportion of pixels within each voxel in the injection subset.
@@ -255,7 +258,7 @@ This induces a functional of connectivities from the space of maps $\{\mathcal X
 1_{\mathcal R}: \mathcal X &\to \mathcal R \times \mathbb R_{\geq 0} \\
 x &\mapsto \sum_{l \in r}  x(l)  \text{ for } r \in \mathcal R.
 \end{eqnarray*}
-%This map depends on the choice of regionalization; we regionalize at the leaf level.
+
 We also can restrict a signal to a individual structure as
 \begin{eqnarray*}
 1 |_s :  \mathcal X &\to  \mathcal X \\
@@ -269,11 +272,9 @@ Finally, given a vector or array $a \in \mathbb R^T$, we have the $l1$ normaliza
 n: a &\mapsto \frac{a}{\sum_{j = 1}^T a_j}.
 \end{eqnarray*}
 
-%We define these objects as functions and functionals, but this is for notational convenience and non-essential.
-%A function $x(i):\mathcal B \to [0,1]$ is mathematically equivalent to the graph $\mathcal G(x(i)) \in \mathcal B \times [0,1]$.
-%We define $x \odot x' = x(l) x'(l)$ for all $l \in \mathcal B$.
-Denote $m(i)$ as the major structure containing experiment $i$, and naturally defining $\odot$ for maps $\mathcal B \to [0,1]$ by e.g.
- $( y(i) \odot q(i)) |_l := ( y(i)  |_l) ( q(i) |_l )$, we then can write the preprocessing algorithm.
+Denote $m$ as the major structure containing an experiment, and define $\odot$ for maps $\mathcal B \to [0,1]$ by e.g.
+ $( y(i) \odot q(i)) |_l := ( y(i)  |_l) ( q(i) |_l )$.
+ We then can write the preprocessing algorithm.
 
 \begin{algorithm}[H]
 \floatname{algorithm}{\pre}%{\preprocess}
@@ -282,7 +283,7 @@ Denote $m(i)$ as the major structure containing experiment $i$, and naturally de
 \begin{algorithmic}
 \State Injection fraction $x_F \gets x\odot F$
 \State Data-quality censor $y_q \gets  y \odot q , x_q \gets x_F \odot q$
-\State Restrict injection $x_m = 1 |_{m} x_q $.
+\State Restrict injection $x_{m} = 1 |_{m} x_q $.
 \State Compute centroid $c$ from $x_m $
 \State Regionalize $\tilde y_{\mathcal T}  \gets 1_{\mathcal T}(  y_q)$
 \State Normalize $ y_{\mathcal T}  \gets n(\tilde y_{\mathcal T}  )$
@@ -293,6 +294,7 @@ Denote $m(i)$ as the major structure containing experiment $i$, and naturally de
 \newpage
 \subsection{Estimators}
 \label{supp_sec:estimators}
+
 As mentioned previously, we can consider our estimators as modeling a connectivity vector $f_{\mathcal T} (v,s)  \in \mathbb R_{\geq 0}^T$.
 Thus, for the remainder of this section, we will discuss only $f (v,s)$.
 We review the Nadaraya-Watson estimator from  \citet{Knox2019-ot}, and describe its conversion into our cell-class specific Expected Loss estimator.
@@ -300,7 +302,6 @@ We review the Nadaraya-Watson estimator from  \citet{Knox2019-ot}, and describe 
 \subsubsection{Centroid-based Nadaraya-Watson}
 
 In the Nadaraya-Watson approach of \citet{Knox2019-ot}, the injection is considered only through its centroid $c(i)$, and the projection is considered regionalized.
-%The prediction for a given region is then given by the integral of predictions over that region, which is computed as a sum over voxels.
 That is,
 \begin{eqnarray*}
 f_*(i) = \{c(i), y_{\mathcal T}(i)\}.
@@ -334,7 +335,7 @@ That is,
 
 Besides location of the injection centroid, cell class also influences projection.
 Thus, we introduce method for estimating the effect of Cre-distance, which we define as the distance between the projections of the mean experiment of one (Cre,leaf) pair with another.
-By this definition, similar cell classes have relatively small Cre-distance.
+Equivalently, relatively small Cre-distance defines what we call similar cell classes.
 This method assigns a predictive weight to each pair of training points that depends both on their centroid-distance and Cre-distance.
 This weight is determined by the expected prediction error of each of the two feature types
 
@@ -345,11 +346,9 @@ The vectorization of categorical information is known as \textbf{target encoding
 \end{eqnarray*}
 The Cre-distance is then define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
 The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
-%as determined by cross-validation.
 When we use shape-constrained B-splines to estimate this weight, the weights then may be said to be used in a Nadaraya-Watson estimator.
 For this reason, we call this the Expected Loss Estimator.
 The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
-%increase the effective sample size of our Nadaraya-Watson estimator,
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
 That is, 
@@ -367,8 +366,9 @@ where
 \end{eqnarray*}
 and $s$ is the structure containing $l$.
 
-The key step therefore is finding a suitable function $g$ with which to weight the positional and Cre information.
-Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$. Then, $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
+The key step therefore is finding a suitable function $g$ with which to weight the positional and (Cre,leaf) information.
+Note that $g$ must be a concave, non-decreasing function of its arguments with with $g(0,0) = 0$.
+Then, $g$ defines a metric on the product of the metric spaces defined by experiment centroid and target-encoded cre-line, and $\hat f_{EL}$ is a Nadaraya-Watson estimator. 
 A derivation of this fact is given later in this section.
 
 We therefore use a linear generalized additive model of shape-constrained  B-splines to estimate $g$ \citep{Eilers1996-ir}.
@@ -411,7 +411,7 @@ Empirically this leads to a smooth surface using the pyGAM Python package \citep
 \paragraph{Justification of shape constraint}
 
 The shape-constrained expected-loss estimator introduced in this paper is, to our knowledge, novel.
-It should be considered an alternative method to the classic weighted kernel method.
+It should be considered an alternative method to the classic weighted kernel method \citep{Cai2001-hk, Salha_undated-ev}.
 While we do not attempt a detailed theoretical study of this estimator, we do establish the need for the shape constraint in our spline estimator.
 Though this fact is probably well known, we prove a (slightly stronger) version here for completeness.
 
@@ -478,9 +478,6 @@ For example, the heatmap in Supplemental Figure \ref{fig:dist_bw_str} shows that
 These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
 For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
 
-%More generally, %This relationship is plotted in \ref{fig:nmf} b), showing that there exists substantial variability that would be impossible to model with low-error in a univariate model, even using the diffusion model suggested in \citet{Knox2019-ot}.
-%Second, the specific cell-types targeted by the various cre-lines themselves generate a reduced-dimension space. Under the assumption that cell-type determines projection pattern, we can investigate which cell-types are present in which of the projecting structures.
-
 Given a matrix $X \in \mathbb R_{\geq 0}^{a \times b}$ and a desired latent space dimension $q$, the non-negative matrix factorization is thus
 \begin{eqnarray*}
 \nmf (\mathcal C, \lambda, q,1_{M}) = \arg \min_{W \in \mathbb R_{\geq 0}^{S \times q}, H\in \mathbb R_{\geq 0}^{q \times T}} \frac{1}{2}\| 1_{M} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
@@ -503,7 +500,6 @@ This determines the point past which additional hidden units provide no addition
 
 The differentiating feature of cross-validation for NMF compared with supervised learning is the randomness of the masking matrix $1_M$.
 Cross-validation for supervised learning generally leaves out entire observations, but this is insufficient for our situation.
-%where $e(\mathcal C)$ is a map that encodes $\mathcal C$ in a learned representation, and $d$ is the decoding reconstruction map.
 This is because, given $W$, our $H$ is the solution of a regularized non-negative least squares optimization problem
 \begin{eqnarray}
 H := \widehat e_W(1_{M} \odot \mathcal C) = \arg \min_{\beta \in \mathbb R_{\geq 0}^{q \times T}} \|1_{M} \odot \mathcal C - W \beta\|_2^2 + \|\beta\|_1.
@@ -511,7 +507,7 @@ H := \widehat e_W(1_{M} \odot \mathcal C) = \arg \min_{\beta \in \mathbb R_{\geq
 \end{eqnarray}
 The negative effects of an overfit model can therefore be optimized away from on the evaluation set.
 
-A standard solution is to generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
+We therefore generate uniformly random masks $1_{M(p)} \in \mathbb R^{S \times T}$ where
 \begin{align*}
 1_{M(p)} (s,t) \sim \text{Bernoulli(p)}.
 \end{align*}
@@ -525,7 +521,6 @@ Theoretically, the optimum number of components is then
 \begin{align*}
     \widehat q = \arg \min_q \epsilon_q.
 \end{align*}
-%However, the low decrease in error at higher values of $q$ will motivate us to empirically select a slightly smaller number of components.
 
 \subsubsection{Stabilizing NMF}
 
@@ -573,13 +568,14 @@ These conclusively show that $10^{-6}$ is the good threshold for our normalized 
 \label{supp_sec:loss_subsets}
 
 We report model accuracies for our $EL$ model by neuron class and structure.
-These expand upon the results in Table \ref{tab:crossvalidation} and give more specific information about the quality of our estimates.   CTXsp is omitted due to the small nature of the evaluation set.
+These expand upon the results in Table \ref{tab:crossvalidation} and give more specific information about the quality of our estimates. 
+CTXsp is omitted due to the small evaluation set.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_512.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in CB.  Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in CB.  Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 %\begin{figure}[H]
@@ -593,74 +589,77 @@ These expand upon the results in Table \ref{tab:crossvalidation} and give more s
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1089.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in HPF. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in HPF. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1097.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in HY. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in HY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_315.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in Isocortex. Missing values are omitted.  Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in Isocortex. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_313.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in MB. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in MB. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_354.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in MY. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in MY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_698.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in OLF.  Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in OLF.  Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_771.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in P. Missing values are omitted.    Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in P. Missing values are omitted.    Row and column averages are also plotted.}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_803.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in PAL. Missing values are omitted.  Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in PAL. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_477.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in STR. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in STR. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_549.png} 
     \label{fig:distances}
-    \caption{Weighted loss for cre-leaf combinations in TH. Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in TH. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \newpage
 
 \subsection{Cell-type specificity}
+
+We performed agglomerative heirarchical clustering using the default method in Seaborn \citep{Waskom2021} to investigate shared projection patterns across Cre-lines.
+This showed clustering of Ntsr1 projections to Thalymic nucelii.
 
 \begin{figure}
  \label{fig:ct_clust}
@@ -670,12 +669,14 @@ These expand upon the results in Table \ref{tab:crossvalidation} and give more s
 		Cre-line, summary structure, and layer are labelled on the sources.
 		Major brain division and layer are labelled on the targets.}
   \end{figure}
-    
+  
+  
+ \newpage
     
 \subsection{Matrix Factorization}
 \label{supp_sec:matrix_factor_results}
 
-We give additional results on the generation of the archetypal connectome patterns.
+We give additional results on the generation of the archetypal connectome latent variables.
 These consist of cross-validation selection of $q$, the number of latent components, stability analysis, and visualization of the reconstructed wild-type connectivity.
 
 \subsubsection{Cross-validation}
@@ -684,6 +685,7 @@ We set $\alpha = 0.002$ and run Program \ref{eq:nmf} on $\mathcal C_{wt}$.
 We use a random mask with $p = .3$ to evaluate prediction accuracy of models trained on the unmasked data on the masked data.
 To account for stochasticity in the NMF algorithm, we run $R = 8$ replicates at each potential dimension $q$.
 This selects $\hat q = 60$.
+However, the low decrease in error at higher values of $q$ and need for brevity in our figures motivated us to choose $q=15$ for the purposes of display.
 
 \begin{figure}[H]
     \centering
@@ -696,9 +698,8 @@ This selects $\hat q = 60$.
 
 \subsubsection{Stability}
 
-For the purposes of visualization and interpretability, we restrict to a $q = 15$ component model.
 To address the instability of the NMF algorithm in identifying components, we $k-means$ cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
-Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index.
+Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index, a standard method of clustering stability \citep{Rand1971-ny, Meila_2007}.
 
 \begin{tabular}{lrrrrr}
 \toprule
@@ -718,11 +719,16 @@ Since $k$-means is most stable at $k=30$, we cluster the $qR = 150$ components i
     Replicate and NMF component are shown on rows.
     Components that are in the top $15$ are also indicated.}
 \end{figure}
-These are the components whose medians are plotted in Figure \ref{fig:H}.
+We plot the medians of these components in Figure \ref{fig:H} and in the main text.  These are the connectivity archetypes.  
+We then fit a non-negative least squares (the second step in the standard NMF optimization algorithm) to determine $W$ \citep{Lee2000-yl}
+
 
 \newpage
 
 \subsubsection{Association with Cre-line}
+
+Finally, we show the association of our learned archetypes with projections from sources with injection centroids from the Ntsr1, Cux2, Rbp4, and Tlx3 Cre-lines.  
+While we make no statistical claims on these associations, the distribution of cosine similarities of sources from each of the Cre-line lines shows an association of learned archetypes with Cre-line.
 
 \begin{figure}[H]
     \centering
