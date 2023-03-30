@@ -27,7 +27,7 @@ Additional information about our data and methods are given in Supplemental Sect
 \subfloat[]{
  \label{fig:combos}
     \includegraphics[width=0.35\textwidth]{figs/visp_counts.png}}   
-    \caption{Experimental setting.  \ref{fig:mouse}  For each experiment, a Cre-dependent GFP-expressing transgene casette is transduced by stereotaxic injection into a Cre-driver mouse, followed by serial two-photon tomography imaging.
+    \caption{Experimental setting.  \ref{fig:mouse}  For each experiment, a Cre-dependent eGFP-expressing transgene casette is transduced by stereotaxic injection into a Cre-driver mouse, followed by serial two-photon tomography imaging.
     \ref{fig:injproj} An example of the segmentation of projection (targets) and injection (source) for a single experiment. Within each brain (blue), injection (green) and projection (red) areas are determined via histological analysis and alignment to the Allen Common Coordinate Framework (CCF).
     \ref{fig:segment} Brain region parcellations within a coronal plane of CCFv3. \ref{fig:ontology} Explanation of nested structural ontology highlighting various levels of CCFv3 structure ontology.
     Lowest-level (leaf) structures are colored in blue, and structures without an injection centroid are colored in red.
@@ -43,12 +43,15 @@ Our dataset $\mathcal D$ consists of $n=1751$ publicly available murine brain vi
 Figure \ref{fig:mouse} summarizes the experimental process used to generate this data.
 In each experiment, a mouse is injected with an adeno-associated virus (AAV) encoding green fluorescent protein (GFP) into a single location in the brain.
 Location of fluorescence is mediated by the location of the injection, the characteristics of the transgene, and the genotype of the mouse.
-In particular, Cre-driver mice are engineered to express Cre under the control of a specific and single gene promoter.
+In particular, Cre-driver or, equivalently, Cre-line mice are engineered to express Cre under the control of a specific and single gene promoter.
 This localizes expression of Cre to regions with certain transcriptomic cell-types signatures.
-In such Cre-driver mice, we used a double-inverted floxed AAV to produce fluorescence that depends on Cre expression in infected cells.
+In such Cre-driver mice, we used a double-inverted floxed AAV to produce eGFP fluorescence that depends on Cre expression in infected cells.
 To account for the complex cell-type targeting induced by a particular combination of Cre-driver genotype and GFP promoter, we refer to the combinations of cell-types targeted by a particular combination of AAV and Cre-driver mice as cell-classes.
 For example, we include experiments from Cre-driver lines that selectively label cell classes located in distinct cortical layers or other nuclei across the whole brain.
-By our definition, wild type mice transduced with constitutitively active GFP promoters induce fluorescence of a particularly broad cell class.
+For injections in the wild type mice, we used the Synapsin I promoter \citep{Kugler2003-gz, Jackson2016-bw}.
+For injections into Cre mice, we used the CAG promoter with a Flex cassette for Cre-mediated recombination control \citep{Saunders2012-xt}.
+Additional details on are given in \citet{Harris2019-mr}.
+%By our definition, wild type mice transduced with constitutitively active GFP promoters induce fluorescence of a particularly broad cell class.
 
 For each experiment, the fluorescent signal imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional average template brain that is fully annotated with regional parcellations \cite{Wang2020-po}.
 The whole brain imaging and registration procedures described in detail in \citet{Oh2014-kh, Kuan2015-zz} produce quantitative metrics of fluorescence discretized at the $100 \; \mu$m \textbf{voxel} level. 
@@ -175,8 +178,9 @@ Our NMF algorithm solves the following optimization problem
 \label{eq:nmf}
 \nmf(\mathcal C, \lambda, q) := \arg \min_{W\in \mathbb R^{S \times q}_{\geq 0}, H \in \mathbb R^{q  \times T}_{\geq 0}} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
+
 For this decomposition we ignore connections between source and target regions less than  $1500 \mu m$ apart.
-This is because short-range projections resulting from diffusion dominate the matrices $\hat {\mathcal C}$, and represent a less-interesting type of biological structure.
+This is because short-range projections resulting from diffusion and traveling fibers dominate the matrices $\hat {\mathcal C}$, and represent a less-interesting type of biological structure.
 We set $\lambda = 0.002$ to encourage sparser and therefore more interpretable components.
 We use unsupervised cross-validation to determine an optimum $q$, and show the top $15$ stable components \citep{Perry2009-ia}.
 Stability analysis accounts for the difficult-to-optimize NMF program by clustering the resultant $H$ from multiple replicates.

@@ -3,24 +3,20 @@
 The model presented here among the first cell-type specific whole brain projectome models for a mammalian species, and it opens the door for a large number of models linking brain structure to computational architectures. 
 Overall, we find expected targets, based on our anatomical expertise and published reports, but underscore that the core utility of this bulk connectivity analysis is not only in validation of existing connection patterns, but also in identification of new ones.
 We note that although the concordance appeared stronger for the cholinergic cells than the serotonergic cells, any differences might still be explained by the lack of high quality “ground-truth” datasets to validate these Cre connectome models.
-Larger numbers of single cell reconstructions, that saturate all possible projection types, would be a better gold standard than the small number of cells reported here.
-Perhaps future iterations of the connectome model may also take into account some single cell axon projection data.
+Larger numbers of single cell reconstructions that saturate all possible projection types would be a better gold standard than the small number of cells reported here.
+Future iterations of connectome models may also take into account single cell axon projection data, or synthesize with retrograde tracing experiments.
 
-The Nadaraya-Watson estimator presented here is novel.
-Beyond using a Nadaraya-Watson kernel regression defined in physical space, we define a cell-type space based on similarities of projections, and theoretically justify the use of an intermediate shape-constrained estimator. 
-While methods like non-negative least squares can also account for covariates, the centroid method from \citet{Knox2019-ot} was shown that the more precise notion of injection location than the non-negative least squares in \citet{Oh2014-kh}.
-Furthermore, our sample size seems too low to utilize a fixed or mixed effect, particularly since the impact of the virus depend on the particular injection region.
-In a sense both the NNLS and NW models can be thought of as improvements over the structure-specific average, and so is also possible that a yet undeveloped residual-based data-driven blend of these models could provide improved performance.
+The Nadaraya-Watson estimator using the cell-type space based on similarities of projections, and theoretical justification of the use of an intermediate shape-constrained estimator, provides an empirically useful new tool for categorical modeling.
+Ours is not the first cross-validation based model averaging method \citet{Gao2016-qe}, but our use of shape-constrained estimator in target-encoded feature space is novel and fundamentally different from Nadaraya-Watson estimators that use an optimization method for selecting the weights \citep{Saul2003-th}.
+The properties of this estimator and its relation to estimators fit using an optimization algorithm are therefore a possible future avenue of research \citep{Groeneboom2018-ow, Salha_undated-ev}.
+Since the impact of the virus depends on the particular injection region, a deep model such as \citet{Lotfollahi2019-tr} could be appropriate, provided enough data was available, but our sample size seems too low to utilize a fixed or mixed effect model generative model.
+%While methods like non-negative least squares can also account for covariates, the centroid method from \citet{Knox2019-ot} was shown that the more precise notion of injection location than the non-negative least squares in \citet{Oh2014-kh}.
+In a sense both the non-negative least squares \citet{Oh2014-kh} and NW models can be thought of as improvements over the structure-specific average, and so is also possible that a yet undeveloped residual-based data-driven blend of these models could provide improved performance.
+Finally, we note that a Wasserstein-based measure of injection similarity per structure could naturally combine both the physical simplicity of the centroid model while also incorporating the full distribution of the injection signal.
 
-We see several other opportunities for improving on our model.
-Ours is certainly not the first cross-validation based model averaging method \citet{Gao2016-qe}.
-However, our use of shape-constrained estimator in target-encoded feature space is novel and fundamentally different from Nadaraya-Watson estimators that use an optimization method for selecting the weights \citep{Saul2003-th}.
-The properties of this estimator, as well as its relation to estimators fit using an optimization algorithm, are a possible future avenue of research \citep{Groeneboom2018-ow, Salha_undated-ev}
-A deep model such as \citet{Lotfollahi2019-tr} could be appropriate, provided enough data was available.
-Finally, a Wasserstein-based measure of injection similarity per structure would combine both the physical simplicity of the centroid model while also incorporating the full distribution of the injection signal.
-
-The factorization of the connectivity matrix could also be improved and better used.
+The factorization of the connectivity matrix could also be improved.
+Non-linear data transformations or matrix decompositions, or tensor factorizations that account for correlations between cell-types could better capture the true nature of latent neural connections \citep{Harris2016-fn}.
+Cre- or layer-specific signal recovery as performed here could be used to evaluate a range of matrix decompositions.
+This could help for example to understand the influence of traveling fibers on the observed connectivity \citep{Llano2008-ne}.
 From a statistical perspective, stability-based method for establishing archetypal connectivities in NMF is similar to those applied to genomic data \cite{Wu2016-gg, Kotliar2019-yj}.
-However, non-linear data transformations or matrix decompositions, or tensor factorizations that account for correlations between cell-types could better capture the true nature of latent neural connections \citep{Harris2016-fn}.
-A interesting goal for improved decompositions of the connectivity matrices here would be to identify layer-specific signals from within the wild-type matrix.
-Regardless of statistical approach, latent low-dimensional organization in connectivity inspires search for similarly parsimonious biological correlates.
+Regardless of statistical approach, as in genomics, latent low-dimensional organization in connectivity should inspire search for similarly parsimonious biological correlates.
