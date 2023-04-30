@@ -13,14 +13,12 @@ Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: connectivity.bib
 Warning--entry type for "Serven2018-aa" isn't style-file defined
---line 57 of file connectivity.bib
-I was expecting a `,' or a `}'---line 60 of file connectivity.bib
+--line 323 of file connectivity.bib
+I was expecting a `,' or a `}'---line 326 of file connectivity.bib
  : 
  : year = "2018"
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "Gamanut2018-sd"
-Warning--I didn't find a database entry for ""
 apacite.bst [2013/07/21 v6.03 APA bibliography style]
 Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
 while executing---line 5062 of file apacite.bst
@@ -49,45 +47,45 @@ Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven201
 while executing---line 5079 of file apacite.bst
 Warning--No journal in Von_Luxburg2010-lu
 Warning--No journal in Von_Luxburg2010-qe
-You've used 28 entries,
+You've used 44 entries,
             6951 wiz_defined-function locations,
-            1449 strings with 19383 characters,
-and the built_in function-call counts, 68311 in all, are:
-= -- 8167
-> -- 623
-< -- 3620
-+ -- 4075
-- -- 57
-* -- 4645
-:= -- 12985
-add.period$ -- 103
-call.type$ -- 28
-change.case$ -- 527
+            1563 strings with 22548 characters,
+and the built_in function-call counts, 102054 in all, are:
+= -- 12189
+> -- 886
+< -- 5469
++ -- 5960
+- -- 89
+* -- 6975
+:= -- 19645
+add.period$ -- 167
+call.type$ -- 44
+change.case$ -- 793
 chr.to.int$ -- 0
-cite$ -- 61
-duplicate$ -- 2085
-empty$ -- 2345
-format.name$ -- 1234
-if$ -- 12186
+cite$ -- 93
+duplicate$ -- 2965
+empty$ -- 3573
+format.name$ -- 1694
+if$ -- 18286
 int.to.chr$ -- 0
-int.to.str$ -- 88
+int.to.str$ -- 136
 missing$ -- 0
-newline$ -- 748
-num.names$ -- 224
-pop$ -- 877
+newline$ -- 1152
+num.names$ -- 352
+pop$ -- 1309
 preamble$ -- 1
-purify$ -- 159
+purify$ -- 241
 quote$ -- 0
-skip$ -- 4007
+skip$ -- 6022
 stack$ -- 0
-substring$ -- 4404
-swap$ -- 1117
-text.length$ -- 103
+substring$ -- 6421
+swap$ -- 1635
+text.length$ -- 153
 text.prefix$ -- 0
 top$ -- 1
-type$ -- 2376
+type$ -- 3656
 warning$ -- 5
-while$ -- 465
+while$ -- 638
 width$ -- 0
-write$ -- 995
+write$ -- 1504
 (There were 12 error messages)

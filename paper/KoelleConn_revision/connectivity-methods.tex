@@ -65,7 +65,7 @@ Our goal is the estimation of \textbf{regionalized connectivity} from one region
 A visual depiction of this region parcellation for a two-dimensional slice of the brain is given in Figure \ref{fig:segment}.
 All structures annotated in the CCF belong to a hierarchically ordered ontology, with different areas of the brain are parcellated to differing finer depths within a hierarchical tree.
 We denote the main levels of interest as major structures, summary structures, and layers.
-Not every summary structure has a layer decomposition within this ontology, so we typically consider the finest possible regionalization - for example, layer within the cortex, and summary structure within the thalymus, and denote these structures as leafs.
+Not every summary structure has a layer decomposition within this ontology, so we typically consider the finest possible regionalization - for example, layer within the cortex, and summary structure within the thalamus, and denote these structures as leafs.
 As indicated in Figure \ref{fig:ontology}, the dataset used to generate the connectivity model reported in this paper contains certain combinations of region and cell class frequently, and others not at all.
 A summary of the most frequently assayed cell classes and structures is given in Figures \ref{fig:top} and \ref{fig:combos}.
 Since users of the connectivity matrices may be interested in particular combinations, or interested in the amount of data used to generate a particular connectivity estimate, we present this information about all experiments in Supplemental Section \ref*{supp_sec:data}.
@@ -180,7 +180,7 @@ Our NMF algorithm solves the following optimization problem
 \end{eqnarray*}
 
 For this decomposition we ignore connections between source and target regions less than  $1500 \mu m$ apart.
-This is because short-range projections resulting from diffusion and traveling fibers dominate the matrices $\hat {\mathcal C}$, and represent a less-interesting type of biological structure.
+This is because short-range projections resulting from diffusion and traveling fibers dominate the matrices $\hat {\mathcal C}$.
 We set $\lambda = 0.002$ to encourage sparser and therefore more interpretable components.
 We use unsupervised cross-validation to determine an optimum $q$, and show the top $15$ stable components \citep{Perry2009-ia}.
 Stability analysis accounts for the difficult-to-optimize NMF program by clustering the resultant $H$ from multiple replicates.

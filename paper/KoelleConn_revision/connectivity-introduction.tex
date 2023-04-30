@@ -1,8 +1,8 @@
 \section{Introduction}
  
 The mammalian nervous system enables an extraordinary range of natural behaviors, and has inspired much of modern artificial intelligence.
-Neural connections from one region to another form the architecture underlying this capability.
-These connectivities vary by neuron type, as well as source cell body location and target axonal projection structures.
+Neural connections including those from one region to another form the architecture underlying this capability.
+These connectivities vary by neuron type, as well as source (cell body) location and target (axonal projection) structures.
 Thus, characterization of the relationship between neuron type and source and target structure is important for understanding the overall nervous system.
 
 Viral tracing experiments - in which a viral vector expressing GFP is transduced into neural cells through stereotaxic injection - are a useful tool for mapping these connections on the mesoscale \citep{Chamberlin1998-hi,Harris2012-fw, Daigle2018-gd}.
@@ -11,14 +11,14 @@ Two-photon tomography imaging can be used to determine the location and strength
 These locations can then be mapped back into three-dimensional space, and the signal may then be integrated over area into cubic voxels to give a finely-quantized three-dimensional fluorescence.
 
 Several statistical models for the conversion of such experiment-specific signals into generalized estimates of connectivity strength have been proposed \citep{Oh2014-kh, Harris2016-fn, Gamanut2018-sd, Knox2019-ot}.
-Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} model \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
+Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} provide a model for \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
 The value of these models is that they provide some improvement over simply averaging the projection signals of injections in a given region.
 However, these previous works only model connectivities observed in wild type mice which are suboptimally suited assessment of cell-type specific connectivity compared with fluorescence from Cre-recombinase induced eGFP expression in cell-types specified by the combination of transgenic mouse strain and transgene promoter \citep{Harris2019-mr}.
 We generally refer to sets of targeted eGFP-expressing cells in tracing experiments as a \textbf{cell class} since they may contain multiple types.
 For example, use of both wild-type and transgenic mice would give rise to cell-class specific experiments, albeit with different yet perhaps overlapping classes of cells.
 
 Thus, this paper introduces a class-specific statistical model for anterograde tracing experiments that synthesizes the diverse set of \textbf{Cre-lines} described in \citet{Harris2019-mr}, and expands this model to the entire mouse brain.
-Our model is a to-our-knowledge novel estimator that takes into account both the spatial position of the labelled source, as well as the categorical cell class.
+Our model is a to-our-knowledge novel statistical estimator that takes into account both the spatial position of the labelled source, as well as the categorical cell class.
 Like the previously state-of-the-art model in \citet{Knox2019-ot}, this model predicts regionalized connectivity as an average over positions within the structure, with nearby experiments given more weight.
 However, our model weighs class-specific behavior in a particular structure against spatial position, so a nearby experiment specific to a similar cell-class is relatively up-weighted, while a nearby experiment specific to a dissimilar class is down-weighted.
 This model outperforms the model of  \citet{Knox2019-ot} based on its ability to predict held-out experiments in leave-one-out cross-validation.

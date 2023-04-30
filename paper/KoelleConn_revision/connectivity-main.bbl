@@ -31,6 +31,29 @@ Brunet, J\BHBI P.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Cai%
+}{%
+Cai%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+Cai2001-hk}
+\APACinsertmetastar {%
+Cai2001-hk}%
+\begin{APACrefauthors}%
+Cai, Z.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2001}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Weighted {Nadaraya-Watson} regression estimation}
+  {Weighted {Nadaraya-Watson} regression estimation}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Stat. Probab. Lett.}{51}{3}{307--318}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Chamberlin%
 , Du%
 , de Lacalle%
@@ -93,6 +116,31 @@ Daigle, T\BPBI L.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Devarajan%
+}{%
+Devarajan%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+Devarajan2008-hd}
+\APACinsertmetastar {%
+Devarajan2008-hd}%
+\begin{APACrefauthors}%
+Devarajan, K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{{\APACmonth{07}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Nonnegative matrix factorization: an analytical and
+  interpretive tool in computational biology} {Nonnegative matrix
+  factorization: an analytical and interpretive tool in computational
+  biology}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{PLoS Comput. Biol.}{4}{7}{e1000029}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Eilers%
 \ \BBA {} Marx%
 }{%
@@ -116,6 +164,38 @@ Eilers, P\BPBI H\BPBI C.%
   {Flexible smoothing with b-splines and penalties}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{SSO Schweiz. Monatsschr. Zahnheilkd.}{11}{2}{89--121}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+G{\u a}m{\u a}nu{\c t}%
+\ \protect \BOthers {.}}{%
+G{\u a}m{\u a}nu{\c t}%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+Gamanut2018-sd}
+\APACinsertmetastar {%
+Gamanut2018-sd}%
+\begin{APACrefauthors}%
+G{\u a}m{\u a}nu{\c t}, R.%
+, Kennedy, H.%
+, Toroczkai, Z.%
+, Ercsey-Ravasz, M.%
+, Van~Essen, D\BPBI C.%
+, Knoblauch, K.%
+\BCBL {}\ \BBA {} Burkhalter, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{{\APACmonth{02}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Mouse Cortical Connectome, Characterized by an
+  {Ultra-Dense} Cortical Graph, Maintains Specificity by Distinct Connectivity
+  Profiles} {The mouse cortical connectome, characterized by an {Ultra-Dense}
+  cortical graph, maintains specificity by distinct connectivity
+  profiles}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Neuron}{97}{3}{698--715.e10}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -146,6 +226,33 @@ Gao, Y.%
   cross-validation}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{J. Econom.}{192}{1}{139--151}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Groeneboom%
+\ \BBA {} Jongbloed%
+}{%
+Groeneboom%
+\ \BBA {} Jongbloed%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+Groeneboom2018-ow}
+\APACinsertmetastar {%
+Groeneboom2018-ow}%
+\begin{APACrefauthors}%
+Groeneboom, P.%
+\BCBT {}\ \BBA {} Jongbloed, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Some Developments in the Theory of Shape Constrained
+  Inference} {Some developments in the theory of shape constrained
+  inference}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Stat. Sci.}{33}{4}{473--492}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -237,6 +344,33 @@ Harris, K\BPBI D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Hastie%
+, Tibshirani%
+\BCBL {}\ \BBA {} Friedman%
+}{%
+Hastie%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {{\protect \bibnodate {}}}}%
+}]{%
+Hastie_2009}
+\APACinsertmetastar {%
+Hastie_2009}%
+\begin{APACrefauthors}%
+Hastie, T.%
+, Tibshirani, R.%
+\BCBL {}\ \BBA {} Friedman, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{{\protect \bibnodate {}}}.
+\newblock
+\APACrefbtitle {The Elements of Statistical Learning} {The elements of
+  statistical learning}.
+\newblock
+\APACaddressPublisher{}{Springer New York}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Huang%
 \ \protect \BOthers {.}}{%
 Huang%
@@ -264,6 +398,37 @@ Huang, K\BPBI W.%
   nucleus}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Elife}{8}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jackson%
+, Dayton%
+, Deverman%
+\BCBL {}\ \BBA {} Klein%
+}{%
+Jackson%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2016}}%
+}]{%
+Jackson2016-bw}
+\APACinsertmetastar {%
+Jackson2016-bw}%
+\begin{APACrefauthors}%
+Jackson, K\BPBI L.%
+, Dayton, R\BPBI D.%
+, Deverman, B\BPBI E.%
+\BCBL {}\ \BBA {} Klein, R\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2016}{{\APACmonth{11}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Better Targeting, Better Efficiency for {Wide-Scale}
+  Neuronal Transduction with the Synapsin Promoter and {AAV-PHP.B}} {Better
+  targeting, better efficiency for {Wide-Scale} neuronal transduction with the
+  synapsin promoter and {AAV-PHP.B}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Front. Mol. Neurosci.}{9}{}{116}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -387,6 +552,94 @@ Kuan, L.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+K{\"u}gler%
+, Kilic%
+\BCBL {}\ \BBA {} B{\"a}hr%
+}{%
+K{\"u}gler%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2003}}%
+}]{%
+Kugler2003-gz}
+\APACinsertmetastar {%
+Kugler2003-gz}%
+\begin{APACrefauthors}%
+K{\"u}gler, S.%
+, Kilic, E.%
+\BCBL {}\ \BBA {} B{\"a}hr, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{{\APACmonth{02}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Human synapsin 1 gene promoter confers highly
+  neuron-specific long-term transgene expression from an adenoviral vector in
+  the adult rat brain depending on the transduced area} {Human synapsin 1 gene
+  promoter confers highly neuron-specific long-term transgene expression from
+  an adenoviral vector in the adult rat brain depending on the transduced
+  area}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Gene Ther.}{10}{4}{337--347}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lallou{\'e}%
+\ \protect \BOthers {.}}{%
+Lallou{\'e}%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2013}}%
+}]{%
+Lalloue2013-is}
+\APACinsertmetastar {%
+Lalloue2013-is}%
+\begin{APACrefauthors}%
+Lallou{\'e}, B.%
+, Monnez, J\BHBI M.%
+, Padilla, C.%
+, Kihal, W.%
+, Le~Meur, N.%
+, Zmirou-Navier, D.%
+\BCBL {}\ \BBA {} Deguen, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2013}{{\APACmonth{03}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A statistical procedure to create a neighborhood
+  socioeconomic index for health inequalities analysis} {A statistical
+  procedure to create a neighborhood socioeconomic index for health
+  inequalities analysis}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Int. J. Equity Health}{12}{}{21}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lee%
+\ \BBA {} Seung%
+}{%
+Lee%
+\ \BBA {} Seung%
+}{%
+{\protect \APACyear {2000}}%
+}]{%
+Lee2000-yl}
+\APACinsertmetastar {%
+Lee2000-yl}%
+\begin{APACrefauthors}%
+Lee, D.%
+\BCBT {}\ \BBA {} Seung, H\BPBI S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2000}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Algorithms for non-negative matrix factorization}
+  {Algorithms for non-negative matrix factorization}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Adv. Neural Inf. Process. Syst.}{13}{}{}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Li%
 \ \protect \BOthers {.}}{%
 Li%
@@ -419,6 +672,34 @@ Li, X.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Llano%
+\ \BBA {} Sherman%
+}{%
+Llano%
+\ \BBA {} Sherman%
+}{%
+{\protect \APACyear {2008}}%
+}]{%
+Llano2008-ne}
+\APACinsertmetastar {%
+Llano2008-ne}%
+\begin{APACrefauthors}%
+Llano, D\BPBI A.%
+\BCBT {}\ \BBA {} Sherman, S\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{{\APACmonth{03}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Evidence for nonreciprocal organization of the mouse
+  auditory thalamocortical-corticothalamic projection systems} {Evidence for
+  nonreciprocal organization of the mouse auditory
+  thalamocortical-corticothalamic projection systems}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Comp. Neurol.}{507}{2}{1209--1227}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Lotfollahi%
 , Naghipourfar%
 , Theis%
@@ -446,6 +727,59 @@ Lotfollahi, M.%
   {trVAE}}.{\BBCQ}
 \newblock
 
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Meila%
+}{%
+Meila%
+}{%
+{\protect \APACyear {2007}}%
+}]{%
+Meila_2007-xt}
+\APACinsertmetastar {%
+Meila_2007-xt}%
+\begin{APACrefauthors}%
+Meila, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2007}{{\APACmonth{05}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Comparing clusterings---an information based distance}
+  {Comparing clusterings---an information based distance}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Multivar. Anal.}{98}{5}{873--895}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Mohammadi%
+, Ravindra%
+, Gleich%
+\BCBL {}\ \BBA {} Grama%
+}{%
+Mohammadi%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+Mohammadi2018-te}
+\APACinsertmetastar {%
+Mohammadi2018-te}%
+\begin{APACrefauthors}%
+Mohammadi, S.%
+, Ravindra, V.%
+, Gleich, D\BPBI F.%
+\BCBL {}\ \BBA {} Grama, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{{\APACmonth{04}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A geometric approach to characterize the functional
+  identity of single cells} {A geometric approach to characterize the
+  functional identity of single cells}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Nat. Commun.}{9}{1}{1516}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -535,6 +869,30 @@ Perry, P\BPBI O.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Rand%
+}{%
+Rand%
+}{%
+{\protect \APACyear {1971}}%
+}]{%
+Rand1971-ny}
+\APACinsertmetastar {%
+Rand1971-ny}%
+\begin{APACrefauthors}%
+Rand, W\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1971}{{\APACmonth{12}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Objective Criteria for the Evaluation of Clustering
+  Methods} {Objective criteria for the evaluation of clustering
+  methods}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{J. Am. Stat. Assoc.}{66}{336}{846--850}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Ren%
 \ \protect \BOthers {.}}{%
 Ren%
@@ -596,6 +954,33 @@ Ren, J.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Salha%
+\ \BBA {} El~Shekh~Ahmed%
+}{%
+Salha%
+\ \BBA {} El~Shekh~Ahmed%
+}{%
+{\protect \APACyear {{\protect \bibnodate {}}}}%
+}]{%
+Salha_undated-ev}
+\APACinsertmetastar {%
+Salha_undated-ev}%
+\begin{APACrefauthors}%
+Salha, R\BPBI B.%
+\BCBT {}\ \BBA {} El~Shekh~Ahmed, H\BPBI I.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{{\protect \bibnodate {}}}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Reweighted {Nadaraya-Watson} Estimator of the Regression
+  Mean} {Reweighted {Nadaraya-Watson} estimator of the regression mean}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{International Journal of Statistics and
+  Probability}{4}{1}{2015}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Saul%
 \ \BBA {} Roweis%
 }{%
@@ -620,6 +1005,35 @@ Saul, L\BPBI K.%
   learning of low dimensional manifolds}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{J. Mach. Learn. Res.}{4}{Jun}{119--155}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Saunders%
+, Johnson%
+\BCBL {}\ \BBA {} Sabatini%
+}{%
+Saunders%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2012}}%
+}]{%
+Saunders2012-xt}
+\APACinsertmetastar {%
+Saunders2012-xt}%
+\begin{APACrefauthors}%
+Saunders, A.%
+, Johnson, C\BPBI A.%
+\BCBL {}\ \BBA {} Sabatini, B\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{{\APACmonth{07}}}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Novel recombinant adeno-associated viruses for Cre
+  activated and inactivated transgene expression in neurons} {Novel recombinant
+  adeno-associated viruses for cre activated and inactivated transgene
+  expression in neurons}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Front. Neural Circuits}{6}{}{47}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -717,6 +1131,33 @@ Wang, Q.%
   {3D} reference atlas}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Cell}{181}{4}{936--953.e20}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Waskom%
+}{%
+Waskom%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+Waskom2021}
+\APACinsertmetastar {%
+Waskom2021}%
+\begin{APACrefauthors}%
+Waskom, M\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {seaborn: statistical data visualization} {seaborn:
+  statistical data visualization}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Open Source Software}{6}{60}{3021}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.21105/joss.03021} \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.21105/joss.03021} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

@@ -173,7 +173,7 @@ We also include results with a slightly smaller evaluation set that removes expe
 \paragraph{Injection-normalized losses}
 
 To compare with the injection-normalization procedure from \citet{Knox2019-ot}, we also remove experiments with small injection, and here give results for this slightly reduced set using injection-normalization.
-That is, instead of dividing the projection signal of each experiment by its $l1$ norm, we divide by the $l1$ norm of the corresponding injection signal.
+That is, instead of dividing the projection signal of each experiment by its $l1$ norm (as we have used throughout the study), we divide by the $l1$ norm of the corresponding injection signal.
 We find that setting a summed injection-signal of threshold of $1$ is sufficient for evading pathological edge cases in this normalization, while still retaining a large evaluation set.
 
 \begin{table}[H]
@@ -253,7 +253,7 @@ c(i) &= \sum_{l \in \mathcal B} x (i) |_l
 \end{eqnarray*}
 where $x(i) |_l$ is the injection density at location $l \in \mathbb R^3$.
 Given a regionalization $\mathcal R$ from the Allen SDK, we can also access regionalization map $R: \mathcal B  \to \mathcal R $.
-This induces a functional of connectivities from the space of maps $\{\mathcal X = x: \mathcal B \to [0,1]$
+This induces a functional of connectivities from the space of maps $\{\mathcal X = x: \mathcal B \to [0,1]\}$
 \begin{eqnarray*}
 1_{\mathcal R}: \mathcal X &\to \mathcal R \times \mathbb R_{\geq 0} \\
 x &\mapsto \sum_{l \in r}  x(l)  \text{ for } r \in \mathcal R.
@@ -575,7 +575,10 @@ CTXsp is omitted due to the small evaluation set.
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_512.png} 
     \label{fig:distances}
-    \caption{Weighted loss for Cre-leaf combinations in CB.  Missing values are omitted.   Row and column averages are also plotted.}
+    \caption{Weighted loss for Cre-leaf combinations in CB.
+    Missing values are omitted.
+    For example, this figure has one present and three missing values.
+    Row and column averages are also plotted.}
 \end{figure}
 
 %\begin{figure}[H]
@@ -659,13 +662,12 @@ CTXsp is omitted due to the small evaluation set.
 \subsection{Cell-type specificity}
 
 We performed agglomerative heirarchical clustering using the default method in Seaborn \citep{Waskom2021} to investigate shared projection patterns across Cre-lines.
-This showed clustering of Ntsr1 projections to Thalymic nucelii.
+This showed clustering of Ntsr1 projections to Thalamic nuceli.
 
 \begin{figure}
  \label{fig:ct_clust}
     \includegraphics[width=.6\textwidth]{figs/heirarchical.png}
-\caption{  \ref{fig:ct_clust}
-		Hierarchical clustering of connectivity strengths from visual cortex cell-types to cortical and thalamic targets.
+\caption{ Hierarchical clustering of connectivity strengths from visual cortex cell-types to cortical and thalamic targets.
 		Cre-line, summary structure, and layer are labelled on the sources.
 		Major brain division and layer are labelled on the targets.}
   \end{figure}
@@ -699,7 +701,7 @@ However, the low decrease in error at higher values of $q$ and need for brevity 
 \subsubsection{Stability}
 
 To address the instability of the NMF algorithm in identifying components, we $k-means$ cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
-Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index, a standard method of clustering stability \citep{Rand1971-ny, Meila_2007}.
+Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index, a standard method of clustering stability \citep{Rand1971-ny, Meila_2007-xt}.
 
 \begin{tabular}{lrrrrr}
 \toprule

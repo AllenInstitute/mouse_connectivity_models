@@ -1,10 +1,13 @@
 \section{Discussion}
 
-The model presented here among the first cell-type specific whole brain projectome models for a mammalian species, and it opens the door for a large number of models linking brain structure to computational architectures. 
+The model presented here is among the first cell-type specific whole brain projectome models for a mammalian species, and it opens the door for a large number of models linking brain structure to computational architectures. 
 Overall, we find expected targets, based on our anatomical expertise and published reports, but underscore that the core utility of this bulk connectivity analysis is not only in validation of existing connection patterns, but also in identification of new ones.
-We note that although the concordance appeared stronger for the cholinergic cells than the serotonergic cells, any differences might still be explained by the lack of high quality “ground-truth” datasets to validate these Cre connectome models.
-Larger numbers of single cell reconstructions that saturate all possible projection types would be a better gold standard than the small number of cells reported here.
+We note that although the concordance appeared stronger for the cholinergic cells than the serotonergic cells, any differences might still be explained by the lack of high quality “ground-truth” datasets to validate these Cre-line connectome models.
+It is important to note several limitations of the current analyses.
+Short-range connections can be affected by saturating signals near injection sites, as well as the segmentation algorithm capturing dendrites as well as axons.
+Furthermore, larger numbers of single cell reconstructions that saturate all possible projection types would be a better gold standard than the small number of cells reported here.
 Future iterations of connectome models may also take into account single cell axon projection data, or synthesize with retrograde tracing experiments.
+
 
 The Nadaraya-Watson estimator using the cell-type space based on similarities of projections, and theoretical justification of the use of an intermediate shape-constrained estimator, provides an empirically useful new tool for categorical modeling.
 Ours is not the first cross-validation based model averaging method \citet{Gao2016-qe}, but our use of shape-constrained estimator in target-encoded feature space is novel and fundamentally different from Nadaraya-Watson estimators that use an optimization method for selecting the weights \citep{Saul2003-th}.
