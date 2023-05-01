@@ -161,29 +161,26 @@ The establishment of a lower limit of detection and the extra cross-validation s
 
 \subsection{Connectivity analyses}
 
-We examine latent structure underlying our estimated connectome using heirarchical clustering and non-negative matrix factorization.
-First, we use aggloromative heirarchical clustering with Ward's criterion to compare outputs from connectivities from different Cre-lines.
-Details of this approach are given in \citet{Hastie_2009, Lalloue2013-is}.
-Second, we use non-negative matrix factorization (NMF) to factor the wild-type connectivity matrix into a small set of underlying components.
+We examine our connectome estimates with both comparisons to known biology and statistical decompositions.
+As an exploratory analysis, we use heirarchical clustering to compare outputs from connectivities from different Cre-lines. 
+Details of and results from this approach are given in Section \ref{supp_sec:cell_type_specificity}.
+We then use non-negative matrix factorization (NMF) to factor the wild-type connectivity matrix into a small set of underlying components that can be linearly combined to reproduce the observed long-range wild-type connectivity.
 Inspired by \citet{Mohammadi2018-te}, we refer to these latent coordinates as \textbf{connectivity archetypes} since they represent underlying patterns from which we can reconstruct a broad range of observed connectivities, although we note that the genomic archetypal analysis in that paper is slightly methodologically distinct.
 
-Our application of NMF to decompose the estimated long-range connectivity into latent coordinates that linearly combine to reproduce the observed connectivity is some independent interest, since we censor short range connections due to their clear biological derivation from diffusion and their high mathematical rank.
 NMF refers to a collection of \textbf{dictionary-learning} algorithms for decomposing a non-negatively-valued matrix such as $\mathcal C $ into positively-valued matrices called, by convention, weights $W \in \mathbb R^{S \times q}_{\geq 0}$ and hidden units $H \in \mathbb R^{q  \times T}_{\geq 0}$.
 NMF assumes a simple linear statistical model: that the observed matrix is composed of linear combinations of latent coordinates \citep{Devarajan2008-hd}.
 Unlike PCA, NMF specifically accounts for the fact that data are all in the positive orthant, and it is more stable and interpretable in assays of complex biological systems than heirarchical clustering \citep{Brunet2004-gi}
-The matrix $H$ is typically used to identify latent structures with interpretable biological meaning, and the choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations. 
+The choice of matrix factorization method reflects particular scientific subquestions and probabilistic interpretations, and the matrix $H$ may used to identify latent structures with interpretable biological meaning.
 
+Our application of NMF to decompose the estimated long-range connectivity is some independent interest, since we ignore connections between source and target regions less than  $1500 \; \mu m$ apart.
+This is because short-range projections resulting from diffusion and traveling fibers dominate the matrices $\hat {\mathcal C}$.
 Our NMF algorithm solves the following optimization problem
 \begin{eqnarray*}
 \label{eq:nmf}
 \nmf(\mathcal C, \lambda, q) := \arg \min_{W\in \mathbb R^{S \times q}_{\geq 0}, H \in \mathbb R^{q  \times T}_{\geq 0}} \frac{1}{2}\| 1_{d(s,t) > 1500 \mu m} \odot \mathcal C - WH\|_2^2  + \lambda  (\|H \|_1 + \|W \|_1) .
 \end{eqnarray*}
-
-For this decomposition we ignore connections between source and target regions less than  $1500 \mu m$ apart.
-This is because short-range projections resulting from diffusion and traveling fibers dominate the matrices $\hat {\mathcal C}$.
 We set $\lambda = 0.002$ to encourage sparser and therefore more interpretable components.
 We use unsupervised cross-validation to determine an optimum $q$, and show the top $15$ stable components \citep{Perry2009-ia}.
-Stability analysis accounts for the difficult-to-optimize NMF program by clustering the resultant $H$ from multiple replicates.
-Since the NMF objective is difficult to optimize and sensitive to initialization, we follow up with a stability analysis.
+Since the NMF objective is difficult to optimize and sensitive to initialization, we follow up with a stability analysis via clustering the resultant $H$ from multiple replicates.
 The medians of the component clusters appearing frequently across NMF replicates are selected as \textbf{connectivity archetypes}.
 Details of these approaches are given in Supplementary Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results}.

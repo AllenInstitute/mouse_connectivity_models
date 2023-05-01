@@ -28,7 +28,6 @@ mpl.rcParams["text.latex.preamble"] = [r"\usepackage{amsmath}"]
 
 
 def cv_nmf_missing(data, n_components, alpha=0.01, l1_ratio=1.0, p_holdout=0.3):
-
     missings = np.asarray(np.where(np.isnan(data))).transpose()
     presents = np.asarray(np.where(~np.isnan(data))).transpose()
 
@@ -74,7 +73,6 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
 
 
 def compute_nmf_replicates(wt_conn, distance_threshold, ncomp, nreps, dists):
-
     low_values = np.asarray(np.where(dists < distance_threshold)).transpose()
 
     data = np.asarray(fill_df_na(wt_conn, low_values))
@@ -110,7 +108,6 @@ def compute_rand_indices(combined):
         nclust = nclusts[d]
         cluster_reps = np.zeros((nreps_cluster, combined.shape[0]))
         for c in range(nreps_cluster):
-
             kmeans = cluster.KMeans(n_clusters=nclust)
             kmeans.fit(combined)
             clusts = kmeans.labels_[kmeans.labels_.argsort()]
@@ -156,7 +153,6 @@ def get_toplot(
     clusts,
     combined,
 ):
-
     targs = np.asarray(list(wt_conn.columns))[:, 1]
     layers_targs = np.zeros(targs.shape[0], dtype=object)
     for i in range(targs.shape[0]):
@@ -361,7 +357,6 @@ def get_H_archetypes(
 def get_W_archetypes(
     data, ncomp, archetypes, alpha, bottom_thresh, combined_colors_source, ids
 ):
-
     W, H, n_iter = non_negative_factorization(
         data,
         n_components=ncomp,
@@ -389,7 +384,6 @@ def plot_H_archetypes(
     color_hemi,
     hemis,
 ):
-
     g = sns.clustermap(
         H_archetypes,
         vmin=-6,
@@ -562,7 +556,6 @@ def plot_reconstructed_connectivities(
     hemis,
     color_hemi,
 ):
-
     g = sns.clustermap(
         output,
         col_cluster=False,
@@ -717,7 +710,6 @@ def plot_distances(
     ia_map,
     reo,
 ):
-
     ool_ic_majors = np.asarray(
         [ia_map[ool_ic_majors[i]] for i in range(len(ool_ic_majors))]
     )
@@ -857,7 +849,7 @@ def plot_cv_results(te_results, tr_results):
     sns.boxplot(data=np.log10(te_results[:, 1:]), ax=ax, color="blue")
     sns.boxplot(data=np.log10(tr_results[:, 1:]), ax=ax, color="red")
     # ax.set_xticklabels(list(range(1,11)))
-    ax.axvline(5, color="k", dashes=[2, 2])
+    # ax.axvline(5, color="k", dashes=[2, 2])
     ax.text(8, -6, "Train " + r"$1_M = 1_{M(p)}$", color="red", fontsize=40)
     ax.text(8, -6.2, "Test " + r"$1_M = 1_{M(p)}^C$", color="blue", fontsize=40)
     ax.set_ylabel(
@@ -871,7 +863,6 @@ def plot_cv_results(te_results, tr_results):
 
 
 def cv_nmf_replicates(wt_conn, distance_threshold, leaf_distance_file):
-
     dists = np.load(leaf_distance_file)
     low_values = np.asarray(np.where(dists < distance_threshold)).transpose()
 
@@ -895,7 +886,6 @@ def cv_nmf_replicates(wt_conn, distance_threshold, leaf_distance_file):
 
 
 def fix_pdcsv(csv):
-
     csv_rownames = np.asarray(csv.iloc[:, 0])
     csv = csv.iloc[:, 1:]
     csv.index = csv_rownames
@@ -903,7 +893,6 @@ def fix_pdcsv(csv):
 
 
 def fill_df_na(data, indices):
-
     for i in range(indices.shape[0]):
         data.iloc[indices[i, 0], indices[i, 1]] = np.nan
 
@@ -911,7 +900,6 @@ def fill_df_na(data, indices):
 
 
 def get_colors(structures, palettes, alpha):
-
     strs_unique = np.unique(structures)
     nstr = len(strs_unique)
     cs = sns.color_palette("Spectral", nstr)
@@ -929,7 +917,6 @@ def get_colors(structures, palettes, alpha):
 
 
 def cv_nmf_missing(data, n_components, alpha=0.01, l1_ratio=1.0, p_holdout=0.3):
-
     missings = np.asarray(np.where(np.isnan(data))).transpose()
     presents = np.asarray(np.where(~np.isnan(data))).transpose()
 
@@ -967,7 +954,6 @@ def cv_nmf_missing(data, n_components, alpha=0.01, l1_ratio=1.0, p_holdout=0.3):
 
 
 def fix_pdcsv(csv):
-
     csv_rownames = np.asarray(csv.iloc[:, 0])
     csv = csv.iloc[:, 1:]
     csv.index = csv_rownames

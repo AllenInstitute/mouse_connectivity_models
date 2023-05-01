@@ -1,15 +1,15 @@
 \section{Results}
 \label{sec:results}
 
-The main result of this paper is the collection of cell-type specific connectivity estimates from the Allen Mouse Connectivity Atlas (MCA) experiments.
-We first establish that our novel expected-loss (EL) estimator performs best in validation assays for estimating wild-type and cell-type specific connectivities.
+The main result of this paper is the creation of cell-type specific connectivity estimates from the Allen Mouse Brain Connectivity Atlas (MCA) experiments.
+We first establish that our new expected-loss (EL) estimator performs best in validation assays for estimating wild-type and cell-type specific connectivities.
 We then show that Cre-specific connectivity matrices generated using this model are consistent with known biology. 
-Finally, we factor some of these connectivity matrices to show how connectivity arises from underlying statistical patterns, and that these may be associated with cell-types.
+Finally, we factor some of these connectivity matrices to show how connectivity arises from latent components, and that these latent components may be associated with cell-types.
 
 \subsection{Model evaluation}
 \label{sec:model_eval}
 
-In general, our EL model performs better than the other estimators that we consider.
+Our EL model generally performs better than the other estimators that we consider.
 Table \ref{tab:crossvalidation_main} contains weighted losses from leave-one-out cross-validation of candidate models, such as the NW Major-WT model from \citet{Knox2019-ot}.
 The EL model combines the good performance of class-specific models like NW Leaf-Cre in regions like Isocortex with the good performance of class-agnostic models in regions like Thalamus.
 Additional information on model evaluation, including class and structure specific performance, is given in Appendix \ref{supp_sec:model-evaluation}.
@@ -47,12 +47,15 @@ CB        &      \textbf {   0.062} &        \textbf { 0.062 }&         \textbf 
 \caption{\ref{tab:crossvalidation_main} Losses from leave-one-out cross-validation of candidate models.
 \textbf{Bold} numbers are best for their major structure.
 \ref{fig:loss_overall} Empirical performance of selected EL model by data abundance.
-The model is more accurate in Cre-leaf combinations where it draws on more data.}
+The model is more accurate in Cre-leaf combinations where it draws on more data.
+The dataset variable $\mathcal D$ indicates the set of experiments used to model a given connectivity.
+For example, $I_c \cap I_L$ means only experiments with a given Cre-line in a given leaf are used to model connectivity for the corresponding cell-class in that leaf, while $I_L$ means that all experiments in that leaf are used.
+$I_{wt} \cap I_M$ means all wild-type experiments in the major structure are used - this was the model in \citet{Knox2019-ot}}.
 \end{table}
 
 \subsection{Connectivities}
 
-Our main result is the estimation of matrices $\hat {\mathcal C}_v \in \mathbb R_{\geq 0}^{S \times T}$ representing connections of source structures to target structures for particular Cre-lines $v$. 
+We estimate matrices $\hat {\mathcal C}_v \in \mathbb R_{\geq 0}^{S \times T}$ representing connections of source structures to target structures for particular Cre-lines $v$. 
 We confirm the detection of several well-established connectivities within our tensor, although we expect additional interesting biological processes to be identifiable.
 The connectivity tensor and code to reproduce it are available at \url{https://github.com/AllenInstitute/mouse_connectivity_models/tree/2020}.
 
@@ -80,17 +83,19 @@ Importantly, as shown in Table \ref{tab:crossvalidation_main} this finer spatial
     \includegraphics[width = .5\textwidth]{figs/conn_sum_cortex.png}
     } 
    \caption{Wild-type connectivities.
-   \ref{fig:full_wt} Log wild-type connectivity matrix $\log \mathcal {C} (s,t,v_{wt})$.
-   \ref{fig:cortex_wt} Log wild-type intracortical connectivity matrix at the summary structure level.}
+   \ref{fig:full_wt} Log wild-type leaf-to-leaf connectivity matrix $\log \mathcal {C} (s,t,v_{wt})$.
+   Sources and target major brain division structure are shown.
+   \ref{fig:cortex_wt} Log wild-type intracortical connectivity matrix at the summary structure level.
+   Summary structures without an injection centroid are left blank.}
    \label{fig:connectome}
 \end{figure}
 
 \newpage
 \subsubsection{Class-specific connectivities}
 \label{sec:class-specific-connectivities}
-Since source and cell-type combinations which project similarly are an important characteristic of the cognitive network structure, we investigate the presence of several biological processes within our connectivity estimates.
+We investigate the presence of known biological processes within our connectivity estimates and confirm that these class-specific connectivities exhibit certain known behaviors.
 Although there is a rich anatomical literature using anterograde tracing data to describe projection patterns from subcortical sources to a small set of targets of interest, much of the accessible whole brain projection data is from the MCA project used here to generate the connectome models.
-Thus, to validate our results while avoiding a circular validation of the data used to generate the model weights, we confirm that these class-specific connectivities exhibit certain known behaviors.
+Thus, we compare to external studies to validate our results while avoiding a circular validation of the data used to generate the model weights.
 The cell types and source areas with extensive previous anatomical descriptions of projections using both bulk tracer methods with cell type specificity and single cell reconstructions that we investigate are 1) thalamic-projecting neurons in the visual and motor cortical regions, 2) cholinergic neurons in the medial septum and nucleus of the diagonal band (MS/NDB);
 %3) cholinergic neurons in the caudoputamen,
 and 3) serotonergic neurons of the dorsal raphe nucleus (DR).
@@ -119,7 +124,7 @@ To directly compare our data across studies, we merged structures as needed to g
 After formatting our data, we found 51 targets in the top 10\%; \citet{Li2018-nu} reported 47 targets across the 50 cells.
 There was good consistency overall between the target sets; 35 targets were shared, 12 were unique to the single cell dataset, and 16 unique to our model data.
 We checked whether targets missing from our dataset were because of the threshold level.
-Indeed, lowering the threshold to the 75 th percentile confirmed 6 more targets-in-common, and all but 2 targets from \citet{ Li2018-nu} were above the 50th percentile weights in our model.
+Indeed, lowering the threshold to the 75th percentile confirmed 6 more targets-in-common, and all but 2 targets from \citet{ Li2018-nu} were above the 50th percentile weights in our model.
 Of note, the absence of a target in the single cell dataset that was identified in our model data is most likely due to the sparse sampling of all possible projections from only n=50 MS/NDB cells.
 
 %\paragraph{CP projections in the Chat-IRES-Cre-neo model.}
@@ -166,7 +171,10 @@ Thus, it is possible that the single cell somas did not adequately sample the en
     }
     \caption{  Cell-class specificity. \ref{fig:ct_spc} Selected cell-class and layer specific connectivities from two visual and two motor areas.
 	 Sources without an injection of a Cre-line are not estimated due to lack of data.
-	 \ref{fig:cholinergic} Targets reported for cholinergic cells in MS/NDB in \citet{ Li2018-nu}  and above the 90th percentile in our Chat-IRES-Cre-neo model.  A black box along the diagonal indicates the target was identified in both studies ($n=35$). The number of single cells (out of 50) with a projection to each target is shown in the first column after the target acronym and the next column shows whether a target appeared in the $90\%$ thresholded model weights (1= present, 0=absent). Some of these targets only appeared at lower thresholds as indicated by asterisks, $*** >85th \%, ** >75th \%, * >50th \%$.
+	 \ref{fig:cholinergic} Targets reported for cholinergic cells in MS/NDB in \citet{ Li2018-nu}  and above the 90th percentile in our Chat-IRES-Cre-neo model.
+	 A black box along the diagonal indicates the target was identified in both studies ($n=35$).
+	 The number of single cells (out of 50) with a projection to each target is shown in the first column after the target acronym and the next column shows whether a target appeared in the $90\%$ thresholded model weights (1= present, 0=absent).
+	 Some of these targets only appeared at lower thresholds as indicated by asterisks, $*** >85th \%, ** >75th \%, * >50th \%$.
 \ref{fig:serotinergic} Targets reported for serotonergic cells in DR in \citet{Ren2018-ty, Ren2019-jg} and above the 90th percentile in our Slc6a4-Cre\_ET33 model.
     		}
 \label{fig:data_ct}
@@ -177,15 +185,16 @@ Thus, it is possible that the single cell somas did not adequately sample the en
 \subsection{Connectivity Analyses}
 
 While the manual analysis in Section \ref{sec:class-specific-connectivities} is valuable for validation, scaling our interpretation of our connectivity estimates motivated us to apply dimension reduction methods to our connectivity estimates and understand whether the learned structure agrees with the expected biology.
-For example, Supplemental Figure \ref{fig:ct_clust} shows a collection of connectivity strengths generated using Cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
+For example,  Supplemental Section \ref{supp_sec:cell_type_specificity} shows a collection of connectivity strengths generated using Cre-specific models for wild-type, Cux2, Ntsr1, Rbp4, and Tlx3 cre-lines from VIS areas at leaf level in the cortex to cortical and thalamic nuclei.
 Sorting source and target structure/cell-class combinations hierarchical clustering shows, for example, that layer 6-specific Ntsr1 Cre-lines source regions cluster together.
 This makes sense, since layer 6-specific Ntsr1 Cre-line distinctly projects to thalamic nuclei, regardless of source summary structure, and in contrast with the tendency of other cell-classes to project to nearby regions within the cortex.
 
-The low-dimensional coordinates returned by NMF highlight important features within the connectivity matrix in a data-driven way.
+In contrast with heirarchical clustering, non-negative matrix factorization provides a simpler linear-model based factorization \citep{Hastie_2009}.
+The low-dimensional coordinates returned by NMF nevertheless highlight important features within the connectivity matrix in a data-driven way.
 The learned projection archetypes $H$ and model weights $W$ are plotted in Figure \ref{fig:nmf_results}.
 Intrastructural connections such as MB-MB MY-MY are visible in the $7$th and $11$th archetypes, but there is no obvious layer-6 specific signal.
 These factors may be used to generate a reconstructed connectivity matrix using the implied statistical model.
-Despite the relatively small number of learned additive factors, comparing with \ref{fig:full_wt} shows that this reconstructed matrix has a relatively globally plausible structure.
+Despite the relatively small number of learned additive factors, comparing with Figure \ref{fig:full_wt} shows that this reconstructed matrix has a relatively globally plausible structure.
 Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results} contain quantitative performance of this model, and assessment of factorization stability to ensure the decomposition is reliable across computational replicates.
 These indicate that though the displayed coordinate are fewer than the optimum number, this optimum is still an order of magnitude smaller than the dimension of the matrix itself.
 The supplement also quantitatively shows differential association of projection archetypes in this model with projection vectors of sources from the Cux2, Ntsr1, Rbp4, and Tlx3 Cre-lines.
@@ -213,7 +222,8 @@ The supplement also quantitatively shows differential association of projection 
 Target major structure and hemisphere are plotted.
 \ref{fig:W} Loading matrix $W$.
 Source major structure and layer are plotted.
-\ref{fig:recon} Reconstruction of the normalized distal connectivity strength using the top $15$ archetypes.  Areas less than $1500 \mu m$ apart are not modeled, and therefore shown in pink.
+\ref{fig:recon} Reconstruction of the normalized distal connectivity strength using the top $15$ archetypes.
+Areas less than $1500\; \mu m$ apart are not modeled, and therefore shown in pink.
 }
 \label{fig:nmf_results}
 \end{figure}

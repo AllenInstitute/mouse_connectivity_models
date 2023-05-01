@@ -13,7 +13,7 @@ These locations can then be mapped back into three-dimensional space, and the si
 Several statistical models for the conversion of such experiment-specific signals into generalized estimates of connectivity strength have been proposed \citep{Oh2014-kh, Harris2016-fn, Gamanut2018-sd, Knox2019-ot}.
 Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} provide a model for \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
 The value of these models is that they provide some improvement over simply averaging the projection signals of injections in a given region.
-However, these previous works only model connectivities observed in wild type mice which are suboptimally suited assessment of cell-type specific connectivity compared with fluorescence from Cre-recombinase induced eGFP expression in cell-types specified by the combination of transgenic mouse strain and transgene promoter \citep{Harris2019-mr}.
+However, these previous works only model connectivities observed in wild type mice which are suboptimally suited to assessment of cell-type specific connectivity compared with fluorescence from Cre-recombinase induced eGFP expression in cell-types specified by the combination of transgenic mouse strain and transgene promoter \citep{Harris2019-mr}.
 We generally refer to sets of targeted eGFP-expressing cells in tracing experiments as a \textbf{cell class} since they may contain multiple types.
 For example, use of both wild-type and transgenic mice would give rise to cell-class specific experiments, albeit with different yet perhaps overlapping classes of cells.
 
@@ -22,13 +22,13 @@ Our model is a to-our-knowledge novel statistical estimator that takes into acco
 Like the previously state-of-the-art model in \citet{Knox2019-ot}, this model predicts regionalized connectivity as an average over positions within the structure, with nearby experiments given more weight.
 However, our model weighs class-specific behavior in a particular structure against spatial position, so a nearby experiment specific to a similar cell-class is relatively up-weighted, while a nearby experiment specific to a dissimilar class is down-weighted.
 This model outperforms the model of  \citet{Knox2019-ot} based on its ability to predict held-out experiments in leave-one-out cross-validation.
-We then use the trained model to estimate overall connectivity matrices for each assayed cell class.
+We use the trained model to estimate overall connectivity matrices for each assayed cell class.
 
 The resulting cell-type specific connectivity is a directed weighted multigraph which can be represented as a tensor with missing values.
 We do not give an exhaustive analysis of this data, but do establish a lower-limit of detection, verify several cell-type specific connectivity patterns found elsewhere in the literature, and show that these cell-type specific signals are behaving in expected ways.
-We also decompose the wild type connectivity matrix into factors representing archetypal connectivity patterns.
-These components allow approximation of the regionalized connectivity using a small set of latent components.
+We also decompose the wild type connectivity matrix into factors representing latent connectivity patterns, which we call archetypes.
+These components allow approximation of the regionalized connectivity using linear combinations of a small set of components.
 
 Section \ref{sec:methods} gives information on the data and statistical methodology, and Section \ref{sec:results} presents our results.
-These include connectivities, assessments of model fit, and subsequent analyses.
+These include connectivities, assessments of model fit, and subsequent biological and statistical analyses.
 Additional information on our dataset, methods, and results are given in Supplemental Sections \ref{supp_sec:info}, \ref{supp_sec:methods}, and \ref{supp_sec:exp}, respectively.

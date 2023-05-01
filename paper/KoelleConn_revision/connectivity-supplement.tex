@@ -140,6 +140,8 @@ In order to compare between methods, we restrict to the smallest set of evaluati
 That is, the set of experiments used to validate our models combinations that are those whose combination of Cre-line and injection centroid leaf are present at least twice, since one experiment at least must be held out.
 This means that our evaluation set is smaller in size than our overall list of experiments.
 
+\newpage
+
 \begin{table}[H]
 \small
 \begin{tabular}{lrrr}
@@ -400,6 +402,7 @@ Empirically this leads to a smooth surface using the pyGAM Python package \citep
    \caption{Fitting $g$.
    \ref{fig:expected_loss} Distribution of projection errors against centroid distance and cre-distance in Isocortex.
     \ref{fig:expected_loss_surface} estimated $\hat g$ using B-splines.
+    Projection distance is $ \|y_{\mathcal T}(i) - y_{\mathcal T}(i')\|_2$, Cre-distance is  $ \| \bar y_{\mathcal T,s,v} -  \bar y_{\mathcal T,s,v}(i)\| )\|_2$, and centroid-distance is $ \|c(i') - c(i)\|_2$.
     }
    \end{figure}
    
@@ -550,11 +553,16 @@ Experimental results for these cross-validation and stability selection approach
 \section{Supplemental Experiments}
 \label{supp_sec:exp}
 
+The supplemental experiments show results on lower limit of detection, performance of our estimator for different regions and cell-classes, heirarchical clustering of connectivities, and stability and component analysis of our NMF results.
+
 \subsection{Setting detection threshold $\tau$}
 \label{supp:exp_lower}
 
 We give results on the false detection rate at different limits of detection.
 These conclusively show that $10^{-6}$ is the good threshold for our normalized data.
+
+\newpage
+
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/Threshold.png}
@@ -591,69 +599,59 @@ CTXsp is omitted due to the small evaluation set.
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1089.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in HPF. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_1097.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in HY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_315.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in Isocortex. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_313.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in MB. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_354.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in MY. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_698.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in OLF.  Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_771.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in P. Missing values are omitted.    Row and column averages are also plotted.}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_803.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in PAL. Missing values are omitted.  Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_477.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in STR. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width = 7in]{figs/lossdetails_549.png} 
-    \label{fig:distances}
     \caption{Weighted loss for Cre-leaf combinations in TH. Missing values are omitted.   Row and column averages are also plotted.}
 \end{figure}
 
@@ -661,12 +659,15 @@ CTXsp is omitted due to the small evaluation set.
 
 \subsection{Cell-type specificity}
 
-We performed agglomerative heirarchical clustering using the default method in Seaborn \citep{Waskom2021} to investigate shared projection patterns across Cre-lines.
+\label{supp_sec:cell_type_specificity}
+
+We performed heirarchical clustering using the default method in Seaborn \citep{Waskom2021} to investigate shared projection patterns across Cre-lines.
+That is, we used agglomerative clustering with Ward's criterion \citet{Hastie_2009, Lalloue2013-is}.
 This showed clustering of Ntsr1 projections to Thalamic nuceli.
 
-\begin{figure}
- \label{fig:ct_clust}
+\begin{figure}[H]
     \includegraphics[width=.6\textwidth]{figs/heirarchical.png}
+     \label{fig:ct_clust2}
 \caption{ Hierarchical clustering of connectivity strengths from visual cortex cell-types to cortical and thalamic targets.
 		Cre-line, summary structure, and layer are labelled on the sources.
 		Major brain division and layer are labelled on the targets.}
@@ -686,8 +687,8 @@ These consist of cross-validation selection of $q$, the number of latent compone
 We set $\alpha = 0.002$ and run Program \ref{eq:nmf} on $\mathcal C_{wt}$.
 We use a random mask with $p = .3$ to evaluate prediction accuracy of models trained on the unmasked data on the masked data.
 To account for stochasticity in the NMF algorithm, we run $R = 8$ replicates at each potential dimension $q$.
-This selects $\hat q = 60$.
-However, the low decrease in error at higher values of $q$ and need for brevity in our figures motivated us to choose $q=15$ for the purposes of display.
+The lowest mean test error was observed at $\hat q = 70$, indicating that even more components could be estimated.
+However, the low decrease in reconstruction error at higher values of $q$ and need for brevity in our figures motivated us to choose $q=15$ for the purposes of display.
 
 \begin{figure}[H]
     \centering
@@ -696,11 +697,9 @@ However, the low decrease in error at higher values of $q$ and need for brevity 
     \caption{Train and test error using NMF decomposition.}
 \end{figure}
 
-\newpage
-
 \subsubsection{Stability}
 
-To address the instability of the NMF algorithm in identifying components, we $k-means$ cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
+To address the instability of the NMF algorithm in identifying components, we k-means cluster components over $R = 10$ replicates with $k \in \{10,15,20, 25, 30\}$.
 Since the clustering is itself unstable, we repeat the clustering $25$ times and select the $k$ with the largest Rand index, a standard method of clustering stability \citep{Rand1971-ny, Meila_2007-xt}.
 
 \begin{tabular}{lrrrrr}
