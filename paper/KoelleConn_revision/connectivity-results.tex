@@ -50,7 +50,7 @@ CB        &      \textbf {   0.062} &        \textbf { 0.062 }&         \textbf 
 The model is more accurate in Cre-leaf combinations where it draws on more data.
 The dataset variable $\mathcal D$ indicates the set of experiments used to model a given connectivity.
 For example, $I_c \cap I_L$ means only experiments with a given Cre-line in a given leaf are used to model connectivity for the corresponding cell-class in that leaf, while $I_L$ means that all experiments in that leaf are used.
-$I_{wt} \cap I_M$ means all wild-type experiments in the major structure are used - this was the model in \citet{Knox2019-ot}}.
+$I_{wt} \cap I_M$ means all wild-type experiments in the major structure are used - this was the model in \citet{Knox2019-ot}.}
 \end{table}
 
 \subsection{Connectivities}
@@ -103,8 +103,8 @@ Our estimated connections are in agreement with literature on these cell types.
 
 \paragraph{Dependence of thalamic connection on cortical layer.}
 
-Visual cortical areas VISp and VISl and cortical motor areas MOp and MOs have established layer-specific projection patterns that can be labeled with the layer-specific Cre-lines from the Allen datasets and others \citet{Jeong2016-dc, Harris2019-mr}.
-Figure \ref{fig:ct_spc} shows that in VISp, the Ntsr1-Cre line strongly targets the core part of the thalamic LGd nucleus while in VISl, it a strong projection to the LP nucleus.
+Visual cortical areas VISp and VISl and cortical motor areas MOp and MOs have established layer-specific projection patterns that can be labeled with the layer-specific Cre-lines from the Allen datasets and others \citep{Jeong2016-dc, Harris2019-mr}.
+Figure \ref{fig:ct_spc} shows that in VISp, the Ntsr1-Cre line strongly targets the core part of the thalamic LGd nucleus while in VISl, it a strong projector to the LP nucleus.
 In VISp, the Rbp4-Cre line strongly targets LP as well.  
 Rbp4-Cre and Ntsr1-Cre injections target layers 5 and 6 respectively.
 Since we only generate connectivity estimates for structures with at least one injection centroid, this is shown by the position of non-zero rows in Figure \ref{fig:ct_spc}.
@@ -149,7 +149,7 @@ First, in the isocortex, there is known to be significant variation in the densi
 Indeed, when we lower the threshold and check for weights of the targets outside of the 90\%, we see all but one of these regions (PTLp, parietal cortex which is not frontal or lateral) has a weight assigned in the top half of all targets.
 In the thalamus, our model predicted strong connections to several medial thalamic nuclei (i.e., MD, SMT) that were not targeted by the single cells.
 This discrepancy may be at least partially explained by the complex topographical organization of the DR that, like the molecular subtypes, is not yet completely understood.
-A previous bulk tracer study that specifically targeted injections to the central, lateral wings, and dorsal subregions of the DR reported semi-quantitative differences in projection patterns \citep{Muzerelle2016-sn}.%( Muzarelle et al. 2016% , Table 3).
+A previous bulk tracer study that specifically targeted injections to the central, lateral wings, and dorsal subregions of the DR reported semi-quantitative differences in projection patterns \citep{Muzerelle2016-sn}.
 Notably, \citet{Muzerelle2016-sn} report that cells in the ventral region of DR project more strongly to medial thalamic nuclei, whereas the lateral and dorsal DR cells innervate more lateral regions (e.g., LGd).
 Thus, it is possible that the single cell somas did not adequately sample the entire DR.
 
@@ -195,8 +195,7 @@ The learned projection archetypes $H$ and model weights $W$ are plotted in Figur
 Intrastructural connections such as MB-MB MY-MY are visible in the $7$th and $11$th archetypes, but there is no obvious layer-6 specific signal.
 These factors may be used to generate a reconstructed connectivity matrix using the implied statistical model.
 Despite the relatively small number of learned additive factors, comparing with Figure \ref{fig:full_wt} shows that this reconstructed matrix has a relatively globally plausible structure.
-Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results} contain quantitative performance of this model, and assessment of factorization stability to ensure the decomposition is reliable across computational replicates.
-These indicate that though the displayed coordinate are fewer than the optimum number, this optimum is still an order of magnitude smaller than the dimension of the matrix itself.
+Supplemental Sections \ref{supp_sec:matrix_factor_methods} and \ref{supp_sec:matrix_factor_results} contain quantitative performance of this model across choices of $q$, and assessment of factorization stability to ensure the decomposition is reliable across computational replicates.
 The supplement also quantitatively shows differential association of projection archetypes in this model with projection vectors of sources from the Cux2, Ntsr1, Rbp4, and Tlx3 Cre-lines.
 
 \newpage

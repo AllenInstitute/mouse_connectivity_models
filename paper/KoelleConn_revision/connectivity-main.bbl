@@ -350,7 +350,7 @@ Hastie%
 }{%
 Hastie%
 \ \protect \BOthers {.}}{%
-{\protect \APACyear {{\protect \bibnodate {}}}}%
+{\protect \APACyear {2009}}%
 }]{%
 Hastie_2009}
 \APACinsertmetastar {%
@@ -362,7 +362,7 @@ Hastie, T.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYear{{\protect \bibnodate {}}}.
+\APACrefYear{2009}.
 \newblock
 \APACrefbtitle {The Elements of Statistical Learning} {The elements of
   statistical learning}.
@@ -960,7 +960,7 @@ Salha%
 Salha%
 \ \BBA {} El~Shekh~Ahmed%
 }{%
-{\protect \APACyear {{\protect \bibnodate {}}}}%
+{\protect \APACyear {2015}}%
 }]{%
 Salha_undated-ev}
 \APACinsertmetastar {%
@@ -971,13 +971,13 @@ Salha, R\BPBI B.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{{\protect \bibnodate {}}}{}{}.
+\APACrefYearMonthDay{2015}{}{}.
 \newblock
 {\BBOQ}\APACrefatitle {Reweighted {Nadaraya-Watson} Estimator of the Regression
   Mean} {Reweighted {Nadaraya-Watson} estimator of the regression mean}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{International Journal of Statistics and
-  Probability}{4}{1}{2015}.
+  Probability}{4}{1}{}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1037,24 +1037,29 @@ Saunders, A.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
-Servén~D.%
+Servén%
+\ \BBA {} Brummitt%
 }{%
-Servén~D.%
+Servén%
+\ \BBA {} Brummitt%
 }{%
-{\protect \APACyear {{\protect \bibnodate {}}}}%
+{\protect \APACyear {2018}}%
 }]{%
 Serven2018-aa}
 \APACinsertmetastar {%
 Serven2018-aa}%
 \begin{APACrefauthors}%
-Servén~D., B\BPBI C.%
+Servén, D.%
+\BCBT {}\ \BBA {} Brummitt, C.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{{\protect \bibnodate {}}}{}{}.
+\APACrefYearMonthDay{2018}{}{}.
 \newblock
 \APACrefbtitle {pyGAM: Generalized Additive Models in Python.} {pygam:
   Generalized additive models in python.}
+\newblock
+\begin{APACrefDOI} \doi{10.5281/zenodo.1208723} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

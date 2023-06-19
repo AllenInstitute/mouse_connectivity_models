@@ -53,7 +53,7 @@ For injections into Cre mice, we used the CAG promoter with a Flex cassette for 
 Additional details on are given in \citet{Harris2019-mr}.
 %By our definition, wild type mice transduced with constitutitively active GFP promoters induce fluorescence of a particularly broad cell class.
 
-For each experiment, the fluorescent signal imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional average template brain that is fully annotated with regional parcellations \cite{Wang2020-po}.
+For each experiment, the fluorescent signal imaged after injection is aligned into the Allen Common Coordinate Framework (CCF) v3, a three-dimensional average template brain that is fully annotated with regional parcellations \citep{Wang2020-po}.
 The whole brain imaging and registration procedures described in detail in \citet{Oh2014-kh, Kuan2015-zz} produce quantitative metrics of fluorescence discretized at the $100 \; \mu$m \textbf{voxel} level. 
 Given an experiment, this image was histologically segmented by an analyst into \textit{injection} and \textit{projection} areas corresponding to areas containing somas, dendrites and axons or exclusively axons of the transfected neurons.
 An example of a single experiment rendered in 3D is given in Figure \ref{fig:injproj}.
@@ -155,7 +155,7 @@ We use weighted $l2$-loss to evaluate these predictions.
 \end{align*}
 $I_s$ refers to the set of experiments with centroid in structure $s$, and $I_v$ refers to the set of experiments with Cre-line $v$, so $|I_s \cap I_v|$ is the number of experiments of Cre-line $v$ with injection centroid in structure $s$.
 This is a somewhat different loss from \citet{Knox2019-ot} because of the increased weighting of rarer combinations of $s$ and $v$ implicit in the $\frac{1}{ |I_{s} \cap I_v |}$ term in the loss.
-The establishment of a lower limit of detection and the extra cross-validation step used in the EL model to establish the relative importance of regionally averaged cell-class projection and injection centroid position are covered in Supplemental Section \ref{supp_sec:methods_lower}.
+The establishment of a lower limit of detection and the extra estimation step used in the EL model to establish the relative importance of regionally averaged cell-class projection and injection centroid position are covered in Supplemental Section \ref{supp_sec:methods_lower}.
 
 \newpage
 

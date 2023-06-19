@@ -13,79 +13,52 @@ Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: connectivity.bib
 Warning--entry type for "Serven2018-aa" isn't style-file defined
---line 323 of file connectivity.bib
-I was expecting a `,' or a `}'---line 326 of file connectivity.bib
- : 
- : year = "2018"
-(Error may have been on previous line)
-I'm skipping whatever remains of this entry
+--line 324 of file connectivity.bib
 apacite.bst [2013/07/21 v6.03 APA bibliography style]
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5062 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5066 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5066 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5068 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5068 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5072 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5075 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5076 of file apacite.bst
 Warning--No journal in Harris2016-fn
 Warning--No journal in Lotfollahi2019-tr
 Warning--No journal in Perry2009-ia
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5079 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5079 of file apacite.bst
-Name 1 in "Servén D., Brummitt C. ," has a comma at the end for entry Serven2018-aa
-while executing---line 5079 of file apacite.bst
 Warning--No journal in Von_Luxburg2010-lu
 Warning--No journal in Von_Luxburg2010-qe
 You've used 44 entries,
             6951 wiz_defined-function locations,
-            1563 strings with 22548 characters,
-and the built_in function-call counts, 102054 in all, are:
-= -- 12189
-> -- 886
-< -- 5469
-+ -- 5960
+            1564 strings with 22571 characters,
+and the built_in function-call counts, 102466 in all, are:
+= -- 12262
+> -- 890
+< -- 5485
++ -- 5971
 - -- 89
-* -- 6975
-:= -- 19645
+* -- 6998
+:= -- 19707
 add.period$ -- 167
 call.type$ -- 44
-change.case$ -- 793
+change.case$ -- 832
 chr.to.int$ -- 0
 cite$ -- 93
-duplicate$ -- 2965
-empty$ -- 3573
-format.name$ -- 1694
-if$ -- 18286
+duplicate$ -- 2972
+empty$ -- 3578
+format.name$ -- 1704
+if$ -- 18371
 int.to.chr$ -- 0
 int.to.str$ -- 136
 missing$ -- 0
-newline$ -- 1152
+newline$ -- 1157
 num.names$ -- 352
-pop$ -- 1309
+pop$ -- 1311
 preamble$ -- 1
-purify$ -- 241
+purify$ -- 244
 quote$ -- 0
-skip$ -- 6022
+skip$ -- 6058
 stack$ -- 0
-substring$ -- 6421
-swap$ -- 1635
-text.length$ -- 153
+substring$ -- 6432
+swap$ -- 1638
+text.length$ -- 156
 text.prefix$ -- 0
 top$ -- 1
 type$ -- 3656
 warning$ -- 5
-while$ -- 638
+while$ -- 643
 width$ -- 0
-write$ -- 1504
-(There were 12 error messages)
+write$ -- 1513
+(There were 6 warnings)

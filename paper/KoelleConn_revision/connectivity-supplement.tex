@@ -322,7 +322,7 @@ where $\omega_{i l } := \exp( - \gamma d( l , c(i))^2 )$ and $d$ is the Euclidea
 Several facets of the estimator are visible here. 
 A smaller $\gamma$ corresponds to a greater amount of smoothing, and the index set $I \subseteq  \{1:n\}$ generally depends on $s$ and $v$.
 Varying $\gamma$   bridges between $1$-nearest neighbor prediction and averaging of all experiments in $I$.
-In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division, i.e. $I = I_m$, while restricting of index set to only include experiments with the same cell class gives the class-specific Cre-NW model.
+In \citet{Knox2019-ot}, $I$ consisted of experiments sharing the same brain division, i.e. $I = I_m$, while restricting the index set to only include experiments with the same cell class gives the class-specific Cre-NW model.
 Despite this restriction, we fit $\gamma$ by leave-one-out cross-validation for each $m$ rather than a smaller subset like $s$ or $v$.
 That is,
 \begin{eqnarray}
@@ -346,10 +346,10 @@ The vectorization of categorical information is known as \textbf{target encoding
 \begin{eqnarray*}
 \bar y_{\mathcal T,s,v} := \frac{1}{|I_s \cap I_v|}  \sum_{i \in (I_s \cap I_v)} y_{\mathcal T}(i)
 \end{eqnarray*}
-The Cre-distance is then define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
+We then define a \textbf{Cre-distance} in a leaf to be the distance between the target-encoded projections of two Cre-lines.
 The relative predictive accuracy of Cre-distance and centroid distance is determined by fitting a surface of projection distance as a function of Cre-distance and centroid distance. 
-When we use shape-constrained B-splines to estimate this weight, the weights then may be said to be used in a Nadaraya-Watson estimator.
 For this reason, we call this the Expected Loss Estimator.
+When we use shape-constrained B-splines to estimate this weight, the weights then may be said to be used in a Nadaraya-Watson estimator.
 The resulting weights are then utilized in a Nadaraya-Watson estimator in a final prediction step.
 
 In mathematical terms, our full feature set consists of the centroid coordinates and the target-encoded means of the combinations of virus type and injection-centroid structure.
@@ -479,7 +479,7 @@ Aside from the NMF program itself, the key elements are selection of the number 
 As discussed in \citet{Knox2019-ot}, one of the most basic processes underlying the observed connectivity is the tendency of each source region to predominantly project to proximal regions.
 For example, the heatmap in Supplemental Figure \ref{fig:dist_bw_str} shows that the pattern of intrastructure distances resembles the connectivity matrix in \ref{fig:connectome}.
 These connections are biologically meaningful, but also unsurprising, and their relative strength biases learned latent coordinate representations away from long-range structures.
-For this reason, we establish a $1500 \mu m$ 'distal' threshold within which to exclude connections for our analysis.
+For this reason, we establish a $1500 \; \mu m$ 'distal' threshold within which to exclude connections for our analysis.
 
 Given a matrix $X \in \mathbb R_{\geq 0}^{a \times b}$ and a desired latent space dimension $q$, the non-negative matrix factorization is thus
 \begin{eqnarray*}
@@ -544,7 +544,7 @@ A review of this approach is found in \citet{Von_Luxburg2010-qe}.
 Intuitively, archetype vectors that cluster together frequently over clustering replicates indicate the presence of a stable clustering.
 For $d$, we utilize the adjusted Rand Index - a simple dissimilarity measure between clusterings.
 Note that we expect to select slightly more than the $q$ components suggested by cross-validation, since archetype vectors which appear in one NMF replicate generally should appear in others.
-We then select the $q$ clusters with the most archetype vectors - the most stable NMF results - and take the median of each cluster to create a sparse representative archetype \citet{Wu2016-gg, Kotliar2019-yj}.
+We then select the $q$ clusters with the most archetype vectors - the most stable NMF results - and take the median of each cluster to create a sparse representative archetype \citep{Wu2016-gg, Kotliar2019-yj}.
 We then find the according $H$ using Program \ref{eq:nmf_nnls}.
 Experimental results for these cross-validation and stability selection approaches are given in Supplemental Section \ref{supp_sec:matrix_factor_results}.
 

@@ -6,15 +6,15 @@ These connectivities vary by neuron type, as well as source (cell body) location
 Thus, characterization of the relationship between neuron type and source and target structure is important for understanding the overall nervous system.
 
 Viral tracing experiments - in which a viral vector expressing GFP is transduced into neural cells through stereotaxic injection - are a useful tool for mapping these connections on the mesoscale \citep{Chamberlin1998-hi,Harris2012-fw, Daigle2018-gd}.
-The GFP protein moves into the axon of the projecting neurons. The long range connections between different areas are generally formed by axons which travel from one region to another. 
+The long range connections between different areas are generally formed by axons which travel from one region to another, and the GFP protein moves into the axon of the projecting neurons.
 Two-photon tomography imaging can be used to determine the location and strength of the fluorescent signals in two-dimensional slices.
 These locations can then be mapped back into three-dimensional space, and the signal may then be integrated over area into cubic voxels to give a finely-quantized three-dimensional fluorescence.
 
 Several statistical models for the conversion of such experiment-specific signals into generalized estimates of connectivity strength have been proposed \citep{Oh2014-kh, Harris2016-fn, Gamanut2018-sd, Knox2019-ot}.
 Of these, \citet{Oh2014-kh} and \citet{Knox2019-ot} provide a model for \textbf{regionalized connectivities}, which are voxel connectivities integrated by region.
 The value of these models is that they provide some improvement over simply averaging the projection signals of injections in a given region.
-However, these previous works only model connectivities observed in wild type mice which are suboptimally suited to assessment of cell-type specific connectivity compared with fluorescence from Cre-recombinase induced eGFP expression in cell-types specified by the combination of transgenic mouse strain and transgene promoter \citep{Harris2019-mr}.
-We generally refer to sets of targeted eGFP-expressing cells in tracing experiments as a \textbf{cell class} since they may contain multiple types.
+However, these previous works only model connectivities observed in wild-type mice which are suboptimally suited to assessment of cell-type specific connectivity compared with fluorescence from Cre-recombinase induced eGFP expression in cell-types specified by the combination of transgenic mouse strain and transgene promoter \citep{Harris2019-mr}.
+We generally refer to sets of so-targeted eGFP-expressing cells in tracing experiments as a \textbf{cell class} since they may contain multiple types.
 For example, use of both wild-type and transgenic mice would give rise to cell-class specific experiments, albeit with different yet perhaps overlapping classes of cells.
 
 Thus, this paper introduces a class-specific statistical model for anterograde tracing experiments that synthesizes the diverse set of \textbf{Cre-lines} described in \citet{Harris2019-mr}, and expands this model to the entire mouse brain.
@@ -24,9 +24,9 @@ However, our model weighs class-specific behavior in a particular structure agai
 This model outperforms the model of  \citet{Knox2019-ot} based on its ability to predict held-out experiments in leave-one-out cross-validation.
 We use the trained model to estimate overall connectivity matrices for each assayed cell class.
 
-The resulting cell-type specific connectivity is a directed weighted multigraph which can be represented as a tensor with missing values.
+The resulting cell-class specific connectivity is a directed weighted multigraph which can be represented as a tensor with missing values.
 We do not give an exhaustive analysis of this data, but do establish a lower-limit of detection, verify several cell-type specific connectivity patterns found elsewhere in the literature, and show that these cell-type specific signals are behaving in expected ways.
-We also decompose the wild type connectivity matrix into factors representing latent connectivity patterns, which we call archetypes.
+We also decompose the wild-type connectivity matrix into factors representing latent connectivity patterns, which we call archetypes.
 These components allow approximation of the regionalized connectivity using linear combinations of a small set of components.
 
 Section \ref{sec:methods} gives information on the data and statistical methodology, and Section \ref{sec:results} presents our results.

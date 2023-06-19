@@ -56,30 +56,26 @@
 
 \begin{abstract}
 The Allen Mouse Brain Connectivity Atlas (MCA) consists of anterograde tracing experiments targeting diverse structures and classes of projecting neurons.
-Beyond regional anterograde tracing done in C57BL/6 wild type mice, a large fraction of experiments are performed using transgenic Cre-lines.
+Beyond regional anterograde tracing done in C57BL/6 wild-type mice, a large fraction of experiments are performed using transgenic Cre-lines.
 This allows access to cell-class specific whole brain connectivity information, with class defined by the transgenic lines.
 However, even though the number of experiments is large, it does not come close to covering all existing cell classes in every area where they exist.
 Here, we study how much we can fill in these gaps and estimate the cell-class specific connectivity function given the simplifying assumptions that nearby voxels have smoothly varying projections, but that these projection tensors can change sharply depending on the region and class of the projecting cells.
 
 This paper describes the conversion of Cre-line tracer experiments into class-specific connectivity matrices representing the connection strengths between source and target structures.
 We introduce and validate a novel statistical model for creation of connectivity matrices.
-We extend the Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps to also fill in a gaps in cell-class connectivity information.
+We extend the Nadaraya-Watson kernel learning method which we previously used to fill in spatial gaps to also fill in gaps in cell-class connectivity information.
 To do this, we construct a "cell-class space" based on class-specific averaged regionalized projections and combine smoothing in 3D space as well as in this abstract space to share information between similar neuron classes.
 Using this method we construct a set of connectivity matrices using multiple levels of resolution at which discontinuities in connectivity are assumed. We show that the connectivities obtained from this model display expected cell-type and structure specific connectivities. 
-We also show that the wild type connectivity matrix can be factored using a sparse set of factors, and analyze the informativeness of this latent variable model.
+We also show that the wild-type connectivity matrix can be factored using a sparse set of factors, and analyze the informativeness of this latent variable model.
 
 \end{abstract}
 
 \begin{authorsummary}
-Large-scale studies have described the connections between areas in multiple mammalian models in ever expanding detail.
-Standard connectivity studies focus on the connection strength between areas.
-However, when describing functions at a local circuit level, there is an increasing focus on cell types.
-We have recently described the importance of connection types in the cortico-thalamic system, which allows an unsupervised discovery of its hierarchical organization.
-In this study we focus on adding a dimension of connection type for a brain-wide mesoscopic connectivity model.
-Even with our relatively massive dataset, the data in the cell type direction for connectivity is quite sparse, and we had to develop methods to more reliably extrapolate in such directions, and to estimate when such extrapolations are impossible.
-This allows us to fill in such a connection type specific inter-areal connectivity matrix to the extent our data allows. 
-While analyzing this complex connectivity, we observed that it can be described via a small set of factors. 
-While not complete, this connectivity matrix represents a a categorical and quantitative improvement in mouse mesoscale connectivity models. 
+While standard connectivity studies in mammalian models focus on the overall connection strength between areas, there is an increasing focus on specific connection types between cell classes when describing functions at a local circuit level.
+Having recently described the importance of such classes in the cortico-thalamic system, we now investigate their importance for estimating brain-wide mesoscopic connectivity.
+Even within our relatively large dataset, the connectivity data across cell classes is sparse, and so we introduce a method to more reliably extrapolate across classes and estimate connection-type specific inter-areal connectivity.
+We observe that this complex connectivity may be described via a relatively small set of factors. 
+While not complete, this connectivity matrix represents a categorical and quantitative improvement in mouse mesoscale connectivity models.
 
 \end{authorsummary}
 
@@ -96,7 +92,7 @@ While not complete, this connectivity matrix represents a a categorical and quan
 \newpage
 
 \acknowledgments
-We thank the Allen Institute for Brain Science founder, Paul G. Allen, for his vision, encouragement, and support.
+We thank the Allen Institute for Brain Science founder, Paul G. Allen, for his vision, encouragement, and support. We thank Kameron Decker Harris, Joseph Knox, and Sargon Bet-Shlimon for their helpful comments.
 \newpage
 
 \input{connectivity-supplement.tex}
@@ -105,29 +101,30 @@ We thank the Allen Institute for Brain Science founder, Paul G. Allen, for his v
 \bibliography{connectivity}
 
 \newpage
+
 \section{Technical Terms}
 
 \textbf{Technical Term} a key term that is mentioned in an NETN article and whose usage and definition may not be familiar across the broad readership of the journal. 
 
-\textbf{Cre-line}  The combination of Cre-recombinase expression in transgenic mouse and Cre-induced promotion in the vector that induces labelling of projection
+\textbf{Cre-line}  The combination of Cre-recombinase expression in transgenic mouse and Cre-induced expression in the vector that induces labelling of projection
 
-\textbf{Cell class} The projecting neurons targeted by a particular Cre-line 
+\textbf{Cell class} The projecting neurons targeted by a particular Cre-line
 
-\textbf{Structural connectivities} connectivity between structures 
+\textbf{Structural connectivities} The matrix of connectivities between structures.
 
-\textbf{Voxel} A $100 \mu m$ cube of brain
+\textbf{Voxel} A $100 \; \mu m$ cube of brain
 
-\textbf{Structural connection tensor}  Connectivities between structures given a neuron class
+\textbf{Structural connection tensor}  Connectivities between structures across cell classes
 
-\textbf{dictionary-learning} A family of algorithms for finding low-dimensional data representations.
+\textbf{Dictionary-learning} A family of algorithms for finding low-dimensional data representations.
 
-\textbf{Shape constrained estimator} A statistical estimator that fits a function of a particular shape (e.g. monotonic increasing, convex).
+\textbf{Shape constrained estimator} A statistical estimator that fits a function of a particular shape (e.g. monotonic increasing, convex)
 
-\textbf{Nadaraya-Watson} A simple local smoothing estimator.
+\textbf{Nadaraya-Watson} A simple local smoothing estimator with one parameter
 
 \textbf{Connectivity archetypes} Projection patterns from which we can linearly reconstruct the connectome
 
- \textbf{Expected loss} Our new estimator that weights different features by their estimated predictive power.
+ \textbf{Expected loss} Our new estimator that weights location against cell-class by their estimated predictive power
  
 %All NETN article types require Technical Terms.
 
