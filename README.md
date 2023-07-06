@@ -45,6 +45,8 @@ analyses/paper_final/metadata/ontological_order_leaves_v3.npy
 
 These may also be obtained from the Allen SDK and `analyses/paper_final/get_info/get_info.ipynb`.
 
+Estimated class-specific connectivities are in `paper/connectivities`.
+
 # Model validation
 
 We evaluate the performance of candidate connectivity estimators in
